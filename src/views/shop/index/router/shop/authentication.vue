@@ -41,7 +41,7 @@
               </div>
               <span>示例 :</span>
               <div class="shop-img ID-img1">
-                <div class="shop-img2" @click="showBigImg('../../../img/ID1_1.png')">
+                <div class="shop-img2" @click="showBigImg(imgID1)">
                   <i class="el-icon-view"></i>
                 </div>
               </div>
@@ -54,7 +54,7 @@
               </div>
               <span>示例 :</span>
               <div class="shop-img ID-img2">
-                 <div class="shop-img2" @click="showBigImg('/static/img/ID2_1.jpg')">
+                 <div class="shop-img2" @click="showBigImg(imgID2)">
                   <i class="el-icon-view"></i>
                 </div>
               </div>
@@ -81,7 +81,7 @@
               </div>
               <span>示例 :</span>
               <div class="shop-img ID-img1">
-                 <div class="shop-img2" @click="showBigImg('/static/img/ID1_1.png')">
+                 <div class="shop-img2" @click="showBigImg(imgID1)">
                   <i class="el-icon-view"></i>
                 </div>
               </div>
@@ -95,7 +95,7 @@
               </div>
               <span>示例 :</span>
               <div class="shop-img ID-img2">
-                 <div class="shop-img2" @click="showBigImg('/static/img/ID2_1.png')">
+                 <div class="shop-img2" @click="showBigImg(imgID2)">
                   <i class="el-icon-view"></i>
                 </div>
               </div>
@@ -108,7 +108,7 @@
               </div>
               <span>示例 :</span>
               <div class="shop-img ID-img3">
-                 <div class="shop-img2" @click="showBigImg('/static/img/ID3_1.png')">
+                 <div class="shop-img2" @click="showBigImg(imgLicense1)">
                   <i class="el-icon-view"></i>
                 </div>
               </div>
@@ -141,7 +141,7 @@
               </div>
               <span>示例 :</span>
               <div class="shop-img ID-img5">
-                 <div class="shop-img2" @click="showBigImg('/static/img/ID5_1.png')">
+                 <div class="shop-img2" @click="showBigImg(imgLicense3)">
                   <i class="el-icon-view"></i>
                 </div>
               </div>
@@ -156,7 +156,7 @@
               </div>
               <span>示例 :</span>
               <div class="shop-img ID-img4">
-                 <div class="shop-img2" @click="showBigImg('/static/img/ID4_1.png')">
+                 <div class="shop-img2" @click="showBigImg(imgLicense2)">
                   <i class="el-icon-view"></i>
                 </div>
               </div>
@@ -170,7 +170,7 @@
               </div>
               <span>示例 :</span>
               <div class="shop-img ID-img6">
-                 <div class="shop-img2" @click="showBigImg('/static/img/ID6_1.png')">
+                 <div class="shop-img2" @click="showBigImg(imgLicense4)">
                   <i class="el-icon-view"></i>
                 </div>
               </div>
@@ -201,7 +201,7 @@
               </div>
               <span>示例 :</span>
               <div class="shop-img ID-img7">
-                 <div class="shop-img2" @click="showBigImg('/static/img/ID7_1.png')">
+                 <div class="shop-img2" @click="showBigImg(imgLicense5)">
                   <i class="el-icon-view"></i>
                 </div>
               </div>
@@ -216,7 +216,7 @@
               </div>
               <span>示例 :</span>
               <div class="shop-img ID-img7">
-                 <div class="shop-img2" @click="showBigImg('/static/img/ID7_1.png')">
+                 <div class="shop-img2" @click="showBigImg(imgLicense5)">
                   <i class="el-icon-view"></i>
                 </div>
               </div>
@@ -231,7 +231,7 @@
               </div>
               <span>示例 :</span>
               <div class="shop-img ID-img7">
-                 <div class="shop-img2" @click="showBigImg('/static/img/ID7_1.png')">
+                 <div class="shop-img2" @click="showBigImg(imgLicense6)">
                   <i class="el-icon-view"></i>
                 </div>
               </div>
@@ -259,6 +259,16 @@
 <script>
 import Lib from 'assets/js/Lib';
 import imgUpload from 'components/imgUpload';
+//图片
+import imgID1 from '../../../img/ID1_1.png' //身份证正面
+import imgID2 from '../../../img/ID2_1.png' //身份证反面
+import imgLicense1 from '../../../img/ID3_1.jpg' //营业执照
+import imgLicense2 from '../../../img/ID4_1.jpg' //商标注册通知书
+import imgLicense3 from '../../../img/ID5_1.png' //商标使用许可合同
+import imgLicense4 from '../../../img/ID6_1.jpg'//商标注册证
+import imgLicense5 from '../../../img/ID7_1.png'//微信渠道授权证书
+import imgLicense6 from '../../../img/ID8.png'//微信渠道授权证书
+
 export default {
   components: {
     imgUpload
@@ -342,6 +352,14 @@ export default {
         isChannel: false, //渠道授权
         isCompany:false,//公司总部证明函
         isRelationship:false,//关系证明函
+        imgID1:imgID1,
+        imgID2:imgID2,
+        imgLicense1:imgLicense1,
+        imgLicense2:imgLicense2,
+        imgLicense3:imgLicense3,
+        imgLicense4:imgLicense4,
+        imgLicense5:imgLicense5,
+        imgLicense6:imgLicense6
     }
   },
   methods: {
