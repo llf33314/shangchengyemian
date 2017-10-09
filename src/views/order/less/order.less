@@ -1,0 +1,154 @@
+@import '../../../assets/css/mixins.less';
+@import '../../../assets/css/base.less';
+
+.order-wrapper{
+    width: 100%;
+    .order-main{
+        padding: 40px @common-padding;
+    }
+    .order-content{
+        margin-top: 30px;
+    }
+    .order-item{
+        width: 100%;
+        margin-bottom: 30px; 
+        font-size: 14px;
+        border: 1px solid #dfe6ec;
+        .order-title{
+            width: 100%;
+            background: #eef1f6;
+            padding: 10px 30px;
+            font-weight: bold;
+        }
+        .order-item-content{
+            width: 100%;
+            padding: 10px 30px;
+            .order-tishi{
+                font-size: 16px;
+                margin-bottom: 20px;
+                position: relative;
+                i{
+                    position: absolute;
+                    top: 0;
+                    left: -50px;
+                    color: @blue;
+                    font-size: 35px;
+                }
+            }
+        }
+        .order-item-list{
+            width: 100%;
+            line-height: 1;
+            position: relative;
+            .order-item-title{
+                display: inline-block;
+                width: 70px;
+                vertical-align: top;
+                margin-right: 20px;
+                margin-bottom: 20px;
+                text-align: right;
+            }
+            p{
+                display: inline-block;
+                width: 70%;
+                vertical-align: top;
+            }
+            .r-button{
+                position: absolute;
+                right: 0;
+                top: 0;
+            }
+        }
+    }
+    .order-table{
+        width: 100%;
+        margin: 20px 0;
+        display: table;
+        font-size: 14px;
+        .table-header,
+        .table-footer,
+        .table-tr{
+            width: 100%;
+            .ik-box;
+        }
+        .table-header{
+            background: #eef1f6;
+            .ik-box;
+            font-weight: bold;
+            border: 1px solid #dfe6ec;
+        }
+        .table-content{
+            border: 1px solid #dfe6ec;
+            border-top: 0;
+        }
+        .table-footer{
+            border-top: 1px solid #dfe6ec;
+            padding: 13px 1.5%;
+        }
+        .table-th,
+        .table-td{
+            .ik-box-flex(1);
+            padding: 15px 0 13px 20px;
+        }
+        .table-item{
+            height: 90px;
+            padding: 15px 0 15px 20px;
+            border-bottom: 1px solid #dfe6ec;
+         }
+        .table-img{
+            width: 55px;
+            height: 55px;
+            float: left;
+            margin-right: 15px;
+        }
+        .table-text{
+            float: left;
+            width: 60%;
+            p{
+                color: #999;
+                font-size: 12px;
+            }
+        }
+        .table-top{
+            width: 100%;
+            padding: 13px 1.5%;
+            background: #f7f7f7;
+            border-bottom: 1px solid #dfe6ec;
+            span{
+                color: #b3b3b3;
+                margin: 5px;
+            }
+            a{
+                color: @blue;
+                margin: 2px;
+                cursor: pointer;
+            }
+        }
+        .border-r{
+            border-right:  1px solid #dfe6ec;
+        }
+        .col-2{
+            width: 27%;
+            &>div:last-child{
+                border-bottom:0 
+            }
+        }
+        .col-1{
+            width: 9%;
+            &>div:last-child{
+                border-bottom:0 
+            }
+        }
+    }
+    .rights-record{
+        border:  1px solid #dfe6ec;
+        max-width: 400px !important;
+        .order-item-content{
+            height: 158px;
+            overflow-y: auto;
+        }
+        .rights-record-list {
+            margin-bottom: 20px;
+        }
+    }
+}

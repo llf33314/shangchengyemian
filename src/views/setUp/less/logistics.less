@@ -1,0 +1,39 @@
+@import '../../../assets/css/mixins.less';
+@import '../../../assets/css/base.less';
+
+.logistics-wrapper{
+    width: 100%;
+    padding:30px 65px;
+    .el-tabs__header{
+        padding: 0;
+    }
+    .logistics-main{
+        margin-top: 22px; 
+        .index-shopInfo{
+            font-size: 14px;
+            line-height: 1;
+            margin-bottom: 20px; 
+            p{
+                margin-top: 15px;
+                color: #999;
+            }
+        }
+        .logistics-content{
+            width: 100%;
+        }
+        .shop-box{
+            .ik-box-pack(justify);
+            .ik-box-align(center);
+            .el-button{
+                display: block;
+                i{
+                    margin-right: 5px;
+                    vertical-align: -0.8px;
+                }
+            }
+        }
+    }
+    .block {
+        margin-top: 20px;
+    }
+}

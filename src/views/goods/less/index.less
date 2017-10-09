@@ -1,0 +1,42 @@
+@import '../../../assets/css/mixins.less';
+@import '../../../assets/css/base.less';
+.index-wrapper{
+    width: 100%;
+    position: relative;
+    //我的商品
+    .index-mygoods{
+        width: 100%;
+        .shopInfo-selectbox{
+            width: 100%;
+            margin-bottom: 15px;
+            .shopInfo-select{
+                width: 200px;
+                margin-right: 20px;
+            }
+            .shopInfo-input{
+                width: 220px;
+            }
+        }
+        .index-mygoods-content{
+            padding: 20px 4%;
+            .el-tabs__header{
+                padding: 0;
+            }
+        }
+        .index-mygoods-list{
+            width: 100%;
+            padding: 10px 0;
+            .index-mygoods-img{
+                float: left;
+                margin-right: 15px;
+                width: 56px;
+                height: 56px;
+            }
+        }
+    }
+    //分页管理
+    .index-page-content{
+        width: 100%;
+        padding: 20px 4%;
+    }
+}

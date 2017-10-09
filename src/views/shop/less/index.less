@@ -1,0 +1,299 @@
+@import '../../../assets/css/mixins.less';
+@import '../../../assets/css/base.less';
+
+//商铺首页
+.index-wrapper{
+    width: 100%;
+    position: relative;
+    line-height: 1;
+    .index-content{
+        .index-list-shop{
+            width: 100%;
+            padding: 12px 0;
+            .ik-box;
+            .ik-box-align(center);
+            .ik-box-pack(start);
+            .list-shop-img{
+                width: 56px;
+                height: 56px;
+                margin-right: 17px;
+            }
+            .list-shop-dtl{
+                &>p{
+                    font-size: 14px;
+                }
+                .list-shop-txt{
+                    font-size: 0;
+                    color: #b1b1b1;
+                    &>div{
+                        display: inline-block;
+                        vertical-align: top;
+                        font-size: 0;
+                        line-height: 1;
+                        font-size: 13px;
+                        margin-right: 10px;
+                        i{
+                            font-size: 15px;
+                        }
+                    }
+                    .pass{
+                        i{
+                            color: #2ed477;
+                        }
+                        color: #333;
+                    }
+                }
+            }
+        }
+        .block{
+            margin-top: 20px;
+        }
+    }
+    //首页店铺概况
+    .index-shop{
+        width: 100%;
+        &>div{
+            width: 100%;
+            padding: 22px 4%;
+        }
+    }
+    //首页页面管理
+    .index-page{
+        width: 100%;
+        &>div{
+            width: 100%;
+            padding: 22px 4%;
+        } 
+        .index-page-choice{
+            width: 100%;
+            padding: 20px 4%;
+            background: @bg-gray;
+           .page-button{
+               margin-top: 20px;
+           }
+        }
+    }
+    //首页全店风格
+    .index-style{
+        width: 100%;
+        padding: 30px 5.25%;
+        .index-style-choice{
+            width: 100%;
+            margin-bottom: 35px;
+            .style-box{
+                font-size: 0;
+                .style-card{
+                    width: 69px;
+                    height: 28px;
+                    padding: 3px;
+                    font-size: 0;
+                    line-height: 1;
+                    display: inline-block;
+                    margin-right: 26px;
+                    margin-bottom: 12px;
+                    border: 1px solid #fff;
+                    em{
+                        display: inline-block;
+                        width: 20px;height: 20px
+                        
+                    }
+                    &>em:last-child{
+                        border: 1px solid #dddddd;
+                    }
+                }
+                .selected{
+                    border: 1px solid #20a0ff;
+                }
+            }
+        }
+        .index-style-title{
+            font-size: 14px;
+            float: left;
+            padding: 5px 25px 20px 0px;
+        }
+        .index-style-preview{
+            float: left;
+            .preview-item{
+                color: #545454;
+                font-size: 12px;
+                display: inline-block;
+                width: 315px;
+                height: 563px;
+                margin-right: 17px;
+                margin-bottom: 67px;
+                position: relative;
+                border-left: 1px solid #eee;
+                border-right: 1px solid #eee; 
+                background: url('../img/style1.png') no-repeat;
+                background-size: cover;
+                &>div{
+                    background: #fff;
+                    position: absolute;
+                }
+            }
+            &>div:nth-child(2){
+                background: url('../img/style2.png')
+            }
+            &>div:nth-child(3){
+                margin-right:0; 
+                background: url('../img/style3.png')
+            }
+        }
+        .style-change1{
+            .module1-styleBg{
+                left: 142px;
+                top: 247px;
+                width: 10px;
+                height: 5px;
+                .border-radius(20px);
+            }
+            .module2{
+                left: 0;
+                top: 311px;
+                padding-left: 9px;
+                padding-right:5px;
+                letter-spacing: -1px;
+                text-align: right;
+                span{
+                    font-size: 14px;
+                }
+            }
+            .module3{
+                right: 0;
+                bottom: 115px;
+                padding: 1px 8px;
+                span{
+                    display: inline-block;
+                    padding: 4px 2px 6px;
+                    .border-radius(3px);
+                }
+            }
+            .module4{
+                text-align: center;
+                line-height: 36px;
+                width: 158px;
+                height: 39px;
+                left: 0;
+                bottom: 57px;
+                padding: 1px 8px;
+            }
+            .module5{
+                width: 100.5%;
+                height: 45px;
+                bottom: 0;
+                left: 0;
+                border-top: 1px solid #d8d8d8;
+                &>div{
+                    float: left;
+                }
+                &>div:nth-child(2){
+                    border-left: 1px solid #eee;
+                }
+                &>div:nth-child(1),
+                &>div:nth-child(2){
+                    i{
+                        font-size: 20px;
+                    }
+                    width: 18%;
+                    text-align: center;
+                    padding: 8px 0;
+                }
+                &>div:nth-child(3),
+                &>div:nth-child(4){
+                    width: 32%;
+                    text-align: center;
+                    font-size: 15px;
+                    color: #fff;
+                    line-height: 46px;
+                }
+            }
+        }
+        .style-change2{
+            .module1{
+                left: 76px;
+                top: 310px;
+                padding:5px;
+                letter-spacing: -1px;
+                text-align: right;
+                span{
+                    font-size: 14px;
+                }
+            }
+            .module2{
+                right: 36px;
+                bottom: 148px;
+                padding: 7px;
+                letter-spacing: -1px;
+                color: #fff;
+                .border-radius(2px);
+            }
+            .module3{
+                font-size: 12px;
+                right: 123px;
+                bottom: 115px;
+                padding: 6px 10px 6px 6px;
+                color: #fff;
+                .border-radius(2px);
+            }
+            .module4{
+                width: 101%;
+                font-size: 14px;
+                left: -1px;
+                bottom: 0;
+                color: #fff;
+                border-top: 1px solid #d8d8d8;
+                &>div{
+                    width: 50%;
+                    float: left;
+                    text-align: center;
+                    height: 36px;
+                    line-height: 36px;
+                }
+            }
+        }
+        .style-change3{
+            .module1,
+            .module2{
+                width: 19px;
+                left: 11px;
+                background: 0!important;
+                i{
+                    font-size: 18px;
+                    display: block;
+                    margin-bottom: 13px;
+                    background: #fff;
+                }
+            }
+            .module1{
+                top: 164px;
+            }
+            .module2{
+                bottom: 1px;
+                &>i:nth-last-child(2){
+                    margin-bottom: 17px;
+                }
+                &>i:last-child{
+                    color: #bfbfbf;
+                }
+            }
+            .module3{
+                left: 97px;
+                bottom: 25px;
+                letter-spacing: -1px;
+                span{
+                    font-size: 14px;
+                }
+            }
+            .module4{
+                font-size: 14px;
+                color: #fff;
+                bottom: 0;
+                right: -1px;
+                width: 84px;
+                height: 44px;
+                text-align: center;
+                line-height: 44px;
+            }
+        }
+    }
+}

@@ -1,0 +1,62 @@
+@import '../../../assets/css/mixins.less';
+@import '../../../assets/css/base.less';
+
+.addLogistics-wrapper{
+    width: 100%;
+    padding-top: 10px;
+    .el-tabs__header{
+        padding: 0;
+    }
+    .addLogistics-main{
+        margin-top: 32px; 
+        padding: 0px 64px;
+        .addLogistics-warn{
+            color: #999;
+        }
+        .add-input{
+            width:300px
+        }
+        .el-input-group__prepend{
+                padding: 0 15px;
+        }
+        // .el-table_1_column_1{
+        //     border-right: 1px solid #dfe6ec;
+        // }
+        .table-button{
+            border: 1px solid #dfe6ec;
+            border-top: 0;
+            color: @blue;
+            padding: 5px 0;
+            padding-left: 18px;
+            a{
+                cursor: pointer;
+            }
+        }
+        .tabal-region{
+            .ik-box;
+            .ik-box-pack(justify);
+            .ik-box-align(center);
+            p:first-child{
+                max-width: 60%;
+            }
+            a{
+                color: @blue;
+                margin: 5px; 
+                cursor: pointer;
+            }
+        }
+        .block{
+            display:block;
+            margin-top:20px;
+        }
+    }
+    .dialog-main{
+        .shop-textr{
+            margin-top: 50px;
+        }
+    }
+    .since-img{
+        width: 70px;
+        height: 70px;
+    }
+}

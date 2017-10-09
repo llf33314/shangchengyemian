@@ -1,0 +1,57 @@
+@import '../../../assets/css/mixins.less';
+@import '../../../assets/css/base.less';
+
+.danbao-wrapper{
+    width: 100%;
+    padding: 20px 66px;
+    .danbao-header{
+        border-bottom: 1px solid #f3f3f3;
+        height: 68px;
+        .ik-box;
+        .ik-box-align(center);
+        font-size: 16px;
+        p{
+            font-size: 13px;
+            margin-right: 36px; 
+        }
+        i{
+            font-size: 24px;
+            vertical-align: sub;
+        }
+    }
+    .danbao-main{
+        width: 100%;
+        padding:28px 0 0 105px;
+        .danbao-item{
+            width: 100%;
+            margin-bottom: 32px;
+        }
+        .danbao-title{
+            color: #333;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .danbao-content{
+            width: 100%;
+            color: #999;
+            font-size: 13px;
+            .danbao-txt{
+                border: 1px solid #ddd;
+                padding: 27px 20px;
+                height: 100px;
+            }
+        }
+        .danbao-warn{
+            width: 748px;
+            background: #f1f4f8;
+            font-size: 14px;
+            color: #999;
+            padding: 22px 28px;
+        }
+    }
+}
+.fontRed{
+    label{
+        color: @red ;
+    }
+}

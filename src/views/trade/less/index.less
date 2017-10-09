@@ -1,0 +1,43 @@
+@import '../../../assets/css/mixins.less';
+@import '../../../assets/css/base.less';
+
+.index-wrapper{
+    width: 100%;
+    .index-main{
+        width: 100%;
+        padding: 40px @common-padding;
+    }
+    .index-msg{
+        width: 100%;
+        background: @bg-gray;
+        padding: 32px 0;
+        margin-bottom: 30px;
+        .ik-box;
+        .ik-box-pack(center);
+        .index-item{
+            .ik-box-flex(1);
+            font-size: 12px;
+            .ik-box;
+            .ik-box-align(center);
+            .ik-box-pack(center);
+            &>div{
+                text-align: center;
+            }
+        }
+        .index-item-money{
+            font-size: 20px;
+            margin-bottom:20px; 
+        }
+    }
+    .index-content{
+        width: 100%;
+        margin-top: 30px;
+        .el-tabs__header{
+            padding: 0;
+        }
+    }
+    .index-from{
+        width: 100%;
+        margin: 20px;
+    }
+}

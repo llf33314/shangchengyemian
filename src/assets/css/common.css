@@ -1,0 +1,121 @@
+/**公共样式*/
+.ik-box {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -o-box;
+  display: box;
+}
+.box-sizing {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  /* Firefox */
+  -webkit-box-sizing: border-box;
+  /* Safari */
+}
+.text-overflow {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/**------vars------*/
+body {
+  background: #f0f2f5;
+  color: #333333;
+}
+/*--------main---------*/
+/*-----common------*/
+.clearfix {
+  zoom: 1;
+  _zoom: 1;
+  clear: both;
+}
+.clearfix::after {
+  clear: both;
+  content: ' ';
+  display: block;
+  width: 0;
+  height: 0;
+  visibility: hidden;
+}
+.shop-fl {
+  float: left;
+}
+.shop-fr {
+  float: right;
+}
+.shop-hide {
+  display: none;
+}
+.shop-show {
+  display: block;
+}
+.shop-box {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -o-box;
+  display: box;
+}
+.shop-inblock {
+  display: inline-block;
+}
+.shop-box-justify {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -o-box;
+  display: box;
+  -webkit-box-pack: justify;
+  -moz-box-pack: justify;
+  -o-box-pack: justify;
+  box-pack: justify;
+}
+.clearfix {
+  zoom: 1;
+  _zoom: 1;
+  clear: both;
+}
+.clearfix::after {
+  clear: both;
+  content: ' ';
+  display: block;
+  width: 0;
+  height: 0;
+  visibility: hidden;
+}
+.overflow-x {
+  overflow: hidden;
+  overflow-x: hidden;
+}
+.shop-textl {
+  text-align: left;
+}
+.shop-textr {
+  text-align: right;
+}
+.shop-textc {
+  text-align: center;
+}
+.text-overflow {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.text-force-wrap {
+  word-break: break-all;
+  white-space: pre-wrap;
+}
+.text-not-wrap {
+  white-space: nowrap;
+}
+.text-more-overflow {
+  overflow: hidden;
+  position: relative;
+  text-align: justify;
+}
+.text-more-overflow::after {
+  content: " ... ";
+  position: absolute;
+  bottom: 1px;
+  right: 0;
+  padding: 0 1px 1px 2px;
+  background: #fff;
+}

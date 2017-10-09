@@ -1,0 +1,228 @@
+/**公共样式*/
+
+[v-cloak]{
+    display: none !important;
+}
+@import "./mixins.less";
+@import "./base.less";
+
+body{
+    color: #333333;
+}
+.bg{
+    background: #f4f4f4;
+}
+/*--------main---------*/
+.common-nav{
+    width: 100%;
+    padding: 16px 4%;
+    border:1px solid #eee;
+    font-size:14px; 
+    span{
+        &>span:first-child{
+            color: @blue;
+        }
+    }
+    span:last-child{
+        &>span:first-child{
+            color: #666;
+        }
+    }
+}
+.shop-steps{
+    border-bottom: 1px solid #f3f3f3;
+}
+.shop-addSuccess{
+    width: 100%;
+    padding: 80px 0;
+    text-align: center;
+    i{
+        font-size: 42px;
+        color: #34d063;
+        margin-bottom: 28px;
+    }
+    p{
+        font-size: 16px;
+        color: #666;
+    }
+}
+//灰色header
+.index-shopInfo{
+    background: @bg-gray;
+    padding: 20px 4%;
+    .shopInfo-img{
+        width: 70px;
+        height: 70px;
+        float: left;
+        margin-right: 35px;
+    }
+    .shopInfo-content{
+        float: left;
+        .shopInfo-name{
+            color: 16px; 
+            margin-bottom: 20px;   
+        }
+        .shopInfo-button{
+            font-size: 0;
+            &>button:first-child{
+                margin-left:0;
+            }
+            button{
+                margin-left:20px; 
+            }
+        }
+    }
+}
+//蓝色字体
+.fontBlue{
+    color: #20a0ff;
+    margin-right: 5px;
+}
+//红色字体
+.fontRed{
+    color: #ff4949;
+}
+//蓝色按钮
+.buttonBlue{
+    border: 1px solid #20a0ff;
+    color: #20a0ff;
+    &:hover{
+        border: 1px solid #58B7FF;
+        color: #58B7FF;
+    }
+}
+//重置页头
+.index-wrapper{
+    .el-tabs__header{
+        padding: 0 4%;
+        margin: 0 ; 
+    }
+}
+.shop-prompt{
+    font-size: 12px;
+    color: #bbbbbb;
+}
+//自定义验证 提示*号
+.icon-warn{
+    label
+    label::before{
+        content: '*';
+        color: #ff4949;
+        margin-right: 4px;
+    }
+}
+//表单文本提示
+.p-warn{
+    line-height: 1.5em;
+    color: #999;
+    font-size: 12px;
+    a{
+        color: @blue;
+        cursor: pointer;
+    }
+}
+.fs14{
+    font-size: 14px;
+}
+.fs12{
+    font-size: 12px;
+}
+/*-----common------*/
+.clearfix {
+    zoom: 1;
+    _zoom: 1;
+    clear: both;
+    &::after {
+        clear: both;
+        content: ' ';
+        display: block;
+        width: 0;
+        height: 0;
+        visibility: hidden;
+    }
+}
+.shop-fl{
+    float: left;
+}
+.shop-fr {
+    float: right;
+}
+.shop-hide{
+    display: none;
+}
+.shop-show{
+    display: block;
+}
+.shop-box{
+    .ik-box;
+}
+.shop-inblock {
+    display: inline-block;
+}
+.shop-box-justify{
+    .ik-box;
+    .ik-box-pack(justify);
+}
+
+.overflow-x{
+    overflow: hidden;
+    overflow-x: hidden;
+}
+//文本对齐
+.shop-textl{
+    text-align: left;
+}
+
+.shop-textr {
+    text-align: right;
+}
+
+.shop-textc {
+    text-align: center;
+}
+//超出部分隐藏，并显示....
+.text-overflow {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+//强制换行
+.text-force-wrap {
+    word-break: break-all;
+    white-space: pre-wrap;
+}
+
+//强制不换行
+.text-not-wrap {
+    white-space: nowrap;
+}
+
+//多行超出部分隐藏 
+//(使用：距离不够可以手动添加伪类 padding 或 bottom 覆盖)
+.text-more-overflow{
+    overflow: hidden;
+    position: relative;
+    text-align: justify;
+    &::after{
+        content: " ... ";
+        //font-weight: bold;
+        position: absolute;
+        bottom: 1px;
+        right: 0;
+        padding: 0 2px 1px 2px;
+        background: #fff;
+    }
+}
+
+
+//颜色class
+.shop-red{
+    color: @red;
+}
+
+
+
+
+
+

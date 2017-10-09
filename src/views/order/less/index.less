@@ -1,0 +1,179 @@
+@import '../../../assets/css/mixins.less';
+@import '../../../assets/css/base.less';
+.index-wrapper{
+    width: 100%;
+    position: relative;
+    .index-content{
+        width: 100%;
+        padding: 20px 4%;
+        .el-tabs__header{
+            padding: 0;
+        }
+    }
+    .input-all{
+        width: 275px;
+        .el-form-item__content{
+            width: 100%;
+        }
+    }
+    .index-table{
+        width: 100%;
+        margin: 20px 0;
+        display: table;
+        font-size: 14px;
+        .table-header,
+        .table-footer,
+        .table-tr{
+            width: 100%;
+            .ik-box;
+        }
+        .table-header{
+            background: #eef1f6;
+            .ik-box;
+            font-weight: bold;
+            border: 1px solid #dfe6ec;
+        }
+        .table-content{
+            border: 1px solid #dfe6ec;
+            margin-top: 20px;
+        }
+        .table-footer{
+            border-top: 1px solid #dfe6ec;
+            padding: 13px 1.5%;
+        }
+        .table-th,
+        .table-td{
+            .ik-box-flex(1);
+            padding: 15px 0 13px 1.2%;
+        }
+        .table-item{
+            height: 90px;
+            padding: 15px 0 15px 20px;
+            border-bottom: 1px solid #dfe6ec;
+         }
+        .table-img{
+            width: 55px;
+            height: 55px;
+            float: left;
+            margin-right: 15px;
+        }
+        .table-text{
+            float: left;
+            width: 61%;
+            p{
+                color: #999;
+                font-size: 12px;
+            }
+        }
+        .table-top{
+            width: 100%;
+            padding: 13px 1.5%;
+            background: #f7f7f7;
+            border-bottom: 1px solid #dfe6ec;
+            span{
+                color: #b3b3b3;
+                margin: 5px;
+            }
+            a{
+                color: @blue;
+                margin: 2px;
+                cursor: pointer;
+            }
+        }
+        .border-r{
+            border-right:  1px solid #dfe6ec;
+        }
+        .col-2{
+            width: 7.5%;
+        }
+        .col-3{
+            width: 10.25%;
+            &>div:last-child{
+                border: 0;
+            }
+        }
+        .col-4{
+            width: 20.437%;
+            &>div:last-child{
+                border: 0;
+            }
+        }
+        .col-1{
+            width: 6.625%;
+            &>div:last-child{
+                border: 0;
+            }
+        }
+    }
+    .index-table-comment{
+        margin: 20px 0;
+        font-size: 14px;
+        width: 100%;
+        .el-input {
+            width: 100%;
+            display: table;
+        }
+        .table-header,
+        .table-tr{
+            width: 100%;
+            .ik-box;
+        }
+        .table-header{
+            padding: 10px 74px;
+            background: #eef1f6;
+            font-weight: bold;
+            border: 1px solid #dfe6ec;
+        }
+        .table-content{
+            width: 100%;
+            padding: 28px 74px 0px;
+            border: 1px solid #dfe6ec;
+            border-top: 0;
+        }
+        .table-footer{
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .table-th,
+        .table-td{
+            .ik-box-flex(1);
+            p{
+                width: 80%;
+            }
+        }
+        .table-tr{
+            margin-bottom: 20px;
+        }
+        .col-1{
+            width: 11.111%
+        }
+        .col-2{
+            width: 16.666%
+        }
+        .col-3{
+            width: 22.222%
+        }
+        .comment-img{
+            width: 56px;
+            height: 56px;
+            margin-right: 10px;
+        }
+        
+    }
+    .dialog-list{
+        width: 100%;
+        margin-top:25px; 
+        &>span{
+            margin-right: 28px;
+        }
+        
+    }
+    .el-input-w{
+        @media screen and (max-width: 1152px) {
+            width: 100%;
+        }
+        @media screen and (min-width: 1153px) {
+            width: 60%;
+        }
+    }
+}
