@@ -88,6 +88,8 @@ import common from './common';
     mallStoreStoreList_post:DFshop.env.activeAPI+'/mallStore/storeList',
     /*页面类型 (可用于下拉框)*/
     mallPageNewTypeMap_post:DFshop.env.activeAPI+'/mallPage/new/typeMap',
+    /*保存认证信息*/
+    mallStoreCertSave_post:DFshop.env.activeAPI+'/mallStore/cert/save',
   };
 
   /*公共方法***********************************************************************************************************/
@@ -190,27 +192,7 @@ import common from './common';
   /*end 公共方法***********************************************************************************************************/
 
 
-  /**
-   * 全局正则表达式
-   * @type {Object}
-   * @namespace DF.regEx
-   */
-  DFshop.regEx = {
-    /**
-     * 验证手机
-     * @type {Boolean}
-     * @memberof DF.regEx
-     * @default
-     */
-    phone: /^(0|86|17951)?(13[0-9]|15[012356789]|17[0678]|18[0-9]|14[57])[0-9]{8}$/,
-    /**
-     * 验证邮箱
-     * @type {Boolean}
-     * @memberof DF.regEx
-     * @default
-     */
-    email: /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,5}$/
-  };
+
 
   window.DFshop = DFshop;
 }());

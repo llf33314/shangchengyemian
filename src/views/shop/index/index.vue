@@ -65,7 +65,7 @@
                 </el-button>
                 <el-button  size="small"
                             class="buttonBlue"
-                            @click="authentication('1')"
+                            @click="authentication(scope.row.storeCert,scope.row)"
                 >认证</el-button>
                 <el-button  size="small"
                 @click="handleDelete(scope.row.id,'shop')">删除</el-button>
@@ -268,6 +268,12 @@ export default {
       contentNo: 'shop',//没有数据显示
     }
   },
+  // watch: {
+  //  '$route' (to, from) {
+  //     console.log(to.path,from)
+  //     console.log(this.$router.push(to.path))
+  //  }
+  // },
   methods: {
     /**
      * 切换导航
@@ -312,18 +318,19 @@ export default {
     },
     /**
      * 认证页跳转
-     * @param data      是否做过验证判断值
+     * @param data      店铺信息
+     * @param cert      判断是否认证  
      */
-    authentication(data){
+    authentication(cert,data){
       let _this = this;
-      if(data.length<0) return _this.jumpRouter('shop/authentication');
+      if(!cert) return _this.jumpRouter('shop/authentication/',data);
       let msg = {
         'dialogType': 'warn',
         'dialogTitle': '',
         'dialogMsg': '您的店铺已经通过认证，如果重新发起认证，您提交的店铺认证信息将失效！',
         'callback': {
         'btnOne': function () {
-            _this.jumpRouter('shop/authentication');
+            _this.jumpRouter('shop/authentication/',data);
           }
         }
       }

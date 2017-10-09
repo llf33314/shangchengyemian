@@ -2,7 +2,7 @@
 <div class="shop-wrapper">
   <div class="common-nav">
     <el-breadcrumb separator="/">
-      <el-breadcrumb-item :to="{ path: '/' }">店铺</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/shop' }">店铺</el-breadcrumb-item>
       <el-breadcrumb-item>店铺认证</el-breadcrumb-item>
     </el-breadcrumb>
   </div>
@@ -13,26 +13,22 @@
       <p>企业认证：适合公司经营者，增加可提现至公司银行账户，审核周期为1个工作日。</p>
     </div>
     <div class="shop-authentication-content">
-      <el-form ref="form" :model="form" label-width="175px">
-        <el-form-item label="店铺名称 :">
-         广东谷通
+      <el-form ref="form" :model="form" label-width="175px" :rules="rules">
+        <el-form-item label="店铺名称 :" >
+          {{data.sto_name}}
         </el-form-item>
         <el-form-item label="主体信息 :">
-          <el-radio-group v-model="form.resource">
-            <span @click="switchType(1)" style="margin-right: 25px;">
-              <el-radio label="个人" ></el-radio>
-            </span>
-            <span @click="switchType(2)">
-              <el-radio label="企业" ></el-radio>
-            </span>
+          <el-radio-group v-model="stoType" >
+              <el-radio :label="0" style="margin-right: 15px;">个人</el-radio>
+              <el-radio :label="1" >企业</el-radio>
           </el-radio-group>
         </el-form-item>
-        <div v-if="isType">
-          <el-form-item label="姓名 :">
-            <el-input v-model="input" placeholder="请输入姓名"></el-input>
+        <div v-if="stoType == 0">
+          <el-form-item label="姓名 :" prop="name">
+            <el-input v-model="form.name" placeholder="请输入姓名"></el-input>
           </el-form-item>
-          <el-form-item label="身份证号码 ：">
-            <el-input v-model="input" placeholder="请输入证件号"></el-input>
+          <el-form-item label="身份证号码：" prop="idNumber">
+            <el-input v-model="form.idNumber" placeholder="请输入证件号"></el-input>
           </el-form-item>
           <el-form-item label="身份证正面：">
             <div class="shop-IDImg">
@@ -60,18 +56,13 @@
               </div>
             </div>
           </el-form-item>
-          <el-form-item label="短信验证码：">
-            <el-input v-model="input" placeholder="请输入短信验证码"></el-input>
-            <el-button type="primary">获取验证码</el-button>
-            <div class="shop-promptText" style="margin-bottom:67px;">验证短信将发送到该店铺绑定的推送手机：+86 13632521212 </div>
-          </el-form-item>
         </div>
         <div v-else>
           <el-form-item label="企业名称 :">
-            <el-input v-model="input" placeholder="请输入企业名称"></el-input>
+            <el-input v-model="form.companyName" placeholder="请输入企业名称"></el-input>
           </el-form-item>
           <el-form-item label="法人姓名 :">
-            <el-input v-model="input" placeholder="请输入法人姓名"></el-input>
+            <el-input v-model="form.name" placeholder="请输入法人姓名"></el-input>
           </el-form-item>
           <el-form-item label="法人证件 :">
             <div class="img-title">身份证正面</div>
@@ -238,14 +229,14 @@
               <a>下载模板</a>
             </div>
           </el-form-item>
-          <el-form-item label="短信验证码 :">
-            <el-input v-model="input" placeholder="请输入短信验证码"></el-input>
-            <el-button type="primary">获取验证码</el-button>
-            <div class="shop-promptText" style="margin-bottom:67px;">验证短信将发送到该店铺绑定的推送手机：+86 13632521212 </div>
-          </el-form-item>
         </div>
+        <el-form-item label="短信验证码：" prop="code">
+            <el-input v-model="form.code" placeholder="请输入短信验证码"></el-input>
+            <el-button type="primary">获取验证码</el-button>
+            <span class="shop-promptText" style="margin-bottom:67px;">验证短信将发送到该店铺绑定的推送手机：+86 {{data.sto_name}} </span>
+          </el-form-item>
         <el-form-item>
-          <el-button type="primary">提交认证</el-button>
+          <el-button type="primary"@click="submitForm('form')">提交认证</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -274,102 +265,117 @@ export default {
     imgUpload
   },
   data () {
+    var formName = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('名字不能为空'));
+      }
+    };
+    var formIdNumber = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('身份证号不能为空'));
+      } else {
+        let id = Lib.M.validIDnumber(value);
+        if(!id){
+          return callback(new Error('请输入正确合法的身份证号'));
+        }
+      }
+    };
+    var formCode = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('验证码为空'));
+      }
+    };
     return {
-       form: {
-          name: '',
-          region: '',
-          date1: '',
-          date2: '',
-          delivery: false,
-          type: [],
-          resource: '',
-          desc: ''
-        },
-        dialogimg:false,
-        dialogImageUrl:'',
-        radio: '1',
-        isType: true,//默认显示个人
-        input:'',
-        shoptypes1:[
-          { name:'shop1',
-            title:'普通店铺'
+      data:{},//店铺数据
+      stoType: 0,//主体类型, 0个人 1企业
+      form: {},
+      dialogimg:false,
+      dialogImageUrl:'',
+      isType: true,//默认显示个人
+      shoptypes1:[
+        { name:'shop1',
+          title:'普通店铺'
+        },{
+          name:'shop2',
+          title:'旗舰店',
+          shoptypes:[
+          {
+            name:'shop6',
+            title:'商标注册通知书'
           },{
-            name:'shop2',
-            title:'旗舰店',
-            shoptypes:[
-            {
-              name:'shop6',
-              title:'商标注册通知书'
-            },{
-              name:'shop7',
-              title:'商标注册证'
-            },{
-              name:'shop8',
-              title:'商标使用许可合同'
-            }]
+            name:'shop7',
+            title:'商标注册证'
           },{
-            name:'shop3',
-            title:'专卖店',
-            shoptypes:[
-            {
-              name:'shop9',
-              title:'微信渠道授权书'
-            },{
-              name:'shop10',
-              title:'多粉渠道授权书'
-            }]
+            name:'shop8',
+            title:'商标使用许可合同'
+          }]
+        },{
+          name:'shop3',
+          title:'专卖店',
+          shoptypes:[
+          {
+            name:'shop9',
+            title:'微信渠道授权书'
           },{
-            name:'shop4',
-            title:'直营店',
-            shoptypes:[
-            {
-              name:'shop11',
-              title:'公司总部证明函'
-            },{
-              name:'shop12',
-              title:'关系证明函'
-            }]
+            name:'shop10',
+            title:'多粉渠道授权书'
+          }]
+        },{
+          name:'shop4',
+          title:'直营店',
+          shoptypes:[
+          {
+            name:'shop11',
+            title:'公司总部证明函'
           },{
-            name:'shop5',
-            title:'厂家直销',
-            shoptypes:[
-            {
-              name:'shop11',
-              title:'公司总部证明函'
-            },{
-              name:'shop12',
-              title:'关系证明函'
-            }]
-          }
+            name:'shop12',
+            title:'关系证明函'
+          }]
+        },{
+          name:'shop5',
+          title:'厂家直销',
+          shoptypes:[
+          {
+            name:'shop11',
+            title:'公司总部证明函'
+          },{
+            name:'shop12',
+            title:'关系证明函'
+          }]
+        }
+      ],
+      shoptypes2:[],
+      isProve: false, // 选择可提供认证消息
+      isContract: false,//商标使用许可合同
+      isNotice: false, //商标注册通知书
+      isReplenishNotes: false, //上传补充资料 
+      isReplenishNotes1: false, //上传补充多文本
+      isCertificate: false, //上传注册证书
+      isChannel: false, //渠道授权
+      isCompany:false,//公司总部证明函
+      isRelationship:false,//关系证明函
+      imgID1:imgID1,
+      imgID2:imgID2,
+      imgLicense1:imgLicense1,
+      imgLicense2:imgLicense2,
+      imgLicense3:imgLicense3,
+      imgLicense4:imgLicense4,
+      imgLicense5:imgLicense5,
+      imgLicense6:imgLicense6,
+      rules: {
+        name: [
+          { validator: formName, trigger: 'blur' }
         ],
-        shoptypes2:[],
-        isProve: false, // 选择可提供认证消息
-        isContract: false,//商标使用许可合同
-        isNotice: false, //商标注册通知书
-        isReplenishNotes: false, //上传补充资料 
-        isReplenishNotes1: false, //上传补充多文本
-        isCertificate: false, //上传注册证书
-        isChannel: false, //渠道授权
-        isCompany:false,//公司总部证明函
-        isRelationship:false,//关系证明函
-        imgID1:imgID1,
-        imgID2:imgID2,
-        imgLicense1:imgLicense1,
-        imgLicense2:imgLicense2,
-        imgLicense3:imgLicense3,
-        imgLicense4:imgLicense4,
-        imgLicense5:imgLicense5,
-        imgLicense6:imgLicense6
+        idNumber: [
+          { validator: formIdNumber, trigger: 'blur' }
+        ],
+        code: [
+            { validator: formCode, trigger: 'blur' }
+        ]
+      }
     }
   },
   methods: {
-    /**
-     *个人/企业切换
-     */
-    switchType(e){
-      if(e===1) this.isType = true;
-      if(e===2) this.isType = false;
-    },
     /**
       选择店铺类型
       @name:店铺
@@ -427,9 +433,40 @@ export default {
     showBigImg(img){
       this.dialogimg=true;
       this.dialogImageUrl = img;
+    },
+    /**
+     * 提交认证
+     */
+    submitForm(formName) {
+      let _this= this;
+      _this.$refs[formName].validate((valid) => {
+        if (valid) {
+           _this.$message({
+            message: '恭喜你，保存成功',
+            type: 'success'
+            });
+          _this.jumpRoute('/shop');
+          /*Lib.M.ajax({
+            'url': DFshop.activeAPI.mallStoreCertSave_post,
+            'data':{
+               curPage :Page 
+             },
+             'success':function (data){
+                 this.$message({
+                 message: '恭喜你，保存成功',
+                 type: 'success'
+                 });
+                _this.jumpRoute('/shop');
+            }
+          });*/
+        } else {
+          return false;
+        }
+      });
     }
   },
   mounted() {
+    this.data = JSON.parse(this.$route.query.data);
   },
 }
 </script>
