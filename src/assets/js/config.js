@@ -94,6 +94,8 @@ import common from './common';
     mallFreightDelete_post:DFshop.env.activeAPI+'/mallFreight/delete',
     /*保存认证信息*/
     mallStoreCertSave_post:DFshop.env.activeAPI+'/mallStore/cert/save',
+    /*获取认证的店铺类型*/
+    mallStoreCertCategoryMap_post:DFshop.env.activeAPI+'/mallStore/cert/categoryMap',
   };
 
   /*公共方法***********************************************************************************************************/
