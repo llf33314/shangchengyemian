@@ -11,38 +11,39 @@
         </div>
         <div class="logistics-content" v-if="sinceSwitch">
           <div v-if="isSince">
-            <el-table
-              :data="logisticsData"
-              style="width: 100%"
-              class="block">
+            <el-table :data="logisticsData.page.subList" style="width: 100%" class="block" v-if="logisticsData.page.pageCount>0">
               <el-table-column
-                prop="name"
+                prop="express"
                 label="模板名称">
               </el-table-column>
               <el-table-column
                 prop="money"
                 label="运费(元)">
               </el-table-column>
-              <el-table-column
-                prop="address"
-                label="免邮规则(指定省份除外)">
+              <el-table-column label="免邮规则(指定省份除外)">
+                <template scope="scope">
+                  <p v-if="scope.row.isNoMoney === 2">卖家承担运费</p>
+                  <p v-if="scope.row.isNoMoney === 1 && scope.row.noMoneyNum > 0">商品满{{scope.row.noMoneyNum}}件免邮</p>
+                  <p v-if="scope.row.isNoMoney === 1 && scope.row.noMoney > 0">商品满{{scope.row.noMoney}}件免邮</p>
+                  <p v-if="scope.row.isNoMoney === 1 && scope.row.noMoneyNum <= 0 && scope.row.noMoney <= 0">无免邮规则</p>
+                </template>
               </el-table-column>
               <el-table-column
-                prop="phone"
+                prop="stoName"
                 label="所属店铺">
               </el-table-column>
               <el-table-column
-                prop="date"
+                prop="createTime"
                 label="创建时间">
               </el-table-column>
               <el-table-column label="操作">
                 <template scope="scope">
                   <el-button class="buttonBlue"
                     size="small"
-                    @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                    @click="handleEdit(scope.$index, scope.row.id)">编辑</el-button>
                   <el-button
                     size="small"
-                    @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                    @click="handleDelete(scope.$index, scope.row.id)">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -87,10 +88,10 @@
                 <template scope="scope">
                   <el-button class="buttonBlue"
                     size="small"
-                    @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                    @click="handleEdit(scope.$index, scope.row.id)">编辑</el-button>
                   <el-button
                     size="small"
-                    @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                    @click="handleDelete(scope.$index, scope.row.id)">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -102,9 +103,9 @@
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :page-size="100"
+        :page-size="logisticsData.page.pageSize"
         layout="prev, pager, next, jumper"
-        :total="1000">
+        :total="logisticsData.page.pageCount">
       </el-pagination>
     </div>
     <content-no :show="contentNo" v-if="!isSince" ></content-no>
@@ -126,51 +127,9 @@ export default {
         isPage:true,//潘墩列表页数多页
         isSince:true,
         contentNo:'logistics',//logistics--物流无数据，since--自取无数据
-        tableData: [{
-            phone: '12345678910',
-            name: '王小虎',
-            address: '广东省 深圳市 南山区 广东省深圳市南山区兰光科技园'
-          }, {
-            phone: '12345678910',
-            name: '王小虎',
-            address: '广东省 深圳市 南山区 广东省深圳市南山区兰光科技园'
-          }, {
-            phone: '12345679810',
-            name: '王小虎',
-            address: '广东省 深圳市 南山区 广东省深圳市南山区兰光科技园'
-          }, {
-            phone: '01234567890',
-            name: '王小虎',
-            address: '广东省 深圳市 南山区 广东省深圳市南山区兰光科技园'
-        }],
-        logisticsData: [
-          {
-            date:'2017-06-14',
-            phone: '12345678910',
-            name: '顺丰速递',
-            address: '广东省 深圳市 南山区 广东省深圳市南山区兰光科技园',
-            money:'15.00'
-          }, {
-            date:'2017-06-14',
-            phone: '12345678910',
-            name: '顺丰速递',
-            address: '广东省 深圳市 南山区 广东省深圳市南山区兰光科技园',
-            money:'15.00'
-          }, {
-            date:'2017-06-14',
-            phone: '12345679810',
-            name: '顺丰速递',
-            address: '广东省 深圳市 南山区 广东省深圳市南山区兰光科技园',
-            money:'15.00'
-          }, {
-            date:'2017-06-14',
-            phone: '01234567890',
-            name: '顺丰速递',
-            address: '广东省 深圳市 南山区 广东省深圳市南山区兰光科技园',
-            money:'15.00'
-          }
-        ],
+        logisticsData: [],
         dialogWarn: true,
+        curPage:1,
     }
   },
   methods: {
@@ -180,15 +139,15 @@ export default {
     handleEdit(index, row) {
       console.log(index, row);
     },
-    handleDelete(index, row) {
+    handleDelete(index, id) {
       let _this= this;
       let msg = {
         'dialogTitle': '您确定要执行此操作吗？',
         'dialogMsg': '删除后，数据将无法恢复哦~',
         'callback': {
         'btnOne': function () {
-          
-          }
+          _this.mallFreightDelete(id);
+        }
         }
       };
       _this.$root.$refs.dialog.showDialog(msg);
@@ -198,9 +157,46 @@ export default {
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
+      //this.curPage = ${val};
+      console.log(val)
+    },
+    mallFreightList(pageNum){
+      let _this= this;
+      this.logisticsData = '';
+      Lib.M.ajax({
+        'url': DFshop.activeAPI.mallFreightList_post,
+        'data':{
+          curPage :pageNum 
+        },
+        'success':function (data){
+           _this.logisticsData = data.data;
+           //console.log(_this.logisticsData.page);
+           $.each(_this.logisticsData.page.subList, function(i){
+            let oldTime = this.createTime;
+            this.createTime = Lib.M.formatNot(oldTime);
+          });
+        }
+      });
+    },
+    mallFreightDelete(id){
+      let _this= this;
+      Lib.M.ajax({
+        'url': DFshop.activeAPI.mallFreightDelete_post,
+        'data':{
+          ids :id 
+        },
+        'success':function (data){
+           _this.$message({
+            message: '删除成功',
+            type: 'success'
+          });
+          _this.mallFreightList(1);
+        }
+      });
     },
   },
   mounted(){
+    this.mallFreightList(1);
   }
 }
 </script>
