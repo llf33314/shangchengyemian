@@ -120,7 +120,7 @@ var Rxports = {
 	
 	},
 	/**       
-       * 时间戳转换日期       
+       * 时间戳转换日期（有时分秒）       
        * @param date 时间戳    
        */
 	format:function(date){
@@ -135,7 +135,19 @@ var Rxports = {
 		let s = time.getSeconds();
 		return y+'-'+add0(m)+'-'+add0(d)+' '+add0(h)+':'+add0(mm)+':'+add0(s);
 	},
-
+	/**       
+       * 时间戳转换日期（无时分秒）       
+       * @param date 时间戳    
+       */
+	  formatNot:function(date){
+		let add0 = (m) => m<10?'0'+m:m;
+		//shijianchuo是整数，否则要parseInt转换
+		let time = new Date(date);
+		let y = time.getFullYear();
+		let m = time.getMonth()+1;
+		let d = time.getDate();
+		return y+'-'+add0(m)+'-'+add0(d);
+	  },
 
 	/*正则表达式*/
 	/**
@@ -143,7 +155,7 @@ var Rxports = {
 	 * @param {Number} num
 	 * @returns {Boolean}
 	 */
-	validPhone:function  (num) {
+	validPhone:function(num) {
 		let phoneReg = /^(\+)?(\d)+(-(\d)+)*$/;
 
 		return phoneReg.test(num);

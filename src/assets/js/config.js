@@ -88,6 +88,10 @@ import common from './common';
     mallStoreStoreList_post:DFshop.env.activeAPI+'/mallStore/storeList',
     /*页面类型 (可用于下拉框)*/
     mallPageNewTypeMap_post:DFshop.env.activeAPI+'/mallPage/new/typeMap',
+    /*物流管理列表*/
+    mallFreightList_post:DFshop.env.activeAPI+'/mallFreight/list',
+    /*删除物流管理 */
+    mallFreightDelete_post:DFshop.env.activeAPI+'/mallFreight/delete',
     /*保存认证信息*/
     mallStoreCertSave_post:DFshop.env.activeAPI+'/mallStore/cert/save',
   };
