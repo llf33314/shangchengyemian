@@ -18,7 +18,6 @@ var Rxports = {
 	  * @param return 
 	*/
 	ajax:function (opt){
-		
 		var opts = opt || {};
 		
 		if (!opts.url) {

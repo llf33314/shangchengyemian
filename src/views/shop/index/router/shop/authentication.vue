@@ -18,19 +18,19 @@
           {{data.sto_name}}
         </el-form-item>
         <el-form-item label="主体信息 :">
-          <el-radio-group v-model="stoType" >
+          <el-radio-group v-model="stoType" @change="resetForm('form')">
               <el-radio :label="0" style="margin-right: 15px;">个人</el-radio>
               <el-radio :label="1" >企业</el-radio>
           </el-radio-group>
         </el-form-item>
-        <div v-if="stoType == 0">
+        <div v-show="stoType == 0">
           <el-form-item label="姓名 :" prop="name">
             <el-input v-model="form.name" placeholder="请输入姓名"></el-input>
           </el-form-item>
           <el-form-item label="身份证号码：" prop="idNumber">
             <el-input v-model="form.idNumber" placeholder="请输入证件号"></el-input>
           </el-form-item>
-          <el-form-item label="身份证正面：">
+          <el-form-item label="身份证正面：" prop="IDImg1">
             <div class="shop-IDImg">
               <div class="shop-IDUpload">
                 <imgUpload></imgUpload>
@@ -43,7 +43,7 @@
               </div>
             </div>
           </el-form-item>
-           <el-form-item label="身份证背面：">
+           <el-form-item label="身份证背面：" prop="IDImg2">
             <div class="shop-IDImg">
               <div class="shop-IDUpload">
                 <imgUpload></imgUpload>
@@ -57,14 +57,14 @@
             </div>
           </el-form-item>
         </div>
-        <div v-else>
-          <el-form-item label="企业名称 :">
-            <el-input v-model="form.companyName" placeholder="请输入企业名称"></el-input>
+        <div v-show="stoType == 1">
+          <el-form-item label="企业名称 :" prop="companyName">
+            <el-input v-model="form.companyName" placeholder="请输入企业名称" ></el-input>
           </el-form-item>
-          <el-form-item label="法人姓名 :">
+          <el-form-item label="法人姓名 :" prop="name">
             <el-input v-model="form.name" placeholder="请输入法人姓名"></el-input>
           </el-form-item>
-          <el-form-item label="法人证件 :">
+          <el-form-item label="法人证件 :" prop="IDImg1">
             <div class="img-title">身份证正面</div>
             <div class="shop-IDImg">
               <div class="shop-IDUpload">
@@ -78,7 +78,7 @@
               </div>
             </div>
           </el-form-item>
-          <el-form-item label="法人证件 :">
+          <el-form-item label="法人证件 :" prop="IDImg2">
             <div class="img-title">身份证背面</div>
             <div class="shop-IDImg">
               <div class="shop-IDUpload">
@@ -92,7 +92,7 @@
               </div>
             </div>
           </el-form-item>
-          <el-form-item label=" 营业执照 :">
+          <el-form-item label=" 营业执照 :" prop="imgLicense1">
             <div class="shop-IDImg">
               <div class="shop-IDUpload">
                 <imgUpload></imgUpload>
@@ -105,14 +105,15 @@
               </div>
             </div>
           </el-form-item>
-          <el-form-item label="营业执照号 :">
-            <el-input v-model="input" placeholder="请输入营业执照号"></el-input>
+          <el-form-item label="营业执照号 :" prop="busLicenseNo">
+            <el-input v-model="form.busLicenseNo" placeholder="请输入营业执照号"></el-input>
           </el-form-item>
           <el-form-item label="请选择需要认证的店铺 :">
             <div class="shop-shoptype">
               <div class="shop-button "
                   v-for="(shop,index) in shoptypes1"
-                  @click="choiceShoptype($event,shop.name,shop.shoptypes)"
+                  @click="choiceShoptype(index,shop.name,shop.shoptypes)"
+                  :class="{'shop-button-choice': index === button1 }"
                   v-text="shop.title"  ></div>
             </div>
           </el-form-item>
@@ -120,11 +121,13 @@
             <div class="shop-shoptype">
               <div class="shop-button-max"
                   v-for="(shoptype,index) in shoptypes2"
-                  @click="choiceProvetype($event,shoptype.name)"
+                  @click="choiceProvetype(index,shoptype.name)"
+                  :class="{'shop-button-choice': index === button2 }"
                   v-text="shoptype.title"></div>
             </div>
           </el-form-item>
-           <el-form-item label="商标使用许可合同 :" v-if="isContract">
+          <div v-if="isShow">
+           <el-form-item label="商标使用许可合同 :" v-if="isContract"  prop="imgLicense3">
             <div class="img-title" style="text-align:left">非原件照片需加盖公司红色公章并且需要注明商标许可性质为独占性许可</div>
             <div class="shop-IDImg">
               <div class="shop-IDUpload">
@@ -139,7 +142,7 @@
               <a >下载模板 </a>
             </div>
           </el-form-item>
-          <el-form-item label="商标注册通知书 :" v-if="isNotice">
+          <el-form-item label="商标注册通知书 :" v-if="isNotice" prop="imgLicense2">
             <div class="img-title">非原件照片需加盖公司红色公章</div>
             <div class="shop-IDImg">
               <div class="shop-IDUpload">
@@ -153,7 +156,7 @@
               </div>
             </div>
           </el-form-item>
-          <el-form-item label="商标注册证 :" v-if="isCertificate">
+          <el-form-item label="商标注册证 :" v-if="isCertificate"  prop="imgLicense4">
             <div class="img-title">非原件照片需加盖公司红色公章</div>
             <div class="shop-IDImg">
               <div class="shop-IDUpload">
@@ -167,7 +170,7 @@
               </div>
             </div>
           </el-form-item>
-          <el-form-item label="上传补充资料 :" v-if="isReplenishNotes">
+          <el-form-item label="上传补充资料 :" v-if="isReplenishNotes" >
             <div class="img-title">最多上传5张</div>
             <div class="shop-promptText" style="font-size:14px;">
               1.商标注册人与营业执照公司名或法人不一致，但商标已转让，需要上传<span>“商标转让证明”。</span><br>
@@ -184,7 +187,7 @@
               </div>
             </div>
           </el-form-item>
-          <el-form-item label=" 微信渠道授权证书:" v-if="isChannel">
+          <el-form-item label=" 微信渠道授权证书:" v-if="isChannel" prop="imgLicense5">
             <div class="img-title">非原件照片需加盖公司红色公章</div>
             <div class="shop-IDImg">
               <div class="shop-IDUpload">
@@ -199,22 +202,7 @@
               <a>下载模板</a>
             </div>
           </el-form-item>
-          <el-form-item label=" 公司总部证明函:" v-if="isCompany">
-            <div class="img-title">非原件照片需加盖公司红色公章</div>
-            <div class="shop-IDImg">
-              <div class="shop-IDUpload">
-                <imgUpload></imgUpload>
-              </div>
-              <span>示例 :</span>
-              <div class="shop-img ID-img7">
-                 <div class="shop-img2" @click="showBigImg(imgLicense5)">
-                  <i class="el-icon-view"></i>
-                </div>
-              </div>
-              <a>下载模板</a>
-            </div>
-          </el-form-item>
-          <el-form-item label=" 关系证明函:" v-if="isRelationship">
+          <el-form-item label=" 公司总部证明函:" v-if="isCompany" prop="imgLicense6">
             <div class="img-title">非原件照片需加盖公司红色公章</div>
             <div class="shop-IDImg">
               <div class="shop-IDUpload">
@@ -229,6 +217,22 @@
               <a>下载模板</a>
             </div>
           </el-form-item>
+          <el-form-item label=" 关系证明函:" v-if="isRelationship" prop="imgLicense6">
+            <div class="img-title">非原件照片需加盖公司红色公章</div>
+            <div class="shop-IDImg">
+              <div class="shop-IDUpload">
+                <imgUpload></imgUpload>
+              </div>
+              <span>示例 :</span>
+              <div class="shop-img ID-img7">
+                 <div class="shop-img2" @click="showBigImg(imgLicense6)">
+                  <i class="el-icon-view"></i>
+                </div>
+              </div>
+              <a>下载模板</a>
+            </div>
+          </el-form-item>
+          </div >
         </div>
         <el-form-item label="短信验证码：" prop="code">
             <el-input v-model="form.code" placeholder="请输入短信验证码"></el-input>
@@ -258,7 +262,7 @@ import imgLicense2 from '../../../img/ID4_1.jpg' //商标注册通知书
 import imgLicense3 from '../../../img/ID5_1.png' //商标使用许可合同
 import imgLicense4 from '../../../img/ID6_1.jpg'//商标注册证
 import imgLicense5 from '../../../img/ID7_1.png'//微信渠道授权证书
-import imgLicense6 from '../../../img/ID8.png'//微信渠道授权证书
+import imgLicense6 from '../../../img/ID8.png'//关系认证书
 
 export default {
   components: {
@@ -268,7 +272,10 @@ export default {
     var formName = (rule, value, callback) => {
       if (!value) {
         return callback(new Error('名字不能为空'));
+      }else {
+          callback();
       }
+      
     };
     var formIdNumber = (rule, value, callback) => {
       if (!value) {
@@ -277,74 +284,148 @@ export default {
         let id = Lib.M.validIDnumber(value);
         if(!id){
           return callback(new Error('请输入正确合法的身份证号'));
+        }else{
+          callback();
         }
       }
     };
     var formCode = (rule, value, callback) => {
       if (!value) {
         return callback(new Error('验证码为空'));
+      }else{
+        callback();
+      }
+    };
+    var formCompanyName = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('企业名称不为空'));
+      }else{
+        callback();
+      }
+    };
+    var formBusLicenseNo = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('营业执照号不为空'));
+      }else{
+        callback();
+      }
+    };formBusLicenseNo
+    var formIDImg1 = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('请上传身份证正面图片'));
+      }else{
+        callback();
+      }
+    };
+    var formIDImg2 = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('请上传身份证反面图片'));
+      }else{
+        callback();
+      }
+    };
+    var formImgLicense1 = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('请上传营业执照图片'));
+      }else{
+        callback();
+      }
+    };
+    var formImgLicense2 = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('请上传商标注册通知书图片'));
+      }else{
+        callback();
+      }
+    };
+    var formImgLicense3 = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('请上传商标使用许可合同图片'));
+      }else{
+        callback();
+      }
+    };
+    var formImgLicense4 = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('请上传商标注册证图片'));
+      }else{
+        callback();
+      }
+    };
+    var formImgLicense5 = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('请上传微信渠道授权证书图片'));
+      }else{
+        callback();
+      }
+    };
+    var formImgLicense6 = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('请上传证件图片'));
+      }else{
+        callback();
       }
     };
     return {
       data:{},//店铺数据
-      stoType: 0,//主体类型, 0个人 1企业
+      stoType: 1,//主体类型, 0个人 1企业
       form: {},
       dialogimg:false,
       dialogImageUrl:'',
-      isType: true,//默认显示个人
       shoptypes1:[
-        { name:'shop1',
+        { name:'1',
           title:'普通店铺'
         },{
-          name:'shop2',
+          name:'2',
           title:'旗舰店',
           shoptypes:[
           {
-            name:'shop6',
+            name:'6',
             title:'商标注册通知书'
           },{
-            name:'shop7',
+            name:'7',
             title:'商标注册证'
           },{
-            name:'shop8',
+            name:'8',
             title:'商标使用许可合同'
           }]
         },{
-          name:'shop3',
+          name:'3',
           title:'专卖店',
           shoptypes:[
           {
-            name:'shop9',
+            name:'9',
             title:'微信渠道授权书'
           },{
-            name:'shop10',
+            name:'10',
             title:'多粉渠道授权书'
           }]
         },{
-          name:'shop4',
+          name:'4',
           title:'直营店',
           shoptypes:[
           {
-            name:'shop11',
+            name:'11',
             title:'公司总部证明函'
           },{
-            name:'shop12',
+            name:'12',
             title:'关系证明函'
           }]
         },{
-          name:'shop5',
+          name:'5',
           title:'厂家直销',
           shoptypes:[
           {
-            name:'shop11',
+            name:'11',
             title:'公司总部证明函'
           },{
-            name:'shop12',
+            name:'12',
             title:'关系证明函'
           }]
         }
       ],
       shoptypes2:[],
+      isShow: false,
       isProve: false, // 选择可提供认证消息
       isContract: false,//商标使用许可合同
       isNotice: false, //商标注册通知书
@@ -370,9 +451,41 @@ export default {
           { validator: formIdNumber, trigger: 'blur' }
         ],
         code: [
-            { validator: formCode, trigger: 'blur' }
-        ]
-      }
+          { validator: formCode, trigger: 'blur' }
+        ],
+        companyName:[
+          { validator: formCompanyName, trigger: 'blur' }
+        ],
+        busLicenseNo:[
+          { validator: formBusLicenseNo, trigger: 'blur' }
+        ],
+        IDImg1:[
+          { validator: formIDImg1, trigger: 'blur' }
+        ],
+        IDImg2:[
+          { validator: formIDImg2, trigger: 'blur' }
+        ],
+        imgLicense1:[
+          { validator: formImgLicense1, trigger: 'blur' }
+        ],
+        imgLicense2:[
+          { validator: formImgLicense2, trigger: 'blur' }
+        ],
+        imgLicense3:[
+          { validator: formImgLicense3, trigger: 'blur' }
+        ],
+        imgLicense4:[
+          { validator: formImgLicense4, trigger: 'blur' }
+        ],
+        imgLicense5:[
+          { validator: formImgLicense5, trigger: 'blur' }
+        ],
+        imgLicense6:[
+          { validator: formImgLicense6, trigger: 'blur' }
+        ],
+      },
+      button1: false,
+      button2: false,
     }
   },
   methods: {
@@ -381,19 +494,20 @@ export default {
       @name:店铺
       @shoptypes:子键内容
      */
-    choiceShoptype(e,name,shoptypes){
+    choiceShoptype(index,name,shoptypes){
       name == 'shop1' ? this.isProve = false : this.isProve = true;
-      $(e.target).siblings().removeClass('shop-button-choice');
-      $(e.target).addClass('shop-button-choice');
+      this.button1 = index;
+      this.button2 = false;
+      this.isShow = false;
       this.shoptypes2 = shoptypes;
     },
     /**
      选择认证信息
      */
-     choiceProvetype(e,name){
-      console.log(e,name);
-      $(e.target).siblings().removeClass('shop-button-choice');
-      $(e.target).addClass('shop-button-choice');
+     choiceProvetype(index,name){
+      console.log(index,name);
+      this.button2 = index;
+      this.isShow = true;
       this.isContract = false;//商标使用许可合同
       this.isNotice   = false; //商标注册通知书
       this.isReplenishNotes = false; //上传补充资料 
@@ -402,29 +516,29 @@ export default {
       this.isCompany = false;//公司总部证明函
       this.isRelationship = false;//关系证明函
       switch(name){
-        case "shop6":
+        case "6":
             this.isNotice = true;
             this.isReplenishNotes = true;
         break;
-        case "shop7":
+        case "7":
             this.isCertificate = true;
             this.isReplenishNotes = true;
             this.isReplenishNotes1 = true;
         break;
-        case "shop8":
+        case "8":
             this.isContract = true;
             this.isCertificate = true;
         break;
-        case "shop9":
+        case "9":
             this.isChannel = true;
         break;
-        case "shop10":
+        case "10":
             this.isChannel = true;
         break;
-        case "shop11":
+        case "11":
             this.isCompany = true;
         break;
-        case "shop12":
+        case "12":
             this.isRelationship = true;
         break;
         default:;
@@ -438,7 +552,8 @@ export default {
      * 提交认证
      */
     submitForm(formName) {
-      let _this= this;
+      let _this= this; 
+      console.log(_this.form,'form');
       _this.$refs[formName].validate((valid) => {
         if (valid) {
            _this.$message({
@@ -448,9 +563,7 @@ export default {
           _this.jumpRoute('/shop');
           /*Lib.M.ajax({
             'url': DFshop.activeAPI.mallStoreCertSave_post,
-            'data':{
-               curPage :Page 
-             },
+            'data': data,
              'success':function (data){
                  this.$message({
                  message: '恭喜你，保存成功',
@@ -463,10 +576,14 @@ export default {
           return false;
         }
       });
+    },
+    resetForm(formName) {
+      this.form = {};
+      this.$refs[formName].resetFields();
     }
   },
   mounted() {
-    this.data = JSON.parse(this.$route.query.data);
+    this.data = JSON.parse(this.$route.query.data);JSON.parse(this.$route.query.data);
   },
 }
 </script>
