@@ -1,5 +1,5 @@
 <template>
-<div class="index-wrapper">
+<div class="index-wrapper" v-cloak>
     <el-tabs v-model="activeName"  @tab-click="handleClick">
       <el-tab-pane label="担保交易" name="danbao"></el-tab-pane>
       <el-tab-pane label="物流管理" name="logistics"></el-tab-pane>

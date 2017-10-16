@@ -94,6 +94,41 @@ import common from './common';
     mallFreightList_post:DFshop.env.activeAPI+'/mallFreight/list',
     /*删除物流管理 */
     mallFreightDelete_post:DFshop.env.activeAPI+'/mallFreight/delete',
+    /*编辑物流信息 */
+    mallFreightInfo_post:DFshop.env.activeAPI+'/mallFreight/freightInfo',
+    /*获取快递公司信息 */
+    mallFreightExpressList_post:DFshop.env.activeAPI+'/mallFreight/expressList',
+    /*获取地区列表 */
+    mallGetArea_post:DFshop.env.activeAPI+'/mall/getArea',
+    /*保存物流信息 */
+    mallFreightSave_post:DFshop.env.activeAPI+'/mallFreight/save',
+    /*上门自提列表 */
+    mallFreightTakeList_post:DFshop.env.activeAPI+'/mallFreight/take/list',
+    /*删除上门自提数据 */
+    mallFreightTakeDelete_post:DFshop.env.activeAPI+'/mallFreight/take/delete',
+    /*根据id获取自提信息 */
+    mallFreightTakeInfo_post:DFshop.env.activeAPI+'/mallFreight/take/takeInfo',
+    /*保存上门自提信息  */
+    mallFreightTakeSave_post:DFshop.env.activeAPI+'/mallFreight/take/save',
+
+    /*获取商城设置信息 */
+    mallPaySetPaySetInfo_post:DFshop.env.activeAPI+'/mallPaySet/paySetInfo',
+    /*保存商城设置 */
+    mallPaySetSave_post:DFshop.env.activeAPI+'/mallPaySet/setSave',
+    /*判断有无认证服务号 */
+    mallPaySetIsAuthService_post:DFshop.env.activeAPI+'/mallPaySet/isAuthService',
+    /*获取消息模板 */
+    mallPaySetGetTemplate_post:DFshop.env.activeAPI+'/mallPaySet/getTemplate',
+    /*设置消息模板*/
+    mallPaySetSmsTemplate_post:DFshop.env.activeAPI+'/mallPaySet/setSmsTemplate',
+    /*判断是否加入担保 */
+    mallIsSecuritytrade_post:DFshop.env.activeAPI+'/mallSecuritytrade/isSecuritytrade',
+    /*获取退出担保理由列表 */
+    mallQuitDanbaoReasonList_post:DFshop.env.activeAPI+'/mallSecuritytrade/quitReasonMap',
+    /*保存退出担保原因 */
+    mallSecuritytradeSave_post:DFshop.env.activeAPI+'/mallSecuritytrade/save',
+    /*加入担保 */
+    mallSecuritytradeAdd_post:DFshop.env.activeAPI+'/mallSecuritytrade/add',
     /*保存认证信息*/
     mallStoreCertSave_post:DFshop.env.activeAPI+'/mallStore/cert/save',
     /*获取认证的店铺类型*/
@@ -194,7 +229,19 @@ import common from './common';
               if(typeof opt.success == 'function') opt.success(data);
           }
       });
+    },
+    getAreaList(opt){
+      common.ajax({
+        'url': DFshop.activeAPI.mallGetArea_post,
+        'data':{
+          pid:opt.cityId
+        },
+        'success':function (data){
+            if(typeof opt.success == 'function') opt.success(data);
+        }
+    });
     }
+
   };
 
   /*end 公共方法***********************************************************************************************************/

@@ -20,14 +20,14 @@ const routes = [
     redirect:'/danbao',
       children:[
           { path: '/danbao', component: Danbao},
-          { path: '/logistics', component: Logistics},
+          { path: '/logistics/:activeName', component: Logistics},
           { path: '/message', component: Message},
           { path: '/setup', component: Setup}
       ]
   },{
-    path:'/addlogistics', component: addLogistics
+    path:'/addlogistics/:id', component: addLogistics
   },{
-    path:'/addsince', component: addSince
+    path:'/addsince/:id', component: addSince
   }
 ]
 
