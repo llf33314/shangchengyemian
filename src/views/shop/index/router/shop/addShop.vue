@@ -16,7 +16,7 @@
     </el-steps>
     </div>
     <div class="shop-addshop-content">
-      <div class="shop-addshop-one" v-if="isOnePage">
+      <div class="shop-addshop-one" v-if="active == 1">
         <!--selected-->
         <div class="shop-addshop-item clearfix" v-for="(item,index) in  data.data" 
               :class="{'selected': index === selected}"
@@ -33,15 +33,13 @@
         </div>
       </div>
 
-      <div class="shop-addshop-tow" v-if="isTowPage">
+      <div class="shop-addshop-tow" v-if="active == 2">
         <el-form ref="form" :model="form" label-width="80px">
            <el-form-item label="店铺头像 :">
             <div class="addshop-IDImg">
+              <!-- <material></material> -->
               <div class="shop-IDUpload">
-                <imgUpload></imgUpload>
-              </div>
-              <div class="addshop-img" @click="bigImg(data.imgUrl+form.stoHeadImg)" v-if="form.stoHeadImg !==''">
-                <small-img :img="data.imgUrl+form.stoHeadImg"></small-img>
+               <gt-material  v-on:imgdata="imgdata"></gt-material>
               </div>
               <span class="p-warn">图片比例：1:1(必填)</span>
             </div>
@@ -56,26 +54,38 @@
            <el-form-item label="是否推送 :">
               <el-checkbox v-model="stoIsSms">接收短信推送商城订单信息</el-checkbox>
           </el-form-item>
-          <el-form-item label="推送手机 :"  v-if="stoIsSms">
-             <el-input v-model="form.stoSmsTelephone" placeholder="请输入推送手机" @blur="phone"></el-input>
-             <div class="shop-prompt">请填写正确的手机号码，此手机号码接收商城订单信息的推送；必须勾选是否推送，方可有效</div>
-        </el-form-item>
+          <el-form-item label="推送手机 :"
+                    v-if="stoIsSms==1">
+            <div class="telephone-box">
+                <div class="telephone-list" 
+                        v-for="(Telephone,index) in Telephones"
+                        :key="index">
+                    <el-input   class="el-telephone"
+                                v-model="Telephone.phone" 
+                                placeholder="请输入推送手机">
+                    </el-input>
+                    <i class="el-i el-icon-circle-cross" v-show=" Telephones.length>1" @click="deleteTelephone(index,Telephones)"></i>
+                    <a class="fontBlue" v-if="Telephones.length === index+1 &&Telephones.length < 5" @click="addTelephone(Telephone.phone)">新增</a>
+                </div>
+            </div>
+            <div class="shop-prompt">请填写正确的手机号码，此手机号码接收商城订单信息的推送；必须勾选是否推送，方可有效</div>
+          </el-form-item>
           <el-form-item label="客服QQ :">
               <el-input v-model="form.stoQqCustomer" placeholder="请输入客服QQ" ></el-input>
           </el-form-item>
         </el-form>
       </div>
-      <div class="shop-addshop-Three" v-if="isThreePage">
+      <div class="shop-addshop-Three" v-if="active == 3">
         <div class="shop-addSuccess">
           <i class="el-icon-circle-check"></i>
           <p>新增店铺成功</p>
         </div>
       </div>
     </div>
-    <el-button style="margin-top: 12px;" @click="next" v-if="isOnePage">下一步</el-button>
-    <el-button type="primary" v-if="isTowPage" @click="Submit()">保存</el-button>
-    <el-button style="margin-top: 12px;"v-if="!isThreePage">返回</el-button>
-    <div class="shop-textc" v-if="isThreePage" >
+    <el-button style="margin-top: 12px;" @click="next" v-if=" active == 1">下一步</el-button>
+    <el-button type="primary" v-if="active == 2" @click="Submit()">保存</el-button>
+    <el-button style="margin-top: 12px;"v-if="active !== 3" @click="Back">返回</el-button>
+    <div class="shop-textc" v-if="active == 3" >
       <el-button type="primary"@click="next">继续添加</el-button>
       <el-button style="margin-top: 12px;" @click="jumpRouter('/shop')">返回</el-button>
     </div>
@@ -90,60 +100,54 @@
 
 import Lib from 'assets/js/Lib';
 import defaultImg from 'components/defaultImg';
-import imgUpload from 'components/imgUpload';
-import smallImg from 'components/smallImg';
+import gtMaterial from 'components/material/material'
 export default {
   components: {
-    defaultImg,imgUpload,smallImg
+    defaultImg,gtMaterial
   },
   data () {
     return {
        active: 1,
-       isOnePage:true,
-       isTowPage:false,
-       isThreePage:false,
        data:{},
        selected: false,
        contentNo:'shop',
        dialogimg:false,
        dialogImageUrl:'',
        form:{},
-       stoIsSms: false
+       stoIsSms: false,
+       Telephones:[{
+            phone:''
+        }],
+      imgUpload:''
     }
   },
   methods: {
-    aaa(){
-      console.log(this.form.stoIsSms);
+    /**
+     * 上一页跳转
+     */
+    Back(){
+      this.active == 2? this.active --:_this.jumpRouter('/shop');
     },
     /**
       下一页跳转
      */
     next(){
       if(this.active == 1){
-        console.log(this.active)
         if(this.form.id){
-          this.isOnePage = false;
-          this.isTowPage = true;
           return this.active ++;
         }else{
-          this.active = 1;
           this.$message({
               message: '请选择门店',
               type: 'warning'
           });
+          this.active = 1;
+          return
         }
       };
       if(this.active == 2){
-        this.isTowPage=false;
-        this.isPassPage =false;
-        this.isThreePage=true;
         return this.active ++;
       }
       if(this.active ++> 2) {
-        this.isOnePage=true;
-        this.isTowPage=false;
-        this.isThreePage=false;
-        this.selected =false;
         return this.active = 1;
       };
     },
@@ -161,7 +165,6 @@ export default {
       Lib.M.ajax({
         'url': DFshop.activeAPI.mallStorGgetShopList_post,
         'success':function (data){
-          console.log(data);
           _this.data = data;
         }
       });
@@ -173,25 +176,9 @@ export default {
         this.dialogImageUrl = img;
         this.dialogimg = true;
     },
-    /**
-     * 推广手机验证
-     */
-    phone(){
-      console.log(this.form.stoSmsTelephone);
-        if(this.stoIsSms == 1 && !this.form.stoSmsTelephone){
-          console.log(1);
-            this.$message({
-                message: '请输入推送手机号码',
-                type: 'warning'
-            });
-            return false;
-        }
-          return true;
-    },
     Submit(){
       let _this = this;
-      if(!_this.phone()) return ;
-      if(!_this.form.stoHeadImg){
+      if(!_this.imgUpload){
          this.$message({
               message: '请上传店铺头像',
               type: 'warning'
@@ -205,20 +192,28 @@ export default {
         });
         return
       }
+      let arr = [ ];
+  　　for (let i in this.Telephones){
+      　　var str = this.Telephones[i].phone
+          if(_this.stoIsSms){
+              _this.phone(str);
+          }
+      　　arr.push(str);
+  　　}
+      arr = arr.join(";")
       let sto = {
           id: '',
           stoName:_this.form.businessName,
           wxShopId: _this.form.id,
-          stoHeadImg: _this.form.stoHeadImg,
+          stoHeadImg: _this.imgUpload,
           stoLinkman: _this.form.stoLinkman,  
           stoPhone: _this.form.telephone, 
           stoPicture: _this.form.imageUrl,
           stoAddress: _this.form.address,
           stoIsSms: Number(_this.stoIsSms),  
-          stoSmsTelephone: _this.form.stoSmsTelephone||'', 
+          stoSmsTelephone: arr||'', 
           stoQqCustomer: _this.form.stoQqCustomer||''
       }
-      console.log(sto);
       Lib.M.ajax({
           'url': DFshop.activeAPI.mallStoreSave_post,
           'data': {
@@ -230,6 +225,50 @@ export default {
           }
       });
     },
+    /**
+     * 推广手机验证
+     */
+    phone(phone){
+        if(!phone){
+            this.$message({
+                message: '请输入推送手机号码',
+                type: 'warning'
+            });
+            return false;
+        }
+        if(!Lib.M.validPhone(phone)){
+            this.$message({
+                message: '请正确的手机号码',
+                type: 'warning'
+            });
+            return false;
+        }
+        return true;
+    },
+    /**
+     * 增添推广人手机
+     */
+    addTelephone(tel){
+        if(this.phone(tel)){
+            let newA ={
+                phone: ''
+            }
+            this.Telephones.push(newA);
+        }
+    },
+    /**
+     * 删除手机
+     */
+    deleteTelephone(index,data){
+        data.splice(index, 1);
+    },
+    /**
+     * 接收上传图片组件数据
+     * @param 上传图片地址
+     */
+    imgdata(img){
+        this.imgUpload = img;
+    }
   },
   mounted() {
     this.shopAjax();
@@ -238,5 +277,12 @@ export default {
 </script>
 
 <style lang="less">
-
+@import '../../../less/shop.less';
+.el-telephone{
+    margin-bottom:5px;
+    width: 220px;
+}
+.el-i{
+    color: #bbb;
+}
 </style>

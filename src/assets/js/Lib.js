@@ -49,7 +49,7 @@ Vue.mixin({
         * @param link 路由地址
         */
         jumpHtml(link){
-            window.location.href=window.location.origin+link;
+            window.location.href = window.location.origin+window.location.pathname+'#'+link;
         },
         /**
          *路由跳转

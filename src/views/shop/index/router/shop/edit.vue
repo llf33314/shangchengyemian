@@ -14,12 +14,9 @@
         </el-form-item>
         <el-form-item label="店铺头像 :">
             <div class="shop-edit-Upload">
-                <imgUpload></imgUpload>
+                <gt-material :imgList="imgUrl+form.stoHeadImg" v-on:imgdata="imgdata"></gt-material>
             </div>
-            <div class="shop-edit-img" @click="bigImg(imgUrl+form.stoHeadImg)">
-                <small-img :img="imgUrl+form.stoHeadImg"></small-img>
-            </div>
-            <span class="shop-prompt" style="margin-left:20px;">图片比例：1:1</span>
+            <span class="shop-prompt" style="margin-left:20px;vertical-align: bottom;">图片比例：1:1</span>
         </el-form-item>
         <el-form-item label="联系人 :">
              <el-input v-model="form.stoLinkman" placeholder="请输入联系人"></el-input>
@@ -30,9 +27,21 @@
         <el-form-item label="是否推送 :">
             <el-checkbox v-model="form.stoIsSms" >接收短信推送商城订单信息</el-checkbox>
         </el-form-item>
-        <el-form-item label="推送手机 :" v-if="form.stoIsSms==1">
-             <el-input v-model="form.stoSmsTelephone" placeholder="请输入推送手机" @blur="phone"></el-input>
-             <div class="shop-prompt">请填写正确的手机号码，此手机号码接收商城订单信息的推送；必须勾选是否推送，方可有效</div>
+        <el-form-item label="推送手机 :"
+                    v-if="form.stoIsSms==1">
+            <div class="telephone-box">
+                <div class="telephone-list" 
+                        v-for="(Telephone,index) in Telephones"
+                        :key="index">
+                    <el-input   class="el-telephone"
+                                v-model="Telephone.phone" 
+                                placeholder="请输入推送手机">
+                    </el-input>
+                    <i class="el-i el-icon-circle-cross" v-show=" Telephones.length>1" @click="deleteTelephone(index,Telephones)"></i>
+                    <a class="fontBlue" v-if="Telephones.length === index+1 &&Telephones.length < 5" @click="addTelephone(Telephone.phone)">新增</a>
+                </div>
+            </div>
+            <div class="shop-prompt">请填写正确的手机号码，此手机号码接收商城订单信息的推送；必须勾选是否推送，方可有效</div>
         </el-form-item>
          <el-form-item label="客服QQ :">
              <el-input v-model="form.stoQqCustomer" placeholder="请输入客服QQ" ></el-input>
@@ -43,28 +52,28 @@
         </el-form-item>
         </el-form>
     </div>
-    <el-dialog v-model="dialogimg" size="small">
-        <img width="100%" :src="dialogImageUrl" alt="" class="img">
-    </el-dialog>
 </div>
 </template>
 
 <script>
 import Lib from 'assets/js/Lib';
-import imgUpload from 'components/imgUpload';
-import smallImg from 'components/smallImg'
+import gtMaterial from 'components/material/material'
 export default {
     components: {
-        imgUpload,smallImg
+        gtMaterial
     },
-    data () {
+    data() {
         return {
             path: '',
             imgUrl:'',
             stoName:'',
             form: {},
             dialogimg: false,
-            dialogImageUrl:''
+            dialogImageUrl:'',
+            Telephones:[{
+                phone:''
+            }],
+            imgUpload:''
         }
     },
     methods: {
@@ -79,62 +88,113 @@ export default {
                     _this.path = data.path;
                     _this.imgUrl = data.imgUrl;
                     _this.form = data.data;
+
                     _this.form.stoIsSms= !!data.data.stoIsSms;
+                    _this.imgUpload= data.data.stoHeadImg;
+
+                    let dataTelephones = data.data.stoSmsTelephone;
+                    
+                    if(!dataTelephones == " "){
+                        _this.Telephones=[];
+                        for(let i in dataTelephones){
+                            _this.Telephones.push({
+                                phone: dataTelephones[i]
+                            })
+                        }
+                    }
                 }
             });
-        },
-        /**
-         * 推广手机验证
-         */
-        phone(){
-            if(this.form.stoIsSms == 1 && !this.form.stoSmsTelephone){
-                this.$message({
-                    message: '请输入推送手机号码',
-                    type: 'warning'
-                });
-                return false;
-            }
-             return true;
         },
         /**
          * 保存信息
          */
         Submit(){
             let _this = this;
-            if(!_this.phone()) return ;
+            let arr = [ ];
+            if(!_this.imgUpload){
+                this.$message({
+                    message: '请上传店铺头像',
+                    type: 'warning'
+                });
+                return false;
+            }
+        　　for (let i in this.Telephones){
+            　　var str = this.Telephones[i].phone
+                if(_this.form.stoIsSms){
+                    _this.phone(str);
+                }
+            　　arr.push(str);
+        　　}
+            arr = arr.join(";")
             let sto = {
                 id: _this.$route.params.shopId,
                 stoName:_this.form.stoName,
                 wxShopId: _this.form.wxShopId,
-                stoHeadImg: _this.form.stoHeadImg,
+                stoHeadImg: _this.imgUpload ,
                 stoLinkman: _this.form.stoLinkman,  
                 stoPhone: _this.form.stoPhone, 
                 stoPicture: _this.form.stoPicture,
                 stoAddress: _this.form.stoAddress,
                 stoIsSms: Number(_this.form.stoIsSms),  
-                stoSmsTelephone: _this.form.stoSmsTelephone, 
+                stoSmsTelephone: arr, 
                 stoQqCustomer: _this.form.stoQqCustomer
             }
+            
             Lib.M.ajax({
                 'url': DFshop.activeAPI.mallStoreSave_post,
                 'data': {
                     obj: JSON.stringify(sto)
                 },
                 'success':function (data){
-                    console.log('success');
                     _this.$message({
                         message: '保存成功',
                         type: 'success'
                     });
+                    _this.jumpHtml('/shop')
                 }
             });
         },
+        phone(phone){
+            if(!phone){
+                this.$message({
+                    message: '请输入推送手机号码',
+                    type: 'warning'
+                });
+                return false;
+            }
+            if(!Lib.M.validPhone(phone)){
+                this.$message({
+                    message: '请正确的手机号码',
+                    type: 'warning'
+                });
+                return false;
+            }
+            return true;
+        },
         /**
-         * @param img 图片路径
+         * 增添推广人手机
          */
-        bigImg(img){
-            this.dialogImageUrl = img;
-            this.dialogimg = true;
+        addTelephone(tel){
+            console.log(this.phone(tel),'aaaaa')
+            if(this.phone(tel)){
+                let newA ={
+                    phone: ''
+                }
+                this.Telephones.push(newA);
+            }
+        },
+        /**
+         * 删除手机
+         */
+        deleteTelephone(index,data){
+            data.splice(index, 1);
+        },
+        /**
+         * 接收上传图片组件数据
+         * @param 上传图片地址
+         */
+        imgdata(img){
+            this.imgUpload = img;
         }
     },
     mounted() {
@@ -143,6 +203,13 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 @import '../../../less/shop.less';
+.el-telephone{
+    margin-bottom:5px;
+    width: 220px;
+}
+.el-i{
+    color: #bbb;
+}
 </style>

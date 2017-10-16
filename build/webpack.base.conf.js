@@ -59,11 +59,19 @@ var webpackConfig = {
         }
       },
       {
-        test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
+        test: /\.(woff2?|eot|ttf|otf|)(\?.*)?$/,
         loader: 'url-loader',
         query: {
           limit: 10000,
           name: utils.assetsPath('fonts/[name].[ext]')
+        }
+      },
+      {
+        test: /\.(docx)$/,
+        loader: 'url-loader',
+        options: {
+          limit: 10000,
+          name: utils.assetsPath('docx/[name].[ext]')
         }
       }
     ]

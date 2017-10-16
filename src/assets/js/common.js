@@ -156,9 +156,18 @@ var Rxports = {
 	 * @returns {Boolean}
 	 */
 	validPhone:function(num) {
-		let phoneReg = /^(\+)?(\d)+(-(\d)+)*$/;
-
+		let phoneReg = /^((\+?86)|(\(\+86\)))?(13[0123456789][0-9]{8}|15[0123456789][0-9]{8}|17[0123456789][0-9]{8}|18[0123456789][0-9]{8}|147[0-9]{8}|1349[0-9]{7})$/;
 		return phoneReg.test(num);
+	},
+	/**
+	 * url
+	 */
+	validURL:function (url) {
+		let regex = /^(https?:\/\/)?[\u4e00-\u9fa50-9a-zA-Z][-\u4e00-\u9fa50-9a-zA-Z]{0,62}(\.[-\u4e00-\u9fa50-9a-zA-Z]{1,63})*(\.[-\u4e00-\u9fa50-9a-zA-Z]{0,62}[\u4e00-\u9fa50-9a-zA-Z])(:[0-9]{0,5})?(\/[\w\.-]*)*(#[^#\s]*)?$/i;
+		if (url.length < 1 || url.length > 256) {
+			return false;
+		}
+		return regex.test(url);
 	},
 	/**
 	 * 校验邮箱

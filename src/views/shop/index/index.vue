@@ -11,9 +11,9 @@
             <p class="shopInfo-name" v-text="tabelData.userName">商家名称</p>
             <div class="shopInfo-button">
               <el-button type="primary" 
-                @click="jumpRouter('shop/addShop')" v-if="tabelData.isShopAdd == 0">新增店铺</el-button>
+                @click="jumpRouter('shop/addShop')" >新增店铺</el-button>
               <el-button type="primary"
-                @click="jumpRouter('shop/addPage')">新建微页面</el-button>
+                @click="jumpRouter('shop/addPage/0')">新建微页面</el-button>
             </div>
           </div>
         </div>
@@ -268,12 +268,14 @@ export default {
       contentNo: 'shop',//没有数据显示
     }
   },
-  // watch: {
-  //  '$route' (to, from) {
-  //     console.log(to.path,from)
-  //     console.log(this.$router.push(to.path))
-  //  }
-  // },
+  watch: {
+   '$route' (to, from) {
+      //console.log(to.path,from,'aaaaa')
+      this.activeName = to.path.split('/')[1];;
+      //console.log(this.activeName,'$$$$$$$')
+      this.switchAjax(this.activeName);
+   }
+  },
   methods: {
     /**
      * 切换导航
@@ -447,8 +449,8 @@ export default {
           _this.tabelData = data.data;
          
           $.each(_this.tabelData.page.subList, function(i){
-            let oldTime = this.pag_create_time;
-            this.pag_create_time = Lib.M.format(oldTime);
+            let oldTime = _this.pag_create_time;
+            _this.pag_create_time = Lib.M.format(oldTime);
           });
         }
       });

@@ -54,6 +54,8 @@ import common from './common';
   DFshop.env = env.develop;
 
   DFshop.activeAPI = {
+    /*调用素材库*/
+    materialUrl: 'https://suc.deeptel.com.cn/common/material.do?retUrl=+',
     /*判断是否是管理员*/
     isAdminUser_post: DFshop.env.activeAPI + '/mall/isAdminUser',
     /*商城概况*/
