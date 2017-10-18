@@ -25,7 +25,11 @@ export default {
   },
   methods: {
     handleClick(tab) {
-      this.$router.push({path:tab.name});
+      if(tab.name === 'logistics'){
+        this.$router.push({path:tab.name+'/logistics'});
+      }else{
+        this.$router.push({path:tab.name});
+      }
     }
   },
   mounted(){
