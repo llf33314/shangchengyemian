@@ -11,55 +11,60 @@
         <el-row>
           <el-col :span="12" >
             活动状态：
-            <el-select v-model="value" placeholder="请选择">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
+            <el-select v-model="type" placeholder="请选择" @change="search()">
+              <el-option label="全部" :value="null"></el-option>
+              <el-option label="进行中" :value="1"></el-option>
+              <el-option label="已结束" :value="2"></el-option>
+              <el-option label="未开始" :value="-1"></el-option>
             </el-select>
           </el-col>
           <el-col :span="12" class="shop-textr">
-            <el-button type="warning">
-              <i class="iconfont icon-cplay1"></i>视频教程</el-button>
+            <a :href="tableData.videourl">
+              <el-button type="warning"><i class="iconfont icon-cplay1"></i>视频教程</el-button>
+            </a>
           </el-col>
         </el-row>
-        <router-link to="/addgroup">
-          <el-button type="primary" style="margin-top: 20px;">新建团购</el-button>
-        </router-link>
+        <!-- <router-link to="/addgroup"> -->
+        <el-button type="primary" style="margin-top: 20px;" @click="jumpRouter('/addgroup/'+0)">新建团购</el-button>
+        <!-- </router-link> -->
       </div>
-      <div class="group-content" v-if="isShow">
-        <el-table
-          :data="tableData"
-          style="width: 100%">
+      <div class="group-content" v-if="tableData.page.rowCount > 0">
+        <el-table :data="tableData.page.subList" style="width: 100%">
           <el-table-column
-            prop="date"
+            prop="gname"
             label="活动名称">
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="shopName"
             label="所属店铺">
           </el-table-column>
-          <el-table-column
-            prop="address"
-            label="有效时间">
+          <el-table-column label="有效时间">
+            <template scope="scope">
+              {{scope.row.gstartTime}}至{{scope.row.gendTime}}
+            </template>
+          </el-table-column>
+          <el-table-column label="活动状态">
+            <template scope="scope">
+              <p v-if="scope.row.status == 0">未开始</p>
+              <p v-else-if="scope.row.status == 1">进行中</p>
+              <p v-else-if="scope.row.status == -1">已结束</p>
+              <p v-if="scope.row.status == -2">已失效</p>
+            </template>
           </el-table-column>
           <el-table-column
-            prop="address"
-            label="活动状态">
-          </el-table-column>
-          <el-table-column
-            prop="address"
+            prop="createTime"
             label="创建时间">
           </el-table-column>
           <el-table-column
             label="操作">
             <template scope="scope">
-              <el-button size="small" class="buttonBlue" >编辑</el-button>
-              <el-button size="small" class="buttonBlue" @click="InvalidData">失效</el-button>
-              <el-button size="small" class="buttonBlue" >预览</el-button>
-              <el-button size="small" @click="deleteData">删除</el-button>
+              <el-button size="small" class="buttonBlue" v-if="scope.row.status == 0" 
+                @click="jumpRouter('/addgroup/'+scope.row.id)">编辑</el-button>
+              <el-button size="small" class="buttonBlue" v-if="scope.row.status == 1" 
+                @click="InvalidData(scope.row.id)">失效</el-button>
+              <el-button size="small" class="buttonBlue" v-if="scope.row.status == 0 || scope.row.status == 1">预览</el-button>
+              <el-button size="small" @click="deleteData(scope.row.id)" 
+                v-if="scope.row.status == -1 || scope.row.status == -2">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -68,9 +73,9 @@
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page.sync="currentPage"
-            :page-size="100"
+            :page-size="tableData.page.pageSize"
             layout="prev, pager, next, jumper"
-            :total="1000">
+            :total="tableData.page.rowCount">
           </el-pagination>
         </div>
       </div>
@@ -90,79 +95,87 @@ export default {
   data () {
     return {
       contentNo:'gruop',
-      isShow: false,
-      options: [{
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
-        }, {
-          value: '选项4',
-          label: '龙须面'
-        }, {
-          value: '选项5',
-          label: '北京烤鸭'
-        }],
-        value: '',
-        tableData: [{
-            date: '2016-05-02',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1518 弄'
-          }, {
-            date: '2016-05-04',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1517 弄'
-          }, {
-            date: '2016-05-01',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1519 弄'
-          }, {
-            date: '2016-05-03',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1516 弄'
-          }],
-          currentPage: 1 ,
-      }
+      // isShow: false,
+      value: '',
+      tableData: [],
+      pageNum: 1 ,
+      type:'',
+    }
   },
   methods: {
     handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
       },
     handleCurrentChange(val) {
+      this.pageNum = val;
       console.log(`当前页: ${val}`);
+      this.mallGroupBuyList(val);
     },
-    InvalidData(){
+    InvalidData(id){
       let _this= this;
       let msg ={
         'dialogTitle':'您确定要将此团购活动失效吗？',//文本标题
         'dialogMsg': '失效后不能再进行团购',//文本内容
         'callback': {
           'btnOne': function(){
-
+            _this.mallGroupBuyDelete(id,-2);
           }
         }
       }
       _this.$root.$refs.dialog.showDialog(msg);   
     },
-    deleteData(){
+    deleteData(id){
       let _this= this;
       let msg ={
         'dialogTitle':'您确定要删除此团购活动吗？',//文本标题
         'dialogMsg': '',//文本内容
         'callback': {
           'btnOne': function(){
-
+            _this.mallGroupBuyDelete(id,-1);
           }
         }
       }
       _this.$root.$refs.dialog.showDialog(msg);   
+    },
+    mallGroupBuyList(pageNum){
+      let _this= this;
+      Lib.M.ajax({
+        'url': DFshop.activeAPI.mallGroupBuyList_post,
+        'data':{
+          curPage : pageNum,
+          type : _this.type  
+        },
+        'success':function (data){
+           _this.tableData = data.data;
+           console.log(_this.tableData)
+           $.each(_this.tableData.page.subList,function(i){
+             let oldTime = this.createTime;
+             this.createTime = Lib.M.format(oldTime);
+           });
+        }
+      });
+    },
+    search(){
+      this.mallGroupBuyList(1);
+    },
+    mallGroupBuyDelete(id,delType){
+      let _this= this;
+      Lib.M.ajax({
+        'url': DFshop.activeAPI.mallGroupBuyDelete_post,
+        'data':{
+          id : id,
+          type : delType  
+        },
+        'success':function (data){
+          _this.mallGroupBuyList(_this.pageNum);
+           console.log(data.data)
+        }
+      });
     }
   },
-  
+  mounted(){
+    this.mallGroupBuyList(1);
+  }
 }
 </script>
 

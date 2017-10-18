@@ -30,7 +30,7 @@ import common from './common';
        * @type {String}
        * @memberof DF.env
        */
-      activeAPI: 'http://mall.yifriend.net:8080'
+      activeAPI: '/api'
     },
     test: { // 测试环境
       debug: true,
@@ -133,6 +133,22 @@ import common from './common';
     mallStoreCertSave_post:DFshop.env.activeAPI+'/mallStore/cert/save',
     /*获取认证的店铺类型*/
     mallStoreCertCategoryMap_post:DFshop.env.activeAPI+'/mallStore/cert/categoryMap',
+
+    /*商品列表 */
+    mallProductList_post:DFshop.env.activeAPI+'/mallProduct/list',
+    /**删除、送审、上架、下架商品 */
+    mallProductBatchProduct_post:DFshop.env.activeAPI+'/mallProduct/batchProduct',
+    /* 获取各状态下商品数量 */
+    mallProductCountStatus_post:DFshop.env.activeAPI+'/mallProduct/countStatus',
+
+    /*团购列表 */
+    mallGroupBuyList_post:DFshop.env.activeAPI+'/mallGroupBuy/list',
+    /* 删除、使活动失效功能 */
+    mallGroupBuyDelete_post:DFshop.env.activeAPI+'/mallGroupBuy/delete',
+    /*获取团购信息 */
+    mallGroupBuyInfo_post:DFshop.env.activeAPI+'/mallGroupBuy/groupBuyInfo',
+    /*获取团购活动商品列表 */
+    mallGroupBuyGetProduct_post:DFshop.env.activeAPI+'/mallGroupBuy/getProductByGroup',
   };
 
   /*公共方法***********************************************************************************************************/
@@ -239,7 +255,21 @@ import common from './common';
         'success':function (data){
             if(typeof opt.success == 'function') opt.success(data);
         }
-    });
+      });
+    },
+    mallGroupBuyGetProduct(opt){
+      common.ajax({
+        'url': DFshop.activeAPI.mallGroupBuyGetProduct_post,
+        'data':{
+          defaultProId:opt.defaultProId,
+          shopId:opt.shopId,
+          proName:opt.proName,
+          curPage:opt.pageNum
+        },
+        'success':function (data){
+            if(typeof opt.success == 'function') opt.success(data);
+        }
+      });
     }
 
   };

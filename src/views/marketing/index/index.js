@@ -46,7 +46,7 @@ import modular from './router/modular/index'
 const routes = [
   { path: '/', component: Index},
   { path: '/group', component: Group},
-  { path: '/addgroup', component: addGruop},
+  { path: '/addgroup/:id', component: addGruop},
   { path: '/marketing/:activeName', component: Marketing},
   // { path: '/marketing/:activeName/:pageNO', component: Marketing},
   { path: '/addBond', component: AddBond},

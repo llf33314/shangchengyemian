@@ -2,27 +2,27 @@
   <el-dialog title="选择活动商品" :visible.sync="isShow">
       <div class="addGruop-search">
         <el-autocomplete
-          v-model="state4"
+          v-model="proName"
           :fetch-suggestions="querySearchAsync"
           placeholder="请输入内容"
           @select="handleSelect"
           icon="search"
         ></el-autocomplete>
       </div>
-      <el-table :data="gridData">
+      <el-table :data="gridData.page.subList">
         <el-table-column label="商品" width="250">
           <template scope="scope">
             <div class="Data-goods">
               <div class="goods-img">
-                <default-img :background="scope.row.img"></default-img>
+                <default-img :background="scope.row.image_url"></default-img>
               </div>
-              <div class="goods-name" v-text="scope.row.name">
+              <div class="goods-name" v-text="scope.row.pro_name">
               </div>  
             </div>
           </template>
         </el-table-column>
-        <el-table-column property="name" label="单价（元）"></el-table-column>
-        <el-table-column property="address" label="库存"></el-table-column>
+        <el-table-column property="pro_price" label="单价（元）"></el-table-column>
+        <el-table-column property="stockTotal" label="库存"></el-table-column>
         <el-table-column label="操作">
           <template scope="scope">
             <el-button type="primary" @click="selectedData">选取</el-button>
@@ -34,9 +34,9 @@
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page.sync="currentPage"
-            :page-size="100"
+            :page-size="gridData.page.pageSize"
             layout="prev, pager, next, jumper"
-            :total="1000">
+            :total="gridData.page.rowCount">
         </el-pagination>
       </div>
     </el-dialog>
@@ -52,37 +52,47 @@ export default {
           restaurants: [],
           state4: '',
           timeout:  null,
-            gridData: [{
-                date: '2016-05-02',
-                name: '苹果 iPhone 7 国行全网通4G手机',
-                img:'',
-                address: '上海市普陀区金沙江路 1518 弄'
-            }, {
-                date: '2016-05-04',
-                name: '苹果 iPhone 7 国行全网通4G手机',
-                img:'',
-                address: '上海市普陀区金沙江路 1518 弄'
-            }, {
-                date: '2016-05-01',
-                name: '王小虎',
-                img:'',
-                address: '上海市普陀区金沙江路 1518 弄'
-            }, {
-                date: '2016-05-03',
-                name: '王小虎',
-                img:'',
-                address: '上海市普陀区金沙江路 1518 弄'
-            }],
-            isShow: false,
-            currentPage:1,
+          gridData: [],
+          isShow: false,
+          pageNum:1,
+          defaultProId:'',
+          shopId:'',
+          proName:'',
         }
+    },
+    watch:{
+      isShow(){
+        let _this = this;
+        DFshop.method.mallGroupBuyGetProduct({
+          'defaultProId':_this.defaultProId,
+          'shopId':_this.shopId,
+          'proName':_this.proName,
+          'curPage':_this.pageNum,
+          'success'(data){
+            _this.gridData = data.data;
+            console.log(_this.gridData);
+          }
+        });
+      }
     },
     methods:{
         handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
         },
         handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
+          this.pageNum = val;
+          let _this = this;
+          DFshop.method.mallGroupBuyGetProduct({
+            'defaultProId':_this.defaultProId,
+            'shopId':_this.shopId,
+            'proName':_this.proName,
+            'curPage':_this.pageNum,
+            'success'(data){
+              _this.gridData = data.data;
+              console.log(_this.gridData);
+            }
+          });
+          console.log(`当前页: ${val}`);
         },
         selectedData(){
             let _this = this;
@@ -98,6 +108,7 @@ export default {
         },
         querySearchAsync(queryString, cb) {
           var restaurants = this.restaurants;
+          debugger
           var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
 
           clearTimeout(this.timeout);
@@ -115,7 +126,8 @@ export default {
         }
     },
     mounted() {
-      this.restaurants = this.loadAll();
+      // let _this = this;
+      //   _this.restaurants = _this.loadAll();
     }
    
 }

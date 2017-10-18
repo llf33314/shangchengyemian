@@ -9,13 +9,9 @@
     </div>
     <div class="addGruop-main">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-            <el-form-item label="所属店铺 :" prop="shop">
-                <el-select v-model="ruleForm.region" placeholder="请选择活动区域" class="addGruop-input">
-                    <el-option 
-                      :label="option.lable" 
-                      :value="option.value"
-                      :key="option.key"
-                      v-for="option in options">
+            <el-form-item label="所属店铺 :" prop="shopId">
+                <el-select v-model="ruleForm.shopId" placeholder="请选择店铺" class="addGruop-input">
+                    <el-option :label="option.sto_name" :value="option.id" :key="option.id" v-for="option in shopList">
                     </el-option>
                 </el-select>
             </el-form-item>
@@ -25,29 +21,36 @@
                 <el-button type="primary" @click="showDialog">替换商品</el-button>
                 <p class="p-warn">如需修改商品信息，请在商品管理中更新</p>
             </el-form-item>
-            <el-form-item label="活动名称 :" prop="name">
-                <el-input v-model="ruleForm.name" class="addGruop-input"></el-input>
+            <el-form-item label="活动名称 :" prop="gName">
+                <el-input v-model="ruleForm.gName" class="addGruop-input"></el-input>
                 <p class="p-warn">最多可输入50位汉字或100位字符</p>
             </el-form-item>
-            <el-form-item label="团购价 :" prop="delivery">
-                 <el-input v-model="ruleForm.delivery " class="addGruop-input">
+            <el-form-item label="团购价 :" prop="gPrice">
+                 <el-input v-model="ruleForm.gPrice " class="addGruop-input">
                      <template slot="prepend">¥</template>
                  </el-input>
                  <p class="p-warn">0/8</p>
             </el-form-item>
-            <el-form-item label="活动时间 :" prop="date">
-                <el-date-picker
-                    v-model="ruleForm.data"
-                    type="daterange"
-                    placeholder="选择日期范围">
+            <el-form-item label="开始时间 :" prop="gStartTime">
+                <el-date-picker v-model="ruleForm.gStartTime" type="datetime"
+                    placeholder="选择开始时间" :picker-options="pickerOptions1">
                 </el-date-picker>
             </el-form-item>
-            <el-form-item label="参团人数 :" prop="desc">
-                <el-input  v-model="ruleForm.desc" class="addGruop-input"></el-input>
+            <el-form-item label="结束时间 :" prop="gEndTime">
+                <el-date-picker v-model="ruleForm.gEndTime" type="datetime"
+                    placeholder="选择结束时间" :picker-options="pickerOptions1">
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item label="参团人数 :" prop="gPeopleNum">
+                <el-input  v-model="ruleForm.gPeopleNum" class="addGruop-input"></el-input>
                 <p class="p-warn">0/8</p>
             </el-form-item>
-             <el-form-item label="商品限购 :" >
-                <el-switch on-text="开启" off-text="关闭" v-model="ruleForm.off"></el-switch>
+            <el-form-item label="商品限购 :">
+                <el-switch on-text="开启" off-text="关闭" v-model="off"></el-switch>
+            </el-form-item>
+            <el-form-item label="限购规则 :" prop="gMaxBuyNum" v-if="off">
+                <el-input v-model="ruleForm.gMaxBuyNum" class="addGruop-input"></el-input>
+                <span>件/人</span>
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
@@ -68,76 +71,53 @@ export default {
   },
   data() {
     return {
-      ruleForm: {
-        shop:'',
-        name: '',
-        region: '',
-        date:'',
-        delivery: '',
-        type: [],
-        resource: '',
-        desc: '',
-        off:false
+      pickerOptions1: {
+          shortcuts: [{
+            text: '今天',
+            onClick(picker) {
+              picker.$emit('pick', new Date());
+            }
+          }]
       },
+      ruleForm: {
+        shopId:'',
+        gName: '',
+        region: '',
+        gStartTime:'',
+        gEndTime:'',
+        gPrice: '',
+        type: [],
+        gPeopleNum: 0,
+        gMaxBuyNum:0
+      },
+      off:false,
       rules: {
-        shop:[
+        shopId:[
           { required: true, message: '所属店铺不能为空', trigger: 'blur' },
         ],
-        name: [
-          { required: true, message: '所属店铺不能为空', trigger: 'blur' },
+        gName: [
+          { required: true, message: '活动名称不能为空', trigger: 'blur' },
         ],
         region: [
           { required: true, message: '活动商品不能为空', trigger: 'change' }
         ],
-        date: [
-          { type: 'date', required: true, message: '活动时间不能为空', trigger: 'change' }
+        gStartTime: [
+          { type: 'date', required: true, message: '开始时间不能为空', trigger: 'change' }
+        ],
+        gEndTime: [
+          { type: 'date', required: true, message: '结束时间不能为空', trigger: 'change' }
         ],
         type: [
           { type: 'array', required: true, message: '活动名称不能为空', trigger: 'change' }
         ],
-        resource: [
-          { required: true, message: '请选择活动资源', trigger: 'change' }
-        ],
-        desc: [
+        gPeopleNum: [
           { required: true, message: '参团人数不能为空', trigger: 'blur' }
         ],
-        delivery: [
+        gPrice: [
           { required: true, message: '团购价不能为空', trigger: 'blur' }
         ]
       },
-      options:[{
-        lable:'广东谷通科技1',
-        value:'1'
-      },
-      {
-        lable:'广东谷通科技2',
-        value:'2'
-      },
-      {
-        lable:'广东谷通科技3',
-        value:'3'
-      }],
-      gridData: [{
-        date: '2016-05-02',
-        name: '苹果 iPhone 7 国行全网通4G手机',
-        img:'',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '苹果 iPhone 7 国行全网通4G手机',
-        img:'',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        img:'',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        img:'',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }],
+      shopList:[],
     };
   },
   methods: {
@@ -156,8 +136,39 @@ export default {
     },
     showDialog(){
       this.$refs.goodsDialog.isShow=true;
+      this.$refs.goodsDialog.shopId=this.ruleForm.shopId;
+      this.$refs.goodsDialog.defaultProId = this.ruleForm.id;
+    },
+    mallGroupBuyInfo(id){
+      let _this= this;
+      Lib.M.ajax({
+        'url': DFshop.activeAPI.mallGroupBuyInfo_post,
+        'data':{
+          id : id 
+        },
+        'success':function (data){
+           _this.ruleForm = data.data;
+           if(data.data.gMaxBuyNum === 0){
+             _this.off = false;
+           }else{
+             _this.off = true;
+           }
+           console.log(_this.off)
+        }
+      });
     }
   },
+  mounted(){
+    let _this = this;
+    if(_this.$route.params.id != 0){
+      _this.mallGroupBuyInfo(_this.$route.params.id);
+    }
+    DFshop.method.storeList({
+      'success'(data){
+        _this.shopList = data.data;
+      }
+    });
+  }
 }
 </script>
 
