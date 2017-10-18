@@ -3,13 +3,13 @@
     <div class="goods-content">
         <div class="Data-goods">
             <div class="goods-img">
-            <default-img :background="''"></default-img>
+            <default-img :background="boxdata.image_url"></default-img>
             </div>
-            <div class="goods-name" style="width:170px;">苹果 iPhone 7 国行全网通4G手机
-            </div>  
+            <div class="goods-name" style="width:170px;">{{boxdata.pro_name}}
+            </div> 
         </div>
-        <p class="goods-txt">单价（元）：5858.00 </p>
-        <p class="goods-txt">库存：12</p>
+        <p class="goods-txt">单价（元）：{{boxdata.pro_price}} </p>
+        <p class="goods-txt">库存：{{boxdata.stockTotal}}</p>
     </div>
 </div>  
 </template>
@@ -17,16 +17,31 @@
 <script>
 import defaultImg from 'components/defaultImg';
 export default {
+    props:['boxdata'],
     components:{
         defaultImg
     },
     data() {
         return  {
-
+            data:'',
         }
     },
     methods:{
-        
+
+    },
+    mounted(){
+        // let _this = this;
+        // DFshop.method.mallGetSpecificaByProId({
+        //   'proId':_this.proId,
+        // //   'shopId':_this.shopId,
+        // //   'proName':_this.proName,
+        // //   'curPage':_this.pageNum,
+        //   'success'(data){
+        //     _this.data = data.data;
+        //     console.log(_this.data,'222');
+        //   }
+        // });
+        console.log(this.boxData,'boxData')
     }
 }
 </script>

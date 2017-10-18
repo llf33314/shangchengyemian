@@ -147,8 +147,12 @@ import common from './common';
     mallGroupBuyDelete_post:DFshop.env.activeAPI+'/mallGroupBuy/delete',
     /*获取团购信息 */
     mallGroupBuyInfo_post:DFshop.env.activeAPI+'/mallGroupBuy/groupBuyInfo',
-    /*获取团购活动商品列表 */
+    /*根据店铺id获取活动商品列表 */
     mallGroupBuyGetProduct_post:DFshop.env.activeAPI+'/mallGroupBuy/getProductByGroup',
+    /*根据商品id获取商品规格、库存 */
+    mallGetSpecificaByProId_post:DFshop.env.activeAPI+'/mallGroupBuy/getSpecificaByProId',
+    /*保存团购信息 */
+    mallGroupBuySave_post:DFshop.env.activeAPI+'/mallGroupBuy/save',
   };
 
   /*公共方法***********************************************************************************************************/
@@ -265,6 +269,20 @@ import common from './common';
           shopId:opt.shopId,
           proName:opt.proName,
           curPage:opt.pageNum
+        },
+        'success':function (data){
+            if(typeof opt.success == 'function') opt.success(data);
+        }
+      });
+    },
+    mallGetSpecificaByProId(opt){
+      common.ajax({
+        'url': DFshop.activeAPI.mallGetSpecificaByProId_post,
+        'data':{
+          proId:opt.proId
+          // isSpec:opt.isSpec,
+          // seckillId:opt.seckillId,
+          // type:opt.type
         },
         'success':function (data){
             if(typeof opt.success == 'function') opt.success(data);

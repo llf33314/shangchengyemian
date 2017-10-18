@@ -147,7 +147,6 @@ export default {
         },
         'success':function (data){
            _this.tableData = data.data;
-           console.log(_this.tableData)
            $.each(_this.tableData.page.subList,function(i){
              let oldTime = this.createTime;
              this.createTime = Lib.M.format(oldTime);

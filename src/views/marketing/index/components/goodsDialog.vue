@@ -1,13 +1,9 @@
 <template>
   <el-dialog title="选择活动商品" :visible.sync="isShow">
       <div class="addGruop-search">
-        <el-autocomplete
-          v-model="proName"
-          :fetch-suggestions="querySearchAsync"
-          placeholder="请输入内容"
-          @select="handleSelect"
-          icon="search"
-        ></el-autocomplete>
+        <el-autocomplete v-model="proName" placeholder="请输入内容" icon="search" >
+        <!-- :fetch-suggestions="querySearchAsync" @select="handleSelect" -->
+        </el-autocomplete>
       </div>
       <el-table :data="gridData.page.subList">
         <el-table-column label="商品" width="250">
@@ -25,7 +21,7 @@
         <el-table-column property="stockTotal" label="库存"></el-table-column>
         <el-table-column label="操作">
           <template scope="scope">
-            <el-button type="primary" @click="selectedData">选取</el-button>
+            <el-button type="primary" @click="selectedData(scope.row)">选取</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -33,7 +29,7 @@
         <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
-            :current-page.sync="currentPage"
+            :current-page.sync="pageNum"
             :page-size="gridData.page.pageSize"
             layout="prev, pager, next, jumper"
             :total="gridData.page.rowCount">
@@ -58,6 +54,7 @@ export default {
           defaultProId:'',
           shopId:'',
           proName:'',
+          
         }
     },
     watch:{
@@ -94,36 +91,38 @@ export default {
           });
           console.log(`当前页: ${val}`);
         },
-        selectedData(){
+        selectedData(pro){
             let _this = this;
             _this.isShow = false;
+            // _this.proId = proIdp.Id;
+            _this.$emit('dialogData',pro)
         },
-        loadAll() {
-          return [
-            { "value": "三全鲜食（北新泾店）", "address": "长宁区新渔路144号" },
-            { "value": "Hot honey 首尔炸鸡（仙霞路）", "address": "上海市长宁区淞虹路661号" },
-            { "value": "新旺角茶餐厅", "address": "上海市普陀区真北路988号创邑金沙谷6号楼113" },
-            { "value": "泷千家(天山西路店)", "address": "天山西路438号" }
-          ];
-        },
-        querySearchAsync(queryString, cb) {
-          var restaurants = this.restaurants;
-          debugger
-          var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
+        // loadAll() {
+        //   return [
+        //     { "value": "三全鲜食（北新泾店）", "address": "长宁区新渔路144号" },
+        //     { "value": "Hot honey 首尔炸鸡（仙霞路）", "address": "上海市长宁区淞虹路661号" },
+        //     { "value": "新旺角茶餐厅", "address": "上海市普陀区真北路988号创邑金沙谷6号楼113" },
+        //     { "value": "泷千家(天山西路店)", "address": "天山西路438号" }
+        //   ];
+        // },
+        // querySearchAsync(queryString, cb) {
+        //   var restaurants = this.restaurants;
+        //   debugger
+        //   var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
 
-          clearTimeout(this.timeout);
-          this.timeout = setTimeout(() => {
-            cb(results);
-          }, 3000 * Math.random());
-        },
-        createStateFilter(queryString) {
-          return (state) => {
-            return (state.value.indexOf(queryString.toLowerCase()) === 0);
-          };
-        },
-        handleSelect(item) {
-          console.log(item);
-        }
+        //   clearTimeout(this.timeout);
+        //   this.timeout = setTimeout(() => {
+        //     cb(results);
+        //   }, 3000 * Math.random());
+        // },
+        // createStateFilter(queryString) {
+        //   return (state) => {
+        //     return (state.value.indexOf(queryString.toLowerCase()) === 0);
+        //   };
+        // },
+        // handleSelect(item) {
+        //   console.log(item);
+        // }
     },
     mounted() {
       // let _this = this;
