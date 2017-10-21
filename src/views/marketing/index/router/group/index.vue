@@ -65,15 +65,6 @@
               <el-button size="small" @click="deleteData(scope.row.id)" 
                 v-if="scope.row.status != 1">删除</el-button>
             </template>
-            <!-- <template scope="scope">
-              <el-button size="small" class="buttonBlue" 
-                @click="jumpRouter('/addgroup/'+scope.row.id)">编辑</el-button>
-              <el-button size="small" class="buttonBlue"  
-                @click="InvalidData(scope.row.id)">失效</el-button>
-              <el-button size="small" class="buttonBlue" >预览</el-button>
-              <el-button size="small" @click="deleteData(scope.row.id)" 
-                v-if="scope.row.status == -1 || scope.row.status == -2">删除</el-button>
-            </template> -->
           </el-table-column>
         </el-table>
         <div class="shop-textr">

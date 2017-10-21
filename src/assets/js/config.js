@@ -153,6 +153,17 @@ import common from './common';
     mallGetSpecificaByProId_post:DFshop.env.activeAPI+'/mallGroupBuy/getSpecificaByProId',
     /*保存团购信息 */
     mallGroupBuySave_post:DFshop.env.activeAPI+'/mallGroupBuy/save',
+
+    /*超级销售员基础设置 */
+    mallSellersGetSellerSet_post:DFshop.env.activeAPI+'/mallSellers/new/getSellerSet',
+    /*保存超级销售员基础设置 */
+    mallSellersSaveSellerSet_post:DFshop.env.activeAPI+'/mallSellers/new/saveSellerSet',
+    /*商品拥金设置列表 */
+    mallSellersJoinProduct_post:DFshop.env.activeAPI+'/mallSellers/new/joinProduct',
+    /*推荐审核列表 */
+    mallSellersCheckList_post:DFshop.env.activeAPI+'/mallSellers/new/sellerCheckList',
+    /*提现列表 */
+    mallSellersWithDrawList_post:DFshop.env.activeAPI+'/mallSellers/new/withDrawList',
   };
 
   /*公共方法***********************************************************************************************************/

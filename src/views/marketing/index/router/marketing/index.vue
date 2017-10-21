@@ -10,35 +10,33 @@
       <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
         <el-tab-pane label="基本规则设置" name="1">
           <div class="common-content" style="padding: 40px 0;">
-            <el-form ref="form" :model="setupForm" label-width="90px">
+            <el-form ref="setupForm" :model="setupForm" label-width="90px">
               <el-form-item label="积分奖励 :">
                 每推荐1人关注商城公众号，可奖励
-                <el-input v-model="setupForm.integral" class="mix-input"></el-input>
+                <el-input v-model="setupForm.integralReward" class="mix-input"></el-input>
                 积分
                 <p class="p-warn">最多输入5位小数</p>
               </el-form-item>
               <el-form-item label="成为销售员 :">
                  当消费金额满
-                <el-input v-model="setupForm.salesman" class="mix-input">
+                <el-input v-model="setupForm.consumeMoney" class="mix-input">
                   <template slot="prepend">¥</template>
                 </el-input>
                 可申请成为超级销售员
                 <p class="p-warn">最多输入5位小数</p>
               </el-form-item>
               <el-form-item label="提现规则 :">
-                <el-radio-group v-model="setupForm.withdraw">
+                <el-radio-group v-model="setupForm.withdrawalType">
                   <p style="margin-bottom: 20px;">
-                    <el-radio label="1">
-                      最低可提现
-                      <el-input v-model="setupForm.withdraw1" class="mix-input">
+                    <el-radio :label="1">最低可提现
+                      <el-input v-model="setupForm.withdrawalLowestMoney" class="mix-input">
                         <template slot="prepend">¥</template>
                       </el-input>
                     </el-radio>
                   </p>
                   <p>
-                  <el-radio label="2">
-                    按
-                    <el-input v-model="setupForm.withdraw2" class="mix-input">
+                  <el-radio :label="2">按
+                    <el-input v-model="setupForm.withdrawalMultiple" class="mix-input">
                       <template slot="prepend">¥</template>
                     </el-input>倍数提现
                   </el-radio>
@@ -51,12 +49,12 @@
                   type="textarea"
                   :rows="3"
                   placeholder="请输入内容"
-                  v-model="setupForm.explain"
+                  v-model="setupForm.sellerRemark"
                   style="width:358px;">
                 </el-input>
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" @click="onSubmit">保存</el-button>
+                <el-button type="primary" @click="onSubmit('setupForm')">保存</el-button>
               </el-form-item>
             </el-form>
           </div>
@@ -67,26 +65,17 @@
               <div class="index-input-box">
                 <span>
                   选择店铺 :
-                  <el-select v-model="bondShop" placeholder="请选择">
-                    <el-option
-                      class="max-input"
-                      v-for="item in options"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
+                  <el-select v-model="shopId" placeholder="请选择" @change="searchChose">
+                    <el-option class="max-input" v-for="item in shopList"
+                      :key="item.id" :label="item.sto_name" :value="item.id">
                     </el-option>
                   </el-select>
                 </span>
                 <span>
                   活动状态 :
-                  <el-select v-model="bondStatu" placeholder="请选择">
-                    <el-option
-                      class="max-input"
-                      v-for="item in options"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>
+                  <el-select v-model="isUse" placeholder="请选择" @change="searchChose">
+                    <el-option class="max-input" label="已禁用" :value="0"></el-option>
+                    <el-option class="max-input" label="已启用" :value="1"></el-option>
                   </el-select>
                 </el-col>
                 </span>
@@ -97,30 +86,28 @@
                 >新建商品佣金</el-button>
               </router-link>
              </div>
-              <el-table
-                :data="goodsData"
-                style="width: 100%">
+              <el-table :data="goodsData.page.subList" style="width: 100%">
                 <el-table-column
-                  prop="name"
+                  prop="pro_name"
                   label="商品名称">
                 </el-table-column>
                 <el-table-column
-                  prop="shop"
+                  prop="shopName"
                   label="所属店铺">
                 </el-table-column>
                 <el-table-column
                   label="活动状态">
                    <template scope="scope">
-                     <span v-if="scope.row.statu === 1">
+                     <span v-if="scope.row.is_use === 1">
                        已启动
                      </span>
-                     <span v-if="scope.row.statu === 2">
+                     <span v-if="scope.row.is_use === 0">
                        已禁用
                      </span>
                    </template>
                 </el-table-column>
                 <el-table-column
-                  prop="date"
+                  prop="create_time"
                   label="创建时间">
                 </el-table-column>
                 <el-table-column
@@ -164,9 +151,7 @@
                 icon="search"
               ></el-autocomplete>
             </div>
-            <el-table
-              :data="examineData"
-              style="width: 100%">
+            <el-table :data="examineData.page.subList" style="width: 100%">
               <el-table-column
                 prop="name"
                 label="姓名">
@@ -180,13 +165,16 @@
                 label="推荐人">
               </el-table-column>
               <el-table-column
-                prop="date"
+                prop="apply_time"
                 label="推荐时间">
               </el-table-column>
               <el-table-column
                 label="审核状态">
                 <template scope="scope">
-                      审核中
+                  <span v-if="scope.row.check_status == 0">未审核</span>
+                  <span v-if="scope.row.check_status == 1">审核通过</span>
+                  <span v-if="scope.row.check_status == -1">审核不通过</span>
+                  <span v-if="scope.row.check_status == -2">待审核销售员</span>
                 </template>
               </el-table-column>
               <el-table-column
@@ -294,11 +282,9 @@
                 </span>
               </div>
             </div>
-            <el-table
-              :data="saleData"
-              style="width: 100%">
+            <el-table :data="saleData.page.subList" style="width: 100%">
               <el-table-column
-                prop="name"
+                prop="applay_time"
                 label="提现时间">
               </el-table-column>
               <el-table-column
@@ -310,16 +296,18 @@
                 label="手机">
               </el-table-column>
               <el-table-column
-                prop="money"
+                prop="withdraw_money"
                 label="提现金额（元）">
               </el-table-column>
               <el-table-column
-                prop="money"
+                prop="withdraw_order_no"
                 label="订单号">
               </el-table-column>
-              <el-table-column
-                prop="money"
-                label="状态">
+              <el-table-column label="状态">
+                <template scope="scope">
+                  <span v-if="scope.row.withdraw_status == 1">待打款</span>
+                  <span v-if="scope.row.withdraw_status == 2">已打款</span>
+                </template>
               </el-table-column>
             </el-table>
             <content-no></content-no>
@@ -347,34 +335,29 @@ export default {
       cashDate: [],
       cashShop:'',
       setupForm: {
-        integral: '',//积分
-        salesman: '',//销售员
-        withdraw: 1,//提现
-        withdraw1:'',//最低提现
-        withdraw2:'',//按倍数提现
-        explain: '',//说明
+        integralReward: '',//积分
+        consumeMoney: '',//销售员
+        withdrawalType: 1,//提现
+        withdrawalLowestMoney:'',//最低提现
+        withdrawalMultiple:'',//按倍数提现
+        sellerRemark: '',//说明
       },
-      goodsData: [{
-        date: '2016-05-02',
-        name: '手机',
-        shop: '谷通科技2',
-        statu: 1
-      }, {
-        date: '2016-05-04',
-        name: '黑色毛衣',
-        shop: '谷通科技1',
-        statu: 2
-      }, {
-        date: '2016-05-01',
-        name: '帽子',
-        shop: '谷通科技6',
-        statu: 1
-      }, {
-        date: '2016-05-03',
-        name: '裙子',
-        shop: '谷通科技8',
-        statu: 2
-      }],
+      goodsData: {
+        page:{
+          subList:[],
+        }
+      },
+      shopList: [],
+      examineData: {
+        page:{
+          subList:[],
+        }
+      },
+      saleData:{
+        page:{
+          subList:[],
+        }
+      },
       options: [{
         value: '选项1',
         label: '黄金糕'
@@ -382,65 +365,8 @@ export default {
         value: '选项2',
         label: '双皮奶'
       }],
-      examineData: [{
-        date: '2016-05-02',
-        name: '手机',
-        man: '谷通科技2',
-        phone:'10101010101'
-      }, {
-        date: '2016-05-04',
-        name: '黑色毛衣',
-        man: '谷通科技1',
-        phone:'10101010102'
-      }, {
-        date: '2016-05-01',
-        name: '帽子',
-        man: '谷通科技6',
-        phone:'10101010103'
-      }, {
-        date: '2016-05-03',
-        name: '裙子',
-        man: '谷通科技8',
-        phone:'10101010104'
-      }],
-      saleData:[{
-        date: '2016-05-02',
-        name: '手机',
-        man: '谷通科技2',
-        phone:'10101010101',
-        jifeng:'0',
-        money:'0.00'
-      }, {
-        date: '2016-05-04',
-        name: '黑色毛衣',
-        man: '谷通科技1',
-        phone:'10101010102',
-        jifeng:'0',
-        money:'0.00'
-      }, {
-        date: '2016-05-01',
-        name: '帽子',
-        man: '谷通科技6',
-        phone:'10101010103',
-        jifeng:'0',
-        money:'0.00'
-      }, {
-        date: '2016-05-03',
-        name: '裙子',
-        man: '谷通科技8',
-        phone:'10101010104',
-        jifeng:'0',
-        money:'0.00'
-      }],
-      options: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }],
-      bondShop:'',
-      bondStatu:'',
+      shopId:'',
+      isUse:'',
       restaurants: [],
       state4: '',
       timeout:  null,
@@ -458,8 +384,23 @@ export default {
     }
   },
   methods: {
-    onSubmit() {
-        console.log('submit!');
+    onSubmit(formName) {
+      //onsole.log('submit!');
+      let _this= this;
+      let param = {};
+      param = _this.$refs[formName].model;
+      param = encodeURI(_this.$refs[formName].model.sellerRemark);
+      Lib.M.ajax({
+        'url': DFshop.activeAPI.mallSellersSaveSellerSet_post,
+        'data':{sellerSet:param},
+        'success':function (data){
+           _this.$message({
+              message: '保存成功',
+              type: 'success'
+          });
+          _this.jumpRouter('/marketing/1');
+        }
+      });
     },
     handleEdit(index, row) {
       console.log(index, row);
@@ -556,12 +497,97 @@ export default {
     },
     handleSelect(item) {
       console.log(item);
+    },
+    searchChose(){
+      this.mallSellersJoinProduct(1);
+    },
+    mallSellersGetSellerSet(){//超级销售员基础设置
+      let _this= this;
+      Lib.M.ajax({
+        'url': DFshop.activeAPI.mallSellersGetSellerSet_post,
+        'success':function (data){
+           _this.setupForm = data.data.sellerSet;
+           console.log(_this.setupForm,'setupForm')
+        }
+      });
+    },
+    mallSellersJoinProduct(pageNum){//商品佣金设置列表
+      let _this= this;
+      Lib.M.ajax({
+        'url': DFshop.activeAPI.mallSellersJoinProduct_post,
+        'data':{
+            curPage : pageNum,
+            shopId : _this.shopId,
+            isUse : _this.isUse
+        },
+        'success':function (data){
+           _this.goodsData = data.data;
+           $.each(_this.goodsData.page.subList,function(i){
+             let oldTime = this.create_time;
+             this.create_time = Lib.M.format(oldTime);
+           });
+           console.log(_this.goodsData,'goodsData')
+        }
+      });
+    },
+    mallSellersCheckList(pageNum){//推荐审核列表
+      let _this= this;
+      Lib.M.ajax({
+        'url': DFshop.activeAPI.mallSellersCheckList_post,
+        'data':{
+            curPage : pageNum,
+            keyWord : _this.keyWord
+        },
+        'success':function (data){
+           _this.examineData = data.data;
+           $.each(_this.examineData.page.subList,function(i){
+             let oldTime = this.apply_time;
+             this.apply_time = Lib.M.formatNot(oldTime);
+           });
+           console.log(_this.examineData,'examineData')
+        }
+      });
+    },
+    mallSellersWithDrawList(pageNum){//提现列表
+      let _this= this;
+      let startTime = '';
+      let endTime = '';
+
+      Lib.M.ajax({
+        'url': DFshop.activeAPI.mallSellersWithDrawList_post,
+        'data':{
+            curPage : pageNum,
+            keyWord : _this.keyWord_tixian,
+            startTime : startTime,
+            endTime : endTime
+        },
+        'success':function (data){
+           _this.saleData = data.data;
+           $.each(_this.saleData.page.subList,function(i){
+             let oldTime = this.applay_time;
+             this.apply_time = Lib.M.format(oldTime);
+           });
+           console.log(_this.saleData,'saleData')
+        }
+      });
     }
   },
   
   mounted(){
-    this.activeName = this.$route.params.activeName;
-    this.restaurants = this.loadAll();
+    let _this = this;
+    _this.activeName = _this.$route.params.activeName;
+    _this.restaurants = _this.loadAll();
+
+    DFshop.method.storeList({
+      'success'(data){
+        _this.shopList = data.data;
+        console.log(_this.shopList,'shopList')
+      }
+    });
+    _this.mallSellersGetSellerSet();
+    _this.mallSellersJoinProduct(1);
+    _this.mallSellersCheckList(1);
+    _this.mallSellersWithDrawList(1);
   },
   // destroyed () {
   //   console.log(1,'11*************');
