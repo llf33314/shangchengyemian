@@ -142,8 +142,10 @@ export default {
   },
   methods: {
     handleClick(tab, event) {
-      this.contentNo = tab.name
-      this.jumpRouter('/'+tab.name);
+      this.contentNo = tab.name;
+      console.log(tab.name,'tab');
+      this.jumpRouter('/logistics/'+tab.name);
+      //this.activeName = tab.name;
     },
     // handleEdit(index, row) {
     //   console.log(index, row);
@@ -244,8 +246,9 @@ export default {
   mounted(){
     this.mallFreightList(1);
     this.mallFreightTakeList(1);
-    let _href = window.location.hash.split('/')[1];
+    let _href = window.location.hash.split('/')[2];
     this.activeName = _href;
+    console.log(this.activeName);
   }
 }
 </script>

@@ -2,7 +2,7 @@
 <div class="index-wrapper" v-cloak>
     <el-tabs v-model="activeName"  @tab-click="handleClick">
       <el-tab-pane label="担保交易" name="danbao"></el-tab-pane>
-      <el-tab-pane label="物流管理" name="logistics"></el-tab-pane>
+      <el-tab-pane label="物流管理" name="logistics/logistics"></el-tab-pane>
       <el-tab-pane label="通用设置" name="setup"></el-tab-pane>
       <el-tab-pane label="消息模板" name="message"></el-tab-pane>
     </el-tabs>
@@ -25,11 +25,8 @@ export default {
   },
   methods: {
     handleClick(tab) {
-      if(tab.name === 'logistics'){
-        this.$router.push({path:tab.name+'/logistics'});
-      }else{
-        this.$router.push({path:tab.name});
-      }
+      
+      this.$router.push({path:'/'+tab.name});
     }
   },
   mounted(){

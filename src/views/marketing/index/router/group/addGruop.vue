@@ -10,7 +10,7 @@
     <div class="addGruop-main">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
             <el-form-item label="所属店铺 :" prop="shopId">
-                <el-select v-model="ruleForm.shopId" placeholder="请选择店铺" class="addGruop-input">
+                <el-select v-model="ruleForm.shopId" v-bind:disabled="disabledShop" placeholder="请选择店铺" class="addGruop-input">
                     <el-option :label="option.sto_name" :value="option.id" :key="option.id" v-for="option in shopList">
                     </el-option>
                 </el-select>
@@ -26,41 +26,45 @@
                 <p class="p-warn">最多可输入50位汉字或100位字符</p>
             </el-form-item>
             <el-form-item label="团购价 :" prop="gPrice">
-                <el-input v-model="ruleForm.gPrice " class="addGruop-input">
+                <el-input v-model="ruleForm.gPrice " class="addGruop-input" v-if="ruleForm.isSpecifica == 0">
                     <template slot="prepend">¥</template>
                 </el-input>
-                <p class="p-warn">0/8</p>
-                <template scope="scope">
-                  <el-table :data="ruleForm.priceList" style="width: 100%">
-                    <el-table-column prop="date" label="颜色" width="180"></el-table-column>
-                    <el-table-column prop="name" label="尺寸" width="180"></el-table-column>
-                    <el-table-column prop="address" label="原价（元）"></el-table-column>
-                    <el-table-column label="拼团价（元）" width="180">
-                      <template scope="scope">
-                        <el-input v-model="scope.row.groupPrice" class="addGruop-input" style="width:130px;">
+                <p class="p-warn" v-if="ruleForm.isSpecifica == 0">0/8</p>
+                <div class="data-container" style="width: 100%" v-if="ruleForm.isSpecifica == 1">
+                <el-table ref="multipleTable" :data="specArrList" style="width: 100%">
+                  <el-table-column v-for="item in table" :prop="item.prop" :label="item.label"
+                     min-width="170" align="center" :key="item.prop">
+                    <template scope="scope">
+                      <div v-for="data in scope.row.specList" :key="data.id">
+                        <span v-if="item.label == data.specificaName">{{data.specificaValue}}</span>
+                      </div>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="invPrice" label="原价（元）" min-width="170" align="center">
+                  </el-table-column>
+                  <el-table-column label="拼团价（元）" min-width="170" align="center">
+                    <template scope="scope">
+                      <el-input v-model="scope.row.groupPrice" class="addGruop-input" style="width:130px;">
                           <template slot="prepend">¥</template>
-                        </el-input>
-                      </template>
-                    </el-table-column>
-                    <el-table-column prop="invenId" label="库存" width="180"></el-table-column>
-                    <el-table-column label="参与团购">
-                      <template scope="scope">
-                        <el-checkbox v-model="scope.row.isJoinGroup">设为参团</el-checkbox>
-                      </template>
-                    </el-table-column>
-                  </el-table>
-                </template>
+                      </el-input>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="invNum" label="库存" min-width="150" align="center">
+                  </el-table-column>
+                  <el-table-column label="参与团购" min-width="100" align="center">
+                    <template scope="scope">
+                      <!-- <el-tag :type="scope.row.status === 1 ? 'success' : 'danger'">{{scope.row.status===1?'运行中':'关闭'}}</el-tag> -->
+                      <el-checkbox v-model="setJoinGroup[scope.$index]"></el-checkbox><span>设为参团</span>
+                    </template>
+                  </el-table-column>
+                </el-table>
+                </div>
             </el-form-item>
             <el-form-item label="活动时间 :" prop="getTime">
                 <el-date-picker v-model="ruleForm.gStartTime" type="datetimerange"
                     placeholder="选择时间" :picker-options="pickerOptions1">
                 </el-date-picker>
             </el-form-item>
-            <!-- <el-form-item label="结束时间 :" prop="gEndTime">
-                <el-date-picker v-model="ruleForm.gEndTime" type="datetime"
-                    placeholder="选择结束时间" :picker-options="pickerOptions1">
-                </el-date-picker>
-            </el-form-item> -->
             <el-form-item label="参团人数 :" prop="gPeopleNum">
                 <el-input  v-model="ruleForm.gPeopleNum" class="addGruop-input"></el-input>
                 <p class="p-warn">0/8</p>
@@ -68,13 +72,13 @@
             <el-form-item label="商品限购 :">
                 <el-switch on-text="开启" off-text="关闭" v-model="off"></el-switch>
             </el-form-item>
-            <el-form-item label="限购规则 :" prop="gMaxBuyNum" v-if="off">
+            <el-form-item label="限购规则 :" v-if="off" prop="gMaxBuyNum">
                 <el-input v-model="ruleForm.gMaxBuyNum" class="addGruop-input"></el-input>
                 <span>件/人</span>
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
-                <el-button @click="resetForm('ruleForm')">取消</el-button>
+                <el-button @click="returnPage()">取消</el-button>
             </el-form-item>
         </el-form>
     </div>
@@ -90,7 +94,52 @@ export default {
     goodsBox,goodsDialog
   },
   data() {
+    var formShopId = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('请选择店铺'));
+      }else {
+          callback();
+      }
+    };
+    var formGname = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('活动名称不能为空'));
+      }else {
+          callback();
+      }
+    };
+
+    var formStartTime = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('请选择活动时间'));
+      }else {
+          callback();
+      }
+    };
+    var formPeopleNum = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('参团人数不能为空'));
+      }else {
+          callback();
+      }
+    };
+    var formPrice = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('团购价不能为空'));
+      }else {
+          callback();
+      }
+    };
+    var formMaxBuyNum = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('请选择店铺'));
+      }else {
+          callback();
+      }
+    };
     return {
+      setJoinGroup:[],
+      table: [],
       pickerOptions1: {
           shortcuts: [{
             text: '今天',
@@ -106,11 +155,13 @@ export default {
         gStartTime:'',
         gEndTime:'',
         gPrice: '',
-        type: [],
         gPeopleNum: 0,
         gMaxBuyNum:0,
         priceList:[],
         productId:'',
+        isJoinGroup:'',
+        isSpecifica:0,
+        productId:''
       },
       off:false,
       proId:'',
@@ -118,62 +169,98 @@ export default {
       isReplacePro:'',
       rules: {
         shopId:[
-          { required: true, message: '所属店铺不能为空', trigger: 'blur' },
+          {validator: formShopId, trigger: 'change' },
         ],
         gName: [
-          { required: true, message: '活动名称不能为空', trigger: 'blur' },
+          {validator: formGname, trigger: 'blur' },
         ],
-        region: [
-          { required: true, message: '活动商品不能为空', trigger: 'change' }
-        ],
+        // region: [
+        //   { required: true, message: '活动商品不能为空', trigger: 'change' }
+        // ],
         gStartTime: [
-          { type: 'date', required: true, message: '开始时间不能为空', trigger: 'change' }
+          {validator: formStartTime, trigger: 'change' },
         ],
-        gEndTime: [
-          { type: 'date', required: true, message: '结束时间不能为空', trigger: 'change' }
-        ],
-        type: [
-          { type: 'array', required: true, message: '活动名称不能为空', trigger: 'change' }
-        ],
+        // // gEndTime: [
+        // //   {validator: formEndTime, trigger: 'blur' },
+        // // ],
         gPeopleNum: [
-          { required: true, message: '参团人数不能为空', trigger: 'blur' }
+          {validator: formPeopleNum, trigger: 'blur' },
         ],
         gPrice: [
-          { required: true, message: '团购价不能为空', trigger: 'blur' }
+          {validator: formPrice, trigger: 'blur' },
+        ],
+        gMaxBuyNum: [
+          {validator: formMaxBuyNum, trigger: 'blur' },
         ]
       },
       shopList:[],
       boxData:{},
       specificesList:[],
+      specArrList:[],
+      disabledShop:''
     };
+  },
+  watch:{
+    setJoinGroup(val,val2){
+      var self = this;
+      self.specArrList.forEach(function(e,i){
+        self.$set(self.specArrList[i],'isJoinGroup',self.setJoinGroup[i])
+      })
+    }
   },
   methods: {
     selectDialogData(data){
-      console.log(data,'aaaaa');
+      this.isChoicePro = data.isChoicePro;
+      this.isReplacePro = data.isReplacePro;
+      this.ruleForm.isSpecifica = data.is_specifica;
+      this.ruleForm.productId = data.id;
       this.boxData = data;
+      if(this.ruleForm.isSpecifica == 1){
+        this.getSpecificaByProId(data.id);
+      }
+      
     },
     submitForm(formName) {
       let _this= this;
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!');
           let groupBuy = {};
           groupBuy = this.$refs[formName].model;
-          let specArr = [];
+          let time = this.$refs[formName].model.gStartTime;
+          groupBuy.gStartTime = Lib.M.format(new Date(time[0]));
+          groupBuy.gEndTime = Lib.M.format(new Date(time[1]));
+          groupBuy.gName = encodeURI(this.$refs[formName].model.gName);
+          groupBuy.productId = this.$refs[formName].model.productId;
 
+          console.log(groupBuy,'111');
+          let _speciList = [];
+          //_speciList.push(this.$refs[formName].model.priceList);
+          for(var k = 0;k < _this.specArrList.length;k++){
+            let arr = {};
+            if(_this.specArrList[k].priceId != ''){
+              arr.id = _this.specArrList[k].priceId;
+            }
+            arr.groupPrice = _this.specArrList[k].groupPrice;
+            arr.invenId = _this.specArrList[k].id;
+            arr.specificaIds = _this.specArrList[k].specificaIds;
+            arr.isJoinGroup = Number(_this.specArrList[k].isJoinGroup);
+            _speciList.push(arr);
+          }
+          console.log(_speciList,'2223333');
+          let param = {};
+          param["groupBuy"] = groupBuy;
+          param["specArr"] = JSON.stringify(_speciList);
+          console.log(param,'speac');
           Lib.M.ajax({
             'url': DFshop.activeAPI.mallGroupBuySave_post,
-            'data':{
-              groupBuy:groupBuy,
-              specArr:specArr
-            },
+            'data':param,
             'success':function (data){
               _this.$message({
                   message: '保存成功',
                   type: 'success'
               });
               _this.jumpRouter('/group');
-              console.log(1111);
+              //console.log(1111);
             }
           });
         } else {
@@ -184,6 +271,9 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
+    },
+    returnPage(){
+      window.history.go(-1);
     },
     showDialog(){
       this.$refs.goodsDialog.isShow=true;
@@ -199,6 +289,8 @@ export default {
         },
         'success':function (data){
            _this.ruleForm = data.data;
+           _this.ruleForm.gStartTime = [data.data.gStartTime,data.data.gEndTime];
+           console.log(_this.ruleForm,'table');
            if(data.data.gMaxBuyNum === 0){
              _this.off = false;
            }else{
@@ -208,28 +300,63 @@ export default {
              pro_price : data.data.proPrice,
              pro_name : data.data.proName,
              image_url : data.data.imageUrl,
-             stockTotal : 35
+             stockTotal : data.data.proStockTotal
            }
-            DFshop.method.mallGetSpecificaByProId({
-              'proId': _this.ruleForm.productId,
-              'success'(data){
-                _this.specificesList = data.data.list;
-                 $.each(_this.specificesList,function(i){
-                  console.log(_this.specificesList,'333')
-                });
+            _this.getSpecificaByProId(_this.ruleForm.productId);
+        }
+      });
+    },
+    getSpecificaByProId(proId){
+      let _this = this;
+      DFshop.method.mallGetSpecificaByProId({
+        'proId': proId,
+        'success'(data){
+          _this.specificesList = data.data.list;
+          if(_this.table.length > 0){
+            _this.table = [];
+          }
+          for(var m = 0;m< _this.specificesList[0].specList.length;m++){
+            let t = { prop: 'specificaValue', label: _this.specificesList[0].specList[m].specificaName };
+            _this.table.push(t);
+          }
+          if(_this.specArrList.length > 0){
+            _this.specArrList = [];
+          }
+          for(var i = 0;i < _this.specificesList.length;i++){
+            _this.specArrList.push(_this.specificesList[i]) ;
+            if(_this.ruleForm.priceList.length == 0){
+              _this.specArrList[i].isJoinGroup = true;
+              _this.specArrList[i].groupPrice = '';
+              _this.specArrList[i].priceId = '';
+            }else{
+              for(var j = 0;j < _this.ruleForm.priceList.length;j++){
+                if(_this.specArrList[i].id === _this.ruleForm.priceList[j].invenId){
+                  _this.specArrList[i].isJoinGroup = !!_this.ruleForm.priceList[j].isJoinGroup;
+                  _this.specArrList[i].groupPrice = _this.ruleForm.priceList[j].groupPrice;
+                  _this.specArrList[i].priceId = _this.ruleForm.priceList[j].id;
+                }
               }
-            });
-           
+            }
+          }
+          _this.specArrList.forEach(function(e,i){
+            _this.setJoinGroup.push(e.isJoinGroup);
+          })
+          console.log(_this.specArrList,'222');
         }
       });
     }
   },
   mounted(){
     let _this = this;
+    
     if(_this.$route.params.id != 0){
+      _this.disabledShop = true;
+
       _this.mallGroupBuyInfo(_this.$route.params.id);
+
       _this.isReplacePro = true;
     }else{
+      _this.disabledShop = false;
       _this.isChoicePro = true;
     }
     DFshop.method.storeList({
@@ -237,6 +364,7 @@ export default {
         _this.shopList = data.data;
       }
     });
+    console.log(_this.shopList,'_this.shopList');
   }
 }
 </script>

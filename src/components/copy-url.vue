@@ -3,6 +3,7 @@
 * let msg ={
     //必写
     'title':'',//标题
+    'imgUrl':'',//二维码图片链接
     'urlQR':'',//请求接口--二维码
     'pageLink':''//页面链接
     },
@@ -94,11 +95,15 @@
         let vm = this;
         vm.title = msg.title || '' ;
         vm.pageLink = msg.pageLink|| '';
+        vm.imgUrl = msg.imgUrl || ''
         //vm.urlData = .urlData || '';
         //vm.urlLink = msg.urlLink || '';
         vm.copyUrlVisible = true;
-
-        vm.erweima = msg.urlQR+"?url="+msg.pageLink;//生成二维码链接
+        if(msg.imgUrl != ''){
+          vm.erweima = msg.imgUrl;
+        }else{
+          vm.erweima = msg.urlQR+"?url="+msg.pageLink;//生成二维码链接
+        }
         //vm.linkAjax(msg.urlLink,msg.urlData);
       },
       /**

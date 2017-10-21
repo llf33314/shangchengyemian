@@ -17,11 +17,14 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column property="pro_price" label="单价（元）"></el-table-column>
-        <el-table-column property="stockTotal" label="库存"></el-table-column>
+        <el-table-column property="pro_price" label="单价（元）" width="120"></el-table-column>
+        <el-table-column property="stockTotal" label="库存" width="120"></el-table-column>
         <el-table-column label="操作">
           <template scope="scope">
-            <el-button type="primary" @click="selectedData(scope.row)">选取</el-button>
+            <el-button type="primary" @click="selectedData(scope.row)"
+            v-if="scope.row.groupStatus == -1 && scope.row.presaleStatus == -1 && scope.row.pro_type_id == 0 && 
+            scope.row.auctionStatus == -1&& scope.row.seckillStatus == -1&& scope.row.pifaStatus == -1">选取</el-button>
+            <span v-else>该商品是虚拟商品、已加入其他活动，不能加入</span>
           </template>
         </el-table-column>
       </el-table>
@@ -94,8 +97,10 @@ export default {
         selectedData(pro){
             let _this = this;
             _this.isShow = false;
-            // _this.proId = proIdp.Id;
-            _this.$emit('dialogData',pro)
+            pro.isChoicePro = false;
+            pro.isReplacePro = true;
+            _this.$emit('dialogData',pro);
+            console.log(pro,'xuanze');
         },
         // loadAll() {
         //   return [
@@ -127,6 +132,7 @@ export default {
     mounted() {
       // let _this = this;
       //   _this.restaurants = _this.loadAll();
+      
     }
    
 }
