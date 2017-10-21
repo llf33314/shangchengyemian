@@ -55,24 +55,32 @@
             prop="createTime"
             label="创建时间">
           </el-table-column>
-          <el-table-column
-            label="操作">
+          <el-table-column  label="操作">
             <template scope="scope">
-              <el-button size="small" class="buttonBlue" v-if="scope.row.status == 0" 
+              <el-button size="small" class="buttonBlue" v-if="scope.row.status == 0 || (scope.row.status == 1 && scope.row.joinId == '')" 
                 @click="jumpRouter('/addgroup/'+scope.row.id)">编辑</el-button>
-              <el-button size="small" class="buttonBlue" v-if="scope.row.status == 1" 
+              <el-button size="small" class="buttonBlue" v-if="scope.row.status == 0 || (scope.row.status == 1 && scope.row.joinId == '')" 
                 @click="InvalidData(scope.row.id)">失效</el-button>
-              <el-button size="small" class="buttonBlue" v-if="scope.row.status == 0 || scope.row.status == 1">预览</el-button>
+              <el-button size="small" class="buttonBlue" @click="preview(scope.row.twoCodePath)">预览</el-button>
+              <el-button size="small" @click="deleteData(scope.row.id)" 
+                v-if="scope.row.status != 1">删除</el-button>
+            </template>
+            <!-- <template scope="scope">
+              <el-button size="small" class="buttonBlue" 
+                @click="jumpRouter('/addgroup/'+scope.row.id)">编辑</el-button>
+              <el-button size="small" class="buttonBlue"  
+                @click="InvalidData(scope.row.id)">失效</el-button>
+              <el-button size="small" class="buttonBlue" >预览</el-button>
               <el-button size="small" @click="deleteData(scope.row.id)" 
                 v-if="scope.row.status == -1 || scope.row.status == -2">删除</el-button>
-            </template>
+            </template> -->
           </el-table-column>
         </el-table>
         <div class="shop-textr">
           <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
-            :current-page.sync="currentPage"
+            :current-page.sync="pageNum"
             :page-size="tableData.page.pageSize"
             layout="prev, pager, next, jumper"
             :total="tableData.page.rowCount">
@@ -100,6 +108,8 @@ export default {
       tableData: [],
       pageNum: 1 ,
       type:'',
+      path:'',
+      imgUrl:'',
     }
   },
   methods: {
@@ -147,6 +157,8 @@ export default {
         },
         'success':function (data){
            _this.tableData = data.data;
+           _this.path = data.path;
+           _this.imgUrl = data.imgUrl;
            $.each(_this.tableData.page.subList,function(i){
              let oldTime = this.createTime;
              this.createTime = Lib.M.format(oldTime);
@@ -170,6 +182,16 @@ export default {
            console.log(data.data)
         }
       });
+    },
+    preview(imgUrl){
+      let _this = this;
+      let msg ={
+        'title':'',
+        'imgUrl':_this.imgUrl+imgUrl,
+        'urlQR': '',
+        'pageLink': _this.path+'/views/marketing/index.html#/'
+      }
+      _this.$root.$refs.dialogQR.showDialog(msg);
     }
   },
   mounted(){

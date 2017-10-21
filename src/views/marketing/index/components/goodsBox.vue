@@ -30,18 +30,7 @@ export default {
 
     },
     mounted(){
-        // let _this = this;
-        // DFshop.method.mallGetSpecificaByProId({
-        //   'proId':_this.proId,
-        // //   'shopId':_this.shopId,
-        // //   'proName':_this.proName,
-        // //   'curPage':_this.pageNum,
-        //   'success'(data){
-        //     _this.data = data.data;
-        //     console.log(_this.data,'222');
-        //   }
-        // });
-        console.log(this.boxData,'boxData')
+        
     }
 }
 </script>
