@@ -3,119 +3,108 @@
      <div class="common-nav">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: '/' }">商城营销</el-breadcrumb-item>
-        <el-breadcrumb-item>积分商城</el-breadcrumb-item>
+        <el-breadcrumb-item>预售管理</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="common-main">
         <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
             <el-tab-pane label="预售管理" name="1" >
                 <div class="common-content">
-                <div class="index-shopInfo">
+                <div class="index-shopInfo" v-if="presaleData.isOpenPresale">
                     <div class="index-input-box">
                     <div class="p-box">
-                        <div>
+                        <div v-if="presaleData.page.rowCount > 0">
                             <span>
-                                选择门店 :
-                                <el-select v-model="goodsShop" placeholder="请选择">
-                                <el-option
-                                    class="max-input"
-                                    v-for="item in options"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
-                                </el-option>
+                                选择活动状态 :
+                                <el-select v-model="presaleType" placeholder="请选择" @change="searchPresale()">
+                                    <el-option class="max-input" label="进行中" :value="1"></el-option>
+                                    <el-option class="max-input" label="未开始" :value="-1"></el-option>
+                                    <el-option class="max-input" label="已结束" :value="2"></el-option>
                                 </el-select>
                             </span>
                             <span>
                                 选择店铺 :
-                                <el-select v-model="goodsShop" placeholder="请选择">
-                                <el-option
-                                    class="max-input"
-                                    v-for="item in options"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
-                                </el-option>
+                                <el-select v-model="shopId" placeholder="请选择" @change="searchPresale()">
+                                    <el-option class="max-input" v-for="item in shopList"
+                                        :key="item.id" :label="item.sto_name" :value="item.id">
+                                    </el-option>
                                 </el-select>
                             </span>
                         </div>
                     <span>
-                        <!-- <router-link to="/addBond"> -->
-                            <el-button 
-                            type="warning"
-                            ><i class="iconfont icon-cplay1"></i>
-                            视频教程</el-button>
-                        <!-- </router-link> -->
+                        <a :href="presaleData.videourl">
+                            <el-button type="warning" v-if="presaleData.isOpenPresale">
+                                <i class="iconfont icon-cplay1"></i>视频教程
+                            </el-button>
+                        </a>
                     </span>
                     </div>
                     </div>
-                    <router-link to="/presale/addpresale">
-                    <el-button 
-                        type="primary"
-                    >新建预售</el-button>
+                    <router-link to="/presale/addpresale" v-if="presaleData.isOpenPresale">
+                        <el-button  type="primary">新建预售</el-button>
                     </router-link>
                 </div>
-                <el-table
-                    :data="goodsData"
-                    style="width: 100%">
+                <el-table :data="presaleData.page.subList" style="width: 100%" v-if="presaleData.page.rowCount > 0">
                     <el-table-column
-                    prop="name"
+                    prop="proName"
                     label="预售商品">
                     </el-table-column>
                     <el-table-column
-                    prop="shop"
+                    prop="shopName"
                     label="所属店铺">
                     </el-table-column>
                     <el-table-column
-                    prop="date"
+                    prop="saleStartTime"
                     label="开售时间">
                     </el-table-column>
                     <el-table-column
                     label="活动状态">
                     <template scope="scope">
-                        <span v-if="scope.row.statu === 1">
-                        进行中
-                        </span>
-                        <span v-if="scope.row.statu === 2">
-                        已结束
-                        </span>
-                        <span v-if="scope.row.statu === 0">
-                        未开始
-                        </span>
+                        <span v-if="scope.row.status === 1">进行中</span>
+                        <span v-if="scope.row.status === -1">已结束</span>
+                        <span v-if="scope.row.status === 0">未开始</span>
+                        <span v-if="scope.row.status === -2">已失效</span>
                     </template>
                     </el-table-column>
                     <el-table-column
-                    prop="date"
+                    prop="createTime"
                     label="创建时间">
                     </el-table-column>
-                    <el-table-column
-                    label="操作"
-                    min-width="120">
-                    <template scope="scope">
-                        <el-button
-                        size="small"
-                        @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-                    </template>
+                    <el-table-column label="操作" min-width="120">
+                        <template scope="scope">
+                            <el-button size="small" @click="handleDelete(scope.$index, scope.row)">编辑</el-button>
+                            <el-button size="small" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                            <el-button size="small" @click="handleDelete(scope.$index, scope.row)">使失效</el-button>
+                            <el-button size="small" @click="handleDelete(scope.$index, scope.row)">预览</el-button>
+                        </template>
                     </el-table-column>
                 </el-table>
-                <content-no :show="contentNo"></content-no>
+                <div class="shop-textr">
+                    <el-pagination
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :current-page.sync="presaleData.page.curPage"
+                        :page-size="presaleData.page.pageSize"
+                        layout="prev, pager, next, jumper"
+                        :total="presaleData.page.rowCount">
+                    </el-pagination>
+                </div>
+                <content-no :show="contentNo" v-if="!presaleData.isOpenPresale"></content-no>
                 </div>
             </el-tab-pane>
             <el-tab-pane label="定金管理" name="2">
                 <div class="common-content">
-                    <el-table
-                        :data="shopData"
-                        style="width: 100%">
+                    <el-table :data="dingJinData.page.subList" style="width: 100%" v-if="dingJinData.page.rowCount > 0">
                         <el-table-column
-                        prop="name"
+                        prop="proName"
                         label="预售商品">
                         </el-table-column>
                         <el-table-column
-                        prop="shop"
+                        prop="shopName"
                         label="所属店铺">
                         </el-table-column>
                         <el-table-column
-                        prop="href"
+                        prop="depositNo"
                         label="竞拍编号">
                         </el-table-column>
                         <el-table-column
@@ -131,48 +120,49 @@
                         </el-table-column>
                         <el-table-column
                         label="定金金额"
-                        prop="date">
+                        prop="depositMoney">
                         </el-table-column>
                         <el-table-column
                         label="定金状态">
                         <template scope="scope">
-                            已支付
-                            <!-- <span
-                            v-if="scope.row.statu === 1"
-                            >是</span>
-                            <span
-                            v-if="scope.row.statu === 0"
-                            >否</span> -->
+                            <span v-if="scope.row.depositStatus === 1">已支付</span>
+                            <span v-if="scope.row.depositStatus === 0">未支付</span>
+                            <span v-if="scope.row.depositStatus === -1">已返还</span>
+                            <span v-if="scope.row.depositStatus === -2">不返还</span>
                         </template>
                         </el-table-column>
                         <el-table-column
                         label="支付时间"
-                        prop="date">
+                        prop="payTime">
                         </el-table-column>
                         <el-table-column
                         label="返还时间"
                         prop="date">
                         </el-table-column>
-                        <el-table-column
-                        label="操作"
-                        min-width="120">
+                        <el-table-column label="操作" min-width="120">
                         <template scope="scope">
-                            <el-button
-                            size="small"
-                            class="buttonBlue"
-                            @click="dialogVisible = true">退定金</el-button>
+                            <el-button size="small" class="buttonBlue" 
+                            v-if="scope.row.depositStatus == 1 && (scope.row.presaleStatus == -1 ||scope.row.presaleStatus == -2) && scope.row.isSubmit == 0"
+                            @click="comeDownShow(scope.row.depositMoney,scope.row.id)">退定金</el-button>
                         </template>
                         </el-table-column>
                     </el-table>
-                    <content-no ></content-no>
-                    <el-dialog
-                        title="退定金"
-                        :visible.sync="dialogVisible"
-                        size="tiny">
-                        退款金额<span>¥110.00</span>
+                    <div class="shop-textr">
+                        <el-pagination
+                            @size-change="handleSizeChange1"
+                            @current-change="handleCurrentChange1"
+                            :current-page.sync="dingJinData.page.curPage"
+                            :page-size="dingJinData.page.pageSize"
+                            layout="prev, pager, next, jumper"
+                            :total="dingJinData.page.rowCount">
+                        </el-pagination>
+                    </div>
+                    <content-no v-if="dingJinData.page.rowCount == 0"></content-no>
+                    <el-dialog title="退定金" :visible.sync="dialogVisible" size="tiny">
+                        退款金额<span>¥{{dingJin}}</span>
                         <span slot="footer" class="dialog-footer">
                             <el-button @click="dialogVisible = false">取 消</el-button>
-                            <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+                            <el-button type="primary" @click="comeDown()">确 定</el-button>
                         </span>
                     </el-dialog>
                 </div>
@@ -181,57 +171,36 @@
                 <div class="common-content">
                     <div class="index-shopInfo">
                         <router-link to="/integralmall/banner">
-                        <el-button 
-                            type="primary"
-                        >新建预售送礼</el-button>
+                            <el-button type="primary">新建预售送礼</el-button>
                         </router-link>
                     </div>
-                    <el-table
-                        :data="shopData"
-                        style="width: 100%">
+                    <el-table :data="presaleGiftsData.giveList" style="width: 100%" v-if="presaleGiftsData.giveList.length > 0">
                         <el-table-column
                         label="送礼名次">
                         <template scope="scope">
-                            前<el-input 
-                                v-model="input"
-                                class="mix-input"></el-input>名
+                            前<el-input v-model="scope.row.giveRanking" class="mix-input"></el-input>名
                         </template>
                         </el-table-column>
-                        <el-table-column
-                        prop="shop"
-                        label="礼品类型">
-                            //todo
+                        <el-table-column label="礼品类型">
+                            <template scope="scope">
+                                <el-select v-model="scope.row.giveType" placeholder="请选择">
+                                    <el-option class="max-input" v-for="item in presaleGiftsData.dictList"
+                                        :key="item.item_key" :label="item.item_value" :value="item.item_key">
+                                    </el-option>
+                                </el-select>
+                            </template>
                         </el-table-column>
-                        <el-table-column
-                        prop="href"
-                        label="礼品名称">
-                        </el-table-column>
-                        <el-table-column
-                        label="礼品数量"
-                        prop="date">
-                        </el-table-column>
-                        <el-table-column
-                        label="是否显示">
-                        <template scope="scope">
-                            <span
-                            v-if="scope.row.statu === 1"
-                            >是</span>
-                            <span
-                            v-if="scope.row.statu === 0"
-                            >否</span>
-                        </template>
-                        </el-table-column>
-                        <el-table-column
-                        label="操作"
-                        min-width="120">
-                        <template scope="scope">
-                            <el-button
-                            size="small"
-                            @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-                        </template>
+                        <el-table-column prop="giveName" label="礼品名称"></el-table-column>
+                        <el-table-column prop="giveNum" label="礼品数量"></el-table-column>
+                        <el-table-column label="操作" min-width="120">
+                            <template scope="scope">
+                                <el-button
+                                size="small"
+                                @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                            </template>
                         </el-table-column>
                     </el-table>
-                    <content-no ></content-no>
+                    <content-no v-if="presaleGiftsData.giveList.length == 0"></content-no>
                 </div>
           </el-tab-pane>
         </el-tabs>
@@ -253,64 +222,52 @@ export default {
       goodsShop:'',
       goodsStatu:'',
       dialogVisible: false,
-      goodsData: [{
-        date: '2016-05-02',
-        name: '手机',
-        shop: '谷通科技2',
-        statu: 1
-      }, {
-        date: '2016-05-04',
-        name: '黑色毛衣',
-        shop: '谷通科技1',
-        statu: 2
-      }, {
-        date: '2016-05-01',
-        name: '帽子',
-        shop: '谷通科技6',
-        statu: 0
-      }, {
-        date: '2016-05-03',
-        name: '裙子',
-        shop: '谷通科技8',
-        statu: 2
-      }],
-      options: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }],
-      shopData: [{
-        date: '2016-05-02',
-        name: '手机',
-        shop: '谷通科技2',
-        statu: 1,
-        href:'222'
-      }, {
-        date: '2016-05-04',
-        name: '黑色毛衣',
-        shop: '谷通科技1',
-        statu: 0,
-        href:'5464'
-      }, {
-        date: '2016-05-01',
-        name: '帽子',
-        shop: '谷通科技6',
-        statu: 0,
-       
-        href:'5464646'
-      }, {
-        date: '2016-05-03',
-        name: '裙子',
-        shop: '谷通科技8',
-        statu: 1,
-        href:'12315646'
-      }],
+      presaleType:'',
+      shopId:'',
+      presaleData: {
+          isOpenPresale:'',
+          videourl:'',
+          page:{
+              rowCount:'',
+              subList:[],
+          }
+      },
+      shopList: [],
+      dingJinData: {
+          page:{
+              rowCount:'',
+              subList:[],
+          }
+      },
+      presaleGiftsData:{
+          giveList:[],
+          dictList:[],
+      },
       input:'',
+      dingJin:0,
+      dingJinId:'',
     }
   },
   methods: {
+      searchPresale(){
+          this.mallPresaleList(1);
+      },
+      handleSizeChange(val) {
+        //this.pageNum = val;
+        this.mallPresaleList(val);
+      },
+      handleCurrentChange(val) {
+        //this.pageNum = val;
+        this.mallPresaleList(val);
+      },
+      handleSizeChange1(val) {
+        //this.pageNum1 = val;
+        this.mallPresaleDepositList(val);
+      },
+      handleCurrentChange1(val) {
+        //this.pageNum1 = val;
+        this.mallPresaleDepositList(val);
+      },
     handleClick(tab, event) {
       //  let _activeName = tab.name;
       //  this.$router.push(_activeName);
@@ -340,10 +297,90 @@ export default {
         }
       }
       _this.$root.$refs.dialog.showDialog(msg); 
+    },
+    comeDownShow(dingJin,id){
+        this.dialogVisible = true;
+        this.dingJin = dingJin;
+        this.dingJinId = id;
+    },
+    comeDown(){
+        this.mallPresaleAgreedReturnDeposit(this.dingJinId);
+    },
+    mallPresaleList(pageNum){//预售管理列表
+      let _this= this;
+      Lib.M.ajax({
+        'url': DFshop.activeAPI.mallPresaleList_post,
+        'data':{
+            curPage : pageNum,
+            shopId : _this.shopId,
+            type : _this.presaleType
+        },
+        'success':function (data){
+           _this.presaleData = data.data;
+           _this.presaleData.page.rowCount = data.data.page.rowCount;
+           $.each(_this.presaleData.page.subList,function(i){
+             let oldTime = this.createTime;
+             this.createTime = Lib.M.format(oldTime);
+           });
+           console.log(_this.presaleData,'presaleData')
+        }
+      });
+    },
+    mallPresaleDepositList(pageNum){
+      let _this= this;
+      Lib.M.ajax({
+        'url': DFshop.activeAPI.mallPresaleDepositList_post,
+        'data':{
+            curPage : pageNum
+        },
+        'success':function (data){
+           _this.dingJinData = data.data;
+           _this.dingJinData.page.rowCount = data.data.page.rowCount;
+           $.each(_this.dingJinData.page.subList,function(i){
+                if(this.payTime != '' && this.payTime != undefined){
+                    let oldPayTime = this.payTime;
+                    this.payTime = Lib.M.format(oldPayTime);
+                }
+           });
+           console.log(_this.dingJinData,'dingJinData')
+        }
+      });
+    },
+    mallPresaleGiveInfo(){
+        let _this= this;
+        Lib.M.ajax({
+            'url': DFshop.activeAPI.mallPresaleGiveInfo_post,
+            'success':function (data){
+                _this.presaleGiftsData = data.data;
+                //console.log(_this.presaleGiftsData,'presaleGiftsData')
+            }
+        });
+    },
+    mallPresaleAgreedReturnDeposit(id){
+        console.log(id,'id');
+        let _this= this;
+        Lib.M.ajax({
+            'url': DFshop.activeAPI.mallPresaleAgreedReturnDeposit_post,
+            'data':{
+                depositId : id
+            },
+            'success':function (data){
+                
+            }
+        });
     }
   },
   mounted(){
-      
+    let _this = this;
+    DFshop.method.storeList({
+      'success'(data){
+        _this.shopList = data.data;
+        console.log(_this.shopList,'shopList')
+      }
+    });
+    _this.mallPresaleList(1);
+    _this.mallPresaleDepositList(1);
+    _this.mallPresaleGiveInfo();
   }
 }
 </script>

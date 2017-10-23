@@ -162,8 +162,21 @@ import common from './common';
     mallSellersJoinProduct_post:DFshop.env.activeAPI+'/mallSellers/new/joinProduct',
     /*推荐审核列表 */
     mallSellersCheckList_post:DFshop.env.activeAPI+'/mallSellers/new/sellerCheckList',
+    /*审核通不通过 */
+    mallSellersCheckSeller_post:DFshop.env.activeAPI+'/mallSellers/new/checkSeller',
+    /*超级销售员列表 */
+    mallSellersList_post:DFshop.env.activeAPI+'/mallSellers/new/sellerList',
     /*提现列表 */
     mallSellersWithDrawList_post:DFshop.env.activeAPI+'/mallSellers/new/withDrawList',
+
+    /*预售管理列表 */
+    mallPresaleList_post:DFshop.env.activeAPI+'/mallPresale/list',
+    /*定金管理列表 */
+    mallPresaleDepositList_post:DFshop.env.activeAPI+'/mallPresale/deposit/list',
+    /*预售送礼列表 */
+    mallPresaleGiveInfo_post:DFshop.env.activeAPI+'/mallPresale/give/giveInfo',
+    /*退定金 */
+    mallPresaleAgreedReturnDeposit_post:DFshop.env.activeAPI+'/mallPresale/deposit/agreedReturnDeposit',    
   };
 
   /*公共方法***********************************************************************************************************/

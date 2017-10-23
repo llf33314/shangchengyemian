@@ -86,7 +86,7 @@
                 >新建商品佣金</el-button>
               </router-link>
              </div>
-              <el-table :data="goodsData.page.subList" style="width: 100%">
+              <el-table :data="goodsData.page.subList" style="width: 100%" v-if="goodsData.page.rowCount > 0">
                 <el-table-column
                   prop="pro_name"
                   label="商品名称">
@@ -98,12 +98,8 @@
                 <el-table-column
                   label="活动状态">
                    <template scope="scope">
-                     <span v-if="scope.row.is_use === 1">
-                       已启动
-                     </span>
-                     <span v-if="scope.row.is_use === 0">
-                       已禁用
-                     </span>
+                     <span v-if="scope.row.is_use === 1">已启动</span>
+                     <span v-if="scope.row.is_use === 0">已禁用</span>
                    </template>
                 </el-table-column>
                 <el-table-column
@@ -113,55 +109,48 @@
                 <el-table-column
                   label="操作">
                   <template scope="scope">
-                    <el-button
-                      size="small"
-                      class="buttonBlue"
+                    <el-button size="small" class="buttonBlue"
                       @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                    <el-button
-                      size="small"
-                      class="buttonBlue"
-                      v-if="scope.row.statu === 2"
-                      >启用</el-button>
-                    <el-button
-                      size="small"
-                      class="buttonBlue"
-                      v-if="scope.row.statu === 1"
-                      >禁用</el-button>
-                    <el-button
-                      size="small"
-                      class="buttonBlue"
-                      >预览</el-button>
-                    <el-button
-                      size="small"
-                      @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                    <el-button size="small" class="buttonBlue"
+                      v-if="scope.row.statu === 2">启用</el-button>
+                    <el-button size="small" class="buttonBlue"
+                      v-if="scope.row.statu === 1">禁用</el-button>
+                    <el-button size="small"class="buttonBlue">预览</el-button>
+                    <el-button size="small" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                   </template>
                 </el-table-column>
               </el-table>
-              <content-no :show="contentNo"></content-no>
+              <div class="shop-textr">
+                  <el-pagination
+                      @size-change="handleSizeChange"
+                      @current-change="handleCurrentChange"
+                      :current-page.sync="goodsData.page.curPage"
+                      :page-size="goodsData.page.pageSize"
+                      layout="prev, pager, next, jumper"
+                      :total="goodsData.page.rowCount">
+                  </el-pagination>
+              </div>
+              <content-no :show="contentNo" v-if="goodsData.page.rowCount === 0"></content-no>
            </div>
         </el-tab-pane>
         <el-tab-pane label="推荐审核" name="3">
           <div class="common-content">
             <div class="index-shopInfo">
-              <el-autocomplete
-                v-model="state4"
-                :fetch-suggestions="querySearchAsync"
-                placeholder="销售员名字/手机"
-                @select="handleSelect"
-                icon="search"
-              ></el-autocomplete>
+              <!-- <el-autocomplete v-model="state4" :fetch-suggestions="querySearchAsync"
+                placeholder="销售员名字/手机" @select="handleSelect" icon="search" ></el-autocomplete> -->
+                <el-input v-model="keyWord" placeholder="销售员名字/手机" style="width:200px;"></el-input>
             </div>
-            <el-table :data="examineData.page.subList" style="width: 100%">
+            <el-table :data="examineData.page.subList" style="width: 100%" v-if="examineData.page.rowCount > 0">
               <el-table-column
-                prop="name"
+                prop="user_name"
                 label="姓名">
               </el-table-column>
               <el-table-column
-                prop="phone"
+                prop="telephone"
                 label="手机">
               </el-table-column>
               <el-table-column
-                prop="man"
+                prop="tj_user_name"
                 label="推荐人">
               </el-table-column>
               <el-table-column
@@ -180,83 +169,83 @@
               <el-table-column
                 label="操作">
                 <template scope="scope">
-                  <el-button
-                    size="small"
-                    class="buttonBlue" 
-                    @click="passExamine">通过</el-button>
-                  <el-button
-                    size="small"
-                      @click="refuseExamine"
-                    >拒绝</el-button>
+                  <el-button size="small" class="buttonBlue" @click="passExamine(scope.row.id,1)">通过</el-button>
+                  <el-button size="small" @click="refuseExamine(scope.row.id,-1)">拒绝</el-button>
                 </template>
               </el-table-column>
               </el-table-column>
             </el-table>
-            <content-no></content-no>
+            <div class="shop-textr">
+                <el-pagination
+                    @size-change="handleSizeChange2"
+                    @current-change="handleCurrentChange2"
+                    :current-page.sync="examineData.page.curPage"
+                    :page-size="examineData.page.pageSize"
+                    layout="prev, pager, next, jumper"
+                    :total="examineData.page.rowCount">
+                </el-pagination>
+            </div>
+            <content-no v-if="examineData.page.rowCount == 0"></content-no>
           </div>
         </el-tab-pane>
         <el-tab-pane label="销售员管理" name="4">
           <div class="common-content">
-            <div class="index-shopInfo">
-              <el-autocomplete
-                v-model="state4"
-                :fetch-suggestions="querySearchAsync"
-                placeholder="销售员名字/手机"
-                @select="handleSelect"
-                icon="search"
-              ></el-autocomplete>
+            <div class="index-shopInfo" v-if="sellersList.page.rowCount > 0">
+              <!-- <el-autocomplete v-model="state4" :fetch-suggestions="querySearchAsync"
+                placeholder="销售员名字/手机" @select="handleSelect" icon="search"></el-autocomplete> -->
+              <el-input v-model="keyWord_sellers" style="width:200px" placeholder="销售员名字/手机"></el-input>
             </div>
-            <el-table
-              :data="saleData"
-              style="width: 100%">
+            <el-table :data="sellersList.page.subList" style="width: 100%" v-if="sellersList.page.rowCount > 0">
               <el-table-column
-                prop="name"
+                prop="user_name"
                 label="姓名">
               </el-table-column>
               <el-table-column
-                prop="phone"
+                prop="telephone"
                 label="手机">
               </el-table-column>
               <el-table-column
-                prop="jifeng"
+                prop="income_integral"
                 label="积分">
               </el-table-column>
               <el-table-column
-                prop="money"
+                prop="sale_money"
                 label="销售额（元）">
               </el-table-column>
               <el-table-column
-                prop="money"
+                prop="commission"
                 label="总佣金（元）">
               </el-table-column>
               <el-table-column
-                prop="money"
+                prop="freeze_commission"
                 label="冻结佣金（元）">
               </el-table-column>
               <el-table-column
-                prop="date"
+                prop="add_time"
                 label="加入时间">
               </el-table-column>
               <el-table-column
                 label="操作"
                 min-width="180">
                 <template scope="scope">
-                  <el-button
-                    size="small"
-                    class="buttonBlue"
-                    >推荐列表</el-button>
-                  <el-button
-                    size="small"
-                    class="buttonBlue"
-                    >提现记录</el-button>
-                  <el-button
-                    size="small"
-                    >暂停</el-button>
+                  <el-button size="small" class="buttonBlue" @click="jumpRouter('/marketing/3')">推荐列表</el-button>
+                  <el-button size="small" class="buttonBlue" @click="jumpRouter('/marketing/5')">提现记录</el-button>
+                  <el-button size="small" >暂停</el-button>
                 </template>
               </el-table-column>
               </el-table-column>
             </el-table>
-            <content-no></content-no>
+            <div class="shop-textr">
+                <el-pagination
+                    @size-change="handleSizeChange3"
+                    @current-change="handleCurrentChange3"
+                    :current-page.sync="sellersList.page.curPage"
+                    :page-size="sellersList.page.pageSize"
+                    layout="prev, pager, next, jumper"
+                    :total="sellersList.page.rowCount">
+                </el-pagination>
+            </div>
+            <content-no v-if="sellersList.page.rowCount == 0"></content-no>
           </div>
         </el-tab-pane>
         <el-tab-pane label="提现列表" name="5">
@@ -264,13 +253,9 @@
             <div class="index-shopInfo">
               <div class="index-input-box">
                 <span>
-                <el-autocomplete
-                  v-model="cashShop"
-                  :fetch-suggestions="querySearchAsync"
-                  placeholder="销售员名字/手机"
-                  @select="handleSelect"
-                  icon="search"
-                ></el-autocomplete>
+                <!-- <el-autocomplete v-model="cashShop" :fetch-suggestions="querySearchAsync"
+                  placeholder="销售员名字/手机" @select="handleSelect" icon="search"></el-autocomplete> -->
+                <el-input v-model="keyWord_tixian" placeholder="销售员名字/手机" style="width:200px;"></el-input>
                 </span>
                 <span>
                   提现时间 ：
@@ -282,17 +267,17 @@
                 </span>
               </div>
             </div>
-            <el-table :data="saleData.page.subList" style="width: 100%">
+            <el-table :data="saleData.page.subList" style="width: 100%" v-if="saleData.page.rowCount > 0">
               <el-table-column
                 prop="applay_time"
                 label="提现时间">
               </el-table-column>
               <el-table-column
-                prop="phone"
+                prop="user_name"
                 label="名字">
               </el-table-column>
               <el-table-column
-                prop="jifeng"
+                prop="telephone"
                 label="手机">
               </el-table-column>
               <el-table-column
@@ -310,11 +295,20 @@
                 </template>
               </el-table-column>
             </el-table>
-            <content-no></content-no>
-          </div>
+            <div class="shop-textr">
+                <el-pagination
+                    @size-change="handleSizeChange4"
+                    @current-change="handleCurrentChange4"
+                    :current-page.sync="saleData.page.curPage"
+                    :page-size="saleData.page.pageSize"
+                    layout="prev, pager, next, jumper"
+                    :total="saleData.page.rowCount">
+                </el-pagination>
+            </div>
+            <content-no v-if="saleData.page.rowCount === 0"></content-no>
+          </div> 
         </el-tab-pane>
       </el-tabs>
-     
     </div>
 </div>
 </template>
@@ -334,6 +328,9 @@ export default {
       contentNo:'commission',
       cashDate: [],
       cashShop:'',
+      keyWord_sellers:'',
+      keyWord_tixian:'',
+      keyWord:'',
       setupForm: {
         integralReward: '',//积分
         consumeMoney: '',//销售员
@@ -358,13 +355,11 @@ export default {
           subList:[],
         }
       },
-      options: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }],
+      sellersList:{
+        page:{
+          subList:[],
+        }
+      },
       shopId:'',
       isUse:'',
       restaurants: [],
@@ -409,10 +404,28 @@ export default {
       console.log(index, row);
     },
     handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
-      },
+      this.mallSellersJoinProduct(val);
+    },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      this.mallSellersJoinProduct(val);
+    },
+    handleSizeChange2(val) {
+      this.mallSellersCheckList(val);
+    },
+    handleCurrentChange2(val) {
+      this.mallSellersCheckList(val);
+    },
+    handleSizeChange3(val) {
+      this.mallSellersList(val);
+    },
+    handleCurrentChange3(val) {
+      this.mallSellersList(val);
+    },
+    handleSizeChange4(val) {
+      this.mallSellersWithDrawList(val);
+    },
+    handleCurrentChange4(val) {
+      this.mallSellersWithDrawList(val);
     },
     handleClick(tab, event) {
      let _activeName = tab.name;
@@ -444,27 +457,27 @@ export default {
       }
       _this.$root.$refs.dialog.showDialog(msg);   
     },
-    refuseExamine(){
+    refuseExamine(sellerId,checkStatus){
       let _this= this;
       let msg ={
-        'dialogTitle':'确定通过该审核吗？',//文本标题
+        'dialogTitle':'确定拒绝该审核吗？',//文本标题
         'dialogMsg': '',//文本内容
         'callback': {
           'btnOne': function(){
-
+            _this.mallSellersCheckSeller(sellerId,checkStatus);
           }
         }
       }
       _this.$root.$refs.dialog.showDialog(msg);   
     },
-    passExamine(){
+    passExamine(sellerId,checkStatus){
       let _this= this;
       let msg ={
         'dialogTitle':'确定通过该审核吗？',//文本标题
         'dialogMsg': '',//文本内容
         'callback': {
           'btnOne': function(){
-
+            _this.mallSellersCheckSeller(sellerId,checkStatus);
           }
         }
       }
@@ -481,20 +494,20 @@ export default {
         { "value": "新旺角茶餐厅", "address": "上海市普陀区真北路988号创邑金沙谷6号楼113" },
       ];
     },
-    querySearchAsync(queryString, cb) {
-      var restaurants = this.restaurants;
-      var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
+    // querySearchAsync(queryString, cb) {
+    //   var restaurants = this.restaurants;
+    //   var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
 
-      clearTimeout(this.timeout);
-      this.timeout = setTimeout(() => {
-        cb(results);
-      }, 3000 * Math.random());
-    },
-    createStateFilter(queryString) {
-      return (state) => {
-        return (state.value.indexOf(queryString.toLowerCase()) === 0);
-      };
-    },
+    //   clearTimeout(this.timeout);
+    //   this.timeout = setTimeout(() => {
+    //     cb(results);
+    //   }, 3000 * Math.random());
+    // },
+    // createStateFilter(queryString) {
+    //   return (state) => {
+    //     return (state.value.indexOf(queryString.toLowerCase()) === 0);
+    //   };
+    // },
     handleSelect(item) {
       console.log(item);
     },
@@ -548,6 +561,40 @@ export default {
         }
       });
     },
+    mallSellersCheckSeller(sellerId,checkStatus){
+      let _this= this;
+      Lib.M.ajax({
+        'url': DFshop.activeAPI.mallSellersCheckSeller_post,
+        'data':{
+            id : sellerId,
+            checkStatus : checkStatus
+        },
+        'success':function (data){
+           
+           console.log(data,'data')
+        }
+      });
+    },
+    mallSellersList(pageNum){
+      let _this= this;
+      Lib.M.ajax({
+        'url': DFshop.activeAPI.mallSellersList_post,
+        'data':{
+            curPage : pageNum,
+            keyWord : _this.keyWord_sellers
+        },
+        'success':function (data){
+           _this.sellersList = data.data;
+           $.each(_this.sellersList.page.subList,function(i){
+             if(this.add_time != undefined && this.add_time != ''){
+              let oldTime = this.add_time;
+              this.add_time = Lib.M.format(oldTime);
+             }
+           });
+           console.log(_this.sellersList,'sellersList')
+        }
+      });
+    },
     mallSellersWithDrawList(pageNum){//提现列表
       let _this= this;
       let startTime = '';
@@ -585,8 +632,9 @@ export default {
       }
     });
     _this.mallSellersGetSellerSet();
-    _this.mallSellersJoinProduct(1);
+    //_this.mallSellersJoinProduct(1);
     _this.mallSellersCheckList(1);
+    _this.mallSellersList(1);
     _this.mallSellersWithDrawList(1);
   },
   // destroyed () {
