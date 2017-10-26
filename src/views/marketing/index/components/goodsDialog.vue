@@ -32,7 +32,7 @@
         <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
-            :current-page.sync="pageNum"
+            :current-page.sync="gridData.page.curPage"
             :page-size="gridData.page.pageSize"
             layout="prev, pager, next, jumper"
             :total="gridData.page.rowCount">
@@ -51,7 +51,11 @@ export default {
           restaurants: [],
           state4: '',
           timeout:  null,
-          gridData: [],
+          gridData: {
+            page:{
+              subList:[],
+            }
+          },
           isShow: false,
           pageNum:1,
           defaultProId:'',
@@ -70,26 +74,37 @@ export default {
           'curPage':_this.pageNum,
           'success'(data){
             _this.gridData = data.data;
-            console.log(_this.gridData);
+            //console.log(_this.gridData);
           }
         });
       }
     },
     methods:{
         handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
-        },
-        handleCurrentChange(val) {
-          this.pageNum = val;
+          //console.log(`每页 ${val} 条`);
           let _this = this;
           DFshop.method.mallGroupBuyGetProduct({
             'defaultProId':_this.defaultProId,
             'shopId':_this.shopId,
             'proName':_this.proName,
-            'curPage':_this.pageNum,
+            'curPage':val,
             'success'(data){
               _this.gridData = data.data;
-              console.log(_this.gridData);
+              //console.log(_this.gridData,'22222');
+            }
+          });
+        },
+        handleCurrentChange(val) {
+          //this.pageNum = val;
+          let _this = this;
+          DFshop.method.mallGroupBuyGetProduct({
+            'defaultProId':_this.defaultProId,
+            'shopId':_this.shopId,
+            'proName':_this.proName,
+            'curPage':val,
+            'success'(data){
+              _this.gridData = data.data;
+              console.log(_this.gridData,'1111');
             }
           });
           console.log(`当前页: ${val}`);

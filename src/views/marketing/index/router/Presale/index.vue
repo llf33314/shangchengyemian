@@ -40,7 +40,7 @@
                     </span>
                     </div>
                     </div>
-                    <router-link to="/presale/addpresale" v-if="presaleData.isOpenPresale">
+                    <router-link to="/presale/addpresale/0" v-if="presaleData.isOpenPresale">
                         <el-button  type="primary">新建预售</el-button>
                     </router-link>
                 </div>
@@ -72,10 +72,13 @@
                     </el-table-column>
                     <el-table-column label="操作" min-width="120">
                         <template scope="scope">
-                            <el-button size="small" @click="handleDelete(scope.$index, scope.row)">编辑</el-button>
-                            <el-button size="small" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-                            <el-button size="small" @click="handleDelete(scope.$index, scope.row)">使失效</el-button>
-                            <el-button size="small" @click="handleDelete(scope.$index, scope.row)">预览</el-button>
+                            <el-button size="small" @click="jumpRouter('/presale/addpresale/'+scope.row.id)" 
+                                v-if="scope.row.status == 0 ||(scope.row.status == 1 && scope.row.joinId == 0)">编辑</el-button>
+                            <el-button size="small" @click="presaleDel(scope.row.id,-1)" v-if="scope.row.status != 1">删除</el-button>
+                            <el-button size="small" @click="invalidDelete(scope.row.id,-2)"
+                                v-if="scope.row.status == 0 ||(scope.row.status == 1 && scope.row.joinId == 0)">使失效</el-button>
+                            <el-button size="small" @click="preview(scope.row.twoCodePath)"
+                                v-if="scope.row.status == 0 ||scope.row.status == 1 ">预览</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -169,11 +172,11 @@
             </el-tab-pane>
             <el-tab-pane label="预售送礼设置" name="3">
                 <div class="common-content">
-                    <div class="index-shopInfo">
+                    <!-- <div class="index-shopInfo">
                         <router-link to="/integralmall/banner">
                             <el-button type="primary">新建预售送礼</el-button>
                         </router-link>
-                    </div>
+                    </div> -->
                     <el-table :data="presaleGiftsData.giveList" style="width: 100%" v-if="presaleGiftsData.giveList.length > 0">
                         <el-table-column
                         label="送礼名次">
@@ -219,8 +222,6 @@ export default {
     return {
       contentNo:'ysgl',
       activeName:'1',
-      goodsShop:'',
-      goodsStatu:'',
       dialogVisible: false,
       presaleType:'',
       shopId:'',
@@ -246,6 +247,7 @@ export default {
       input:'',
       dingJin:0,
       dingJinId:'',
+      imgUrl:'',
     }
   },
   methods: {
@@ -268,31 +270,44 @@ export default {
         //this.pageNum1 = val;
         this.mallPresaleDepositList(val);
       },
-    handleClick(tab, event) {
+      handleClick(tab, event) {
       //  let _activeName = tab.name;
       //  this.$router.push(_activeName);
       },
-    handleDelete(){
+      presaleDel(id,type){
+          let _this= this;
+          let msg ={
+            'dialogTitle':'您确定要删除此预售商品？',//文本标题
+            'dialogMsg': '',//文本内容
+            'callback': {
+            'btnOne': function(){
+                _this.mallPresaleDelete(id,type);
+            }
+            }
+          }
+        _this.$root.$refs.dialog.showDialog(msg); 
+      },
+    handleDelete(id,type){
       let _this= this;
       let msg ={
-        'dialogTitle':'您确定要删除此积分商城？',//文本标题
+        'dialogTitle':'您确定要删除此预售商品？',//文本标题
         'dialogMsg': '',//文本内容
         'callback': {
           'btnOne': function(){
-
+              
           }
         }
       }
       _this.$root.$refs.dialog.showDialog(msg); 
     },
-    invalidDelete(){
+    invalidDelete(id,type){
       let _this= this;
       let msg ={
-        'dialogTitle':'您确定要将此积分商品失效吗？',//文本标题
+        'dialogTitle':'您确定要将此商品失效吗？',//文本标题
         'dialogMsg': '失效后不能再进行交易',//文本内容
         'callback': {
           'btnOne': function(){
-
+              _this.mallPresaleDelete(id,type);
           }
         }
       }
@@ -317,6 +332,7 @@ export default {
         },
         'success':function (data){
            _this.presaleData = data.data;
+           _this.imgUrl = data.imgUrl;
            _this.presaleData.page.rowCount = data.data.page.rowCount;
            $.each(_this.presaleData.page.subList,function(i){
              let oldTime = this.createTime;
@@ -368,6 +384,39 @@ export default {
                 
             }
         });
+    },
+    mallPresaleDelete(id,type){
+      let _this = this;
+      let msg = '';
+      if(type === -1){
+        msg = "删除成功"
+      }else{
+        msg = '已失效';
+      }
+      Lib.M.ajax({
+        'url': DFshop.activeAPI.mallPresaleDelete_post,
+        'data':{
+            id : id,
+            type : type
+        },
+        'success':function (data){
+           _this.$message({
+              message: msg,
+              type: 'success'
+          });
+          _this.jumpRouter('/presale');
+        }
+      });
+    },
+    preview(imgUrl){
+      let _this = this;
+      let msg ={
+        'title':'',
+        'imgUrl':_this.imgUrl+imgUrl,
+        'urlQR': '',
+        'pageLink': _this.path+'/views/marketing/index.html#/'
+      }
+      _this.$root.$refs.dialogQR.showDialog(msg);
     }
   },
   mounted(){

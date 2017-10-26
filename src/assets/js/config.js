@@ -160,17 +160,31 @@ import common from './common';
     mallSellersSaveSellerSet_post:DFshop.env.activeAPI+'/mallSellers/new/saveSellerSet',
     /*商品拥金设置列表 */
     mallSellersJoinProduct_post:DFshop.env.activeAPI+'/mallSellers/new/joinProduct',
+    /*获取商品佣金信息 */
+    mallSellersJoinProductInfo_post:DFshop.env.activeAPI+'/mallSellers/new/joinProductInfo',
+    /*保存商品佣金信息 */
+    mallSellerSaveJoinProduct_post:DFshop.env.activeAPI+'/mallSellers/new/saveJoinProduct',
+    /*删除、启用、禁用商品佣金方法 */
+    mallSellerSetJoinProductStatus_post:DFshop.env.activeAPI+'/mallSellers/new/setJoinProductStatus',
     /*推荐审核列表 */
     mallSellersCheckList_post:DFshop.env.activeAPI+'/mallSellers/new/sellerCheckList',
     /*审核通不通过 */
     mallSellersCheckSeller_post:DFshop.env.activeAPI+'/mallSellers/new/checkSeller',
     /*超级销售员列表 */
     mallSellersList_post:DFshop.env.activeAPI+'/mallSellers/new/sellerList',
+    /*启用、暂停销售员方法 */
+    mallSellerStartUseSeller_post:DFshop.env.activeAPI+'/mallSellers/new/startUseSeller',
     /*提现列表 */
     mallSellersWithDrawList_post:DFshop.env.activeAPI+'/mallSellers/new/withDrawList',
 
     /*预售管理列表 */
     mallPresaleList_post:DFshop.env.activeAPI+'/mallPresale/list',
+    /*获取预售信息 */
+    mallPresalePresaleInfo_post:DFshop.env.activeAPI+'/mallPresale/presaleInfo',
+    /*保存预售信息 */
+    mallPresaleSave_post:DFshop.env.activeAPI+'/mallPresale/save',
+    /*删除预售、使预售失效 */
+    mallPresaleDelete_post:DFshop.env.activeAPI+'/mallPresale/delete',
     /*定金管理列表 */
     mallPresaleDepositList_post:DFshop.env.activeAPI+'/mallPresale/deposit/list',
     /*预售送礼列表 */
@@ -292,7 +306,7 @@ import common from './common';
           defaultProId:opt.defaultProId,
           shopId:opt.shopId,
           proName:opt.proName,
-          curPage:opt.pageNum
+          curPage:opt.curPage
         },
         'success':function (data){
             if(typeof opt.success == 'function') opt.success(data);

@@ -61,7 +61,7 @@
         </el-tab-pane>
         <el-tab-pane label="商品佣金设置" name="2">
            <div class="common-content">
-             <div class="index-shopInfo">
+             <div class="index-shopInfo" v-if="goodsData.page.rowCount > 0">
               <div class="index-input-box">
                 <span>
                   选择店铺 :
@@ -80,11 +80,9 @@
                 </el-col>
                 </span>
               </div>
-              <router-link to="/addBond">
-                <el-button 
-                  type="primary"
-                >新建商品佣金</el-button>
-              </router-link>
+              <!-- <router-link to="/addBond"> -->
+                <el-button type="primary" @click="jumpRouter('/addBond/0')">新建商品佣金</el-button>
+              <!-- </router-link> -->
              </div>
               <el-table :data="goodsData.page.subList" style="width: 100%" v-if="goodsData.page.rowCount > 0">
                 <el-table-column
@@ -109,18 +107,17 @@
                 <el-table-column
                   label="操作">
                   <template scope="scope">
-                    <el-button size="small" class="buttonBlue"
-                      @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                    <el-button size="small" class="buttonBlue"
-                      v-if="scope.row.statu === 2">启用</el-button>
-                    <el-button size="small" class="buttonBlue"
-                      v-if="scope.row.statu === 1">禁用</el-button>
-                    <el-button size="small"class="buttonBlue">预览</el-button>
-                    <el-button size="small" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                    <el-button size="small" class="buttonBlue" @click="jumpRouter('/addBond/'+scope.row.id)">编辑</el-button>
+                    <el-button size="small" class="buttonBlue" @click="setCommissionStatus(scope.row.id,-2)" 
+                        v-if="scope.row.is_use === 0">启用</el-button>
+                    <el-button size="small" class="buttonBlue" @click="setCommissionStatus(scope.row.id,-1)"
+                        v-if="scope.row.is_use === 1">禁用</el-button>
+                    <el-button size="small"class="buttonBlue" @click="preview(scope.row.two_code_path)">预览</el-button>
+                    <el-button size="small" @click="setCommissionStatus(scope.row.id,-3)">删除</el-button>
                   </template>
                 </el-table-column>
               </el-table>
-              <div class="shop-textr">
+              <div class="shop-textr" v-if="goodsData.page.rowCount > 0">
                   <el-pagination
                       @size-change="handleSizeChange"
                       @current-change="handleCurrentChange"
@@ -135,7 +132,7 @@
         </el-tab-pane>
         <el-tab-pane label="推荐审核" name="3">
           <div class="common-content">
-            <div class="index-shopInfo">
+            <div class="index-shopInfo" v-if="examineData.page.rowCount > 0">
               <!-- <el-autocomplete v-model="state4" :fetch-suggestions="querySearchAsync"
                 placeholder="销售员名字/手机" @select="handleSelect" icon="search" ></el-autocomplete> -->
                 <el-input v-model="keyWord" placeholder="销售员名字/手机" style="width:200px;"></el-input>
@@ -175,7 +172,7 @@
               </el-table-column>
               </el-table-column>
             </el-table>
-            <div class="shop-textr">
+            <div class="shop-textr" v-if="examineData.page.rowCount > 0">
                 <el-pagination
                     @size-change="handleSizeChange2"
                     @current-change="handleCurrentChange2"
@@ -230,12 +227,15 @@
                 <template scope="scope">
                   <el-button size="small" class="buttonBlue" @click="jumpRouter('/marketing/3')">推荐列表</el-button>
                   <el-button size="small" class="buttonBlue" @click="jumpRouter('/marketing/5')">提现记录</el-button>
-                  <el-button size="small" >暂停</el-button>
+                  <el-button size="small" v-if="scope.row.is_start_use == 1" 
+                    @click="setSellerStatus(scope.row.id,scope.row.user_name,-1)">暂停</el-button>
+                  <el-button size="small" v-if="scope.row.is_start_use == -1"
+                    @click="setSellerStatus(scope.row.id,scope.row.user_name,1)">启动</el-button>
                 </template>
               </el-table-column>
               </el-table-column>
             </el-table>
-            <div class="shop-textr">
+            <div class="shop-textr" v-if="sellersList.page.rowCount > 0">
                 <el-pagination
                     @size-change="handleSizeChange3"
                     @current-change="handleCurrentChange3"
@@ -250,7 +250,7 @@
         </el-tab-pane>
         <el-tab-pane label="提现列表" name="5">
            <div class="common-content">
-            <div class="index-shopInfo">
+            <div class="index-shopInfo" v-if="saleData.page.rowCount > 0">
               <div class="index-input-box">
                 <span>
                 <!-- <el-autocomplete v-model="cashShop" :fetch-suggestions="querySearchAsync"
@@ -295,7 +295,7 @@
                 </template>
               </el-table-column>
             </el-table>
-            <div class="shop-textr">
+            <div class="shop-textr" v-if="saleData.page.rowCount > 0">
                 <el-pagination
                     @size-change="handleSizeChange4"
                     @current-change="handleCurrentChange4"
@@ -365,6 +365,8 @@ export default {
       restaurants: [],
       state4: '',
       timeout:  null,
+      imgUrl : '',
+      path : '',
     }
   },
   watch:{
@@ -384,16 +386,17 @@ export default {
       let _this= this;
       let param = {};
       param = _this.$refs[formName].model;
-      param = encodeURI(_this.$refs[formName].model.sellerRemark);
+      param.sellerRemark = encodeURI(_this.$refs[formName].model.sellerRemark);
       Lib.M.ajax({
         'url': DFshop.activeAPI.mallSellersSaveSellerSet_post,
-        'data':{sellerSet:param},
+        'data': param,
         'success':function (data){
            _this.$message({
               message: '保存成功',
               type: 'success'
           });
-          _this.jumpRouter('/marketing/1');
+          _this.mallSellersGetSellerSet();
+          //window.location.reload();
         }
       });
     },
@@ -483,6 +486,25 @@ export default {
       }
       _this.$root.$refs.dialog.showDialog(msg);   
     },
+    setSellerStatus(id,name,type){//设置销售员暂停、启用事件
+      let _this= this;
+      msg = '确认将销售员'+name;
+      if(type === 1){
+        msg += '启用吗？';
+      }else{
+        msg += '暂停吗？';
+      }
+      let msg ={
+        'dialogTitle':msg,//文本标题
+        'dialogMsg': '',//文本内容
+        'callback': {
+          'btnOne': function(){
+            _this.mallSellerStartUseSeller(id,type);
+          }
+        }
+      }
+      _this.$root.$refs.dialog.showDialog(msg);
+    },
     /**
      * 搜索
      * 
@@ -520,7 +542,7 @@ export default {
         'url': DFshop.activeAPI.mallSellersGetSellerSet_post,
         'success':function (data){
            _this.setupForm = data.data.sellerSet;
-           console.log(_this.setupForm,'setupForm')
+           //console.log(_this.setupForm,'setupForm')
         }
       });
     },
@@ -535,11 +557,13 @@ export default {
         },
         'success':function (data){
            _this.goodsData = data.data;
+           _this.imgUrl = data.imgUrl;
+           _this.path = data.path;
            $.each(_this.goodsData.page.subList,function(i){
              let oldTime = this.create_time;
              this.create_time = Lib.M.format(oldTime);
            });
-           console.log(_this.goodsData,'goodsData')
+           //console.log(_this.goodsData,'goodsData')
         }
       });
     },
@@ -557,12 +581,18 @@ export default {
              let oldTime = this.apply_time;
              this.apply_time = Lib.M.formatNot(oldTime);
            });
-           console.log(_this.examineData,'examineData')
+           //console.log(_this.examineData,'examineData')
         }
       });
     },
     mallSellersCheckSeller(sellerId,checkStatus){
       let _this= this;
+      let msg = '';
+      if(checkStatus === 1){
+        msg = '审核通过';
+      }else{
+        msg = '审核不通过'
+      }
       Lib.M.ajax({
         'url': DFshop.activeAPI.mallSellersCheckSeller_post,
         'data':{
@@ -570,7 +600,11 @@ export default {
             checkStatus : checkStatus
         },
         'success':function (data){
-           
+           _this.$message({
+              message: msg,
+              type: 'success'
+           });
+           _this.mallSellersCheckList(_this.examineData.page.curPage);
            console.log(data,'data')
         }
       });
@@ -617,9 +651,68 @@ export default {
            console.log(_this.saleData,'saleData')
         }
       });
+    },
+    preview(imgUrl){//商品佣金列表预览方法
+      let _this = this;
+      let msg ={
+        'title':'',
+        'imgUrl':_this.imgUrl+imgUrl,
+        'urlQR': '',
+        'pageLink': _this.path+'/views/marketing/index.html#/'
+      }
+      _this.$root.$refs.dialogQR.showDialog(msg);
+    },
+    setCommissionStatus(id,type){
+      let _this= this;
+      let msg = '';
+      if(type === -1){
+        msg = '已禁用';
+      }else if(type === -2){
+        msg = '已启用';
+      }else{
+        msg = '已删除';
+      }
+      Lib.M.ajax({
+        'url': DFshop.activeAPI.mallSellerSetJoinProductStatus_post,
+        'data':{
+            id : id,
+            type : type
+        },
+        'success':function (data){
+           _this.$message({
+              message: msg,
+              type: 'success'
+           });
+           _this.mallSellersJoinProduct(_this.goodsData.page.curPage);
+           //console.log(_this.saleData,'saleData')
+        }
+      });
+    },
+    mallSellerStartUseSeller(id,type){
+      let _this= this;
+      let msg = '';
+      if(type === -1){
+        msg = '已暂停';
+      }else{
+        msg = '已启用';
+      }
+      Lib.M.ajax({
+        'url': DFshop.activeAPI.mallSellerStartUseSeller_post,
+        'data':{
+            id : id,
+            type : type
+        },
+        'success':function (data){
+           _this.$message({
+              message: msg,
+              type: 'success'
+           });
+           _this.mallSellersList(_this.sellersList.page.curPage);
+           //console.log(_this.saleData,'saleData')
+        }
+      });
     }
   },
-  
   mounted(){
     let _this = this;
     _this.activeName = _this.$route.params.activeName;
@@ -632,7 +725,7 @@ export default {
       }
     });
     _this.mallSellersGetSellerSet();
-    //_this.mallSellersJoinProduct(1);
+    _this.mallSellersJoinProduct(1);
     _this.mallSellersCheckList(1);
     _this.mallSellersList(1);
     _this.mallSellersWithDrawList(1);

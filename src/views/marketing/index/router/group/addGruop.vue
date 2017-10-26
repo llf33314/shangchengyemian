@@ -218,7 +218,6 @@ export default {
       if(this.ruleForm.isSpecifica == 1){
         this.getSpecificaByProId(data.id);
       }
-      
     },
     submitForm(formName) {
       let _this= this;
