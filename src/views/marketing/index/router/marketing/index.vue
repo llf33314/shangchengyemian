@@ -13,7 +13,7 @@
             <el-form ref="setupForm" :model="setupForm" label-width="90px">
               <el-form-item label="积分奖励 :">
                 每推荐1人关注商城公众号，可奖励
-                <el-input v-model="setupForm.integralReward" class="mix-input"></el-input>
+                <el-input v-model="setupForm.integralReward" class="mix-input" @blur="checkJinfen"></el-input>
                 积分
                 <p class="p-warn">最多输入5位小数</p>
               </el-form-item>
@@ -45,12 +45,7 @@
                 <p class="p-warn">提现规则为最低1元，最高2000元</p>
               </el-form-item>
               <el-form-item label="经纪人说明 :">
-               <el-input
-                  type="textarea"
-                  :rows="3"
-                  placeholder="请输入内容"
-                  v-model="setupForm.sellerRemark"
-                  style="width:358px;">
+               <el-input type="textarea" :rows="3" placeholder="请输入内容" v-model="setupForm.sellerRemark" style="width:358px;">
                 </el-input>
               </el-form-item>
               <el-form-item>
@@ -259,11 +254,7 @@
                 </span>
                 <span>
                   提现时间 ：
-                  <el-date-picker
-                    v-model="cashDate"
-                    type="datetimerange"
-                    placeholder="选择时间范围">
-                  </el-date-picker>
+                  <el-date-picker v-model="cashDate" type="datetimerange" placeholder="选择时间范围" @change="cashSearch"></el-date-picker>
                 </span>
               </div>
             </div>
@@ -371,40 +362,90 @@ export default {
   },
   watch:{
     activeName :function(t,f){
-      console.log(t,f);
       let _href= window.location.href;
       sessionStorage.setItem('href', _href);
     },
     $route :function(t,f){
-      console.log(t,f);
       this.activeName= t.params.activeName;
     }
   },
   methods: {
-    onSubmit(formName) {
-      //onsole.log('submit!');
-      let _this= this;
-      let param = {};
-      param = _this.$refs[formName].model;
-      param.sellerRemark = encodeURI(_this.$refs[formName].model.sellerRemark);
-      Lib.M.ajax({
-        'url': DFshop.activeAPI.mallSellersSaveSellerSet_post,
-        'data': param,
-        'success':function (data){
-           _this.$message({
-              message: '保存成功',
-              type: 'success'
-          });
-          _this.mallSellersGetSellerSet();
-          //window.location.reload();
+    checkJinfen(){//验证积分
+      let reg = /^[0-9]\d*$/;
+      if(!reg.test(this.setupForm.integralReward) && this.setupForm.integralReward != ''){
+        this.setupForm.integralReward == ''
+        this.$message.error('积分奖励必须为数字');
+        return false;
+      }else if(this.setupForm.integralReward.length > 5){
+        this.$message.error('积分奖励最多输入5位');
+        return false;
+      }
+      return true;
+    },
+    checkConsumeMoney(){//验证成为销售员消费金额
+      let reg = /^[0-9]\d*$/;
+      if(this.setupForm.consumeMoney != '' && !reg.test(this.setupForm.consumeMoney)){
+        this.setupForm.consumeMoney == '';
+        this.$message.error('消费金额必须为数字');
+        return false;
+      }else if(this.setupForm.consumeMoney.length > 5){
+        this.$message.error('消费金额最多输入5位');
+        return false;
+      }
+      return true;
+    },
+    checkWithdrawal(){//验证提现规则
+      let reg = /^[0-9]\d*$/;
+      if(this.setupForm.withdrawalType == 1){
+        if(this.setupForm.withdrawalLowestMoney != '' && !reg.test(this.setupForm.withdrawalLowestMoney)){
+          this.setupForm.withdrawalLowestMoney == '';
+          this.$message.error('最低可提现金额必须为数字');
+          return false;
+        }else if(this.setupForm.withdrawalLowestMoney > 2000 || this.setupForm.withdrawalLowestMoney < 1){
+          this.$message.error('提现规则为最低1元，最高2000元');
+          return false;
         }
-      });
+        return true;
+      }else{
+        if(this.setupForm.withdrawalMultiple != '' && !reg.test(this.setupForm.withdrawalMultiple)){
+          this.setupForm.withdrawalMultiple == '';
+          this.$message.error('按倍数提现金额必须为数字');
+          return false;
+        }else if(this.setupForm.withdrawalMultiple > 2000 || this.setupForm.withdrawalMultiple < 1){
+          this.$message.error('提现规则为最低1元，最高2000元');
+          return false;
+        }
+        return true;
+      }
     },
-    handleEdit(index, row) {
-      console.log(index, row);
-    },
-    handleDelete(index, row) {
-      console.log(index, row);
+    onSubmit(formName) {//保存基本设置事件
+      //onsole.log('submit!');
+      let _this = this;
+      let jinfen = _this.checkJinfen();
+      let money = _this.checkConsumeMoney();
+      let withdrawal = _this.checkWithdrawal();
+      if(jinfen && money && withdrawal){
+        let param = {};
+        param = _this.$refs[formName].model;
+        if(param.withdrawalType == 1){
+          param.withdrawalMultiple = '';
+        }else{
+          param.withdrawalLowestMoney = '';
+        }
+        param.sellerRemark = encodeURI(_this.$refs[formName].model.sellerRemark);
+        Lib.M.ajax({
+          'url': DFshop.activeAPI.mallSellersSaveSellerSet_post,
+          'data': param,
+          'success':function (data){
+            _this.$message({
+                message: '保存成功',
+                type: 'success'
+            });
+            _this.mallSellersGetSellerSet();
+            //window.location.reload();
+          }
+        });
+      }
     },
     handleSizeChange(val) {
       this.mallSellersJoinProduct(val);
@@ -434,33 +475,7 @@ export default {
      let _activeName = tab.name;
      this.$router.push(_activeName);
     },
-    InvalidData(){
-      let _this= this;
-      let msg ={
-        'dialogTitle':'您确定要将此团购活动失效吗？',//文本标题
-        'dialogMsg': '失效后不能再进行团购',//文本内容
-        'callback': {
-          'btnOne': function(){
-
-          }
-        }
-      }
-      _this.$root.$refs.dialog.showDialog(msg);   
-    },
-    deleteData(){
-      let _this= this;
-      let msg ={
-        'dialogTitle':'您确定要删除此团购活动吗？',//文本标题
-        'dialogMsg': '',//文本内容
-        'callback': {
-          'btnOne': function(){
-
-          }
-        }
-      }
-      _this.$root.$refs.dialog.showDialog(msg);   
-    },
-    refuseExamine(sellerId,checkStatus){
+    refuseExamine(sellerId,checkStatus){//推荐审核拒绝弹出框
       let _this= this;
       let msg ={
         'dialogTitle':'确定拒绝该审核吗？',//文本标题
@@ -473,7 +488,7 @@ export default {
       }
       _this.$root.$refs.dialog.showDialog(msg);   
     },
-    passExamine(sellerId,checkStatus){
+    passExamine(sellerId,checkStatus){//推荐审核通过弹出框
       let _this= this;
       let msg ={
         'dialogTitle':'确定通过该审核吗？',//文本标题
@@ -505,10 +520,7 @@ export default {
       }
       _this.$root.$refs.dialog.showDialog(msg);
     },
-    /**
-     * 搜索
-     * 
-     **/ 
+    /*搜索 */ 
     loadAll() {
       return [
         { "value": "三全鲜食（北新泾店）", "address": "长宁区新渔路144号" },
@@ -585,7 +597,7 @@ export default {
         }
       });
     },
-    mallSellersCheckSeller(sellerId,checkStatus){
+    mallSellersCheckSeller(sellerId,checkStatus){//推荐审核通过、拒绝方法
       let _this= this;
       let msg = '';
       if(checkStatus === 1){
@@ -609,7 +621,7 @@ export default {
         }
       });
     },
-    mallSellersList(pageNum){
+    mallSellersList(pageNum){//销售员列表
       let _this= this;
       Lib.M.ajax({
         'url': DFshop.activeAPI.mallSellersList_post,
@@ -633,7 +645,11 @@ export default {
       let _this= this;
       let startTime = '';
       let endTime = '';
-
+      let cashTime = _this.cashDate;
+      if(cashTime != ''){
+        startTime = Lib.M.format(new Date(cashTime[0]));
+        endTime = Lib.M.format(new Date(cashTime[1]));
+      }
       Lib.M.ajax({
         'url': DFshop.activeAPI.mallSellersWithDrawList_post,
         'data':{
@@ -643,6 +659,7 @@ export default {
             endTime : endTime
         },
         'success':function (data){
+          //console.log(data,'data')
            _this.saleData = data.data;
            $.each(_this.saleData.page.subList,function(i){
              let oldTime = this.applay_time;
@@ -662,7 +679,7 @@ export default {
       }
       _this.$root.$refs.dialogQR.showDialog(msg);
     },
-    setCommissionStatus(id,type){
+    setCommissionStatus(id,type){//商品拥金列表已禁用、已启用、已删除方法
       let _this= this;
       let msg = '';
       if(type === -1){
@@ -688,7 +705,7 @@ export default {
         }
       });
     },
-    mallSellerStartUseSeller(id,type){
+    mallSellerStartUseSeller(id,type){//销售员暂停、启用方法
       let _this= this;
       let msg = '';
       if(type === -1){
@@ -700,7 +717,7 @@ export default {
         'url': DFshop.activeAPI.mallSellerStartUseSeller_post,
         'data':{
             id : id,
-            type : type
+            isStartUse : type
         },
         'success':function (data){
            _this.$message({
@@ -711,6 +728,9 @@ export default {
            //console.log(_this.saleData,'saleData')
         }
       });
+    },
+    cashSearch(){//提现时间选择改变事件
+      this.mallSellersWithDrawList(1);
     }
   },
   mounted(){

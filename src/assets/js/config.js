@@ -179,7 +179,7 @@ import common from './common';
 
     /*预售管理列表 */
     mallPresaleList_post:DFshop.env.activeAPI+'/mallPresale/list',
-    /*获取预售信息 */
+    /*获取预售信息 */ 
     mallPresalePresaleInfo_post:DFshop.env.activeAPI+'/mallPresale/presaleInfo',
     /*保存预售信息 */
     mallPresaleSave_post:DFshop.env.activeAPI+'/mallPresale/save',
@@ -187,10 +187,16 @@ import common from './common';
     mallPresaleDelete_post:DFshop.env.activeAPI+'/mallPresale/delete',
     /*定金管理列表 */
     mallPresaleDepositList_post:DFshop.env.activeAPI+'/mallPresale/deposit/list',
-    /*预售送礼列表 */
-    mallPresaleGiveInfo_post:DFshop.env.activeAPI+'/mallPresale/give/giveInfo',
     /*退定金 */
-    mallPresaleAgreedReturnDeposit_post:DFshop.env.activeAPI+'/mallPresale/deposit/agreedReturnDeposit',    
+    mallPresaleAgreedReturnDeposit_post:DFshop.env.activeAPI+'/mallPresale/deposit/agreedReturnDeposit',
+    /*预售送礼列表 */
+    mallPresaleGiveList_post:DFshop.env.activeAPI+'/mallPresale/give/list',
+    /*预售送礼类型列表 */
+    mallPresaleGiveDictList_post:DFshop.env.activeAPI+'/mallPresale/give/dictList',
+    /*删除预售送礼 */
+    mallPresaleGiveDelete_post:DFshop.env.activeAPI+'/mallPresale/give/delete',
+    /*保存预售送礼设置 */
+    mallPresaleGiveSave_post:DFshop.env.activeAPI+'/mallPresale/give/save',        
   };
 
   /*公共方法***********************************************************************************************************/

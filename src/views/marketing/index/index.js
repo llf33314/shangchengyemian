@@ -53,7 +53,7 @@ const routes = [
   { path: '/integralmall', component: IntegralMall},
   { path: '/integralmall/goods', component: addGoods},
   { path: '/integralmall/banner', component: addBanner},
-  { path: '/presale', component: Presale},
+  { path: '/presale/:activeName', component: Presale},
   { path: '/presale/addpresale/:id', component: addPresale},
   { path: '/pifa', component: Pifa},
   { path: '/pifa/addPifa', component: addPifa},

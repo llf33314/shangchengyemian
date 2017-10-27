@@ -10,7 +10,7 @@
         <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
             <el-tab-pane label="预售管理" name="1" >
                 <div class="common-content">
-                <div class="index-shopInfo" v-if="presaleData.isOpenPresale">
+                <div class="index-shopInfo">
                     <div class="index-input-box">
                     <div class="p-box">
                         <div v-if="presaleData.page.rowCount > 0">
@@ -82,7 +82,7 @@
                         </template>
                     </el-table-column>
                 </el-table>
-                <div class="shop-textr">
+                <div class="shop-textr" v-if="!presaleData.isOpenPresale && presaleData.page.rowCount > 0">
                     <el-pagination
                         @size-change="handleSizeChange"
                         @current-change="handleCurrentChange"
@@ -146,7 +146,7 @@
                         <template scope="scope">
                             <el-button size="small" class="buttonBlue" 
                             v-if="scope.row.depositStatus == 1 && (scope.row.presaleStatus == -1 ||scope.row.presaleStatus == -2) && scope.row.isSubmit == 0"
-                            @click="comeDownShow(scope.row.depositMoney,scope.row.id)">退定金</el-button>
+                            @click="comeDownShow(scope.row.depositMoney,scope.row.id,scope.row.payWay,scope.row.depositNo)">退定金</el-button>
                         </template>
                         </el-table-column>
                     </el-table>
@@ -164,46 +164,66 @@
                     <el-dialog title="退定金" :visible.sync="dialogVisible" size="tiny">
                         退款金额<span>¥{{dingJin}}</span>
                         <span slot="footer" class="dialog-footer">
-                            <el-button @click="dialogVisible = false">取 消</el-button>
-                            <el-button type="primary" @click="comeDown()">确 定</el-button>
+                            <!-- <el-button @click="dialogVisible = false">取 消</el-button> -->
+                            <el-button type="primary" @click="comeDown()" v-if="payWay === 1 || payWay === 2">退定金</el-button>
+                            <a :href="alipayUrl">
+                                <el-button type="primary" v-if="payWay === 3">退定金</el-button>
+                            </a>
+                            <!-- <button class="btn" id="gtLongUrlCopy"  @click="copyLink()" data-clipboard-text="http://www.hbcloudwide.com/oss/video/7">点击复制</button>   -->
+                            <el-button type="primary" @click="copyLink()" v-if="payWay === 3"
+                                id="gtLongUrlCopy" :data-clipboard-text="alipayUrl">复制退款链接</el-button>
                         </span>
                     </el-dialog>
                 </div>
             </el-tab-pane>
             <el-tab-pane label="预售送礼设置" name="3">
                 <div class="common-content">
-                    <!-- <div class="index-shopInfo">
-                        <router-link to="/integralmall/banner">
-                            <el-button type="primary">新建预售送礼</el-button>
-                        </router-link>
-                    </div> -->
-                    <el-table :data="presaleGiftsData.giveList" style="width: 100%" v-if="presaleGiftsData.giveList.length > 0">
+                    <div class="index-shopInfo">
+                        <el-button type="primary" @click="addPresaleGift()">新建预售送礼</el-button>
+                    </div>
+                    <el-table :data="presaleGiftsData.page.subList" style="width: 100%" v-if="presaleGiftsData.page.rowCount > 0">
                         <el-table-column
                         label="送礼名次">
                         <template scope="scope">
-                            前<el-input v-model="scope.row.giveRanking" class="mix-input"></el-input>名
+                            前<el-input v-model="scope.row.giveRanking" class="mix-input" @blur="blurSaveGift(scope.$index)"></el-input>名
                         </template>
                         </el-table-column>
                         <el-table-column label="礼品类型">
                             <template scope="scope">
-                                <el-select v-model="scope.row.giveType" placeholder="请选择">
-                                    <el-option class="max-input" v-for="item in presaleGiftsData.dictList"
+                                <el-select v-model="scope.row.giveType" placeholder="请选择" @change="blurSaveGift(scope.$index)">
+                                    <el-option class="max-input" v-for="item in giftDictList"
                                         :key="item.item_key" :label="item.item_value" :value="item.item_key">
                                     </el-option>
                                 </el-select>
                             </template>
                         </el-table-column>
-                        <el-table-column prop="giveName" label="礼品名称"></el-table-column>
-                        <el-table-column prop="giveNum" label="礼品数量"></el-table-column>
+                        <el-table-column label="礼品名称">
+                            <template scope="scope">
+                                <el-input v-model="scope.row.giveName" class="mix-input" @blur="blurSaveGift(scope.$index)"></el-input>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="礼品数量">
+                            <template scope="scope">
+                                <el-input v-model="scope.row.giveNum" class="mix-input" @blur="blurSaveGift(scope.$index)"></el-input>
+                            </template>
+                        </el-table-column>
                         <el-table-column label="操作" min-width="120">
                             <template scope="scope">
-                                <el-button
-                                size="small"
-                                @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                                <el-button size="small" @click="handleDelete(scope.row.id,scope.$index)">删除</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
-                    <content-no v-if="presaleGiftsData.giveList.length == 0"></content-no>
+                    <div class="shop-textr">
+                        <el-pagination
+                            @size-change="handleSizeChange2"
+                            @current-change="handleCurrentChange2"
+                            :current-page.sync="presaleGiftsData.page.curPage"
+                            :page-size="presaleGiftsData.page.pageSize"
+                            layout="prev, pager, next, jumper"
+                            :total="presaleGiftsData.page.rowCount">
+                        </el-pagination>
+                    </div>
+                    <content-no v-if="presaleGiftsData.page.rowCount == 0"></content-no>
                 </div>
           </el-tab-pane>
         </el-tabs>
@@ -221,7 +241,7 @@ export default {
   data () {
     return {
       contentNo:'ysgl',
-      activeName:'1',
+      activeName:'3',//todo
       dialogVisible: false,
       presaleType:'',
       shopId:'',
@@ -229,28 +249,61 @@ export default {
           isOpenPresale:'',
           videourl:'',
           page:{
-              rowCount:'',
+              rowCount:0,
               subList:[],
           }
       },
       shopList: [],
       dingJinData: {
           page:{
-              rowCount:'',
+              rowCount:0,
               subList:[],
           }
       },
       presaleGiftsData:{
-          giveList:[],
-          dictList:[],
+          page:{
+              subList:[{
+                  id : '',
+                  giveType : '',
+                  giveName : '',
+                  giveNum : '',
+                  giveRanking :''
+              }]
+          }
       },
       input:'',
       dingJin:0,
       dingJinId:'',
       imgUrl:'',
+      giftDictList : [],
+      flag:true,
+      payWay : '',
+      alipayUrl : '',
+      busId : ''
+    }
+  },
+  watch:{
+    activeName :function(t,f){
+      let _href= window.location.href;
+      sessionStorage.setItem('href', _href);
+    },
+    $route :function(t,f){
+      this.activeName= t.params.activeName;
     }
   },
   methods: {
+      copyLink(e,index){//复制退定金链接
+        console.log(e.target,index)
+        var self = this;
+        var clipboard = new Lib.Clipboard("#gtLongUrlCopy");
+        clipboard.on('success', function(e) {
+        self.$message({
+            message: '复制成功',
+            type: 'success'
+        });
+        clipboard.destroy();
+        });
+      },
       searchPresale(){
           this.mallPresaleList(1);
       },
@@ -270,11 +323,19 @@ export default {
         //this.pageNum1 = val;
         this.mallPresaleDepositList(val);
       },
-      handleClick(tab, event) {
-      //  let _activeName = tab.name;
-      //  this.$router.push(_activeName);
+      handleSizeChange2(val) {
+        //this.pageNum1 = val;
+        this.mallPresaleGiveList(val);
       },
-      presaleDel(id,type){
+      handleCurrentChange2(val) {
+        //this.pageNum1 = val;
+        this.mallPresaleGiveList(val);
+      },
+      handleClick(tab, event) {
+        let _activeName = tab.name;
+        this.$router.push(_activeName);
+      },
+      presaleDel(id,type){//商品预售删除弹出框
           let _this= this;
           let msg ={
             'dialogTitle':'您确定要删除此预售商品？',//文本标题
@@ -287,20 +348,33 @@ export default {
           }
         _this.$root.$refs.dialog.showDialog(msg); 
       },
-    handleDelete(id,type){
-      let _this= this;
+    handleDelete(id,index){//商品预售送礼删除弹出框
+      let _this = this;
+      let gift = _this.presaleGiftsData.page.subList[index];
+      if(id == '' || gift.giveRanking == '' || gift.giveNum == '' || gift.giveType == '' || gift.giveNum == ''){
+          _this.presaleGiftsData.page.subList.splice(index, 1);
+          return false;
+      }
       let msg ={
         'dialogTitle':'您确定要删除此预售商品？',//文本标题
         'dialogMsg': '',//文本内容
         'callback': {
           'btnOne': function(){
-              
+              Lib.M.ajax({
+                'url': DFshop.activeAPI.mallPresaleGiveDelete_post,
+                'data':{
+                    id : id
+                },
+                'success':function (data){
+                    _this.mallPresaleGiveList(_this.presaleGiftsData.page.curPage);
+                }
+            });
           }
         }
       }
       _this.$root.$refs.dialog.showDialog(msg); 
     },
-    invalidDelete(id,type){
+    invalidDelete(id,type){//商品预售失效弹出框
       let _this= this;
       let msg ={
         'dialogTitle':'您确定要将此商品失效吗？',//文本标题
@@ -313,12 +387,16 @@ export default {
       }
       _this.$root.$refs.dialog.showDialog(msg); 
     },
-    comeDownShow(dingJin,id){
+    comeDownShow(dingJin,id,payWay,depositNo){//退定金弹出框
         this.dialogVisible = true;
         this.dingJin = dingJin;
         this.dingJinId = id;
+        this.payWay = payWay;
+        this.alipayUrl = this.alipayUrl+'?out_trade_no='+depositNo+'&busId='+this.busId+'&desc=退保证金';
+
+        console.log(this.alipayUrl,'this.alipayUrl')
     },
-    comeDown(){
+    comeDown(){//退定金事件
         this.mallPresaleAgreedReturnDeposit(this.dingJinId);
     },
     mallPresaleList(pageNum){//预售管理列表
@@ -333,7 +411,7 @@ export default {
         'success':function (data){
            _this.presaleData = data.data;
            _this.imgUrl = data.imgUrl;
-           _this.presaleData.page.rowCount = data.data.page.rowCount;
+           _this.presaleData.page.rowCount = Number(data.data.page.rowCount);
            $.each(_this.presaleData.page.subList,function(i){
              let oldTime = this.createTime;
              this.createTime = Lib.M.format(oldTime);
@@ -342,7 +420,7 @@ export default {
         }
       });
     },
-    mallPresaleDepositList(pageNum){
+    mallPresaleDepositList(pageNum){//预售定金管理
       let _this= this;
       Lib.M.ajax({
         'url': DFshop.activeAPI.mallPresaleDepositList_post,
@@ -351,6 +429,8 @@ export default {
         },
         'success':function (data){
            _this.dingJinData = data.data;
+           _this.alipayUrl = data.data.alipayUrl;
+           _this.busId = data.data.busId;
            _this.dingJinData.page.rowCount = data.data.page.rowCount;
            $.each(_this.dingJinData.page.subList,function(i){
                 if(this.payTime != '' && this.payTime != undefined){
@@ -362,17 +442,21 @@ export default {
         }
       });
     },
-    mallPresaleGiveInfo(){
+    mallPresaleGiveList(pageNum){//预售送礼设置列表
         let _this= this;
         Lib.M.ajax({
-            'url': DFshop.activeAPI.mallPresaleGiveInfo_post,
+            'url': DFshop.activeAPI.mallPresaleGiveList_post,
+            'data':{
+                curPage : pageNum
+            },
             'success':function (data){
                 _this.presaleGiftsData = data.data;
-                //console.log(_this.presaleGiftsData,'presaleGiftsData')
+                _this.mallPresaleGiveDictList();
+                console.log(_this.presaleGiftsData,'presaleGiftsData')
             }
         });
     },
-    mallPresaleAgreedReturnDeposit(id){
+    mallPresaleAgreedReturnDeposit(id){//退定金方法
         console.log(id,'id');
         let _this= this;
         Lib.M.ajax({
@@ -385,7 +469,7 @@ export default {
             }
         });
     },
-    mallPresaleDelete(id,type){
+    mallPresaleDelete(id,type){//使预售商品失效、删除方法
       let _this = this;
       let msg = '';
       if(type === -1){
@@ -404,11 +488,11 @@ export default {
               message: msg,
               type: 'success'
           });
-          _this.jumpRouter('/presale');
+          _this.mallPresaleList(_this.presaleData.page.curPage);
         }
       });
     },
-    preview(imgUrl){
+    preview(imgUrl){//预售预览方法
       let _this = this;
       let msg ={
         'title':'',
@@ -417,19 +501,103 @@ export default {
         'pageLink': _this.path+'/views/marketing/index.html#/'
       }
       _this.$root.$refs.dialogQR.showDialog(msg);
+    },
+    mallPresaleGiveDictList(){//预售送礼类型列表方法
+        let _this= this;
+        Lib.M.ajax({
+            'url': DFshop.activeAPI.mallPresaleGiveDictList_post,
+            'success':function (data){
+                _this.giftDictList = data.data;
+                $.each(_this.giftDictList,function(i){
+                    this.item_key = Number(this.item_key)
+                });
+                //console.log(_this.giftDictList,'giftDictList')
+            }
+        });
+    },
+    addPresaleGift(){//添加预售送礼
+        let newGift ={
+            id : '',
+            giveType : '',
+            giveName : '',
+            giveNum : '',
+            giveRanking :''
+      }
+      this.presaleGiftsData.page.subList.unshift(newGift)
+    //     let data = JSON.parse(JSON.stringify(this.presaleGiftsData.page.subList))
+    //   this.presaleGiftsData.page.subList = data[1]
+    },
+    mallPresaleGiveSave(param){//保存预售送礼设置
+        let _this= this;
+        Lib.M.ajax({
+            'url': DFshop.activeAPI.mallPresaleGiveSave_post,
+            'data':{
+                presaleSet : param
+            },
+            'success':function (data){
+                _this.$message({
+                    message: '保存成功',
+                    type: 'success'
+                });
+            }
+        });
+    },
+    changeaaa(value){
+
+    },
+    blurSaveGift(index){//保存预售送礼及判断
+        //console.log(this.presaleGiftsData.page.subList,'aaaaaaaaaa');
+        //debugger
+        let _this = this;
+        if(!_this.flag) return;
+        let reg = /^[1-9]\d*$/;
+        let gift = _this.presaleGiftsData.page.subList[index];
+        console.log(gift,'gift');
+        if(gift.giveRanking == '' && gift.giveNum == '' && gift.giveType == '' && gift.giveNum == '')
+        return 
+        if(gift.giveRanking == ''){
+            _this.$message.error('送礼名次不能为空');
+            return false;
+        }else if(!reg.test(gift.giveRanking)){
+            _this.$message.error('送礼名次必须为数字');
+            return false;
+        }else if(gift.giveType == ''){
+            _this.$message.error('请选择礼品类型');
+            return false;
+        }else if(gift.giveName == ''){
+            _this.$message.error('礼品名称不能为空');
+            return false;
+        }else if(gift.giveNum == ''){
+            _this.$message.error('礼品数量不能为空');
+            return false;
+        }else if(!reg.test(gift.giveNum)){
+            _this.$message.error('礼品数量必须为数字');
+            return false;
+        }else{
+            let param = {};
+            param.giveRanking = gift.giveRanking;
+            param.giveType = gift.giveType;
+            param.giveName = encodeURI(gift.giveName);
+            param.giveNum = gift.giveNum;
+            if(gift.id != ''){
+                param.id = gift.id;
+            }
+            _this.mallPresaleGiveSave(param);
+        }
     }
   },
   mounted(){
     let _this = this;
+    _this.activeName = _this.$route.params.activeName;
     DFshop.method.storeList({
       'success'(data){
         _this.shopList = data.data;
-        console.log(_this.shopList,'shopList')
+        //console.log(_this.shopList,'shopList')
       }
     });
     _this.mallPresaleList(1);
     _this.mallPresaleDepositList(1);
-    _this.mallPresaleGiveInfo();
+    _this.mallPresaleGiveList();
   }
 }
 </script>

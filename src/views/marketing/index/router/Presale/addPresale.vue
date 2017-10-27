@@ -9,14 +9,14 @@
     </div>
     <div class="addBond-main">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-            <el-form-item label="所属店铺 :" prop="shop_id">
+            <el-form-item label="所属店铺 :" prop="shop_id" required>
                 <el-select v-model="ruleForm.shop_id" v-bind:disabled="disabledShop" placeholder="请选择店铺" class="addBond-input">
                     <el-option :label="option.sto_name" :value="option.id"
                       :key="option.id" v-for="option in shopList">
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="选择商品 :" prop="region">
+            <el-form-item label="选择商品 :" prop="region" required>
                 <el-button type="primary" @click="showDialog" v-if="isChoicePro">选择商品</el-button>
                 <goods-box :boxdata="boxData" v-if="isReplacePro"></goods-box>
                 <el-button type="primary" @click="showDialog" v-if="isReplacePro">替换商品</el-button>
@@ -43,12 +43,12 @@
                 </el-table>
                 </div>
             </el-form-item>
-            <el-form-item label="交纳定金 :" prop="deposit_percent">
+            <el-form-item label="交纳定金 :" prop="deposit_percent" required> 
                  <el-input  v-model="ruleForm.deposit_percent" class="max-input">
                     <template slot="prepend">¥</template>
                 </el-input>
             </el-form-item>
-            <el-form-item label="预售时间 :" prop="sale_start_time">
+            <el-form-item label="预售时间 :" prop="sale_start_time" required>
                 <el-date-picker v-model="ruleForm.sale_start_time" type="datetimerange"
                     placeholder="选择日期范围" :picker-options="pickerOptions">
                 </el-date-picker>
