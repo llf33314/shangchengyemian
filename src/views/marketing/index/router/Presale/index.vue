@@ -185,12 +185,12 @@
                         <el-table-column
                         label="送礼名次">
                         <template scope="scope">
-                            前<el-input v-model="scope.row.giveRanking" class="mix-input" @blur="blurSaveGift(scope.$index)"></el-input>名
+                            前<el-input v-model="scope.row.giveRanking" class="mix-input" @blur="blurSaveGift(scope.$index,2)"></el-input>名
                         </template>
                         </el-table-column>
                         <el-table-column label="礼品类型">
                             <template scope="scope">
-                                <el-select v-model="scope.row.giveType" placeholder="请选择" @change="blurSaveGift(scope.$index)">
+                                <el-select v-model="scope.row.giveType" placeholder="请选择" @change="blurSaveGift(scope.$index,2)">
                                     <el-option class="max-input" v-for="item in giftDictList"
                                         :key="item.item_key" :label="item.item_value" :value="item.item_key">
                                     </el-option>
@@ -199,12 +199,12 @@
                         </el-table-column>
                         <el-table-column label="礼品名称">
                             <template scope="scope">
-                                <el-input v-model="scope.row.giveName" class="mix-input" @blur="blurSaveGift(scope.$index)"></el-input>
+                                <el-input v-model="scope.row.giveName" class="mix-input" @blur="blurSaveGift(scope.$index,2)"></el-input>
                             </template>
                         </el-table-column>
                         <el-table-column label="礼品数量">
                             <template scope="scope">
-                                <el-input v-model="scope.row.giveNum" class="mix-input" @blur="blurSaveGift(scope.$index)"></el-input>
+                                <el-input v-model="scope.row.giveNum" class="mix-input" @blur="blurSaveGift(scope.$index,2)"></el-input>
                             </template>
                         </el-table-column>
                         <el-table-column label="操作" min-width="120">
@@ -214,16 +214,36 @@
                         </el-table-column>
                     </el-table>
                     <div class="shop-textr">
-                        <el-pagination
-                            @size-change="handleSizeChange2"
-                            @current-change="handleCurrentChange2"
+                        <el-pagination  @size-change="handleSizeChange2" @current-change="handleCurrentChange2"
                             :current-page.sync="presaleGiftsData.page.curPage"
                             :page-size="presaleGiftsData.page.pageSize"
-                            layout="prev, pager, next, jumper"
-                            :total="presaleGiftsData.page.rowCount">
+                            layout="prev, pager, next, jumper" :total="presaleGiftsData.page.rowCount">
                         </el-pagination>
                     </div>
                     <content-no v-if="presaleGiftsData.page.rowCount == 0"></content-no>
+                    <el-dialog title="新建预售送礼" :visible.sync="dialogVisibleGift" size="tiny">
+                        <el-form :model="form" ref="form">
+                            <el-form-item label="送礼名次">
+                                前<el-input v-model="form.giveRanking" class="mix-input" @blur="blurSaveGift('',1)"></el-input>名
+                            </el-form-item>
+                            <el-form-item label="礼品类型">
+                                <el-select v-model="form.giveType" placeholder="请选择" @change="blurSaveGift('',1)">
+                                    <el-option class="max-input" v-for="item in giftDictList"
+                                        :key="item.item_key" :label="item.item_value" :value="item.item_key">
+                                    </el-option>
+                                </el-select>
+                            </el-form-item>
+                            <el-form-item label="礼品名称">
+                                <el-input v-model="form.giveName" class="mix-input" @blur="blurSaveGift('',1)"></el-input>
+                            </el-form-item>
+                            <el-form-item label="礼品数量">
+                                <el-input v-model="form.giveNum" class="mix-input" @blur="blurSaveGift('',1)"></el-input>
+                            </el-form-item>
+                            <el-form-item min-width="120">
+                                <el-button type="primary" size="small" @click="saveAddPresale()">保存</el-button>
+                            </el-form-item>
+                        </el-form>
+                    </el-dialog>
                 </div>
           </el-tab-pane>
         </el-tabs>
@@ -243,6 +263,7 @@ export default {
       contentNo:'ysgl',
       activeName:'3',//todo
       dialogVisible: false,
+      dialogVisibleGift : false,
       presaleType:'',
       shopId:'',
       presaleData: {
@@ -262,6 +283,7 @@ export default {
       },
       presaleGiftsData:{
           page:{
+              rowCount:0,
               subList:[{
                   id : '',
                   giveType : '',
@@ -279,7 +301,13 @@ export default {
       flag:true,
       payWay : '',
       alipayUrl : '',
-      busId : ''
+      busId : '',
+      form:{
+        giveType : 1,
+        giveName : '',
+        giveNum : '',
+        giveRanking :''
+      }
     }
   },
   watch:{
@@ -350,11 +378,11 @@ export default {
       },
     handleDelete(id,index){//商品预售送礼删除弹出框
       let _this = this;
-      let gift = _this.presaleGiftsData.page.subList[index];
-      if(id == '' || gift.giveRanking == '' || gift.giveNum == '' || gift.giveType == '' || gift.giveNum == ''){
-          _this.presaleGiftsData.page.subList.splice(index, 1);
-          return false;
-      }
+    //   let gift = _this.presaleGiftsData.page.subList[index];
+    //   if(id == '' || gift.giveRanking == '' || gift.giveNum == '' || gift.giveType == '' || gift.giveNum == ''){
+    //       _this.presaleGiftsData.page.subList.splice(index, 1);
+    //       return false;
+    //   }
       let msg ={
         'dialogTitle':'您确定要删除此预售商品？',//文本标题
         'dialogMsg': '',//文本内容
@@ -516,16 +544,15 @@ export default {
         });
     },
     addPresaleGift(){//添加预售送礼
-        let newGift ={
-            id : '',
-            giveType : '',
-            giveName : '',
-            giveNum : '',
-            giveRanking :''
-      }
-      this.presaleGiftsData.page.subList.unshift(newGift)
-    //     let data = JSON.parse(JSON.stringify(this.presaleGiftsData.page.subList))
-    //   this.presaleGiftsData.page.subList = data[1]
+    //     let newGift ={
+    //         id : '',
+    //         giveType : '',
+    //         giveName : '',
+    //         giveNum : '',
+    //         giveRanking :''
+    //   }
+    //   this.presaleGiftsData.page.subList.unshift(newGift);
+        this.dialogVisibleGift = true;
     },
     mallPresaleGiveSave(param){//保存预售送礼设置
         let _this= this;
@@ -539,22 +566,24 @@ export default {
                     message: '保存成功',
                     type: 'success'
                 });
+                _this.dialogVisibleGift = false;
+                _this.mallPresaleGiveList(1);
             }
         });
     },
     changeaaa(value){
 
     },
-    blurSaveGift(index){//保存预售送礼及判断
-        //console.log(this.presaleGiftsData.page.subList,'aaaaaaaaaa');
-        //debugger
+    blurSaveGift(index,type){//保存预售送礼及判断
         let _this = this;
-        if(!_this.flag) return;
-        let reg = /^[1-9]\d*$/;
-        let gift = _this.presaleGiftsData.page.subList[index];
-        console.log(gift,'gift');
-        if(gift.giveRanking == '' && gift.giveNum == '' && gift.giveType == '' && gift.giveNum == '')
-        return 
+        let reg = /^[0-9]\d*$/;
+        let gift = '';
+        if(type === 1){//新增
+            gift = _this.$refs['form'].model;
+        }else{
+            gift = _this.presaleGiftsData.page.subList[index];//修改
+        }
+        //console.log(gift,'gift');
         if(gift.giveRanking == ''){
             _this.$message.error('送礼名次不能为空');
             return false;
@@ -582,8 +611,19 @@ export default {
             if(gift.id != ''){
                 param.id = gift.id;
             }
-            _this.mallPresaleGiveSave(param);
+            if(type != 1){
+                _this.mallPresaleGiveSave(param);
+            }
         }
+    },
+    saveAddPresale(){//新建预售送礼保存按钮事件
+        let gift = this.$refs['form'].model;
+        let param = {};
+        param.giveRanking = gift.giveRanking;
+        param.giveType = gift.giveType;
+        param.giveName = encodeURI(gift.giveName);
+        param.giveNum = gift.giveNum;
+        this.mallPresaleGiveSave(param);
     }
   },
   mounted(){

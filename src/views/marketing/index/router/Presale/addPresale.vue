@@ -3,7 +3,7 @@
     <div class="common-nav">
         <el-breadcrumb separator="/">
             <el-breadcrumb-item :to="{ path: '/' }">商城营销</el-breadcrumb-item>
-            <el-breadcrumb-item :to="{ path: '/presale' }">预售管理</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: '/presale/1' }">预售管理</el-breadcrumb-item>
             <el-breadcrumb-item >新建预售</el-breadcrumb-item>
         </el-breadcrumb>
     </div>
@@ -58,20 +58,21 @@
                 <div v-for="(item,index) in ruleForm.timeList" :key="item.id" :value="item.id">
                   <el-date-picker v-model="item.startTime" type="datetimerange" placeholder="选择日期范围" :picker-options="pickerOptions">
                   </el-date-picker>
-                  <el-radio-group v-model="item.saleType">
+                  <el-radio-group v-model="item.saleType" @change="countPrice(index)">
                       <el-radio :label="1">上涨</el-radio>
                       <el-radio :label="2">下调</el-radio>
                   </el-radio-group>
-                  <el-select v-model="item.priceType" placeholder="选择调整方式" style="width: 130px; margin-left: 15px;">
+                  <el-select v-model="item.priceType" placeholder="选择调整方式" style="width:130px;margin-left:15px;" @change="countPrice(index)">
                       <el-option label="按百分比" :value="1"></el-option>
                       <el-option label="按价格" :value="2"></el-option>
                   </el-select>
-                  <el-input  v-model="item.price" style="width: 130px; margin-left:  15px">
-                  </el-input> %
+                  <el-input  v-model="item.price" style="width: 130px; margin-left:15px" @blur="countPrice(index)">
+                  </el-input> {{item.unit}}
                   <a class="fontBlue" style="margin-left:30px;cursor:pointer;" v-show="index == 0" @click="addPriceAdjustment()">新增</a>
-                  <a class="fontBlue" style="margin-left:20px;cursor:pointer;" v-show="index == 0">清空</a>
-                  <a class="fontBlue" style="margin-left:20px;cursor:pointer;" v-show="ruleForm.timeList.length > 1 && index > 0">删除</a>
-                  <p class="p-warn">商品价格从¥{{ruleForm.proPrice }}上涨到0.00</p>
+                  <a class="fontBlue" style="margin-left:20px;cursor:pointer;" v-show="index == 0" @click="emptyPrice(index)">清空</a>
+                  <a class="fontBlue" style="margin-left:20px;cursor:pointer;" v-show="ruleForm.timeList.length > 1 && index > 0"
+                      @click="priceDel(index)">删除</a>
+                  <p class="p-warn">商品价格从¥{{ruleForm.proPrice }}{{item.saleTypeName}}到{{item.raisePrice}}</p>
                 </div>
             </el-form-item>
             <el-form-item label="订货数量 :" >
@@ -140,14 +141,14 @@ export default {
          region:'',
          proPrice:0.00,
          product_id: '',
-        // type: [],
-        // resource: '',
-        // desc: '',
         timeList:[{
           startTime:'',
           saleType:1,
           priceType:1,
           price:'',
+          raisePrice:0,//上涨 价格
+          saleTypeName : '上涨',//价格上涨、下调文字说明
+          unit:'%' //单位
         }],
         off:false
       },
@@ -175,7 +176,39 @@ export default {
     };
   },
   methods: {
-    selectDialogData(data){
+      priceDel(index){//删除价格调整
+        this.ruleForm.timeList.splice(index, 1);
+      },
+      emptyPrice(index){//清空第一行的价格调整数据
+        this.ruleForm.timeList[index].startTime = "";
+        this.ruleForm.timeList[index].price = '';
+      },
+      countPrice(index){//计算上涨价格
+        let tl = this.ruleForm.timeList[index];
+        if(tl.saleType == 1){//上涨
+          if(tl.priceType == 1){//按百分比
+            tl.raisePrice = (this.ruleForm.proPrice + (tl.price/100*this.ruleForm.proPrice)).toFixed(2);
+            tl.unit = '%';
+          }else{//按价格
+            tl.raisePrice = this.ruleForm.proPrice + Number(tl.price);
+            tl.unit = '元';
+          }
+          tl.saleTypeName = '上涨';
+        }else{//下调
+          if(tl.priceType == 1){//按百分比
+            tl.raisePrice = (this.ruleForm.proPrice - (tl.price/100*this.ruleForm.proPrice)).toFixed(2);
+            tl.unit = '%';
+          }else{//按价格
+            tl.raisePrice = (this.ruleForm.proPrice - Number(tl.price)).toFixed(2);
+            tl.unit = '元';
+          }
+          tl.saleTypeName = '下调';
+        }
+        if((Number(tl.raisePrice) === this.ruleForm.proPrice) || Number(tl.raisePrice) < 0){
+          tl.raisePrice = 0;
+        }
+      },
+    selectDialogData(data){//选中活动商品事件
       this.isChoicePro = data.isChoicePro;
       this.isReplacePro = data.isReplacePro;
       this.ruleForm.isSpecifica = data.is_specifica;
@@ -185,8 +218,9 @@ export default {
       if(this.ruleForm.isSpecifica == 1){
         this.getSpecificaByProId(data.id);
       }
+      //this.countPrice();
     },
-    submitForm(formName) {
+    submitForm(formName) {//保存预售商品信息方法
       let _this = this;
       _this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -232,15 +266,15 @@ export default {
         }
       });
     },
-    resetForm(formName) {
+    resetForm(formName) {//重置表单
       this.$refs[formName].resetFields();
     },
-    showDialog(){
+    showDialog(){//活动商品弹出框
       this.$refs.goodsDialog.isShow=true;
       this.$refs.goodsDialog.shopId=this.ruleForm.shop_id;
       this.$refs.goodsDialog.defaultProId = this.ruleForm.product_id;
     },
-    mallPresalePresaleInfo(id){
+    mallPresalePresaleInfo(id){//获取预售商品信息的方法
       let _this = this;
       Lib.M.ajax({
         'url': DFshop.activeAPI.mallPresalePresaleInfo_post,
@@ -280,12 +314,15 @@ export default {
         }
       });
     },
-    addPriceAdjustment(){
+    addPriceAdjustment(){//添加一行价格调整的新的空的数据
       let newPrice ={
           startTime:'',
           saleType:1,
           priceType:1,
           price:'',
+          raisePrice:0,//上涨 价格
+          saleTypeName : '上涨',//价格上涨、下调文字说明
+          unit:'%' //单位
       }
       this.ruleForm.timeList.push(newPrice);
     }
