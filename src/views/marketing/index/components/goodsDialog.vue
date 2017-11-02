@@ -105,16 +105,15 @@ export default {
             'curPage':val,
             'success'(data){
               _this.gridData = data.data;
-              console.log(_this.gridData,'1111');
             }
           });
-          console.log(`当前页: ${val}`);
         },
         selectedData(pro){
             let _this = this;
             _this.isShow = false;
             pro.isChoicePro = false;
             pro.isReplacePro = true;
+            pro.imgPath = _this.imgPath;
             _this.$emit('dialogData',pro);
             console.log(pro,'xuanze');
         },

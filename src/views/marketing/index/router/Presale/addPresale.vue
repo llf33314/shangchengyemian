@@ -114,8 +114,6 @@ export default {
       } 
     };
     var formRegion = (rule, value, callback) => {
-      console.log(value,'value');
-      console.log(this.boxData.id,'this.boxData');
       if (this.boxData.id === undefined || this.boxData.id === '') {
         return callback(new Error('请选择活动商品'));
       } else{

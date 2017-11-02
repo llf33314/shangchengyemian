@@ -16,7 +16,7 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="选择商品 :" prop="region">
+            <el-form-item label="选择商品 :" prop="choicePro">
                 <el-button type="primary" @click="showDialog" v-if="isChoicePro">选择商品</el-button>
                 <goods-box :boxdata="boxData" v-if="isReplacePro"></goods-box>
                 <el-button type="primary" @click="showDialog" v-if="isReplacePro">替换商品</el-button>
@@ -29,7 +29,7 @@
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="批发价 :" prop="pf_price">
-                 <el-input  v-model="ruleForm.pf_price" class="max-input" v-if="ruleForm.isSpecifica == 0">
+                 <el-input  v-model="ruleForm.pf_price" class="max-input" v-if="ruleForm.isSpecifica == 0" :maxlength="8">
                     <template slot="prepend">¥</template>
                 </el-input>
                 <p class="p-warn" v-if="ruleForm.isSpecifica == 0">0/8</p>
@@ -40,7 +40,6 @@
                      min-width="170" align="center" :key="item.prop">
                     <template scope="scope">
                       <div v-for="data in scope.row.specList" :key="data.id">
-                        <!-- v-if="item.label == data.specificaName" -->
                         <span v-if="item.label == data.specificaName">{{data.specificaValue}}</span>
                       </div>
                     </template>
@@ -49,8 +48,8 @@
                   </el-table-column>
                   <el-table-column label="批发价（元）" min-width="170" align="center">
                     <template scope="scope">
-                        <el-input v-model="scope.row.groupPrice" class="addGruop-input" style="width:130px;">
-                            <template slot="prepend">¥</template>
+                        <el-input v-model="scope.row.seckillPrice" class="addGruop-input" style="width:130px;" 
+                            @blur="checkPifaPrice(scope.$index)"><template slot="prepend">¥</template>
                         </el-input>
                     </template>
                   </el-table-column>
@@ -83,28 +82,62 @@ export default {
     goodsBox,goodsDialog
   },
   data() {
+     var formShopId = (rule, value, callback) => {
+      if (value == '') {
+        return callback(new Error('请选择店铺'));
+      }else {
+          callback();
+      }
+    };
+    var formChoicePro = (rule, value, callback) => {
+      if (this.boxData.id === undefined || this.boxData.id === '') {
+        return callback(new Error('请选择活动商品'));
+      } else{
+        callback();
+      }
+    };
+    var formPfPrice = (rule, value, callback) => {
+      if(this.ruleForm.isSpecifica == 0){
+        var reg = /^[0-9]{1,5}(\.\d{1,2})?$/;
+        if (value == '') {
+          return callback(new Error('批发价不能为空'));
+        } else if(!reg.test($.trim(value))){
+          return callback(new Error('批发价最多只能是大于0的5位数'));
+        } else{
+          callback();
+        }
+      }
+    };
+    var formPfStartTime = (rule, value, callback) => {
+      console.log(value,'value')
+      if (value == '') {
+        return callback(new Error('请选择活动时间'));
+      } else{
+        callback();
+      }
+    };
     return {
       ruleForm: {
-        pf_type : '',
+        pf_type : 1,
         shop_id : '',
         pf_start_time : '',
-        off:false,
         isSpecifica : 0,
         productId : '',
+        pf_price : '',
       },
       rules: {
-        // shop:[
-        //   { required: true, message: '所属店铺不能为空', trigger: 'blur' },
-        // ],
-        // name: [
-        //   { required: true, message: '批发类型不能为空', trigger: 'blur' },
-        // ],
-        // region: [
-        //   { required: true, message: '活动商品不能为空', trigger: 'change' }
-        // ],
-        // date: [
-        //     { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
-        // ]
+        shop_id:[
+          { validator: formShopId, trigger: 'change' },
+        ],
+        choicePro: [
+          { validator: formChoicePro, trigger: 'change' }
+        ],
+        pf_start_time: [
+          { validator: formPfStartTime, trigger: 'change' }
+        ],
+        pf_price :[
+          { validator: formPfPrice, trigger: 'blur' }
+        ],
       },
       shopList:[],
       specArrList : [],
@@ -138,7 +171,6 @@ export default {
           }
 
           let specArr = [];
-          //_speciList.push(this.$refs[formName].model.priceList);
           for(var k = 0;k < _this.specArrList.length;k++){
             let arr = {};
             if(_this.specArrList[k].priceId != ''){
@@ -147,7 +179,6 @@ export default {
             arr.seckillPrice = _this.specArrList[k].seckillPrice;
             arr.invenId = _this.specArrList[k].invenId;
             arr.specificaIds = _this.specArrList[k].specificaIds;
-            //arr.isJoinGroup = Number(_this.specArrList[k].isJoinGroup);
             specArr.push(arr);
           }
 
@@ -165,8 +196,6 @@ export default {
                     });
                     _this.jumpRouter('/pifa/1');
                 }
-                //_this.jumpRouter('/group');
-                //console.log(1111);
               }
           });
         } else {
@@ -216,8 +245,6 @@ export default {
                   }
                   _this.getSpecificaByProId(_this.ruleForm.productId);
                }
-              //_this.jumpRouter('/group');
-              //console.log(1111);
             }
         });
     },
@@ -241,13 +268,11 @@ export default {
           for(var i = 0;i < _this.specificesList.length;i++){
             _this.specArrList.push(_this.specificesList[i]) ;
             if(_this.ruleForm.priceList.length == 0){
-              //_this.specArrList[i].isJoinGroup = true;
               _this.specArrList[i].seckillPrice = '';
               _this.specArrList[i].priceId = '';
             }else{
               for(var j = 0;j < _this.ruleForm.priceList.length;j++){
                 if(_this.specArrList[i].id === _this.ruleForm.priceList[j].invenId){
-                  //_this.specArrList[i].isJoinGroup = !!_this.ruleForm.priceList[j].isJoinGroup;
                   _this.specArrList[i].seckillPrice = _this.ruleForm.priceList[j].seckillPrice;
                   _this.specArrList[i].priceId = _this.ruleForm.priceList[j].id;
                 }
@@ -256,10 +281,18 @@ export default {
           }
           _this.specArrList.forEach(function(e,i){
             _this.setJoinGroup.push(e.isJoinGroup);
-          })
-          console.log(_this.specArrList,'222');
+          });
         }
       });
+    },
+    checkPifaPrice(index){//判断批发价
+      var priceTest = /^[0-9]{1,6}(\.\d{1,2})?$/;
+        if (!priceTest.test($.trim(obj.val()))) {
+          this.$message({
+            message: '价格最多只能是6位小数或整数',
+            type: 'success'
+          });
+        }
     }
   },
   mounted(){

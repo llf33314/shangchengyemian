@@ -42,7 +42,7 @@
                     </span> -->
                     </div>
                     </div>
-                    <router-link to="/pifa/addpifa/0">
+                    <router-link to="/addpifa/0">
                         <el-button type="primary">新建批发</el-button>
                     </router-link>
                 </div>

@@ -202,6 +202,8 @@ import common from './common';
     mallAuctionList_post:DFshop.env.activeAPI+'/mallAuction/E9lM9uM4ct/list',
     /*获取拍卖信息 */
     mallAuctionAuctionInfo_post:DFshop.env.activeAPI+'/mallAuction/E9lM9uM4ct/auctionInfo',
+    /*保存拍卖信息 */
+    mallAuctionSave_post:DFshop.env.activeAPI+'/mallAuction/E9lM9uM4ct/save',
     /*删除、使拍卖活动失效 */
     mallAuctionDelete_post:DFshop.env.activeAPI+'/mallAuction/E9lM9uM4ct/delete',
     /*保证金列表 */

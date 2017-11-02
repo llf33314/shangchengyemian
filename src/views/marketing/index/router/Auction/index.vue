@@ -280,17 +280,26 @@ export default {
     },
     mallAuctionDelete(id,type){//删除、使拍卖失效方法
         let _this = this;
+        let msg = '';
+        if(type == -1){
+            msg = '删除成功';
+        }else{
+            msg = '已失效';
+        }
           Lib.M.ajax({
             'url': DFshop.activeAPI.mallAuctionDelete_post,
             'data':{
                 id : id,
-                type : _this.type
+                type : type
             },
             'success':function (data){
-                // _this.$message({
-                //     message: '',
-                //     type: 'success'
-                // });
+                if(data.code == 1){
+                    _this.$message({
+                        message: msg,
+                        type: 'success'
+                    });
+                    _this.mallAuctionList(_this.goodsData.page.curPage);
+                }
             }
           });
     },

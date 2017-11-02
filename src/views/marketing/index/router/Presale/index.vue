@@ -166,8 +166,8 @@
                         <span slot="footer" class="dialog-footer">
                             <!-- <el-button @click="dialogVisible = false">取 消</el-button> -->
                             <el-button type="primary" @click="comeDown()" v-if="payWay === 1 || payWay === 2">退定金</el-button>
-                            <a :href="alipayUrl">
-                                <el-button type="primary" v-if="payWay === 3">退定金</el-button>
+                            <a :href="alipayUrl" v-if="payWay === 3">
+                                <el-button type="primary">退定金</el-button>
                             </a>
                             <!-- <button class="btn" id="gtLongUrlCopy"  @click="copyLink()" data-clipboard-text="http://www.hbcloudwide.com/oss/video/7">点击复制</button>   -->
                             <el-button type="primary" @click="copyLink()" v-if="payWay === 3"
@@ -320,8 +320,7 @@ export default {
     }
   },
   methods: {
-      copyLink(e,index){//复制退定金链接
-        console.log(e.target,index)
+      copyLink(){//复制退定金链接
         var self = this;
         var clipboard = new Lib.Clipboard("#gtLongUrlCopy");
         clipboard.on('success', function(e) {
