@@ -517,6 +517,7 @@ export default {
     _this.activeName = _href;
     DFshop.method.isAdminUser({
       'success':function (data){
+        if(data.code == -1)return;
         _this.switchAjax(_this.activeName);
       }
     });

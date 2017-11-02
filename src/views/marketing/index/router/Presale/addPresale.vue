@@ -56,7 +56,8 @@
             </el-form-item>
             <el-form-item label="价格调整 :" >
                 <div v-for="(item,index) in ruleForm.timeList" :key="item.id" :value="item.id">
-                  <el-date-picker v-model="item.startTime" type="datetimerange" placeholder="选择日期范围" :picker-options="pickerOptions">
+                  <el-date-picker v-model="item.startTime" type="datetimerange" placeholder="选择日期范围" 
+                      :picker-options="pickerOptions" @change="checkTime(index)">
                   </el-date-picker>
                   <el-radio-group v-model="item.saleType" @change="countPrice(index)">
                       <el-radio :label="1">上涨</el-radio>
@@ -218,7 +219,9 @@ export default {
       if(this.ruleForm.isSpecifica == 1){
         this.getSpecificaByProId(data.id);
       }
-      //this.countPrice();
+      for(var i = 0;i < this.ruleForm.timeList.length;i++){
+          this.countPrice(i);//变化商品时，价格调整发生变化
+      }
     },
     submitForm(formName) {//保存预售商品信息方法
       let _this = this;
@@ -325,6 +328,18 @@ export default {
           unit:'%' //单位
       }
       this.ruleForm.timeList.push(newPrice);
+    },
+    checkTime(index){//价格调整时间判断
+        let presaleTime = this.ruleForm.sale_start_time;//预售时间
+        let startTime = Lib.M.format(new Date(presaleTime[0]));
+        let endTime = Lib.M.format(new Date(presaleTime[1]));
+
+        let priceTime = this.ruleForm.timeList[index].startTime;//价格调整选择的时间
+        let priceStartTime = Lib.M.format(priceTime[0]);
+        let priceEndTime = Lib.M.format(priceTime[1]);
+        if(priceStartTime < startTime && priceStartTime > endTime){
+            alert(ssss);
+        }
     }
   },
   mounted(){

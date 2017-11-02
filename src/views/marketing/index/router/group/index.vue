@@ -16,6 +16,7 @@
               <el-option label="进行中" :value="1"></el-option>
               <el-option label="已结束" :value="2"></el-option>
               <el-option label="未开始" :value="-1"></el-option>
+              <el-option label="已失效" :value="-2"></el-option>
             </el-select>
           </el-col>
           <el-col :span="12" class="shop-textr">
@@ -25,7 +26,7 @@
           </el-col>
         </el-row>
         <!-- <router-link to="/addgroup"> -->
-        <el-button type="primary" style="margin-top: 20px;" @click="jumpRouter('/addgroup/'+0)">新建团购</el-button>
+        <el-button type="primary" style="margin-top: 20px;" @click="jumpRouter('/addgroup/0')">新建团购</el-button>
         <!-- </router-link> -->
       </div>
       <div class="group-content" v-if="tableData.page.rowCount > 0">

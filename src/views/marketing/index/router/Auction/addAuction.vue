@@ -3,27 +3,24 @@
     <div class="common-nav">
         <el-breadcrumb separator="/">
             <el-breadcrumb-item :to="{ path: '/' }">商城营销</el-breadcrumb-item>
-            <el-breadcrumb-item :to="{ path: '/group' }">团购管理</el-breadcrumb-item>
-            <el-breadcrumb-item >新建团购</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: '/auction' }">拍卖管理</el-breadcrumb-item>
+            <el-breadcrumb-item >新建拍卖活动</el-breadcrumb-item>
         </el-breadcrumb>
     </div>
     <div class="auction-main">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="148px" class="demo-ruleForm">
             <el-form-item label="所属店铺 :" prop="shop">
-                <el-select v-model="ruleForm.shop" placeholder="请选择活动区域" class="auction-input">
-                    <el-option 
-                      :label="option.lable" 
-                      :value="option.value"
-                      :key="option.key"
-                      v-for="option in options">
+                <el-select v-model="ruleForm.shop" placeholder="请选择活动区域" v-bind:disabled="disabledShop" class="auction-input">
+                    <el-option  :label="option.sto_name"  :value="option.id"
+                      :key="option.id" v-for="option in shopList">
                     </el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="活动商品 :" prop="name">
-                <el-button type="primary" @click="showDialog">选择商品</el-button>
-                <goods-box></goods-box>
-                <el-button type="primary" @click="showDialog">替换商品</el-button>
-                <p class="p-warn">如需修改商品信息，请在商品管理中更新</p>
+                <el-button type="primary" @click="showDialog" v-if="isChoicePro">选择商品</el-button>
+                <goods-box :boxdata="boxData" v-if="isReplacePro"></goods-box>
+                <el-button type="primary" @click="showDialog" v-if="isReplacePro">替换商品</el-button>
+                <p class="p-warn" v-if="isReplacePro">如需修改商品信息，请在商品管理中更新</p>
             </el-form-item>
             <el-form-item label="拍卖类型 :" prop="auctiontype">
                 <el-radio-group v-model="ruleForm.auctiontype">
@@ -114,64 +111,37 @@
         checked:false
       },
       rules: {
-        shop:[
-          { required: true, message: '所属店铺不能为空', trigger: 'change' },
-        ],
-        name: [
-          { required: true, message: '活动商品不能为空', trigger: 'blur' },
-        ],
-        auctiontype: [
-          { required: true, message: '拍卖类型不能为空', trigger: 'change' }
-        ],
-        date: [
-          { type: 'date', required: true, message: '开始时间不能为空', trigger: 'change' }
-        ],
-        money: [
-          { required: true, message: '交纳保证金不能为空', trigger: 'blur' }
-        ],
-        desc: [
-          { required: true, message: '起拍价不能为空', trigger: 'blur' }
-        ],
-        floorMoney: [
-          { required: true, message: '最低价格不能为空', trigger: 'blur' }
-        ],
-        range: [
-          { required: true, message: '降价不能为空', trigger: 'blur' }
-        ]
+        // shop:[
+        //   { required: true, message: '所属店铺不能为空', trigger: 'change' },
+        // ],
+        // name: [
+        //   { required: true, message: '活动商品不能为空', trigger: 'blur' },
+        // ],
+        // auctiontype: [
+        //   { required: true, message: '拍卖类型不能为空', trigger: 'change' }
+        // ],
+        // date: [
+        //   { type: 'date', required: true, message: '开始时间不能为空', trigger: 'change' }
+        // ],
+        // money: [
+        //   { required: true, message: '交纳保证金不能为空', trigger: 'blur' }
+        // ],
+        // desc: [
+        //   { required: true, message: '起拍价不能为空', trigger: 'blur' }
+        // ],
+        // floorMoney: [
+        //   { required: true, message: '最低价格不能为空', trigger: 'blur' }
+        // ],
+        // range: [
+        //   { required: true, message: '降价不能为空', trigger: 'blur' }
+        // ]
       },
-      options:[{
-        lable:'广东谷通科技1',
-        value:'1'
-      },
-      {
-        lable:'广东谷通科技2',
-        value:'2'
-      },
-      {
-        lable:'广东谷通科技3',
-        value:'3'
-      }],
-      gridData: [{
-        date: '2016-05-02',
-        name: '苹果 iPhone 7 国行全网通4G手机',
-        img:'',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '苹果 iPhone 7 国行全网通4G手机',
-        img:'',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        img:'',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        img:'',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }],
+      shopList:[],
+
+      isChoicePro : '',
+      isReplacePro : '',
+      boxData : [],
+      disabledShop : '',
     };
   },
   methods: {
@@ -190,8 +160,41 @@
     },
     showDialog(){
       this.$refs.goodsDialog.isShow=true;
+    },
+    mallAuctionAuctionInfo(id){//获取拍卖信息
+      let _this = this;
+          Lib.M.ajax({
+            'url': DFshop.activeAPI.mallAuctionAuctionInfo_post,
+            'data':{
+                id : id
+            },
+            'success':function (data){
+                _this.baozhengjinData = data.data;
+                $.each(_this.baozhengjinData.page.subList,function(i){
+                    let oldTime = this.payTime;
+                    this.payTime = Lib.M.format(oldTime);
+                });
+                console.log(_this.baozhengjinData,'_this.baozhengjinData ');
+            }
+          });
     }
   },
+  mounted(){
+    let _this = this;
+    DFshop.method.storeList({
+      'success'(data){
+        _this.shopList = data.data;
+      }
+    });
+    if(_this.$route.params.id != 0){
+      _this.mallAuctionAuctionInfo(_this.$route.params.id);
+      _this.disabledShop = true;
+       _this.isReplacePro = true;
+    }else{
+      _this.disabledShop = false;
+      _this.isChoicePro = true;
+    }
+  }
 }
 </script>
 

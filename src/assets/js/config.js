@@ -208,6 +208,25 @@ import common from './common';
     mallAuctionMarginList_post:DFshop.env.activeAPI+'/mallAuction/E9lM9uM4ct/margin/list',
     /*拍卖退保证金 */ 
     mallAuctionAgreedReturnMargin_post:DFshop.env.activeAPI+'/mallAuction/E9lM9uM4ct/margin/agreedReturnMargin',
+    
+    /*批发列表 */
+    mallWholesaleList_post:DFshop.env.activeAPI+'/mallWholesale/E9lM9uM4ct/list',
+    /*获取批发信息 */
+    mallWholesalePifaInfo_post:DFshop.env.activeAPI+'/mallWholesale/E9lM9uM4ct/pifaInfo',
+    /*保存批发活动信息 */
+    mallWholesaleSave_post:DFshop.env.activeAPI+'/mallWholesale/E9lM9uM4ct/save',
+    /*使批发失效、删除 */
+    mallWholesaleDelete_post:DFshop.env.activeAPI+'/mallWholesale/E9lM9uM4ct/delete',
+    /*批发商管理列表 */
+    mallPifaShangList_post:DFshop.env.activeAPI+'/mallWholesale/E9lM9uM4ct/wholesalers/list',
+    /*批发审核通过、不通过、启用、禁用 */
+    mallWholesalersUpdateStatus_post:DFshop.env.activeAPI+'/mallWholesale/E9lM9uM4ct/wholesalers/updateStatus',
+    /*同步批发商成交量/金额 */
+    mallWholesaleSyncOrderPifa_post:DFshop.env.activeAPI+'/mallWholesale/E9lM9uM4ct/wholesalers/syncOrderPifa',
+    /*批发设置 */
+    mallSetWholesale_post:DFshop.env.activeAPI+'/mallWholesale/E9lM9uM4ct/setWholesale',
+    /*保存批发设置 */
+    mallWholesaleSaveSet_post:DFshop.env.activeAPI+'/mallWholesale/E9lM9uM4ct/saveSet',
   };
 
   /*公共方法***********************************************************************************************************/

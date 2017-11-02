@@ -111,7 +111,7 @@
           </p>
           <div class="fs12">
               到期日期：2017-12-01，<a class="fontBlue">立即续费</a>
-              <router-link to="/pifa">
+              <router-link to="/pifa/1">
               <el-button class="buttonBlue" size="small">立即购买</el-button>
               </router-link>
           </div>
@@ -145,7 +145,7 @@
           </p>
           <div class="fs12">
               到期日期：2017-12-01，<a class="fontBlue">立即续费</a>
-              <router-link to="/auction">
+              <router-link to="/auction/1">
               <el-button class="buttonBlue" size="small">立即购买</el-button>
               </router-link>
           </div>

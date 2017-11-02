@@ -36,6 +36,7 @@
                      min-width="170" align="center" :key="item.prop">
                     <template scope="scope">
                       <div v-for="data in scope.row.specList" :key="data.id">
+                        <!-- v-if="item.label == data.specificaName" -->
                         <span v-if="item.label == data.specificaName">{{data.specificaValue}}</span>
                       </div>
                     </template>
@@ -44,9 +45,9 @@
                   </el-table-column>
                   <el-table-column label="拼团价（元）" min-width="170" align="center">
                     <template scope="scope">
-                      <el-input v-model="scope.row.groupPrice" class="addGruop-input" style="width:130px;">
-                          <template slot="prepend">¥</template>
-                      </el-input>
+                        <el-input v-model="scope.row.groupPrice" class="addGruop-input" style="width:130px;">
+                            <template slot="prepend">¥</template>
+                        </el-input>
                     </template>
                   </el-table-column>
                   <el-table-column prop="invNum" label="库存" min-width="150" align="center">
@@ -94,15 +95,22 @@ export default {
     goodsBox,goodsDialog
   },
   data() {
+    var formGroupPrice = (rule, value, callback) => {
+      if (value == '' || value <= 0) {
+        return callback(new Error('拼团价不能为空且不能小于0'));
+      }else {
+          callback();
+      }
+    };
     var formShopId = (rule, value, callback) => {
-      if (!value) {
+      if (value == '') {
         return callback(new Error('请选择店铺'));
       }else {
           callback();
       }
     };
     var formGname = (rule, value, callback) => {
-      if (!value) {
+      if (value == '') {
         return callback(new Error('活动名称不能为空'));
       }else {
           callback();
@@ -110,28 +118,28 @@ export default {
     };
 
     var formStartTime = (rule, value, callback) => {
-      if (!value) {
+      if (value == '') {
         return callback(new Error('请选择活动时间'));
       }else {
           callback();
       }
     };
     var formPeopleNum = (rule, value, callback) => {
-      if (!value) {
-        return callback(new Error('参团人数不能为空'));
+      if (value == '' || value <= 0) {
+        return callback(new Error('参团人数不能为空且不能小于0'));
       }else {
           callback();
       }
     };
     var formPrice = (rule, value, callback) => {
-      if (!value) {
-        return callback(new Error('团购价不能为空'));
+      if (value == '' || value <= 0) {
+        return callback(new Error('团购价不能为空且不能小于0'));
       }else {
           callback();
       }
     };
     var formMaxBuyNum = (rule, value, callback) => {
-      if (!value) {
+      if (value == '') {
         return callback(new Error('请选择店铺'));
       }else {
           callback();
@@ -209,7 +217,7 @@ export default {
     }
   },
   methods: {
-    selectDialogData(data){
+    selectDialogData(data){//活动商品列表弹出框
       this.isChoicePro = data.isChoicePro;
       this.isReplacePro = data.isReplacePro;
       this.ruleForm.isSpecifica = data.is_specifica;
@@ -224,12 +232,15 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           let groupBuy = {};
-          groupBuy = this.$refs[formName].model;
-          let time = this.$refs[formName].model.gStartTime;
+          groupBuy = _this.$refs[formName].model;
+          let time = _this.$refs[formName].model.gStartTime;
           groupBuy.gStartTime = Lib.M.format(new Date(time[0]));
           groupBuy.gEndTime = Lib.M.format(new Date(time[1]));
-          groupBuy.gName = encodeURI(this.$refs[formName].model.gName);
-          groupBuy.productId = this.$refs[formName].model.productId;
+          groupBuy.gName = encodeURI(_this.$refs[formName].model.gName);
+          groupBuy.productId = _this.$refs[formName].model.productId;
+          if(!_this.off){
+            groupBuy.gMaxBuyNum = 0;
+          }
 
           console.log(groupBuy,'111');
           let _speciList = [];
@@ -317,6 +328,7 @@ export default {
           for(var m = 0;m< _this.specificesList[0].specList.length;m++){
             let t = { prop: 'specificaValue', label: _this.specificesList[0].specList[m].specificaName };
             _this.table.push(t);
+           //_this.$set().
           }
           if(_this.specArrList.length > 0){
             _this.specArrList = [];

@@ -10,7 +10,7 @@
           <template scope="scope">
             <div class="Data-goods">
               <div class="goods-img">
-                <default-img :background="scope.row.image_url"></default-img>
+                <default-img :background="imgPath+scope.row.image_url"></default-img>
               </div>
               <div class="goods-name" v-text="scope.row.pro_name">
               </div>  
@@ -61,7 +61,7 @@ export default {
           defaultProId:'',
           shopId:'',
           proName:'',
-          
+          imgPath : '',
         }
     },
     watch:{
@@ -74,7 +74,8 @@ export default {
           'curPage':_this.pageNum,
           'success'(data){
             _this.gridData = data.data;
-            //console.log(_this.gridData);
+            _this.imgPath = data.imgUrl;
+            //console.log(data,'gridData');
           }
         });
       }
