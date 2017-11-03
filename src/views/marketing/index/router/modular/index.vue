@@ -3,7 +3,7 @@
     <div class="common-nav">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: '/' }">商城营销</el-breadcrumb-item>
-        <el-breadcrumb-item>{{}}</el-breadcrumb-item>
+        <el-breadcrumb-item></el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="common-main">

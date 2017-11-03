@@ -182,15 +182,9 @@ export default {
         gName: [
           {validator: formGname, trigger: 'blur' },
         ],
-        // region: [
-        //   { required: true, message: '活动商品不能为空', trigger: 'change' }
-        // ],
         gStartTime: [
           {validator: formStartTime, trigger: 'change' },
         ],
-        // // gEndTime: [
-        // //   {validator: formEndTime, trigger: 'blur' },
-        // // ],
         gPeopleNum: [
           {validator: formPeopleNum, trigger: 'blur' },
         ],
@@ -223,6 +217,7 @@ export default {
       this.ruleForm.isSpecifica = data.is_specifica;
       this.ruleForm.productId = data.id;
       this.boxData = data;
+      this.boxData.image_url = data.imgPath + data.image_url;
       if(this.ruleForm.isSpecifica == 1){
         this.getSpecificaByProId(data.id);
       }
@@ -307,9 +302,10 @@ export default {
              _this.off = true;
            }
            _this.boxData={
+             id : data.data.productId,
              pro_price : data.data.proPrice,
              pro_name : data.data.proName,
-             image_url : data.data.imageUrl,
+             image_url : data.imgUrl + data.data.imageUrl,
              stockTotal : data.data.proStockTotal
            }
             _this.getSpecificaByProId(_this.ruleForm.productId);

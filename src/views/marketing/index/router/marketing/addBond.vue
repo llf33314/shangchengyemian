@@ -119,6 +119,7 @@ export default {
       this.ruleForm.isSpecifica = data.is_specifica;
       this.ruleForm.product_id = data.id;
       this.boxData = data;
+      this.boxData.image_url = data.imgPath + data.image_url;
     },
     submitForm(formName) {
       let _this= this;
@@ -176,7 +177,7 @@ export default {
              id : data.data.product_id,
              pro_price : data.data.proPrice,
              pro_name : data.data.proName,
-             image_url : data.data.imageUrl,
+             image_url : data.imgUrl + data.data.imageUrl,
              stockTotal : data.data.proStockTotal
            }
         }

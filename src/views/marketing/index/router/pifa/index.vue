@@ -83,7 +83,7 @@
                         <el-button size="small" class="buttonBlue" 
                             v-if="scope.row.status == 0 || (scope.row.joinId == 0 && scope.row.status == 1)"
                             @click="invalidDelete(scope.row.id, -2)" >失效</el-button>
-                        <el-button size="small" class="buttonBlue" v-if="scope.row.status == 1">预览</el-button>
+                        <el-button size="small" class="buttonBlue" v-if="scope.row.status == 1" @click="preview()">预览</el-button>
                         <el-button size="small" v-if="scope.row.status == 0 || scope.row.status == -1 || scope.row.status == -2"
                             @click="handleDelete(scope.row.id, -1)">删除</el-button>
                     </template>
@@ -172,6 +172,12 @@
                         </template>
                         </el-table-column>
                     </el-table>
+                    <div style="margin-top: 20px">
+                        <el-button @click="toggleSelection(pifaData.page.subList)">全选</el-button>
+                        <el-button @click="toggleSelection()">取消选择</el-button>
+                        <el-button @click="checkExamine(1)">通过</el-button>
+                        <el-button @click="checkExamine(-1)">不通过</el-button>
+                    </div>
                     <div class="shop-textr" v-if="pifaData.page.rowCount > 0">
                         <el-pagination
                             @size-change="handleSizeChange1"
@@ -273,14 +279,14 @@ export default {
       shopId:'',
       goodsData: {
           page:{
-              rowCount : 0,
+              //rowCount : 0,
               subList:[],
           }
       },
       shopList: [],
       pifaData: {
           page:{
-              rowCount:0,
+              //rowCount:'',
               subList:[],
           }
       },
@@ -294,6 +300,8 @@ export default {
       detailCompanyName : '',
       detailTelphone : '',
       detailRemark : '',
+      path:'',
+      multipleSelection : [],
     }
   },
   watch:{
@@ -359,7 +367,7 @@ export default {
       }
       _this.$root.$refs.dialog.showDialog(msg); 
     },
-    toggleSelection(rows) {
+    toggleSelection(rows) {//取消选择事件
         if (rows) {
           rows.forEach(row => {
             this.$refs.multipleTable.toggleRowSelection(row);
@@ -368,7 +376,7 @@ export default {
           this.$refs.multipleTable.clearSelection();
         }
     },
-    handleSelectionChange(val) {
+    handleSelectionChange(val) {//全选事件
         this.multipleSelection = val;
     },
     onSubmit() {//保存批发设置
@@ -415,6 +423,20 @@ export default {
             openOrDisable = 1;
         }
         this.mallWholesalersUpdateStatus(id,openOrDisable,'');
+    },
+    checkExamine(status){//审核通过、不通过事件
+        let _this = this;
+        let ids = '';
+        if(_this.multipleSelection.length > 0){
+            $.each(_this.multipleSelection,function(i){
+                if(_this.multipleSelection.length == 1){
+                    ids += _this.multipleSelection[i].id ;
+                }else{
+                    ids += _this.multipleSelection[i].id + ',';
+                }
+            });
+            _this.mallWholesalersUpdateStatus(ids,'',status);
+        }
     },
     synData(){//同步批发商成交数量/金额
         let _this= this;
@@ -497,7 +519,7 @@ export default {
             },
             'success':function (data){
                 if(data.code == 1){
-                    _this.pifaData = data.data;
+                    _this.mallPifaShangList(_this.pifaData.page.curPage);
                 }
                 //_this.goodsData = data.data;
                 //console.log(_this.goodsData,'_this.goodsData');
@@ -518,6 +540,15 @@ export default {
                 }
             }
         });
+    },
+    preview(){//预览
+        let _this = this;
+        let msg ={
+            'title':'',
+            'urlQR': DFshop.activeAPI.mallStoreGenerateQRCode_get,
+            'pageLink': _this.path+'/views/marketing/index.html#/'
+        }
+        _this.$root.$refs.dialogQR.showDialog(msg);//调用方法
     }
   },
   mounted(){

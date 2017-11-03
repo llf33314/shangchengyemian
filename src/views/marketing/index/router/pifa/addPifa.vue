@@ -49,7 +49,7 @@
                   <el-table-column label="批发价（元）" min-width="170" align="center">
                     <template scope="scope">
                         <el-input v-model="scope.row.seckillPrice" class="addGruop-input" style="width:130px;" 
-                            @blur="checkPifaPrice(scope.$index)"><template slot="prepend">¥</template>
+                          ><template slot="prepend">¥</template>
                         </el-input>
                     </template>
                   </el-table-column>
@@ -59,7 +59,7 @@
                 </div>
 
             </el-form-item>
-            <el-form-item label="活动时间 :" prop="date">
+            <el-form-item label="活动时间 :" prop="pf_start_time">
                 <el-date-picker v-model="ruleForm.pf_start_time" type="datetimerange"
                     placeholder="选择日期范围">
                 </el-date-picker>
@@ -106,11 +106,14 @@ export default {
         } else{
           callback();
         }
+      } else {
+        callback();
       }
     };
     var formPfStartTime = (rule, value, callback) => {
-      console.log(value,'value')
-      if (value == '') {
+      let time = Lib.M.format(new Date(value[0]));
+      let time1 = Lib.M.format(new Date(value[1]));
+      if (time == '' || time1 == '') {
         return callback(new Error('请选择活动时间'));
       } else{
         callback();
@@ -210,6 +213,7 @@ export default {
       this.ruleForm.isSpecifica = data.is_specifica;
       this.ruleForm.productId = data.id;
       this.boxData = data;
+      this.boxData.image_url = data.imgPath + data.image_url;
       if(this.ruleForm.isSpecifica == 1){
         this.getSpecificaByProId(data.id);
       }
@@ -238,9 +242,10 @@ export default {
                   _this.ruleForm.pf_start_time = [data.data.pf_start_time,data.data.pf_end_time];
                   console.log(_this.ruleForm,'_this.ruleForm')
                   _this.boxData={
+                    id : data.data.productId,
                     pro_price : data.data.proPrice,
                     pro_name : data.data.proName,
-                    image_url : data.data.imageUrl,
+                    image_url : data.imgUrl + data.data.imageUrl,
                     stockTotal : data.data.proStockTotal
                   }
                   _this.getSpecificaByProId(_this.ruleForm.productId);
@@ -285,15 +290,15 @@ export default {
         }
       });
     },
-    checkPifaPrice(index){//判断批发价
-      var priceTest = /^[0-9]{1,6}(\.\d{1,2})?$/;
-        if (!priceTest.test($.trim(obj.val()))) {
-          this.$message({
-            message: '价格最多只能是6位小数或整数',
-            type: 'success'
-          });
-        }
-    }
+    // checkPifaPrice(index){//判断批发价
+    //   var priceTest = /^[0-9]{1,6}(\.\d{1,2})?$/;
+    //     if (!priceTest.test($.trim(this.specArrList[index].seckillPrice))) {
+    //       this.$message({
+    //         message: '价格最多只能是6位小数或整数',
+    //         type: 'success'
+    //       });
+    //     }
+    // }
   },
   mounted(){
     let _this = this;

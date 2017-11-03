@@ -410,6 +410,15 @@ export default {
                 console.log(_this.baozhengjinData,'_this.baozhengjinData ');
             }
           });
+      },
+      preview(){//预览
+          let _this = this;
+          let msg ={
+            'title':'',
+            'urlQR': DFshop.activeAPI.mallStoreGenerateQRCode_get,
+            'pageLink': _this.path+'/views/marketing/index.html#/'
+          }
+            _this.$root.$refs.dialogQR.showDialog(msg);//调用方法
       }
   },
   mounted() {
