@@ -43,16 +43,18 @@
                 </el-input>
                 <p class="p-warn">0/8</p>
             </el-form-item>
-            <el-form-item label="活动时间 :" prop="aucStartTime">
-                 <el-date-picker
-                    v-model="ruleForm.aucStartTime"
-                    type="datetimerange"
-                    placeholder="选择日期"
-                    :picker-options="pickerOptions0">
+            <el-form-item label="活动时间 :" prop="aucStartTime" v-if="ruleForm.aucType == 2">
+                 <el-date-picker v-model="ruleForm.aucStartTime" type="datetimerange"
+                    placeholder="选择日期" :picker-options="pickerOptions0">
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item label="开始时间 :" prop="aucStartTime" v-if="ruleForm.aucType == 1">
+                <el-date-picker v-model="ruleForm.aucStartTime" type="datetime"
+                    placeholder="选择日期时间">
                 </el-date-picker>
             </el-form-item>
             <el-form-item label="最低价格 :" prop="aucLowestPrice" v-if="ruleForm.aucType == 1">
-                <el-input  v-model="ruleForm.aucLowestPrice" class="auction-input">
+                <el-input v-model="ruleForm.aucLowestPrice" class="auction-input">
                     <template slot="prepend">¥</template>
                 </el-input>
                 <p class="p-warn">0/8</p>
@@ -63,19 +65,20 @@
                 </el-input>
                 <p class="p-warn">0/8</p>
             </el-form-item>
-             <el-form-item label="降价幅度 :" prop="aucAddPrice" v-if="ruleForm.aucType == 1">
-                每 <el-input  v-model="ruleForm.aucAddPrice" class="mix-input"></el-input>
-                分钟下降 <el-input  v-model="ruleForm.aucAddPrice" class="max-input">
+             <el-form-item label="降价幅度 :" v-if="ruleForm.aucType == 1">
+                每 <el-input  v-model="ruleForm.aucLowerPriceTime" class="mix-input"></el-input>
+                分钟下降 <el-input  v-model="ruleForm.aucLowerPrice" class="max-input">
                     <template slot="prepend">¥</template>
                 </el-input>
                 <p class="p-warn">0/8</p>
             </el-form-item>
             <el-form-item label="持续时间 :" v-if="ruleForm.aucType == 1">
-                50分钟 <el-button type="primary">计算持续时间</el-button>
+                <span v-show="disabledTime">{{durationTime}}分钟 </span>
+                <el-button type="primary" @click="calculationTime()">计算持续时间</el-button>
                 <p class="p-warn">下降到结束价格后还会持续一个时间周期</p>
             </el-form-item>
-            <el-form-item label="结束时间 :" v-if="ruleForm.aucType == 1">
-                <p >预计 <span>2017-12-30 11:30:00</span>结束</p>
+            <el-form-item label="结束时间 :" v-show="disabledTime">
+                <p >预计 <span>{{endTime}}</span>结束</p>
             </el-form-item>
              <el-form-item label="商品限购 :" v-if="ruleForm.aucType == 1">
                 开始限购 <el-input  v-model="ruleForm.aucRestrictionNum" class="max-input"></el-input> 件/人
@@ -108,7 +111,7 @@
       ruleForm: {
         shopId:'',
         aucMargin:'',
-        aucType: '',
+        aucType: 1,
         aucLowestPrice:'',
         isMargin:false,
         aucStartTime : '',
@@ -148,6 +151,9 @@
       isReplacePro : '',
       boxData : [],
       disabledShop : '',
+      disabledTime : false,
+      endTime : '',//降价拍结束时间
+      durationTime : 0,//持续时间
     };
   },
   methods: {
@@ -165,13 +171,18 @@
         if (valid) {
           let time = _this.$refs[formName].model.aucStartTime;
           let auction = _this.$refs[formName].model;
-          auction.aucStartTime = Lib.M.format(new Date(time[0]));
-          auction.aucEndTime = Lib.M.format(new Date(time[1]));
           auction.isMargin = Number(_this.$refs[formName].model.isMargin);
-          if(_this.$refs[formName].model.aucType == 2){
+          if(_this.$refs[formName].model.aucType == 2){//升价拍
+              let time = _this.$refs[formName].model.aucStartTime;
+              let auction = _this.$refs[formName].model;
+              auction.aucStartTime = Lib.M.format(new Date(time[0]));
+              auction.aucEndTime = Lib.M.format(new Date(time[1]));
               auction.aucLowestPrice = 0;
               auction.aucLowerPriceTime = 0;
               auction.aucLowerPrice = 0;
+          }else{//降价拍
+                auction.aucStartTime = Lib.M.format(new Date(time));
+                auction.aucEndTime = _this.endTime;
           }
           Lib.M.ajax({
             'url': DFshop.activeAPI.mallAuctionSave_post,
@@ -216,7 +227,14 @@
             if(data.code == 1){
                 _this.ruleForm = data.data;
                 _this.ruleForm.isMargin = !!data.data.isMargin;
-                _this.ruleForm.aucStartTime = [data.data.aucStartTime,data.data.aucEndTime];
+                if(data.data.aucType == 2){//升价拍
+                    _this.ruleForm.aucStartTime = [data.data.aucStartTime,data.data.aucEndTime];
+                    _this.disabledTime = false;
+                }else{//降价拍
+                    _this.endTime = data.data.aucEndTime;
+                    _this.calculationTime();
+                    _this.disabledTime = true;
+                }
                 _this.boxData={
                     id : data.data.productId,
                     pro_price : data.data.proPrice,
@@ -228,6 +246,59 @@
             }
         }
         });
+    },
+    calculationTime() {//计算持续时间
+        let _this = this; 
+        let startPrice = Number(_this.ruleForm.aucStartPrice);//起拍价格
+        let aucLowestPrice = Number(_this.ruleForm.aucLowestPrice);//最低价格
+        let aucStartTime = _this.ruleForm.aucStartTime;//活动生效开始时间
+        let minuTimes = _this.ruleForm.aucLowerPriceTime;//降价幅度，分钟
+        let aucLowerPrice = Number(_this.ruleForm.aucLowerPrice);//每分钟价格
+        if (startPrice <= aucLowestPrice) {
+            _this.$message({
+                message: '最低价格必须小于起拍价格',
+                type: 'success'
+            });
+        } else {
+            let price = startPrice - aucLowestPrice;
+            let diff = Math.ceil(price / aucLowerPrice) * minuTimes;
+            let diffHtml = "";
+
+            let day = 0;
+            if (diff > (24 * 60)) {
+                day = parseInt(diff / (24 * 60));
+                diffHtml += day + "天";
+            }
+            let hour = 0;
+            if (diff > 60) {
+                hour = parseInt(diff / (60) - day * 24);
+                diffHtml += hour + "小时";
+            }
+            let min = parseInt(diff - day * 24 * 60 - hour * 60)
+            if (min > 0) {
+                diffHtml += min + "分钟";
+            }
+            _this.durationTime = diffHtml;
+            let endTimes = _this.addDays(aucStartTime, diff * 60 * 1000);
+            _this.endTime = endTimes;
+            _this.disabledTime = true;
+        }
+    },
+    addDays(date, diff) {
+        let nd = new Date(date);
+        nd = nd.valueOf();
+        nd = nd + diff;
+        nd = new Date(nd);
+        let y = nd.getFullYear();
+        let m = nd.getMonth() + 1;
+        let d = nd.getDate();
+        let h = nd.getHours();
+        let mi = nd.getMinutes();
+        let s = nd.getSeconds();
+        if (m <= 9) m = "0" + m;
+        if (d <= 9) d = "0" + d;
+        let cdate = y + "-" + m + "-" + d + " " + h + ":" + mi + ":" + s;
+        return cdate;
     }
   },
   mounted(){

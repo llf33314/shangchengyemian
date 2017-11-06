@@ -229,6 +229,15 @@ import common from './common';
     mallSetWholesale_post:DFshop.env.activeAPI+'/mallWholesale/E9lM9uM4ct/setWholesale',
     /*保存批发设置 */
     mallWholesaleSaveSet_post:DFshop.env.activeAPI+'/mallWholesale/E9lM9uM4ct/saveSet',
+    
+    /*秒杀管理 */
+    mallSeckillList_post:DFshop.env.activeAPI+'/mallSeckill/E9lM9uM4ct/list',
+    /*秒杀管理 删除、使失效 */
+    mallSeckillDelete_post:DFshop.env.activeAPI+'/mallSeckill/E9lM9uM4ct/delete',
+    /*获取秒杀信息 */
+    mallSeckillSeckillInfo_post:DFshop.env.activeAPI+'/mallSeckill/E9lM9uM4ct/seckillInfo',
+    /*保存秒杀 */
+    mallSeckillSave_post:DFshop.env.activeAPI+'/mallSeckill/E9lM9uM4ct/save',
   };
 
   /*公共方法***********************************************************************************************************/

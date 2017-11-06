@@ -43,6 +43,10 @@ import h5Table from './router/H5/table'
 import addH5 from './router/H5/addH5'
 //模块购买
 import modular from './router/modular/index'
+//秒杀管理
+import seckill from './router/seckill/index'
+//秒杀管理--新建秒杀
+import addSeckill from './router/seckill/addSeckill'
 const routes = [
   { path: '/', component: Index},
   { path: '/group', component: Group},
@@ -67,6 +71,8 @@ const routes = [
   { path: '/h5/table', component: h5Table},
   { path: '/h5/addH5', component: addH5},
   { path: '/modular', component: modular},
+  { path: '/seckill', component: seckill},
+  { path: '/addSeckill/:id', component: addSeckill},
 ]
 
 Vue.use(VueRouter)

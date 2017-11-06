@@ -3,8 +3,8 @@
     <div class="common-nav">
         <el-breadcrumb separator="/">
             <el-breadcrumb-item :to="{ path: '/' }">商城营销</el-breadcrumb-item>
-            <el-breadcrumb-item :to="{ path: '/group' }">团购管理</el-breadcrumb-item>
-            <el-breadcrumb-item >新建团购</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: '/seckill' }">秒杀管理</el-breadcrumb-item>
+            <el-breadcrumb-item >新建秒杀</el-breadcrumb-item>
         </el-breadcrumb>
     </div>
     <div class="addGruop-main">
@@ -21,12 +21,12 @@
                 <el-button type="primary" @click="showDialog" v-if="isReplacePro">替换商品</el-button>
                 <p class="p-warn" v-if="isReplacePro">如需修改商品信息，请在商品管理中更新</p>
             </el-form-item>
-            <el-form-item label="活动名称 :" prop="gName">
-                <el-input v-model="ruleForm.gName" class="addGruop-input"></el-input>
+            <el-form-item label="活动名称 :" prop="sName">
+                <el-input v-model="ruleForm.sName" class="addGruop-input"></el-input>
                 <p class="p-warn">最多可输入50位汉字或100位字符</p>
             </el-form-item>
-            <el-form-item label="团购价 :" prop="gPrice">
-                <el-input v-model="ruleForm.gPrice " class="addGruop-input" v-if="ruleForm.isSpecifica == 0">
+            <el-form-item label="秒杀价 :" prop="sPrice">
+                <el-input v-model="ruleForm.sPrice " class="addGruop-input" v-if="ruleForm.isSpecifica == 0">
                     <template slot="prepend">¥</template>
                 </el-input>
                 <p class="p-warn" v-if="ruleForm.isSpecifica == 0">0/8</p>
@@ -36,45 +36,40 @@
                      min-width="170" align="center" :key="item.prop">
                     <template scope="scope">
                       <div v-for="data in scope.row.specList" :key="data.id">
-                        <!-- v-if="item.label == data.specificaName" -->
                         <span v-if="item.label == data.specificaName">{{data.specificaValue}}</span>
                       </div>
                     </template>
                   </el-table-column>
                   <el-table-column prop="invPrice" label="原价（元）" min-width="170" align="center">
                   </el-table-column>
-                  <el-table-column label="拼团价（元）" min-width="170" align="center">
+                  <el-table-column label="秒杀价（元）" min-width="170" align="center">
                     <template scope="scope">
-                        <el-input v-model="scope.row.groupPrice" class="addGruop-input" style="width:130px;">
+                        <el-input v-model="scope.row.seckillPrice" class="addGruop-input" style="width:130px;">
                             <template slot="prepend">¥</template>
                         </el-input>
                     </template>
                   </el-table-column>
                   <el-table-column prop="invNum" label="库存" min-width="150" align="center">
                   </el-table-column>
-                  <el-table-column label="参与团购" min-width="100" align="center">
+                  <el-table-column label="参与秒杀" min-width="100" align="center">
                     <template scope="scope">
                       <!-- <el-tag :type="scope.row.status === 1 ? 'success' : 'danger'">{{scope.row.status===1?'运行中':'关闭'}}</el-tag> -->
-                      <el-checkbox v-model="setJoinGroup[scope.$index]"></el-checkbox><span>设为参团</span>
+                      <el-checkbox v-model="setJoinGroup[scope.$index]"></el-checkbox><span>设为秒杀</span>
                     </template>
                   </el-table-column>
                 </el-table>
                 </div>
             </el-form-item>
             <el-form-item label="活动时间 :" prop="getTime">
-                <el-date-picker v-model="ruleForm.gStartTime" type="datetimerange"
+                <el-date-picker v-model="ruleForm.sStartTime" type="datetimerange"
                     placeholder="选择时间" :picker-options="pickerOptions1">
                 </el-date-picker>
-            </el-form-item>
-            <el-form-item label="参团人数 :" prop="gPeopleNum">
-                <el-input  v-model="ruleForm.gPeopleNum" class="addGruop-input"></el-input>
-                <p class="p-warn">0/8</p>
             </el-form-item>
             <el-form-item label="商品限购 :">
                 <el-switch on-text="开启" off-text="关闭" v-model="off"></el-switch>
             </el-form-item>
-            <el-form-item label="限购规则 :" v-if="off" prop="gMaxBuyNum">
-                <el-input v-model="ruleForm.gMaxBuyNum" class="addGruop-input"></el-input>
+            <el-form-item label="限购规则 :" v-if="off" prop="sMaxBuyNum">
+                <el-input v-model="ruleForm.sMaxBuyNum" class="addGruop-input"></el-input>
                 <span>件/人</span>
             </el-form-item>
             <el-form-item>
@@ -124,13 +119,6 @@ export default {
           callback();
       }
     };
-    var formPeopleNum = (rule, value, callback) => {
-      if (value == '' || value <= 0) {
-        return callback(new Error('参团人数不能为空且不能小于0'));
-      }else {
-          callback();
-      }
-    };
     var formPrice = (rule, value, callback) => {
       if (value == '' || value <= 0) {
         return callback(new Error('团购价不能为空且不能小于0'));
@@ -158,13 +146,12 @@ export default {
       },
       ruleForm: {
         shopId:'',
-        gName: '',
+        sName: '',
         region: '',
-        gStartTime:'',
-        gEndTime:'',
-        gPrice: '',
-        gPeopleNum: 0,
-        gMaxBuyNum:0,
+        sStartTime:'',
+        sEndTime:'',
+        sPrice: '',
+        sMaxBuyNum:0,
         priceList:[],
         productId:'',
         isJoinGroup:'',
@@ -178,19 +165,16 @@ export default {
         shopId:[
           {validator: formShopId, trigger: 'change' },
         ],
-        gName: [
+        sName: [
           {validator: formGname, trigger: 'blur' },
         ],
-        gStartTime: [
+        sStartTime: [
           {validator: formStartTime, trigger: 'change' },
         ],
-        gPeopleNum: [
-          {validator: formPeopleNum, trigger: 'blur' },
-        ],
-        gPrice: [
+        sPrice: [
           {validator: formPrice, trigger: 'blur' },
         ],
-        gMaxBuyNum: [
+        sMaxBuyNum: [
           {validator: formMaxBuyNum, trigger: 'blur' },
         ]
       },
@@ -221,30 +205,29 @@ export default {
         this.getSpecificaByProId(data.id);
       }
     },
-    submitForm(formName) {
+    submitForm(formName) {//保存秒杀
       let _this= this;
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          let groupBuy = {};
-          groupBuy = _this.$refs[formName].model;
-          let time = _this.$refs[formName].model.gStartTime;
-          groupBuy.gStartTime = Lib.M.format(new Date(time[0]));
-          groupBuy.gEndTime = Lib.M.format(new Date(time[1]));
-          groupBuy.gName = encodeURI(_this.$refs[formName].model.gName);
-          groupBuy.productId = _this.$refs[formName].model.productId;
+          let seckill = {};
+          seckill = _this.$refs[formName].model;
+          let time = _this.$refs[formName].model.sStartTime;
+          seckill.sStartTime = Lib.M.format(new Date(time[0]));
+          seckill.sEndTime = Lib.M.format(new Date(time[1]));
+          seckill.sName = encodeURI(_this.$refs[formName].model.sName);
+          seckill.productId = _this.$refs[formName].model.productId;
           if(!_this.off){
-            groupBuy.gMaxBuyNum = 0;
+            seckill.sMaxBuyNum = 0;
           }
 
-          console.log(groupBuy,'111');
+          console.log(seckill,'111');
           let _speciList = [];
-          //_speciList.push(this.$refs[formName].model.priceList);
           for(var k = 0;k < _this.specArrList.length;k++){
             let arr = {};
             if(_this.specArrList[k].priceId != ''){
               arr.id = _this.specArrList[k].priceId;
             }
-            arr.groupPrice = _this.specArrList[k].groupPrice;
+            arr.seckillPrice = _this.specArrList[k].seckillPrice;
             arr.invenId = _this.specArrList[k].id;
             arr.specificaIds = _this.specArrList[k].specificaIds;
             arr.isJoinGroup = Number(_this.specArrList[k].isJoinGroup);
@@ -252,11 +235,11 @@ export default {
           }
           console.log(_speciList,'2223333');
           let param = {};
-          param["groupBuy"] = groupBuy;
+          param["seckill"] = seckill;
           param["specArr"] = JSON.stringify(_speciList);
           console.log(param,'speac');
           Lib.M.ajax({
-            'url': DFshop.activeAPI.mallGroupBuySave_post,
+            'url': DFshop.activeAPI.mallSeckillSave_post,
             'data':param,
             'success':function (data){
               if(data.code == 1){
@@ -264,7 +247,7 @@ export default {
                     message: '保存成功',
                     type: 'success'
                 });
-                _this.jumpRouter('/group');
+                _this.jumpRouter('/seckill');
               }
               //console.log(1111);
             }
@@ -275,29 +258,29 @@ export default {
         }
       });
     },
-    resetForm(formName) {
+    resetForm(formName) {//重置表单
       this.$refs[formName].resetFields();
     },
-    returnPage(){
+    returnPage(){//返回上一页（取消按钮）
       window.history.go(-1);
     },
-    showDialog(){
+    showDialog(){//选择、替换商品弹出框
       this.$refs.goodsDialog.isShow=true;
       this.$refs.goodsDialog.shopId=this.ruleForm.shopId;
       this.$refs.goodsDialog.defaultProId = this.ruleForm.id;
     },
-    mallGroupBuyInfo(id){
+    mallSeckillSeckillInfo(id){//获取秒杀信息
       let _this= this;
       Lib.M.ajax({
-        'url': DFshop.activeAPI.mallGroupBuyInfo_post,
+        'url': DFshop.activeAPI.mallSeckillSeckillInfo_post,
         'data':{
           id : id 
         },
         'success':function (data){
            _this.ruleForm = data.data;
-           _this.ruleForm.gStartTime = [data.data.gStartTime,data.data.gEndTime];
+           _this.ruleForm.sStartTime = [data.data.sStartTime,data.data.sEndTime];
            console.log(_this.ruleForm,'table');
-           if(data.data.gMaxBuyNum === 0){
+           if(data.data.sMaxBuyNum === 0){
              _this.off = false;
            }else{
              _this.off = true;
@@ -313,7 +296,7 @@ export default {
         }
       });
     },
-    getSpecificaByProId(proId){
+    getSpecificaByProId(proId){//根据商品id查询商品规格
       let _this = this;
       DFshop.method.mallGetSpecificaByProId({
         'proId': proId,
@@ -334,13 +317,13 @@ export default {
             _this.specArrList.push(_this.specificesList[i]) ;
             if(_this.ruleForm.priceList.length == 0){
               _this.specArrList[i].isJoinGroup = true;
-              _this.specArrList[i].groupPrice = '';
+              _this.specArrList[i].seckillPrice = '';
               _this.specArrList[i].priceId = '';
             }else{
               for(var j = 0;j < _this.ruleForm.priceList.length;j++){
                 if(_this.specArrList[i].id === _this.ruleForm.priceList[j].invenId){
                   _this.specArrList[i].isJoinGroup = !!_this.ruleForm.priceList[j].isJoinGroup;
-                  _this.specArrList[i].groupPrice = _this.ruleForm.priceList[j].groupPrice;
+                  _this.specArrList[i].seckillPrice = _this.ruleForm.priceList[j].seckillPrice;
                   _this.specArrList[i].priceId = _this.ruleForm.priceList[j].id;
                 }
               }
@@ -359,9 +342,7 @@ export default {
     
     if(_this.$route.params.id != 0){
       _this.disabledShop = true;
-
-      _this.mallGroupBuyInfo(_this.$route.params.id);
-
+      _this.mallSeckillSeckillInfo(_this.$route.params.id);
       _this.isReplacePro = true;
     }else{
       _this.disabledShop = false;
@@ -372,7 +353,6 @@ export default {
         _this.shopList = data.data;
       }
     });
-    console.log(_this.shopList,'_this.shopList');
   }
 }
 </script>

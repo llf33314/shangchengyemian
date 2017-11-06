@@ -214,6 +214,7 @@ export default {
       this.ruleForm.product_id = data.id;
       this.ruleForm.proPrice = data.pro_price;
       this.boxData = data;
+      this.boxData.image_url = data.imgPath + data.image_url;
       if(this.ruleForm.isSpecifica == 1){
         this.getSpecificaByProId(data.id);
       }
@@ -292,7 +293,7 @@ export default {
              id : data.data.product_id,
              pro_price : data.data.proPrice,
              pro_name : data.data.proName,
-             image_url : data.data.imageUrl,
+             image_url : data.imgUrl + data.data.imageUrl,
              stockTotal : data.data.proStockTotal
            }
            _this.getSpecificaByProId(data.data.product_id);
