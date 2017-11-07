@@ -9,26 +9,26 @@
     </div>
     <div class="addBond-main">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-            <el-form-item label="所属店铺 :" prop="shop_id">
+            <el-form-item label="所属店铺 :" prop="shop_id" required>
                 <el-select v-model="ruleForm.shop_id" placeholder="请选择店铺" v-bind:disabled="disabledShop" class="addBond-input">
                     <el-option :label="item.sto_name" :value="item.id"
                       :key="item.id" v-for="item in shopList">
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="选择商品 :" prop="choicePro">
+            <el-form-item label="选择商品 :" prop="choicePro" required>
                 <el-button type="primary" @click="showDialog" v-if="isChoicePro">选择商品</el-button>
                 <goods-box :boxdata="boxData" v-if="isReplacePro"></goods-box>
                 <el-button type="primary" @click="showDialog" v-if="isReplacePro">替换商品</el-button>
                 <p class="p-warn" v-if="isReplacePro">如需修改商品信息，请在商品管理中更新</p>
             </el-form-item>
-            <el-form-item label="批发类型 :">
+            <el-form-item label="批发类型 :" required>
                <el-radio-group v-model="ruleForm.pf_type">
                     <el-radio :label="1">手批</el-radio>
                     <el-radio :label="2">混批</el-radio>
                 </el-radio-group>
             </el-form-item>
-            <el-form-item label="批发价 :" prop="pf_price">
+            <el-form-item label="批发价 :" prop="pf_price" required>
                  <el-input  v-model="ruleForm.pf_price" class="max-input" v-if="ruleForm.isSpecifica == 0" :maxlength="8">
                     <template slot="prepend">¥</template>
                 </el-input>
@@ -59,7 +59,7 @@
                 </div>
 
             </el-form-item>
-            <el-form-item label="活动时间 :" prop="pf_start_time">
+            <el-form-item label="活动时间 :" prop="pf_start_time" required>
                 <el-date-picker v-model="ruleForm.pf_start_time" type="datetimerange"
                     placeholder="选择日期范围">
                 </el-date-picker>

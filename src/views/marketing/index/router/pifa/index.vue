@@ -106,18 +106,9 @@
                 <div class="common-content">
                      <div class="index-shopInfo" v-if="pifaData.page.rowCount > 0">
                         <div class="index-input-box">
-                                <!-- <el-select v-model="goodsShop" placeholder="请选择">
-                                <el-option class="max-input"
-                                    v-for="item in options"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
-                                </el-option>
-                                </el-select> -->
-                                <el-input placeholder="搜索关键词" icon="search" class="max-input" @keyup.enter.native="handleIconClick"
-                                    v-model="keyword" :on-icon-click="handleIconClick" >
-                                </el-input>
-                                <!-- <input @keyup="aaa($event)"> -->
+                            <el-input placeholder="搜索关键词" icon="search" class="max-input" @keyup.enter.native="handleIconClick"
+                                v-model="keyword" :on-icon-click="handleIconClick" >
+                            </el-input>
                         </div>
                         <el-button type="primary" @click="synData">同步成交数/金额</el-button>
                     </div>
@@ -253,7 +244,7 @@
                                 placeholder="请输入内容" style="width:420px"></el-input>
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="primary" @click="onSubmit">立即创建</el-button>
+                            <el-button type="primary" @click="onSubmit">保存</el-button>
                             <el-button @click="returnPage()">取消</el-button>
                         </el-form-item>
                     </el-form>

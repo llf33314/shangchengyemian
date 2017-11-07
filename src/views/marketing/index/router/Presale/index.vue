@@ -10,7 +10,7 @@
         <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
             <el-tab-pane label="预售管理" name="1" >
                 <div class="common-content">
-                <div class="index-shopInfo">
+                <div class="index-shopInfo" v-if="presaleData.isOpenPresale">
                     <div class="index-input-box">
                     <div class="p-box">
                         <div v-if="presaleData.page.rowCount > 0">
@@ -213,7 +213,7 @@
                             </template>
                         </el-table-column>
                     </el-table>
-                    <div class="shop-textr">
+                    <div class="shop-textr" v-if="presaleGiftsData.page.rowCount == 0">
                         <el-pagination  @size-change="handleSizeChange2" @current-change="handleCurrentChange2"
                             :current-page.sync="presaleGiftsData.page.curPage"
                             :page-size="presaleGiftsData.page.pageSize"
@@ -281,16 +281,11 @@ export default {
               subList:[],
           }
       },
+      //arrList:"",
       presaleGiftsData:{
           page:{
               rowCount:0,
-              subList:[{
-                  id : '',
-                  giveType : '',
-                  giveName : '',
-                  giveNum : '',
-                  giveRanking :''
-              }]
+              subList:[]
           }
       },
       input:'',
@@ -377,11 +372,6 @@ export default {
       },
     handleDelete(id,index){//商品预售送礼删除弹出框
       let _this = this;
-    //   let gift = _this.presaleGiftsData.page.subList[index];
-    //   if(id == '' || gift.giveRanking == '' || gift.giveNum == '' || gift.giveType == '' || gift.giveNum == ''){
-    //       _this.presaleGiftsData.page.subList.splice(index, 1);
-    //       return false;
-    //   }
       let msg ={
         'dialogTitle':'您确定要删除此预售商品？',//文本标题
         'dialogMsg': '',//文本内容
@@ -393,7 +383,9 @@ export default {
                     id : id
                 },
                 'success':function (data){
-                    _this.mallPresaleGiveList(_this.presaleGiftsData.page.curPage);
+                    if(data.code == 1){
+                        _this.mallPresaleGiveList(_this.presaleGiftsData.page.curPage);
+                    }
                 }
             });
           }
@@ -408,7 +400,9 @@ export default {
         'dialogMsg': '失效后不能再进行交易',//文本内容
         'callback': {
           'btnOne': function(){
-              _this.mallPresaleDelete(id,type);
+              if(data.code == 1){
+                _this.mallPresaleDelete(id,type);
+              }
           }
         }
       }
@@ -436,14 +430,16 @@ export default {
             type : _this.presaleType
         },
         'success':function (data){
-           _this.presaleData = data.data;
-           _this.imgUrl = data.imgUrl;
-           _this.presaleData.page.rowCount = Number(data.data.page.rowCount);
-           $.each(_this.presaleData.page.subList,function(i){
-             let oldTime = this.createTime;
-             this.createTime = Lib.M.format(oldTime);
-           });
-           console.log(_this.presaleData,'presaleData')
+            if(data.code == 1 && data.isOpenPresale){
+                _this.presaleData = data.data;
+                _this.imgUrl = data.imgUrl;
+                _this.presaleData.page.rowCount = Number(data.data.page.rowCount);
+                $.each(_this.presaleData.page.subList,function(i){
+                    let oldTime = this.createTime;
+                    this.createTime = Lib.M.format(oldTime);
+                });
+                console.log(_this.presaleData,'presaleData')
+           }
         }
       });
     },
@@ -455,17 +451,19 @@ export default {
             curPage : pageNum
         },
         'success':function (data){
-           _this.dingJinData = data.data;
-           _this.alipayUrl = data.data.alipayUrl;
-           _this.busId = data.data.busId;
-           _this.dingJinData.page.rowCount = data.data.page.rowCount;
-           $.each(_this.dingJinData.page.subList,function(i){
-                if(this.payTime != '' && this.payTime != undefined){
-                    let oldPayTime = this.payTime;
-                    this.payTime = Lib.M.format(oldPayTime);
-                }
-           });
-           console.log(_this.dingJinData,'dingJinData')
+            if(data.code == 1){
+                _this.dingJinData = data.data;
+                _this.alipayUrl = data.data.alipayUrl;
+                _this.busId = data.data.busId;
+                _this.dingJinData.page.rowCount = data.data.page.rowCount;
+                $.each(_this.dingJinData.page.subList,function(i){
+                        if(this.payTime != '' && this.payTime != undefined){
+                            let oldPayTime = this.payTime;
+                            this.payTime = Lib.M.format(oldPayTime);
+                        }
+                });
+                console.log(_this.dingJinData,'dingJinData')
+            }
         }
       });
     },
@@ -477,9 +475,12 @@ export default {
                 curPage : pageNum
             },
             'success':function (data){
-                _this.presaleGiftsData = data.data;
-                _this.mallPresaleGiveDictList();
-                console.log(_this.presaleGiftsData,'presaleGiftsData')
+                if(data.code == 1){
+                    _this.presaleGiftsData.page.rowCount = data.data.page.rowCount;
+                    _this.presaleGiftsData = data.data;
+                    _this.mallPresaleGiveDictList();
+                    console.log(_this.presaleGiftsData,'presaleGiftsData')
+                }
             }
         });
     },
@@ -538,19 +539,10 @@ export default {
                 $.each(_this.giftDictList,function(i){
                     this.item_key = Number(this.item_key)
                 });
-                //console.log(_this.giftDictList,'giftDictList')
             }
         });
     },
     addPresaleGift(){//添加预售送礼
-    //     let newGift ={
-    //         id : '',
-    //         giveType : '',
-    //         giveName : '',
-    //         giveNum : '',
-    //         giveRanking :''
-    //   }
-    //   this.presaleGiftsData.page.subList.unshift(newGift);
         this.dialogVisibleGift = true;
     },
     mallPresaleGiveSave(param){//保存预售送礼设置
@@ -569,9 +561,6 @@ export default {
                 _this.mallPresaleGiveList(1);
             }
         });
-    },
-    changeaaa(value){
-
     },
     blurSaveGift(index,type){//保存预售送礼及判断
         let _this = this;
@@ -631,7 +620,6 @@ export default {
     DFshop.method.storeList({
       'success'(data){
         _this.shopList = data.data;
-        //console.log(_this.shopList,'shopList')
       }
     });
     _this.mallPresaleList(1);

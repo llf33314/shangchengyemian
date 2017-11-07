@@ -2,7 +2,7 @@
 <div class="addLogistics-wrapper">
   <div class="common-nav">
     <el-breadcrumb separator="/">
-      <el-breadcrumb-item :to="{ path: '/logistics' }">物流管理</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/logistics/logistics' }">物流管理</el-breadcrumb-item>
       <el-breadcrumb-item>编辑物流信息</el-breadcrumb-item>
     </el-breadcrumb>
   </div>

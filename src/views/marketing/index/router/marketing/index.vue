@@ -26,7 +26,7 @@
                 <p class="p-warn">最多输入5位小数</p>
               </el-form-item>
               <el-form-item label="提现规则 :">
-                <el-radio-group v-model="setupForm.withdrawalType">
+                <el-radio-group v-model="setupForm.withdrawalType" @change="choiceWithdrawl">
                   <p style="margin-bottom: 20px;">
                     <el-radio :label="1">最低可提现
                       <el-input v-model="setupForm.withdrawalLowestMoney" class="mix-input">
@@ -69,6 +69,7 @@
                 <span>
                   活动状态 :
                   <el-select v-model="isUse" placeholder="请选择" @change="searchChose">
+                    <el-option class="max-input" label="全部" :value="null"></el-option>
                     <el-option class="max-input" label="已禁用" :value="0"></el-option>
                     <el-option class="max-input" label="已启用" :value="1"></el-option>
                   </el-select>
@@ -130,7 +131,8 @@
             <div class="index-shopInfo" v-if="examineData.page.rowCount > 0">
               <!-- <el-autocomplete v-model="state4" :fetch-suggestions="querySearchAsync"
                 placeholder="销售员名字/手机" @select="handleSelect" icon="search" ></el-autocomplete> -->
-                <el-input v-model="keyWord" placeholder="销售员名字/手机" style="width:200px;"></el-input>
+                <el-input v-model="keyWord" placeholder="销售员名字/手机" icon="search" class="max-input"
+                  @keyup.enter.native="searchExamine" :on-icon-click="searchExamine"></el-input>
             </div>
             <el-table :data="examineData.page.subList" style="width: 100%" v-if="examineData.page.rowCount > 0">
               <el-table-column
@@ -185,7 +187,8 @@
             <div class="index-shopInfo" v-if="sellersList.page.rowCount > 0">
               <!-- <el-autocomplete v-model="state4" :fetch-suggestions="querySearchAsync"
                 placeholder="销售员名字/手机" @select="handleSelect" icon="search"></el-autocomplete> -->
-              <el-input v-model="keyWord_sellers" style="width:200px" placeholder="销售员名字/手机"></el-input>
+              <el-input v-model="keyWord_sellers" placeholder="销售员名字/手机" icon="search" class="max-input" 
+                 @keyup.enter.native="searchSeller" :on-icon-click="searchSeller"></el-input>
             </div>
             <el-table :data="sellersList.page.subList" style="width: 100%" v-if="sellersList.page.rowCount > 0">
               <el-table-column
@@ -248,13 +251,13 @@
             <div class="index-shopInfo" v-if="saleData.page.rowCount > 0">
               <div class="index-input-box">
                 <span>
-                <!-- <el-autocomplete v-model="cashShop" :fetch-suggestions="querySearchAsync"
-                  placeholder="销售员名字/手机" @select="handleSelect" icon="search"></el-autocomplete> -->
-                <el-input v-model="keyWord_tixian" placeholder="销售员名字/手机" style="width:200px;"></el-input>
+                  <el-input v-model="keyWord_tixian" placeholder="销售员名字/手机" icon="search" class="max-input" 
+                    @keyup.enter.native="searchSale" :on-icon-click="searchSale"></el-input>
                 </span>
                 <span>
                   提现时间 ：
-                  <el-date-picker v-model="cashDate" type="datetimerange" placeholder="选择时间范围" @change="cashSearch"></el-date-picker>
+                  <el-date-picker v-model="cashDate" type="datetimerange" placeholder="选择时间范围"
+                     @change="cashSearch"></el-date-picker>
                 </span>
               </div>
             </div>
@@ -382,6 +385,13 @@ export default {
       }
       return true;
     },
+    choiceWithdrawl(){//提现规则改变事件
+        if(this.setupForm.withdrawalType == 1){
+          this.setupForm.withdrawalMultiple = '';
+        }else{
+          this.setupForm.withdrawalLowestMoney = '';
+        }
+    },
     checkConsumeMoney(){//验证成为销售员消费金额
       let reg = /^[0-9]\d*$/;
       if(this.setupForm.consumeMoney != '' && !reg.test(this.setupForm.consumeMoney)){
@@ -417,6 +427,15 @@ export default {
         }
         return true;
       }
+    },
+    searchExamine(){//推荐审核搜索框
+      this.mallSellersCheckList(this.examineData.page.curPage);
+    },
+    searchSeller(){//销售员搜索框
+      this.mallSellersList(this.sellersList.page.curPage);
+    },
+    searchSale(){//提现搜索框
+      this.mallSellersWithDrawList(this.saleData.page.curPage);
     },
     onSubmit(formName) {//保存基本设置事件
       //onsole.log('submit!');
@@ -663,7 +682,7 @@ export default {
            _this.saleData = data.data;
            $.each(_this.saleData.page.subList,function(i){
              let oldTime = this.applay_time;
-             this.apply_time = Lib.M.format(oldTime);
+             this.applay_time = Lib.M.format(oldTime);
            });
            console.log(_this.saleData,'saleData')
         }
@@ -736,7 +755,7 @@ export default {
   mounted(){
     let _this = this;
     _this.activeName = _this.$route.params.activeName;
-    _this.restaurants = _this.loadAll();
+    //_this.restaurants = _this.loadAll();
 
     DFshop.method.storeList({
       'success'(data){

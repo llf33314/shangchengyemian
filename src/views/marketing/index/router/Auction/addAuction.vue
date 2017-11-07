@@ -9,20 +9,20 @@
     </div>
     <div class="auction-main">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="148px" class="demo-ruleForm">
-            <el-form-item label="所属店铺 :" prop="shopId">
+            <el-form-item label="所属店铺 :" prop="shopId" required>
                 <el-select v-model="ruleForm.shopId" placeholder="请选择活动区域" v-bind:disabled="disabledShop" class="auction-input">
                     <el-option  :label="option.sto_name"  :value="option.id"
                       :key="option.id" v-for="option in shopList">
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="活动商品 :" prop="name">
+            <el-form-item label="活动商品 :" prop="name" required>
                 <el-button type="primary" @click="showDialog" v-if="isChoicePro">选择商品</el-button>
                 <goods-box :boxdata="boxData" v-if="isReplacePro"></goods-box>
                 <el-button type="primary" @click="showDialog" v-if="isReplacePro">替换商品</el-button>
                 <p class="p-warn" v-if="isReplacePro">如需修改商品信息，请在商品管理中更新</p>
             </el-form-item>
-            <el-form-item label="拍卖类型 :" prop="aucType">
+            <el-form-item label="拍卖类型 :" prop="aucType" required>
                 <el-radio-group v-model="ruleForm.aucType">
                     <el-radio :label="1">降价拍</el-radio>
                     <el-radio :label="2">升价拍</el-radio>
@@ -31,41 +31,41 @@
             <el-form-item label="是否需要交纳保证金 :" >
                 <el-checkbox v-model="ruleForm.isMargin">拍卖前需要交纳保证金</el-checkbox>
             </el-form-item>
-            <el-form-item label="交纳保证金 :" prop="aucMargin" v-if="ruleForm.isMargin">
+            <el-form-item label="交纳保证金 :" prop="aucMargin" v-if="ruleForm.isMargin" required>
                 <el-input  v-model="ruleForm.aucMargin" class="auction-input">
                     <template slot="prepend">¥</template>
                 </el-input>
                 <p class="p-warn">0/8</p>
             </el-form-item>
-            <el-form-item label="起拍价格 :" prop="aucStartPrice">
+            <el-form-item label="起拍价格 :" prop="aucStartPrice" required>
                 <el-input  v-model="ruleForm.aucStartPrice" class="auction-input">
                     <template slot="prepend">¥</template>
                 </el-input>
                 <p class="p-warn">0/8</p>
             </el-form-item>
-            <el-form-item label="活动时间 :" prop="aucStartTime" v-if="ruleForm.aucType == 2">
+            <el-form-item label="活动时间 :" prop="aucStartTime" v-if="ruleForm.aucType == 2" required>
                  <el-date-picker v-model="ruleForm.aucStartTime" type="datetimerange"
                     placeholder="选择日期" :picker-options="pickerOptions0">
                 </el-date-picker>
             </el-form-item>
-            <el-form-item label="开始时间 :" prop="aucStartTime" v-if="ruleForm.aucType == 1">
+            <el-form-item label="开始时间 :" prop="aucStartTime" v-if="ruleForm.aucType == 1" required>
                 <el-date-picker v-model="ruleForm.aucStartTime" type="datetime"
                     placeholder="选择日期时间">
                 </el-date-picker>
             </el-form-item>
-            <el-form-item label="最低价格 :" prop="aucLowestPrice" v-if="ruleForm.aucType == 1">
+            <el-form-item label="最低价格 :" prop="aucLowestPrice" v-if="ruleForm.aucType == 1" required>
                 <el-input v-model="ruleForm.aucLowestPrice" class="auction-input">
                     <template slot="prepend">¥</template>
                 </el-input>
                 <p class="p-warn">0/8</p>
             </el-form-item>
-            <el-form-item label="加价幅度 :" prop="aucAddPrice" v-if="ruleForm.aucType == 2">
+            <el-form-item label="加价幅度 :" prop="aucAddPrice" v-if="ruleForm.aucType == 2" required>
                 <el-input  v-model="ruleForm.aucAddPrice" class="max-input">
                     <template slot="prepend">¥</template>
                 </el-input>
                 <p class="p-warn">0/8</p>
             </el-form-item>
-             <el-form-item label="降价幅度 :" v-if="ruleForm.aucType == 1">
+             <el-form-item label="降价幅度 :" v-if="ruleForm.aucType == 1" required>
                 每 <el-input  v-model="ruleForm.aucLowerPriceTime" class="mix-input"></el-input>
                 分钟下降 <el-input  v-model="ruleForm.aucLowerPrice" class="max-input">
                     <template slot="prepend">¥</template>
