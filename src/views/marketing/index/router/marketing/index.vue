@@ -454,13 +454,15 @@ export default {
         param.sellerRemark = encodeURI(_this.$refs[formName].model.sellerRemark);
         Lib.M.ajax({
           'url': DFshop.activeAPI.mallSellersSaveSellerSet_post,
-          'data': param,
+          'data': {sellerSet:param},
           'success':function (data){
-            _this.$message({
-                message: '保存成功',
-                type: 'success'
-            });
-            _this.mallSellersGetSellerSet();
+            if(data.code == 1){
+              _this.$message({
+                  message: '保存成功',
+                  type: 'success'
+              });
+              _this.mallSellersGetSellerSet();
+            }
             //window.location.reload();
           }
         });

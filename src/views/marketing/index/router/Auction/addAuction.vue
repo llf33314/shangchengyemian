@@ -10,9 +10,8 @@
     <div class="auction-main">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="148px" class="demo-ruleForm">
             <el-form-item label="所属店铺 :" prop="shopId" required>
-                <el-select v-model="ruleForm.shopId" placeholder="请选择活动区域" v-bind:disabled="disabledShop" class="auction-input">
-                    <el-option  :label="option.sto_name"  :value="option.id"
-                      :key="option.id" v-for="option in shopList">
+                <el-select v-model="ruleForm.shopId" placeholder="请选择店铺" v-bind:disabled="disabledShop" class="auction-input">
+                    <el-option :label="option.sto_name" :value="option.id" :key="option.id" v-for="option in shopList">
                     </el-option>
                 </el-select>
             </el-form-item>
@@ -115,9 +114,7 @@
         aucLowestPrice:'',
         isMargin:false,
         aucStartTime : '',
-
         isSpecifica : '',
-
       },
       rules: {
         // shop:[

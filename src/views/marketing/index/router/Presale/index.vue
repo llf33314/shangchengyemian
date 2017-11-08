@@ -72,13 +72,13 @@
                     </el-table-column>
                     <el-table-column label="操作" min-width="120">
                         <template scope="scope">
-                            <el-button size="small" @click="jumpRouter('/presale/addpresale/'+scope.row.id)" 
+                            <el-button size="small" class="buttonBlue" @click="jumpRouter('/presale/addpresale/'+scope.row.id)" 
                                 v-if="scope.row.status == 0 ||(scope.row.status == 1 && scope.row.joinId == 0)">编辑</el-button>
-                            <el-button size="small" @click="presaleDel(scope.row.id,-1)" v-if="scope.row.status != 1">删除</el-button>
-                            <el-button size="small" @click="invalidDelete(scope.row.id,-2)"
+                            <el-button size="small" class="buttonBlue" @click="invalidDelete(scope.row.id,-2)"
                                 v-if="scope.row.status == 0 ||(scope.row.status == 1 && scope.row.joinId == 0)">使失效</el-button>
-                            <el-button size="small" @click="preview(scope.row.twoCodePath)"
+                            <el-button size="small" class="buttonBlue" @click="preview(scope.row.twoCodePath)"
                                 v-if="scope.row.status == 0 ||scope.row.status == 1 ">预览</el-button>
+                            <el-button size="small" @click="presaleDel(scope.row.id,-1)" v-if="scope.row.status != 1">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -281,7 +281,6 @@ export default {
               subList:[],
           }
       },
-      //arrList:"",
       presaleGiftsData:{
           page:{
               rowCount:0,
@@ -430,7 +429,8 @@ export default {
             type : _this.presaleType
         },
         'success':function (data){
-            if(data.code == 1 && data.isOpenPresale){
+            console.log(data,'data')
+            if(data.code == 1 && data.data.isOpenPresale){
                 _this.presaleData = data.data;
                 _this.imgUrl = data.imgUrl;
                 _this.presaleData.page.rowCount = Number(data.data.page.rowCount);

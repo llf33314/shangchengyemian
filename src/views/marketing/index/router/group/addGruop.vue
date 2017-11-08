@@ -15,7 +15,7 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="活动商品 :" prop="region" required>
+            <el-form-item label="活动商品 :" prop="choicePro" required>
                 <el-button type="primary" @click="showDialog" v-if="isChoicePro">选择商品</el-button>
                 <goods-box :boxdata="boxData" v-if="isReplacePro"></goods-box>
                 <el-button type="primary" @click="showDialog" v-if="isReplacePro">替换商品</el-button>
@@ -142,6 +142,13 @@ export default {
           callback();
       }
     };
+    var formChoicePro = (rule, value, callback) => {
+      if (this.boxData.id === undefined || this.boxData.id === '') {
+        return callback(new Error('请选择活动商品'));
+      } else{
+        callback();
+      }
+    };
     return {
       setJoinGroup:[],
       table: [],
@@ -186,6 +193,9 @@ export default {
         ],
         gPrice: [
           {validator: formPrice, trigger: 'blur' },
+        ],
+        choicePro: [
+          { validator: formChoicePro, trigger: 'change' }
         ],
         gMaxBuyNum: [
           {validator: formMaxBuyNum, trigger: 'blur' },

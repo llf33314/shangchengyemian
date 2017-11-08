@@ -9,23 +9,23 @@
     </div>
     <div class="addGruop-main">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-            <el-form-item label="所属店铺 :" prop="shopId">
+            <el-form-item label="所属店铺 :" prop="shopId" required>
                 <el-select v-model="ruleForm.shopId" v-bind:disabled="disabledShop" placeholder="请选择店铺" class="addGruop-input">
                     <el-option :label="option.sto_name" :value="option.id" :key="option.id" v-for="option in shopList">
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="活动商品 :" prop="region">
+            <el-form-item label="活动商品 :" prop="choicePro" required>
                 <el-button type="primary" @click="showDialog" v-if="isChoicePro">选择商品</el-button>
                 <goods-box :boxdata="boxData" v-if="isReplacePro"></goods-box>
                 <el-button type="primary" @click="showDialog" v-if="isReplacePro">替换商品</el-button>
                 <p class="p-warn" v-if="isReplacePro">如需修改商品信息，请在商品管理中更新</p>
             </el-form-item>
-            <el-form-item label="活动名称 :" prop="sName">
+            <el-form-item label="活动名称 :" prop="sName" required>
                 <el-input v-model="ruleForm.sName" class="addGruop-input"></el-input>
                 <p class="p-warn">最多可输入50位汉字或100位字符</p>
             </el-form-item>
-            <el-form-item label="秒杀价 :" prop="sPrice">
+            <el-form-item label="秒杀价 :" prop="sPrice" required>
                 <el-input v-model="ruleForm.sPrice " class="addGruop-input" v-if="ruleForm.isSpecifica == 0">
                     <template slot="prepend">¥</template>
                 </el-input>
@@ -53,14 +53,13 @@
                   </el-table-column>
                   <el-table-column label="参与秒杀" min-width="100" align="center">
                     <template scope="scope">
-                      <!-- <el-tag :type="scope.row.status === 1 ? 'success' : 'danger'">{{scope.row.status===1?'运行中':'关闭'}}</el-tag> -->
-                      <el-checkbox v-model="setJoinGroup[scope.$index]"></el-checkbox><span>设为秒杀</span>
+                      <el-checkbox v-model="setJoinSeckill[scope.$index]"></el-checkbox><span>设为秒杀</span>
                     </template>
                   </el-table-column>
                 </el-table>
                 </div>
             </el-form-item>
-            <el-form-item label="活动时间 :" prop="getTime">
+            <el-form-item label="活动时间 :" prop="sStartTime" required>
                 <el-date-picker v-model="ruleForm.sStartTime" type="datetimerange"
                     placeholder="选择时间" :picker-options="pickerOptions1">
                 </el-date-picker>
@@ -68,7 +67,7 @@
             <el-form-item label="商品限购 :">
                 <el-switch on-text="开启" off-text="关闭" v-model="off"></el-switch>
             </el-form-item>
-            <el-form-item label="限购规则 :" v-if="off" prop="sMaxBuyNum">
+            <el-form-item label="限购规则 :" v-if="off" prop="sMaxBuyNum" required>
                 <el-input v-model="ruleForm.sMaxBuyNum" class="addGruop-input"></el-input>
                 <span>件/人</span>
             </el-form-item>
@@ -92,7 +91,7 @@ export default {
   data() {
     var formGroupPrice = (rule, value, callback) => {
       if (value == '' || value <= 0) {
-        return callback(new Error('拼团价不能为空且不能小于0'));
+        return callback(new Error('秒杀价不能为空且不能小于0'));
       }else {
           callback();
       }
@@ -104,7 +103,7 @@ export default {
           callback();
       }
     };
-    var formGname = (rule, value, callback) => {
+    var formSname = (rule, value, callback) => {
       if (value == '') {
         return callback(new Error('活动名称不能为空'));
       }else {
@@ -121,7 +120,7 @@ export default {
     };
     var formPrice = (rule, value, callback) => {
       if (value == '' || value <= 0) {
-        return callback(new Error('团购价不能为空且不能小于0'));
+        return callback(new Error('秒杀价不能为空且不能小于0'));
       }else {
           callback();
       }
@@ -133,8 +132,15 @@ export default {
           callback();
       }
     };
+    var formChoicePro = (rule, value, callback) => {
+      if (this.boxData.id === undefined || this.boxData.id === '') {
+        return callback(new Error('请选择活动商品'));
+      } else{
+        callback();
+      }
+    };
     return {
-      setJoinGroup:[],
+      setJoinSeckill:[],
       table: [],
       pickerOptions1: {
           shortcuts: [{
@@ -166,7 +172,10 @@ export default {
           {validator: formShopId, trigger: 'change' },
         ],
         sName: [
-          {validator: formGname, trigger: 'blur' },
+          {validator: formSname, trigger: 'blur' },
+        ],
+        choicePro: [
+          { validator: formChoicePro, trigger: 'change' }
         ],
         sStartTime: [
           {validator: formStartTime, trigger: 'change' },
@@ -186,10 +195,10 @@ export default {
     };
   },
   watch:{
-    setJoinGroup(val,val2){
+    setJoinSeckill(val,val2){
       var self = this;
       self.specArrList.forEach(function(e,i){
-        self.$set(self.specArrList[i],'isJoinGroup',self.setJoinGroup[i])
+        self.$set(self.specArrList[i],'isJoinGroup',self.setJoinSeckill[i])
       })
     }
   },
@@ -330,7 +339,7 @@ export default {
             }
           }
           _this.specArrList.forEach(function(e,i){
-            _this.setJoinGroup.push(e.isJoinGroup);
+            _this.setJoinSeckill.push(e.isJoinGroup);
           })
           console.log(_this.specArrList,'222');
         }

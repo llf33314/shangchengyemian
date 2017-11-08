@@ -111,9 +111,9 @@ export default {
       }
     };
     var formPfStartTime = (rule, value, callback) => {
-      let time = Lib.M.format(new Date(value[0]));
-      let time1 = Lib.M.format(new Date(value[1]));
-      if (time == '' || time1 == '') {
+      // let time = Lib.M.format(new Date(value[0]));
+      // let time1 = Lib.M.format(new Date(value[1]));
+      if (value == '') {
         return callback(new Error('请选择活动时间'));
       } else{
         callback();

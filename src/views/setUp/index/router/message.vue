@@ -143,19 +143,21 @@ export default {
       Lib.M.ajax({
         'url':DFshop.activeAPI.mallPaySetGetTemplate_post,
         'success':function (data){
-          _this.template = data.data;
-          $.each(_this.template.busMsgArr,function(i){
-            var num = _this.template.busMsgArr[i].id;
-            if(num == 1){
-              _this.selected1 = '1';
-            }else if(num == 2){
-              _this.selected2 = '1';
-            }else if(num == 3){
-              _this.selected3 = '1';
-            }else{
-              _this.selected4 = '1';
-            }
-          });
+          if(data.code == 1){
+            _this.template = data.data;
+            $.each(_this.template.busMsgArr,function(i){
+              var num = _this.template.busMsgArr[i].id;
+              if(num == 1){
+                _this.selected1 = '1';
+              }else if(num == 2){
+                _this.selected2 = '1';
+              }else if(num == 3){
+                _this.selected3 = '1';
+              }else{
+                _this.selected4 = '1';
+              }
+            });
+          }
         }
       });
     },
@@ -168,18 +170,20 @@ export default {
       Lib.M.ajax({
         'url':DFshop.activeAPI.mallPaySetSmsTemplate_post,
         'data':{
-          template_json:templateJson,
+          template_json:encodeURI(JSON.stringify(templateJson)),
           type : type,
           operation : Number(selected)
         },
         'success':function (data){
-          _this.template = data.data;
-          console.log(_this.template);
-          _this.$message({
-            message: '设置成功',
-            type: 'success'
-          });
-          _this.mallPaySetGetTemplate();
+          if(data.code == 1){
+            _this.template = data.data;
+            console.log(_this.template);
+            _this.$message({
+              message: '设置成功',
+              type: 'success'
+            });
+            _this.mallPaySetGetTemplate();
+          }
         }
       });
     },
