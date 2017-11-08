@@ -123,7 +123,7 @@
       this.mallPaySetPaySetInfo();
     },
     methods: {
-      onSubmit() {
+      onSubmit() {//保存设置
         let _this = this;
         let f = this.$refs.form.model.foorerObj;
         let paramsForm = this.$refs.form.model.set;
@@ -136,20 +136,26 @@
         footerMenu.cart = Number(f.cart);
         footerMenu.my = Number(f.my);
         param.footerJson = footerMenu;
-        param.smsMessage = smsMsg;
+        param.smsMessage = encodeURI(JSON.stringify(smsMsg));
+        param.messageJson = encodeURI(paramsForm.messageJson);
+        param.pfRemark = encodeURI(paramsForm.pfRemark);
+        param.pfApplyRemark = encodeURI(paramsForm.pfApplyRemark);
+        param.busMessageJson = encodeURI(paramsForm.busMessageJson);
         Lib.M.ajax({
               'url': DFshop.activeAPI.mallPaySetSave_post,
               'data':param,
               'success':function (data){
-                _this.$message({
-                  message: '设置成功',
-                  type: 'success'
-                });
-                _this.mallPaySetPaySetInfo();
+                if(data.code == 1){
+                  _this.$message({
+                    message: '设置成功',
+                    type: 'success'
+                  });
+                  _this.mallPaySetPaySetInfo();
+                }
               }
             });
       },
-      mallPaySetPaySetInfo(){
+      mallPaySetPaySetInfo(){//获取设置信息
         let _this = this;
         _this.form = '';
         Lib.M.ajax({
