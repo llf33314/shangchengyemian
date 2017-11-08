@@ -445,7 +445,7 @@ export default {
       let withdrawal = _this.checkWithdrawal();
       if(jinfen && money && withdrawal){
         let param = {};
-        param = _this.$refs[formName].model;
+        param = JSON.parse(JSON.stringify(_this.$refs[formName].model));
         if(param.withdrawalType == 1){
           param.withdrawalMultiple = '';
         }else{
