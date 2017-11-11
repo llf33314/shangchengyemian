@@ -170,7 +170,7 @@ export default {
       Lib.M.ajax({
         'url':DFshop.activeAPI.mallPaySetSmsTemplate_post,
         'data':{
-          template_json:encodeURI(JSON.stringify(templateJson)),
+          template_json:JSON.stringify(templateJson),
           type : type,
           operation : Number(selected)
         },

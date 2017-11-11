@@ -223,7 +223,7 @@ export default {
           let time = _this.$refs[formName].model.sStartTime;
           seckill.sStartTime = Lib.M.format(new Date(time[0]));
           seckill.sEndTime = Lib.M.format(new Date(time[1]));
-          seckill.sName = encodeURI(_this.$refs[formName].model.sName);
+          seckill.sName = _this.$refs[formName].model.sName;
           seckill.productId = _this.$refs[formName].model.productId;
           if(!_this.off){
             seckill.sMaxBuyNum = 0;

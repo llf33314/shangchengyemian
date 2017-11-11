@@ -90,6 +90,7 @@ import common from './common';
     mallStoreStoreList_post:DFshop.env.activeAPI+'/mallStore/E9lM9uM4ct/storeList',
     /*页面类型 (可用于下拉框)*/
     mallPageNewTypeMap_post:DFshop.env.activeAPI+'/mallPage/E9lM9uM4ct/typeMap',
+    
     /*物流管理列表*/
     mallFreightList_post:DFshop.env.activeAPI+'/mallFreight/E9lM9uM4ct/list',
     /*删除物流管理 */

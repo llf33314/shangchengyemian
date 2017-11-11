@@ -224,6 +224,12 @@ export default {
     },
     submitForm(formName) {//保存预售商品信息方法
       let _this = this;
+      if(_this.$refs[formName].model.timeList != ''){
+        let flag = checkTime();
+        if(!flag){
+          return 
+        }
+      }
       _this.$refs[formName].validate((valid) => {
         if (valid) {
           let time = _this.$refs[formName].model.sale_start_time;
@@ -246,8 +252,6 @@ export default {
             _this.$refs[formName].model.timeList[i].endTime = Lib.M.format(new Date(t[1]));
             presaleTimes.push(_this.$refs[formName].model.timeList[i]);
       　　}
-          console.log(presale,'presale');
-          console.log(presaleTimes,'presaleTimes');
           Lib.M.ajax({
             'url': DFshop.activeAPI.mallPresaleSave_post,
             'data': {
@@ -259,7 +263,7 @@ export default {
                     message: '保存成功',
                     type: 'success'
                 });
-                _this.jumpRouter('/presale');
+                _this.jumpRouter('/presale/1');
             }
           });
         } else {
@@ -329,16 +333,141 @@ export default {
       this.ruleForm.timeList.push(newPrice);
     },
     checkTime(index){//价格调整时间判断
-        let presaleTime = this.ruleForm.sale_start_time;//预售时间
-        let startTime = Lib.M.format(new Date(presaleTime[0]));
-        let endTime = Lib.M.format(new Date(presaleTime[1]));
+        let _this = this;
+        let presaleTime = _this.ruleForm.sale_start_time;//预售时间
+        let sStartTime = Lib.M.format(new Date(presaleTime[0]));//活动生效开始时间
+        let sEndTime = Lib.M.format(new Date(presaleTime[1]));//活动结束时间
 
-        let priceTime = this.ruleForm.timeList[index].startTime;//价格调整选择的时间
-        let priceStartTime = Lib.M.format(priceTime[0]);
-        let priceEndTime = Lib.M.format(priceTime[1]);
-        if(priceStartTime < startTime && priceStartTime > endTime){
-            alert(ssss);
+        let delTimeList = new Array();
+        var defaultObj = new Object();
+        
+        let presaleTimesArray = new Array();
+        var flag = true;
+        var msg = "";
+        var start=new Date(sStartTime.replace("-", "/").replace("-", "/"));  
+        var ends=new Date(sEndTime.replace("-", "/").replace("-", "/")); 
+        $.each(_this.ruleForm.timeList,function(i){
+          let priceTime = this.startTime;//价格调整选择的时间
+          let startTime = Lib.M.format(priceTime[0]);
+          let endTime = Lib.M.format(priceTime[1]);
+          var types = this.saleType;//选择上涨还是下调
+          var startDate = new Date(startTime.replace("-", "/").replace("-", "/"));  
+          var endDate = new Date(endTime.replace("-", "/").replace("-", "/")); 
+          var id = this.id;
+          var priceType = this.priceType;//价格类型（百分比、价格）
+            
+          var price = this.price;//调整比例
+          //var _obj = $(this);
+            
+          var isNull = false;
+          
+          if(startTime == null || startTime == ""){
+            isNull = true;
+          }else if(endTime == null || endTime == ""){
+            isNull = true;
+          }else if(startDate*1 >= endDate*1 && !isNull){
+            flag = false;
+            msg = "价格调整活动开始时间必须要早于活动结束时间";
+            _this.ruleForm.timeList[i].startTime = '';
+          }else if(endDate*1 > ends*1 && !isNull){
+            flag = false;
+            msg = "价格调整结束时间不能晚于预售活动结束时间";
+            _this.ruleForm.timeList[i].startTime = '';
+          }else{
+            if(!isNull){
+              //判断价格是否重复
+              $.each(_this.ruleForm.timeList,function(j){
+                if(j < i){
+                  let t = this.startTime;
+                  var startTime2 = Lib.M.format(t[0]);
+                  var endTime2 = Lib.M.format(t[1]);
+                  startTime2 = startTime2.substr(0,10);
+                  endTime2 = endTime2.substr(0,10);
+
+                  var startDate2=new Date(startTime2.replace("-", "/").replace("-", "/"));  
+                  var endDate2=new Date(endTime2.replace("-", "/").replace("-", "/"));
+
+                    if(endDate*1 < startDate2*1 || endDate*1 <  endDate2*1 ){
+                      flag = false;
+                    }
+                    if(!flag){
+                      msg = "价格调整的时间不能存在重叠";
+                      _this.ruleForm.timeList[j].startTime = '';
+                      return false;
+                    }
+                }
+              });
+            }
+          }
+          //判断定金是否小于向下调整金额
+          let minPrice = _this.ruleForm.proPrice;
+          if(minPrice > 0  && !isNull){
+            var pPrice = this.price;
+            
+            let minPriceVal = _this.jisuanDepositPrice(pPrice,this.priceType,types,minPrice);
+            var depositPercent = _this.ruleForm.deposit_percent;//交纳的定金
+            //console.log(minPriceVal+"----"+depositPercent)
+            if(minPriceVal <= 0){
+              msg = "您调整的价格不能小于0，请重新输入要调整的价格";
+              _this.ruleForm.timeList[i].startTime = '';
+              flag = false;
+            }else if(minPriceVal <= depositPercent*1){
+              msg = "定金价格不能大于等于商品最终价格";
+              _this.ruleForm.timeList[i].startTime = '';
+              flag = false;
+            }
+          }
+          if(!flag){
+            return false;
+          }else if(!isNull){
+            var obj = {
+              startTime : startTime,
+              endTime : endTime,
+              saleType : types,
+              price : price,
+              priceType : priceType
+            };
+            if (id == null || $.trim(id) == "") {
+              presaleTimesArray[presaleTimesArray.length] = obj;
+            } else {
+              //delete defaultObj[id];
+              obj.id = id;
+              delTimeList[delTimeList.length] = obj;
+            }
+          }
+        });
+        if (defaultObj != null) {
+          for ( var str in defaultObj) {
+            var obj = new Object();
+            obj.id = str;
+            obj.isDelete = 1;
+            delTimeList[delTimeList.length] = obj;
+          }
         }
+        _this.$message.error(msg);
+        return flag;
+    },
+    jisuanDepositPrice(pPrice,obj,types,proPrice){//计算上涨下调价格
+      proPrice = proPrice*1;
+      var val = pPrice*1;
+      var priceTypes = obj;
+      if(types == 1){
+        if(priceTypes == 1){//按百分比计算
+          val = proPrice+(proPrice*(val/100));
+        }else{//按价格
+          val = proPrice+val;
+        }
+      }else{
+        if(priceTypes == 1){//按百分比计算
+          val = proPrice-(proPrice*(val/100));
+        }else{//按价格
+          val = proPrice-val;
+        }
+      }
+      val = Math.round(val*100)/100;
+    //	console.log("++++++++++++"+val)
+      
+      return val;
     }
   },
   mounted(){
@@ -346,7 +475,6 @@ export default {
     DFshop.method.storeList({
       'success'(data){
         _this.shopList = data.data;
-        //console.log(_this.shopList,'shopList')
       }
     });
     if(_this.$route.params.id != 0){

@@ -382,13 +382,13 @@ export default {
         pfSet.spHand = formParam.spHand;
         let pfRemark = _this.$refs['form'].model.paySet.pfRemark;
         let pfApplyRemark = _this.$refs['form'].model.paySet.pfApplyRemark;
-        console.log(pfSet,'pfSet');
+        //console.log(pfSet,'pfSet');
         Lib.M.ajax({
             'url': DFshop.activeAPI.mallWholesaleSaveSet_post,
             'data':{
                 pfSet : JSON.stringify(pfSet),
-                pfRemark : encodeURI(pfRemark),
-                pfApplyRemark : encodeURI(pfApplyRemark)
+                pfRemark : pfRemark,
+                pfApplyRemark : pfApplyRemark
             },
             'success':function (data){
                 if(data.code == 1){

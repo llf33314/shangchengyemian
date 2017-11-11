@@ -150,7 +150,7 @@
                         </template>
                         </el-table-column>
                     </el-table>
-                    <div class="shop-textr">
+                    <div class="shop-textr" v-if="dingJinData.page.rowCount > 0">
                         <el-pagination
                             @size-change="handleSizeChange1"
                             @current-change="handleCurrentChange1"
@@ -429,11 +429,13 @@ export default {
             type : _this.presaleType
         },
         'success':function (data){
-            console.log(data,'data')
             if(data.code == 1 && data.data.isOpenPresale){
+                console.log(data,'data')
                 _this.presaleData = data.data;
                 _this.imgUrl = data.imgUrl;
-                _this.presaleData.page.rowCount = Number(data.data.page.rowCount);
+                if(data.data.page.rowCount){
+                    _this.presaleData.page.rowCount = Number(data.data.page.rowCount);
+                }
                 $.each(_this.presaleData.page.subList,function(i){
                     let oldTime = this.createTime;
                     this.createTime = Lib.M.format(oldTime);
@@ -594,7 +596,7 @@ export default {
             let param = {};
             param.giveRanking = gift.giveRanking;
             param.giveType = gift.giveType;
-            param.giveName = encodeURI(gift.giveName);
+            param.giveName = gift.giveName;
             param.giveNum = gift.giveNum;
             if(gift.id != ''){
                 param.id = gift.id;
@@ -609,7 +611,7 @@ export default {
         let param = {};
         param.giveRanking = gift.giveRanking;
         param.giveType = gift.giveType;
-        param.giveName = encodeURI(gift.giveName);
+        param.giveName = gift.giveName;
         param.giveNum = gift.giveNum;
         this.mallPresaleGiveSave(param);
     }

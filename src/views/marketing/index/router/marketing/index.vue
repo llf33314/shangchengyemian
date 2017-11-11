@@ -451,7 +451,7 @@ export default {
         }else{
           param.withdrawalLowestMoney = '';
         }
-        param.sellerRemark = encodeURI(_this.$refs[formName].model.sellerRemark);
+        param.sellerRemark = _this.$refs[formName].model.sellerRemark;
         Lib.M.ajax({
           'url': DFshop.activeAPI.mallSellersSaveSellerSet_post,
           'data': {sellerSet:param},

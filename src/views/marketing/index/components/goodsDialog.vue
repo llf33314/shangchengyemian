@@ -1,9 +1,8 @@
 <template>
   <el-dialog title="选择活动商品" :visible.sync="isShow">
       <div class="addGruop-search">
-        <el-autocomplete v-model="proName" placeholder="请输入内容" icon="search" >
-        <!-- :fetch-suggestions="querySearchAsync" @select="handleSelect" -->
-        </el-autocomplete>
+        <el-input placeholder="请输入商品名称" icon="search" v-model="proName" class="max-input"
+            :on-icon-click="handleIconClick" @keyup.enter.native="handleIconClick"></el-input>
       </div>
       <el-table :data="gridData.page.subList">
         <el-table-column label="商品" width="250">
@@ -91,12 +90,10 @@ export default {
             'curPage':val,
             'success'(data){
               _this.gridData = data.data;
-              //console.log(_this.gridData,'22222');
             }
           });
         },
         handleCurrentChange(val) {
-          //this.pageNum = val;
           let _this = this;
           DFshop.method.mallGroupBuyGetProduct({
             'defaultProId':_this.defaultProId,
@@ -117,6 +114,18 @@ export default {
             _this.$emit('dialogData',pro);
             console.log(pro,'xuanze');
         },
+        handleIconClick(){
+          let _this = this;
+          DFshop.method.mallGroupBuyGetProduct({
+            'defaultProId':_this.defaultProId,
+            'shopId':_this.shopId,
+            'proName':_this.proName,
+            'curPage':_this.gridData.page.curPage,
+            'success'(data){
+              _this.gridData = data.data;
+            }
+          });
+        }
         // loadAll() {
         //   return [
         //     { "value": "三全鲜食（北新泾店）", "address": "长宁区新渔路144号" },

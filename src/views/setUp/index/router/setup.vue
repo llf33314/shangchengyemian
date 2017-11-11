@@ -136,11 +136,11 @@
         footerMenu.cart = Number(f.cart);
         footerMenu.my = Number(f.my);
         param.footerJson = footerMenu;
-        param.smsMessage = encodeURI(JSON.stringify(smsMsg));
-        param.messageJson = encodeURI(paramsForm.messageJson);
-        param.pfRemark = encodeURI(paramsForm.pfRemark);
-        param.pfApplyRemark = encodeURI(paramsForm.pfApplyRemark);
-        param.busMessageJson = encodeURI(paramsForm.busMessageJson);
+        param.smsMessage = JSON.stringify(smsMsg);
+        param.messageJson = paramsForm.messageJson;
+        param.pfRemark = paramsForm.pfRemark;
+        param.pfApplyRemark = paramsForm.pfApplyRemark;
+        param.busMessageJson = paramsForm.busMessageJson;
         Lib.M.ajax({
               'url': DFshop.activeAPI.mallPaySetSave_post,
               'data':param,

@@ -237,7 +237,7 @@ export default {
           let time = _this.$refs[formName].model.gStartTime;
           groupBuy.gStartTime = Lib.M.format(new Date(time[0]));
           groupBuy.gEndTime = Lib.M.format(new Date(time[1]));
-          groupBuy.gName = encodeURI(_this.$refs[formName].model.gName);
+          groupBuy.gName = _this.$refs[formName].model.gName;
           groupBuy.productId = _this.$refs[formName].model.productId;
           if(!_this.off){
             groupBuy.gMaxBuyNum = 0;
