@@ -93,13 +93,6 @@ export default {
     goodsBox,goodsDialog
   },
   data() {
-    var formGroupPrice = (rule, value, callback) => {
-      if (value == '' || value <= 0) {
-        return callback(new Error('拼团价不能为空且不能小于0'));
-      }else {
-          callback();
-      }
-    };
     var formShopId = (rule, value, callback) => {
       if (value == '') {
         return callback(new Error('请选择店铺'));
@@ -122,17 +115,23 @@ export default {
       }
     };
     var formPeopleNum = (rule, value, callback) => {
-      if (value == '' || value <= 0) {
-        return callback(new Error('参团人数不能为空且不能小于0'));
+      let reg = /^[0-9]\d*$/;
+      if (value == '') {
+        return callback(new Error('参团人数不能为空'));
+      }else if(!reg.test(value)){
+        return callback(new Error('参团人数必须为数字且不能小于0'));
       }else {
-          callback();
+        callback();
       }
     };
     var formPrice = (rule, value, callback) => {
-      if (value == '' || value <= 0) {
-        return callback(new Error('团购价不能为空且不能小于0'));
+      let reg = /^[0-9]\d*$/;
+      if (value == '') {
+        return callback(new Error('团购价不能为空'));
+      }else if(!reg.test(value)){
+        return callback(new Error('团购价必须为数字且不能小于0'));
       }else {
-          callback();
+        callback();
       }
     };
     var formMaxBuyNum = (rule, value, callback) => {

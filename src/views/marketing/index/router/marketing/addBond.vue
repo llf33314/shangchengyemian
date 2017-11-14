@@ -34,7 +34,7 @@
                  <el-input v-model="ruleForm.commission_rate " class="addBond-input" v-if="ruleForm.commission_type ==2">
                      <template slot="prepend">¥</template>
                  </el-input>
-                 <p class="p-warn">根据微信规则，佣金比例最高不可超过70%</p>
+                 <p class="p-warn" v-if="disabledCommission">商品佣金按百分比的计算公式：商品价*（佣金商品佣金/100）</p>
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
@@ -73,12 +73,33 @@ export default {
       if (value === '') {
         return callback(new Error('请选择佣金类型'));
       } else{
+        if(value === 1){
+          this.disabledCommission = true;
+        }else{
+          this.disabledCommission = false;
+        }
         callback();
       }
     };
     var formCommissionRate = (rule, value, callback) => {
+      let _this = this;
+      let reg = /^[0-9]{1,5}(\.\d{1,2})?$/;
+      let max = 8;
       if (value === '') {
         return callback(new Error('商品佣金不能为空'));
+      }else if(_this.ruleForm.commission_type == 1){//百分比
+          if(Number(value) > 70 || !reg.test(value)){
+            return callback(new Error('根据微信规则，佣金比例最高不可超过70%'));//按百分比显示提示文字
+          }
+      }else if(_this.ruleForm.commission_type == 2){//固定金额
+        var proPrice = _this.ruleForm.proPrice;
+        if(proPrice != null && proPrice != ""){
+          proPrice = proPrice*1;
+          max = (proPrice*0.7).toFixed(2);
+          if(Number(value)*1 > max || !reg.test(value)){
+           return callback(new Error('商品佣金最多只能是大于0的5位数,且不能超过商品的70%'));//按固定金额显示提示文字
+          }
+        }
       } else{
         callback();
       }
@@ -86,7 +107,7 @@ export default {
     return {
       ruleForm: {
         shop_id:'',
-        commission_type: '',
+        commission_type: 1,
         region: '',
         commission_rate: '',//商品佣金
         product_id:'',
@@ -110,6 +131,7 @@ export default {
       isChoicePro:'',
       isReplacePro:'',
       disabledShop:'',
+      disabledCommission : true,
     };
   },
   methods: {
@@ -121,7 +143,7 @@ export default {
       this.boxData = data;
       this.boxData.image_url = data.imgPath + data.image_url;
     },
-    submitForm(formName) {
+    submitForm(formName) {//保存商品佣金设置
       let _this= this;
       _this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -140,11 +162,13 @@ export default {
               joinProduct : joinProduct 
             },
             'success':function (data){
-                _this.$message({
-                  message: '保存成功',
-                  type: 'success'
-              });
-              _this.jumpRouter('/marketing/2');
+                if(data.code == 1){
+                    _this.$message({
+                      message: '保存成功',
+                      type: 'success'
+                    });
+                    _this.jumpRouter('/marketing/2');
+                }
             }
           });
 
@@ -154,16 +178,16 @@ export default {
         }
       });
     },
-    resetForm(formName) {
+    resetForm(formName) {//重置表单
       this.$refs[formName].resetFields();
     },
-    returnPage(){
+    returnPage(){//返回上一页
       window.history.go(-1);
     },
     showDialog(){
       this.$refs.goodsDialog.isShow=true;
     },
-    mallSellersJoinProductInfo(id){
+    mallSellersJoinProductInfo(id){//获取商品拥金信息
       let _this= this;
       Lib.M.ajax({
         'url': DFshop.activeAPI.mallSellersJoinProductInfo_post,
@@ -171,15 +195,17 @@ export default {
           id : id 
         },
         'success':function (data){
-           _this.ruleForm = data.data;
-           console.log(_this.ruleForm,'table');
-           _this.boxData={
-             id : data.data.product_id,
-             pro_price : data.data.proPrice,
-             pro_name : data.data.proName,
-             image_url : data.imgUrl + data.data.imageUrl,
-             stockTotal : data.data.proStockTotal
-           }
+          if(data.code == 1){
+            _this.ruleForm = data.data;
+            console.log(_this.ruleForm,'table');
+            _this.boxData={
+              id : data.data.product_id,
+              pro_price : data.data.proPrice,
+              pro_name : data.data.proName,
+              image_url : data.imgUrl + data.data.imageUrl,
+              stockTotal : data.data.proStockTotal
+            }
+          }
         }
       });
     }
