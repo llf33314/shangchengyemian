@@ -21,7 +21,7 @@
                 <el-button type="primary" @click="showDialog" v-if="isReplacePro">替换商品</el-button>
                 <p class="p-warn" v-if="isReplacePro">如需修改商品信息，请在商品管理中更新</p>
             </el-form-item>
-            <el-form-item label="拍卖类型 :" prop="aucType" required>
+            <el-form-item label="拍卖类型 :" prop="aucType" required @change="aaa">
                 <el-radio-group v-model="ruleForm.aucType">
                     <el-radio :label="1">降价拍</el-radio>
                     <el-radio :label="2">升价拍</el-radio>
@@ -37,7 +37,7 @@
                 <p class="p-warn">0/8</p>
             </el-form-item>
             <el-form-item label="起拍价格 :" prop="aucStartPrice" required>
-                <el-input  v-model="ruleForm.aucStartPrice" class="auction-input">
+                <el-input v-model="ruleForm.aucStartPrice" class="auction-input">
                     <template slot="prepend">¥</template>
                 </el-input>
                 <p class="p-warn">0/8</p>
@@ -101,12 +101,54 @@
         goodsBox,goodsDialog
     },
   data() {
+    var formShopId = (rule, value, callback) => {
+      if (value == '') {
+        return callback(new Error('请选择店铺'));
+      }else {
+          callback();
+      }
+    };
+    var formName = (rule, value, callback) => {
+      if (this.boxData.id === undefined || this.boxData.id === '') {
+        return callback(new Error('请选择活动商品'));
+      } else{
+        callback();
+      }
+    };
+    var formAucStartPrice = (rule, value, callback) => {
+      if (value == '') {
+        return callback(new Error('起拍价格不能为空'));
+      }else {
+          callback();
+      }
+    };
+    var formAucStartTime = (rule, value, callback) => {
+      if (value == '') {
+        return callback(new Error('请选择时间'));
+      }else {
+          callback();
+      }
+    };
+    var formAucLowestPrice = (rule, value, callback) => {
+      if (value == '') {
+        return callback(new Error('最低价格不能为空'));
+      }else {
+          callback();
+      }
+    };
+    var formAucAddPrice = (rule, value, callback) => {
+      if (value == '') {
+        return callback(new Error('加价幅度不能为空'));
+      }else {
+          callback();
+      }
+    };
     return {
-        pickerOptions0: {
-          disabledDate(time) {
+      pickerOptions0: {
+        disabledDate(time) {
             return time.getTime() < Date.now() - 8.64e7;
-          }
-        },
+        }
+      },
       ruleForm: {
         shopId:'',
         aucMargin:'',
@@ -115,26 +157,28 @@
         isMargin:false,
         aucStartTime : '',
         isSpecifica : '',
+        aucStartPrice : '',
+        aucAddPrice : '',
       },
       rules: {
-        // shop:[
-        //   { required: true, message: '所属店铺不能为空', trigger: 'change' },
-        // ],
-        // name: [
-        //   { required: true, message: '活动商品不能为空', trigger: 'blur' },
-        // ],
-        // auctiontype: [
-        //   { required: true, message: '拍卖类型不能为空', trigger: 'change' }
-        // ],
-        // date: [
-        //   { type: 'date', required: true, message: '开始时间不能为空', trigger: 'change' }
-        // ],
-        // money: [
-        //   { required: true, message: '交纳保证金不能为空', trigger: 'blur' }
-        // ],
-        // desc: [
-        //   { required: true, message: '起拍价不能为空', trigger: 'blur' }
-        // ],
+        shopId:[
+          { validator: formShopId, trigger: 'change' },
+        ],
+        name: [
+          { validator: formName, trigger: 'blur' },
+        ],
+        aucStartPrice: [
+          { validator: formAucStartPrice, trigger: 'blur' }
+        ],
+        aucStartTime: [
+          { validator: formAucStartTime, trigger: 'change' }
+        ],
+        aucLowestPrice: [
+          { validator: formAucLowestPrice, trigger: 'blur' }
+        ],
+        aucAddPrice: [
+          { validator: formAucAddPrice, trigger: 'blur' }
+        ],
         // floorMoney: [
         //   { required: true, message: '最低价格不能为空', trigger: 'blur' }
         // ],
@@ -143,7 +187,6 @@
         // ]
       },
       shopList:[],
-
       isChoicePro : '',
       isReplacePro : '',
       boxData : [],
