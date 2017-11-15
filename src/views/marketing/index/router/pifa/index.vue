@@ -212,7 +212,7 @@
                                 <p style="margin-bottom:20px;">
                                     <el-checkbox name="type" v-model="form.pfSet.isHpMoney">
                                         一次性购买商品金额达
-                                        <el-input v-model="form.pfSet.hpMoney" class="mix-input">
+                                        <el-input v-model="form.pfSet.hpMoney" class="mix-input" @blur="hpCheck">
                                         <template slot="prepend">¥</template>
                                         </el-input>
                                     </el-checkbox>
@@ -220,7 +220,7 @@
                                 <p>
                                     <el-checkbox name="type" v-model="form.pfSet.isHpNum">
                                         一次性购买数量达
-                                        <el-input v-model="form.pfSet.hpNum" class="mix-input"></el-input> 件
+                                        <el-input v-model="form.pfSet.hpNum" class="mix-input" @blur="hpNumCheck"></el-input> 件
                                     </el-checkbox>
                                 </p>
                         </el-form-item>
@@ -228,7 +228,7 @@
                             <!-- <el-checkbox-group v-model="form.type"> -->
                                 <el-checkbox name="type" v-model="form.pfSet.isSpHand">
                                     一次性购买商品达
-                                      <el-input v-model="form.pfSet.spHand" class="mix-input"></el-input> 手
+                                      <el-input v-model="form.pfSet.spHand" class="mix-input" @blur="spHandCheck"></el-input> 手
                                 </el-checkbox> 
                             <!-- </el-checkbox-group> -->
                             <p class="p-warn">混批条件和手批条件必须设置一种</p>
@@ -305,6 +305,58 @@ export default {
     }
   },
   methods: {
+    hpCheck(){//验证一次性购买金额
+        let reg = /^[0-9]{1,6}$/;
+        let money = this.form.pfSet.hpMoney;
+        let msg = '';
+        let flag = true;
+        if(money <= 0 || money == ''){
+            msg = '请填写混批条件一次性购买商品金额需要达多少元且大于0';
+            flag = false;
+        }else if(!reg.test(money)){
+            console.log(reg.test(money),' ....',money)
+            msg = '请重新输入大于0的六位数字';
+            flag = false;
+        }
+        if(msg != ''){
+            this.$message.error(msg);
+        }
+        return flag;
+    },
+    hpNumCheck(){//验证一次性购买数量
+        let reg = /^[0-9]{1,6}$/;
+        let num = this.form.pfSet.hpNum;
+        let msg = '';
+        let flag = true;
+        if(num < 1 || num == ''){
+            msg = '请填写混批条件一次性购买数量需要多少件且大于0';
+            flag = false;
+        }else if(!reg.test(num)){
+            msg = '请重新输入大于0的六位数字';
+            flag = false;
+        }
+        if(msg != ''){
+            this.$message.error(msg);
+        }
+        return flag;
+    },
+    spHandCheck(){//验证一次性购买商品
+        let reg = /^[0-9]{1,6}$/;
+        let shoupi = this.form.pfSet.spHand;
+        let msg = '';
+        let flag = true;
+        if(shoupi < 1 || shoupi == ''){
+            msg = '请填写手批条件一次性购买商品需要达多少手且大于0';
+            flag = false;
+        }else if(!reg.test(shoupi)){
+            msg = '请重新输入大于0的六位数字';
+            flag = false;
+        }
+        if(msg != ''){
+            this.$message.error(msg);
+        }
+        return flag;
+    },
     searchPifa(){//批发列表搜索
         this.mallWholesaleList(1);
     },
@@ -371,34 +423,51 @@ export default {
         this.multipleSelection = val;
     },
     onSubmit() {//保存批发设置
-        let _this= this;
-        let formParam = _this.$refs['form'].model.pfSet;
-        let pfSet = {};
-        pfSet.isHpMoney = Number(formParam.isHpMoney);
-        pfSet.isHpNum = Number(formParam.isHpNum);
-        pfSet.isSpHand = Number(formParam.isSpHand);
-        pfSet.hpMoney = formParam.hpMoney;
-        pfSet.hpNum = formParam.hpNum;
-        pfSet.spHand = formParam.spHand;
-        let pfRemark = _this.$refs['form'].model.paySet.pfRemark;
-        let pfApplyRemark = _this.$refs['form'].model.paySet.pfApplyRemark;
-        //console.log(pfSet,'pfSet');
-        Lib.M.ajax({
-            'url': DFshop.activeAPI.mallWholesaleSaveSet_post,
-            'data':{
-                pfSet : JSON.stringify(pfSet),
-                pfRemark : pfRemark,
-                pfApplyRemark : pfApplyRemark
-            },
-            'success':function (data){
-                if(data.code == 1){
-                    _this.$message({
-                        message: '保存设置成功',
-                        type: 'success'
-                    });
-                }
+        let _this = this;
+        if(!_this.form.pfSet.isHpMoney && !_this.form.pfSet.isHpNum && !_this.form.pfSet.isSpHand){
+            _this.$message.error('混批和手批条件中至少选择一种');
+            return 
+        }else if(_this.form.pfSet.isHpMoney && !_this.hpCheck()){
+            return 
+        }else if(_this.form.pfSet.isHpNum &&!_this.hpNumCheck()){
+            return 
+        }else if(_this.form.pfSet.isSpHand && !_this.spHandCheck()){
+            return 
+        }else{
+            let formParam = _this.$refs['form'].model.pfSet;
+            let pfSet = {};
+            pfSet.isHpMoney = Number(formParam.isHpMoney);
+            pfSet.isHpNum = Number(formParam.isHpNum);
+            pfSet.isSpHand = Number(formParam.isSpHand);
+            if(pfSet.isHpMoney != 0){
+                pfSet.hpMoney = formParam.hpMoney;
             }
-        });
+            if(pfSet.isHpNum != 0){
+                pfSet.hpNum = formParam.hpNum;
+            }
+            if(pfSet.isSpHand != 0){
+                pfSet.spHand = formParam.spHand;
+            }
+            let pfRemark = _this.$refs['form'].model.paySet.pfRemark;
+            let pfApplyRemark = _this.$refs['form'].model.paySet.pfApplyRemark;
+            Lib.M.ajax({
+                'url': DFshop.activeAPI.mallWholesaleSaveSet_post,
+                'data':{
+                    pfSet : JSON.stringify(pfSet),
+                    pfRemark : pfRemark,
+                    pfApplyRemark : pfApplyRemark
+                },
+                'success':function (data){
+                    if(data.code == 1){
+                        _this.$message({
+                            message: '保存设置成功',
+                            type: 'success'
+                        });
+                    }
+                    _this.mallSetWholesale();
+                }
+            });
+        }
     },
     /*查看详情 */
     viewDetails(name,company,tel,remark){
