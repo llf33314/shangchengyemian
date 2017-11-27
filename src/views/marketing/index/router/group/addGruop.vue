@@ -256,7 +256,7 @@ export default {
           let param = {};
           param["groupBuy"] = groupBuy;
           param["specArr"] = JSON.stringify(_speciList);
-          Lib.M.ajax({
+          _this.ajaxRequest({
             'url': DFshop.activeAPI.mallGroupBuySave_post,
             'data':param,
             'success':function (data){
@@ -288,7 +288,7 @@ export default {
     },
     mallGroupBuyInfo(id){//获取团购商品的信息
       let _this= this;
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url': DFshop.activeAPI.mallGroupBuyInfo_post,
         'data':{
           id : id 

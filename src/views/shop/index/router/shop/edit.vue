@@ -79,7 +79,7 @@ export default {
     methods: {
         editAjax(){
             let _this = this;
-            Lib.M.ajax({
+            _this.ajaxRequest({
                 'url': DFshop.activeAPI.mallStorestoreInfo_post,
                 'data':{
                     id : _this.$route.params.shopId
@@ -140,7 +140,7 @@ export default {
                 stoQqCustomer: _this.form.stoQqCustomer
             }
             
-            Lib.M.ajax({
+            _this.ajaxRequest({
                 'url': DFshop.activeAPI.mallStoreSave_post,
                 'data': {
                     obj: JSON.stringify(sto)

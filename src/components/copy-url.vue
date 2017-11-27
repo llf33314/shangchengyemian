@@ -113,7 +113,7 @@
        *
       linkAjax(url,data){
         let _this = this;
-          Lib.M.ajax({
+          this.ajaxRequest({
           'url': url,
           'data':{
             pageId: data 

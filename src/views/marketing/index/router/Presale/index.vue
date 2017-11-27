@@ -376,7 +376,7 @@ export default {
         'dialogMsg': '',//文本内容
         'callback': {
           'btnOne': function(){
-              Lib.M.ajax({
+              _this.ajaxRequest({
                 'url': DFshop.activeAPI.mallPresaleGiveDelete_post,
                 'data':{
                     id : id
@@ -421,7 +421,7 @@ export default {
     },
     mallPresaleList(pageNum){//预售管理列表
       let _this= this;
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url': DFshop.activeAPI.mallPresaleList_post,
         'data':{
             curPage : pageNum,
@@ -447,7 +447,7 @@ export default {
     },
     mallPresaleDepositList(pageNum){//预售定金管理
       let _this= this;
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url': DFshop.activeAPI.mallPresaleDepositList_post,
         'data':{
             curPage : pageNum
@@ -471,7 +471,7 @@ export default {
     },
     mallPresaleGiveList(pageNum){//预售送礼设置列表
         let _this= this;
-        Lib.M.ajax({
+        _this.ajaxRequest({
             'url': DFshop.activeAPI.mallPresaleGiveList_post,
             'data':{
                 curPage : pageNum
@@ -489,7 +489,7 @@ export default {
     mallPresaleAgreedReturnDeposit(id){//退定金方法
         console.log(id,'id');
         let _this= this;
-        Lib.M.ajax({
+        _this.ajaxRequest({
             'url': DFshop.activeAPI.mallPresaleAgreedReturnDeposit_post,
             'data':{
                 depositId : id
@@ -507,7 +507,7 @@ export default {
       }else{
         msg = '已失效';
       }
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url': DFshop.activeAPI.mallPresaleDelete_post,
         'data':{
             id : id,
@@ -534,7 +534,7 @@ export default {
     },
     mallPresaleGiveDictList(){//预售送礼类型列表方法
         let _this= this;
-        Lib.M.ajax({
+        _this.ajaxRequest({
             'url': DFshop.activeAPI.mallPresaleGiveDictList_post,
             'success':function (data){
                 _this.giftDictList = data.data;
@@ -549,7 +549,7 @@ export default {
     },
     mallPresaleGiveSave(param){//保存预售送礼设置
         let _this= this;
-        Lib.M.ajax({
+        _this.ajaxRequest({
             'url': DFshop.activeAPI.mallPresaleGiveSave_post,
             'data':{
                 presaleSet : param

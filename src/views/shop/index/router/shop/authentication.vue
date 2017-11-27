@@ -630,7 +630,7 @@ export default {
     //         code: ''                      //验证码
     //       }
     //       console.log(_data)
-    //       /*Lib.M.ajax({
+    //       /*_this.ajaxRequest({
     //         'url': DFshop.activeAPI.mallStoreCertSave_post,
     //         'data': _data,
     //          'success':function (data){
@@ -651,7 +651,7 @@ export default {
      */
     mallStoreMapAjax(){
       let _this = this;
-        Lib.M.ajax({
+        _this.ajaxRequest({
         'url': DFshop.activeAPI.mallStoreCertCategoryMap_post,
         'success':function (data){
           console.log(data.data);

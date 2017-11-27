@@ -305,7 +305,7 @@ export default {
     shopAjax(Page){
       let _this = this;
       this.tabelData = '';
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url': DFshop.activeAPI.mallStoreList_post,
         'data':{
           curPage :Page 
@@ -357,7 +357,7 @@ export default {
      */
     shopDelete(ids){
       let _this = this; 
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url': DFshop.activeAPI.mallStoreDelete_post,
         'data':{
           ids : ids
@@ -378,7 +378,7 @@ export default {
      */
     pageDelete(ids){
       let _this = this; 
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url': DFshop.activeAPI.mallPageNewDelete_post,
         'data':{
           ids : ids
@@ -439,7 +439,7 @@ export default {
           }
         })
       }
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url': DFshop.activeAPI.mallPageNewlist_post,
         'data':{
           curPage :Page ,
@@ -466,7 +466,7 @@ export default {
      */
     styleAjax(){
       let _this = this;
-        Lib.M.ajax({
+        _this.ajaxRequest({
         'url': DFshop.activeAPI.mallStoreGetStyleList_post,
         'success':function (data){
           console.log(data.data);
@@ -492,7 +492,7 @@ export default {
      */
     saveStyle(){
       let _this = this;
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url': DFshop.activeAPI.mallStoreSaveStyle_post,
         'data':{
           styleKey : _this.style_key

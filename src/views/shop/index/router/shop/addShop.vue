@@ -162,7 +162,7 @@ export default {
      */
     shopAjax(){
       let _this = this;
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url': DFshop.activeAPI.mallStorGgetShopList_post,
         'success':function (data){
           _this.data = data;
@@ -214,7 +214,7 @@ export default {
           stoSmsTelephone: arr||'', 
           stoQqCustomer: _this.form.stoQqCustomer||''
       }
-      Lib.M.ajax({
+      _this.ajaxRequest({
           'url': DFshop.activeAPI.mallStoreSave_post,
           'data': {
               obj: JSON.stringify(sto)

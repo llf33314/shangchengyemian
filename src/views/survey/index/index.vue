@@ -84,7 +84,8 @@ export default {
   methods: {
     ajax(){
       let _this = this;
-      Lib.M.ajax({
+      console.log(DFshop.activeAPI,'DFshop.activeAPI')
+      this.ajaxRequest({
         'url': DFshop.activeAPI.mallCount_post,
         'success':function (data){
           console.log(data);

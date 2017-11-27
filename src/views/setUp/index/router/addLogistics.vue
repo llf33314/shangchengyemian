@@ -317,7 +317,7 @@
             // if(dProvinceObj != null){
             //   params["delPro"] = JSON.stringify(dProvinceObj);
             // }
-            Lib.M.ajax({
+            _this.ajaxRequest({
               'url': DFshop.activeAPI.mallFreightSave_post,
               'data':{
                 params: params
@@ -380,7 +380,7 @@
       mallFreightInfo(id){
         let _this= this;
         _this.ruleForm = '';
-        Lib.M.ajax({
+        _this.ajaxRequest({
           'url': DFshop.activeAPI.mallFreightInfo_post,
           'data':{
             id :id 
@@ -394,7 +394,7 @@
     mallFreightExpressList(){
       let _this= this;
       _this.options = '';
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url': DFshop.activeAPI.mallFreightExpressList_post,
         'success':function (data){
           _this.options = data.data;
@@ -405,7 +405,7 @@
     mallShopList(){
       let _this= this;
       _this.shopList = '';
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url': DFshop.activeAPI.mallStoreStoreList_post,
         'success':function (data){
           _this.shopList = data.data;
@@ -416,7 +416,7 @@
     mallGetArea(){
       let _this= this;
       _this.area = [];
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url': DFshop.activeAPI.mallGetArea_post,
         'success':function (data){
           _this.area = data.data;

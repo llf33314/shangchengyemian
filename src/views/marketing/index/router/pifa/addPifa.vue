@@ -185,7 +185,7 @@ export default {
             specArr.push(arr);
           }
 
-          Lib.M.ajax({
+          _this.ajaxRequest({
               'url': DFshop.activeAPI.mallWholesaleSave_post,
               'data':{
                 pifa : pifa,
@@ -231,7 +231,7 @@ export default {
     },
     mallWholesalePifaInfo(id){//获取批发信息
         let _this = this;
-        Lib.M.ajax({
+        _this.ajaxRequest({
             'url': DFshop.activeAPI.mallWholesalePifaInfo_post,
             'data':{
                id : id

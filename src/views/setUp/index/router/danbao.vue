@@ -99,7 +99,7 @@ export default {
   methods: {
     mallSecuritytradeAdd(){
       let _this= this;
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url': DFshop.activeAPI.mallSecuritytradeAdd_post,
         'success':function (data){
           console.log(data);
@@ -113,7 +113,7 @@ export default {
     },
     mallIsSecuritytrade(){
       let _this= this;
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url': DFshop.activeAPI.mallIsSecuritytrade_post,
         'success':function (data){
           console.log(data);
@@ -128,7 +128,7 @@ export default {
     mallQuitDanbaoReasonList(){
       let _this= this;
       _this.form = '';
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url': DFshop.activeAPI.mallQuitDanbaoReasonList_post,
         'success':function (data){
           console.log(data.data);
@@ -142,7 +142,7 @@ export default {
     },
     mallSecuritytradeSave(){
       let _this= this;
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url': DFshop.activeAPI.mallSecuritytradeSave_post,
         'data':{
           quitReasonId:_this.itemKey,

@@ -252,7 +252,7 @@ export default {
             _this.$refs[formName].model.timeList[i].endTime = Lib.M.format(new Date(t[1]));
             presaleTimes.push(_this.$refs[formName].model.timeList[i]);
       　　}
-          Lib.M.ajax({
+          _this.ajaxRequest({
             'url': DFshop.activeAPI.mallPresaleSave_post,
             'data': {
                 presale: presale,
@@ -282,7 +282,7 @@ export default {
     },
     mallPresalePresaleInfo(id){//获取预售商品信息的方法
       let _this = this;
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url': DFshop.activeAPI.mallPresalePresaleInfo_post,
         'data':{
             id : id

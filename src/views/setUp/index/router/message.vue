@@ -128,7 +128,7 @@ export default {
     mallPaySetIsAuthService(){
       let _this = this;
       _this.isShow = -1;
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url':DFshop.activeAPI.mallPaySetIsAuthService_post,
         'success':function (data){
           _this.isShow = data.data;
@@ -140,7 +140,7 @@ export default {
       let _this = this;
       var selected = 'selected';
       _this.template = '';
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url':DFshop.activeAPI.mallPaySetGetTemplate_post,
         'success':function (data){
           if(data.code == 1){
@@ -167,7 +167,7 @@ export default {
       templateJson.title = title;
       templateJson.id = id;
       console.log(templateJson);
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url':DFshop.activeAPI.mallPaySetSmsTemplate_post,
         'data':{
           template_json:JSON.stringify(templateJson),

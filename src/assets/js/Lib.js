@@ -17,7 +17,9 @@ import Vue from 'vue';
 //Vue.use(AlertPlugin); //全局注册alert事件，注册之后，不需要每个页面都import alert
 //Vue.use(LoadingPlugin ); //全局注册alert事件，注册之后，不需要每个页面都import alert
 //--- VUX UI 注册 END --
+// import ui from '@/components/gt-ui/index.js'
 
+// Vue.use(ui);
 Vue.use(ElementUI);
 
 
@@ -30,6 +32,7 @@ Vue.component('copyUrl', copyUrl);
 
 import C from './conf';
 import M from './common';
+import Ajax from './ajax';
 import  './config';  //配置文件
 import Clipboard from 'clipboard';
 
@@ -39,7 +42,7 @@ import jq from './jquery-2.2.2.min';
 	
 
 export default{
-	M,C,Clipboard
+	M,C,Clipboard,Ajax
 }
 
 Vue.mixin({

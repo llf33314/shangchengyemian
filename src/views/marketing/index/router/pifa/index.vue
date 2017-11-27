@@ -450,7 +450,7 @@ export default {
             }
             let pfRemark = _this.$refs['form'].model.paySet.pfRemark;
             let pfApplyRemark = _this.$refs['form'].model.paySet.pfApplyRemark;
-            Lib.M.ajax({
+            _this.ajaxRequest({
                 'url': DFshop.activeAPI.mallWholesaleSaveSet_post,
                 'data':{
                     pfSet : JSON.stringify(pfSet),
@@ -500,7 +500,7 @@ export default {
     },
     synData(){//同步批发商成交数量/金额
         let _this= this;
-        Lib.M.ajax({
+        _this.ajaxRequest({
             'url': DFshop.activeAPI.mallWholesaleSyncOrderPifa_post,
             'success':function (data){
                 if(data.code == 1){
@@ -515,7 +515,7 @@ export default {
     },
     mallWholesaleList(pageNum){//批发列表
         let _this= this;
-        Lib.M.ajax({
+        _this.ajaxRequest({
             'url': DFshop.activeAPI.mallWholesaleList_post,
             'data':{
             curPage : pageNum,
@@ -536,7 +536,7 @@ export default {
     },
     mallWholesaleDelete(id,type){//使批发失效、删除方法
         let _this= this;
-        Lib.M.ajax({
+        _this.ajaxRequest({
             'url': DFshop.activeAPI.mallWholesaleDelete_post,
             'data':{
                 id : id,
@@ -553,7 +553,7 @@ export default {
     },
     mallPifaShangList(pageNum){//批发商管理列表
         let _this= this;
-        Lib.M.ajax({
+        _this.ajaxRequest({
             'url': DFshop.activeAPI.mallPifaShangList_post,
             'data':{
                 curPage : pageNum,
@@ -570,7 +570,7 @@ export default {
     },
     mallWholesalersUpdateStatus(id,isUse,status){//批发商审核通过、不通过、启用、禁用方法
         let _this= this;
-        Lib.M.ajax({
+        _this.ajaxRequest({
             'url': DFshop.activeAPI.mallWholesalersUpdateStatus_post,
             'data':{
                 ids : id,
@@ -588,7 +588,7 @@ export default {
     },
     mallSetWholesale(){//批发设置
         let _this= this;
-        Lib.M.ajax({
+        _this.ajaxRequest({
             'url': DFshop.activeAPI.mallSetWholesale_post,
             'success':function (data){
                 if(data.code == 1){

@@ -1,44 +1,6 @@
-import common from './common';
 
 (function () {
   'use strict';
-
-  /**
-   * @namespace DF
-   */
-
-  const env = {
-    develop: { // 开发环境
-
-      /**
-       * debug模式
-       * @type {Boolean}
-       * @memberof DF.env
-       */
-      debug: true,
-
-      check_login: false,
-      /**
-       * 浏览器无痕模式
-       * @type {Boolean}
-       * @memberof DF.env
-       */
-      is_private_mode: false,
-
-      /**
-       * API地址
-       * @type {String}
-       * @memberof DF.env
-       */
-      activeAPI: '/api'
-    },
-    test: { // 测试环境
-      debug: true,
-      check_login: false,
-      is_private_mode: false,
-      activeAPI: window.location.origin
-    }
-  };
 
   /**
    * 父类
@@ -46,199 +8,196 @@ import common from './common';
    */
   const DFshop = {};
 
+  DFshop.api = "/api";
+  // h5App.api ="";
 
-  /**
-   * 环境配置
-   * @type {env.develop|{debug, API, WXCore, LoginUrl}}
-   */
-  DFshop.env = env.test;
 
   DFshop.activeAPI = {
     /*调用素材库*/
     materialUrl: 'https://suc.deeptel.com.cn/common/material.do?retUrl=+',
     /*判断是否是管理员*/
-    isAdminUser_post: DFshop.env.activeAPI + '/mall/E9lM9uM4ct/isAdminUser',
+    isAdminUser_post:  '/mall/E9lM9uM4ct/isAdminUser',
     /*商城概况*/
-    mallCount_post: DFshop.env.activeAPI + '/mall/E9lM9uM4ct/count',
+    mallCount_post:  '/mall/E9lM9uM4ct/count',
     /*店铺列表 （分页）*/
-    mallStoreList_post: DFshop.env.activeAPI + '/mallStore/E9lM9uM4ct/list',
+    mallStoreList_post:  '/mallStore/E9lM9uM4ct/list',
     /*获取配色风格列表*/
-    mallStoreGetStyleList_post: DFshop.env.activeAPI + '/mallStore/E9lM9uM4ct/getStyleList',
+    mallStoreGetStyleList_post:  '/mallStore/E9lM9uM4ct/getStyleList',
     /*页面列表（分页）*/
-    mallPageNewlist_post: DFshop.env.activeAPI + '/mallPage/E9lM9uM4ct/list',
+    mallPageNewlist_post:  '/mallPage/E9lM9uM4ct/list',
     /*店铺二维码生成*/
-    mallStoreGenerateQRCode_get: DFshop.env.activeAPI +'/mallStore/E9lM9uM4ct/generateQRCode',
+    mallStoreGenerateQRCode_get: '/mallStore/E9lM9uM4ct/generateQRCode',
      /*店铺链接*/
-    mallStoreLink_post :DFshop.env.activeAPI+'/mallStore/E9lM9uM4ct/link',
+    mallStoreLink_post :'/mallStore/E9lM9uM4ct/link',
      /*下载提取二维码*/
-    mallDownQr_get: DFshop.env.activeAPI+'/mall/E9lM9uM4ct/downQr',
+    mallDownQr_get: '/mall/E9lM9uM4ct/downQr',
     /*商家店铺请求*/
-    mallStorestoreInfo_post: DFshop.env.activeAPI+'/mallStore/E9lM9uM4ct/storeInfo',
+    mallStorestoreInfo_post: '/mallStore/E9lM9uM4ct/storeInfo',
     /*可新增店铺门店列表*/
-    mallStorGgetShopList_post: DFshop.env.activeAPI+'/mallStore/E9lM9uM4ct/getShopList',
+    mallStorGgetShopList_post: '/mallStore/E9lM9uM4ct/getShopList',
     /*保存店铺*/
-    mallStoreSave_post: DFshop.env.activeAPI+'/mallStore/E9lM9uM4ct/save',
+    mallStoreSave_post: '/mallStore/E9lM9uM4ct/save',
     /*保存店铺配色风格*/
-    mallStoreSaveStyle_post:DFshop.env.activeAPI+'/mallStore/E9lM9uM4ct/saveStyle',
+    mallStoreSaveStyle_post:'/mallStore/E9lM9uM4ct/saveStyle',
     /*删除店铺*/
-    mallStoreDelete_post:DFshop.env.activeAPI+'/mallStore/E9lM9uM4ct/delete',
+    mallStoreDelete_post:'/mallStore/E9lM9uM4ct/delete',
     /*删除页面*/
-    mallPageNewDelete_post:DFshop.env.activeAPI+'/mallPage/E9lM9uM4ct/delete',
+    mallPageNewDelete_post:'/mallPage/E9lM9uM4ct/delete',
     /*获取页面信息*/
-    mallPageNewPageInfo_post:DFshop.env.activeAPI+'/mallPage/E9lM9uM4ct/pageInfo',
+    mallPageNewPageInfo_post:'/mallPage/E9lM9uM4ct/pageInfo',
     /*获取商家店铺列表  (可用于下拉框)*/
-    mallStoreStoreList_post:DFshop.env.activeAPI+'/mallStore/E9lM9uM4ct/storeList',
+    mallStoreStoreList_post:'/mallStore/E9lM9uM4ct/storeList',
     /*页面类型 (可用于下拉框)*/
-    mallPageNewTypeMap_post:DFshop.env.activeAPI+'/mallPage/E9lM9uM4ct/typeMap',
+    mallPageNewTypeMap_post:'/mallPage/E9lM9uM4ct/typeMap',
     
     /*物流管理列表*/
-    mallFreightList_post:DFshop.env.activeAPI+'/mallFreight/E9lM9uM4ct/list',
+    mallFreightList_post:'/mallFreight/E9lM9uM4ct/list',
     /*删除物流管理 */
-    mallFreightDelete_post:DFshop.env.activeAPI+'/mallFreight/E9lM9uM4ct/delete',
+    mallFreightDelete_post:'/mallFreight/E9lM9uM4ct/delete',
     /*编辑物流信息 */
-    mallFreightInfo_post:DFshop.env.activeAPI+'/mallFreight/E9lM9uM4ct/freightInfo',
+    mallFreightInfo_post:'/mallFreight/E9lM9uM4ct/freightInfo',
     /*获取快递公司信息 */
-    mallFreightExpressList_post:DFshop.env.activeAPI+'/mallFreight/E9lM9uM4ct/expressList',
+    mallFreightExpressList_post:'/mallFreight/E9lM9uM4ct/expressList',
     /*获取地区列表 */
-    mallGetArea_post:DFshop.env.activeAPI+'/mall/E9lM9uM4ct/getArea',
+    mallGetArea_post:'/mall/E9lM9uM4ct/getArea',
     /*保存物流信息 */
-    mallFreightSave_post:DFshop.env.activeAPI+'/mallFreight/E9lM9uM4ct/save',
+    mallFreightSave_post:'/mallFreight/E9lM9uM4ct/save',
     /*上门自提列表 */
-    mallFreightTakeList_post:DFshop.env.activeAPI+'/mallFreight/E9lM9uM4ct/take/list',
+    mallFreightTakeList_post:'/mallFreight/E9lM9uM4ct/take/list',
     /*删除上门自提数据 */
-    mallFreightTakeDelete_post:DFshop.env.activeAPI+'/mallFreight/E9lM9uM4ct/take/delete',
+    mallFreightTakeDelete_post:'/mallFreight/E9lM9uM4ct/take/delete',
     /*根据id获取自提信息 */
-    mallFreightTakeInfo_post:DFshop.env.activeAPI+'/mallFreight/E9lM9uM4ct/take/takeInfo',
+    mallFreightTakeInfo_post:'/mallFreight/E9lM9uM4ct/take/takeInfo',
     /*保存上门自提信息  */
-    mallFreightTakeSave_post:DFshop.env.activeAPI+'/mallFreight/E9lM9uM4ct/take/save',
+    mallFreightTakeSave_post:'/mallFreight/E9lM9uM4ct/take/save',
 
     /*获取商城设置信息 */
-    mallPaySetPaySetInfo_post:DFshop.env.activeAPI+'/mallPaySet/E9lM9uM4ct/paySetInfo',
+    mallPaySetPaySetInfo_post:'/mallPaySet/E9lM9uM4ct/paySetInfo',
     /*保存商城设置 */
-    mallPaySetSave_post:DFshop.env.activeAPI+'/mallPaySet/E9lM9uM4ct/setSave',
+    mallPaySetSave_post:'/mallPaySet/E9lM9uM4ct/setSave',
     /*判断有无认证服务号 */
-    mallPaySetIsAuthService_post:DFshop.env.activeAPI+'/mallPaySet/E9lM9uM4ct/isAuthService',
+    mallPaySetIsAuthService_post:'/mallPaySet/E9lM9uM4ct/isAuthService',
     /*获取消息模板 */
-    mallPaySetGetTemplate_post:DFshop.env.activeAPI+'/mallPaySet/E9lM9uM4ct/getTemplate',
+    mallPaySetGetTemplate_post:'/mallPaySet/E9lM9uM4ct/getTemplate',
     /*设置消息模板*/
-    mallPaySetSmsTemplate_post:DFshop.env.activeAPI+'/mallPaySet/E9lM9uM4ct/setSmsTemplate',
+    mallPaySetSmsTemplate_post:'/mallPaySet/E9lM9uM4ct/setSmsTemplate',
     /*判断是否加入担保 */
-    mallIsSecuritytrade_post:DFshop.env.activeAPI+'/mallSecuritytrade/E9lM9uM4ct/isSecuritytrade',
+    mallIsSecuritytrade_post:'/mallSecuritytrade/E9lM9uM4ct/isSecuritytrade',
     /*获取退出担保理由列表 */
-    mallQuitDanbaoReasonList_post:DFshop.env.activeAPI+'/mallSecuritytrade/E9lM9uM4ct/quitReasonMap',
+    mallQuitDanbaoReasonList_post:'/mallSecuritytrade/E9lM9uM4ct/quitReasonMap',
     /*保存退出担保原因 */
-    mallSecuritytradeSave_post:DFshop.env.activeAPI+'/mallSecuritytrade/E9lM9uM4ct/save',
+    mallSecuritytradeSave_post:'/mallSecuritytrade/E9lM9uM4ct/save',
     /*加入担保 */
-    mallSecuritytradeAdd_post:DFshop.env.activeAPI+'/mallSecuritytrade/E9lM9uM4ct/add',
+    mallSecuritytradeAdd_post:'/mallSecuritytrade/E9lM9uM4ct/add',
     /*保存认证信息*/
-    mallStoreCertSave_post:DFshop.env.activeAPI+'/mallStore/E9lM9uM4ct/cert/save',
+    mallStoreCertSave_post:'/mallStore/E9lM9uM4ct/cert/save',
     /*获取认证的店铺类型*/
-    mallStoreCertCategoryMap_post:DFshop.env.activeAPI+'/mallStore/E9lM9uM4ct/cert/categoryMap',
+    mallStoreCertCategoryMap_post:'/mallStore/E9lM9uM4ct/cert/categoryMap',
 
     /*商品列表 */
-    mallProductList_post:DFshop.env.activeAPI+'/mallProduct/E9lM9uM4ct/list',
+    mallProductList_post:'/mallProduct/E9lM9uM4ct/list',
     /**删除、送审、上架、下架商品 */
-    mallProductBatchProduct_post:DFshop.env.activeAPI+'/mallProduct/E9lM9uM4ct/batchProduct',
+    mallProductBatchProduct_post:'/mallProduct/E9lM9uM4ct/batchProduct',
     /* 获取各状态下商品数量 */
-    mallProductCountStatus_post:DFshop.env.activeAPI+'/mallProduct/E9lM9uM4ct/countStatus',
+    mallProductCountStatus_post:'/mallProduct/E9lM9uM4ct/countStatus',
 
     /*团购列表 */
-    mallGroupBuyList_post:DFshop.env.activeAPI+'/mallGroupBuy/E9lM9uM4ct/list',
+    mallGroupBuyList_post:'/mallGroupBuy/E9lM9uM4ct/list',
     /* 删除、使活动失效功能 */
-    mallGroupBuyDelete_post:DFshop.env.activeAPI+'/mallGroupBuy/E9lM9uM4ct/delete',
+    mallGroupBuyDelete_post:'/mallGroupBuy/E9lM9uM4ct/delete',
     /*获取团购信息 */
-    mallGroupBuyInfo_post:DFshop.env.activeAPI+'/mallGroupBuy/E9lM9uM4ct/groupBuyInfo',
+    mallGroupBuyInfo_post:'/mallGroupBuy/E9lM9uM4ct/groupBuyInfo',
     /*根据店铺id获取活动商品列表 */
-    mallGroupBuyGetProduct_post:DFshop.env.activeAPI+'/mallGroupBuy/E9lM9uM4ct/getProductByGroup',
+    mallGroupBuyGetProduct_post:'/mallGroupBuy/E9lM9uM4ct/getProductByGroup',
     /*根据商品id获取商品规格、库存 */
-    mallGetSpecificaByProId_post:DFshop.env.activeAPI+'/mallGroupBuy/E9lM9uM4ct/getSpecificaByProId',
+    mallGetSpecificaByProId_post:'/mallGroupBuy/E9lM9uM4ct/getSpecificaByProId',
     /*保存团购信息 */
-    mallGroupBuySave_post:DFshop.env.activeAPI+'/mallGroupBuy/E9lM9uM4ct/save',
+    mallGroupBuySave_post:'/mallGroupBuy/E9lM9uM4ct/save',
 
     /*超级销售员基础设置 */
-    mallSellersGetSellerSet_post:DFshop.env.activeAPI+'/mallSellers/E9lM9uM4ct/getSellerSet',
+    mallSellersGetSellerSet_post:'/mallSellers/E9lM9uM4ct/getSellerSet',
     /*保存超级销售员基础设置 */
-    mallSellersSaveSellerSet_post:DFshop.env.activeAPI+'/mallSellers/E9lM9uM4ct/saveSellerSet',
+    mallSellersSaveSellerSet_post:'/mallSellers/E9lM9uM4ct/saveSellerSet',
     /*商品拥金设置列表 */
-    mallSellersJoinProduct_post:DFshop.env.activeAPI+'/mallSellers/E9lM9uM4ct/joinProduct',
+    mallSellersJoinProduct_post:'/mallSellers/E9lM9uM4ct/joinProduct',
     /*获取商品佣金信息 */
-    mallSellersJoinProductInfo_post:DFshop.env.activeAPI+'/mallSellers/E9lM9uM4ct/joinProductInfo',
+    mallSellersJoinProductInfo_post:'/mallSellers/E9lM9uM4ct/joinProductInfo',
     /*保存商品佣金信息 */
-    mallSellerSaveJoinProduct_post:DFshop.env.activeAPI+'/mallSellers/E9lM9uM4ct/saveJoinProduct',
+    mallSellerSaveJoinProduct_post:'/mallSellers/E9lM9uM4ct/saveJoinProduct',
     /*删除、启用、禁用商品佣金方法 */
-    mallSellerSetJoinProductStatus_post:DFshop.env.activeAPI+'/mallSellers/E9lM9uM4ct/setJoinProductStatus',
+    mallSellerSetJoinProductStatus_post:'/mallSellers/E9lM9uM4ct/setJoinProductStatus',
     /*推荐审核列表 */
-    mallSellersCheckList_post:DFshop.env.activeAPI+'/mallSellers/E9lM9uM4ct/sellerCheckList',
+    mallSellersCheckList_post:'/mallSellers/E9lM9uM4ct/sellerCheckList',
     /*审核通不通过 */
-    mallSellersCheckSeller_post:DFshop.env.activeAPI+'/mallSellers/E9lM9uM4ct/checkSeller',
+    mallSellersCheckSeller_post:'/mallSellers/E9lM9uM4ct/checkSeller',
     /*超级销售员列表 */
-    mallSellersList_post:DFshop.env.activeAPI+'/mallSellers/E9lM9uM4ct/sellerList',
+    mallSellersList_post:'/mallSellers/E9lM9uM4ct/sellerList',
     /*启用、暂停销售员方法 */
-    mallSellerStartUseSeller_post:DFshop.env.activeAPI+'/mallSellers/E9lM9uM4ct/startUseSeller',
+    mallSellerStartUseSeller_post:'/mallSellers/E9lM9uM4ct/startUseSeller',
     /*提现列表 */
-    mallSellersWithDrawList_post:DFshop.env.activeAPI+'/mallSellers/E9lM9uM4ct/withDrawList',
+    mallSellersWithDrawList_post:'/mallSellers/E9lM9uM4ct/withDrawList',
 
     /*预售管理列表 */
-    mallPresaleList_post:DFshop.env.activeAPI+'/mallPresale/E9lM9uM4ct/list',
+    mallPresaleList_post:'/mallPresale/E9lM9uM4ct/list',
     /*获取预售信息 */ 
-    mallPresalePresaleInfo_post:DFshop.env.activeAPI+'/mallPresale/E9lM9uM4ct/presaleInfo',
+    mallPresalePresaleInfo_post:'/mallPresale/E9lM9uM4ct/presaleInfo',
     /*保存预售信息 */
-    mallPresaleSave_post:DFshop.env.activeAPI+'/mallPresale/E9lM9uM4ct/save',
+    mallPresaleSave_post:'/mallPresale/E9lM9uM4ct/save',
     /*删除预售、使预售失效 */
-    mallPresaleDelete_post:DFshop.env.activeAPI+'/mallPresale/E9lM9uM4ct/delete',
+    mallPresaleDelete_post:'/mallPresale/E9lM9uM4ct/delete',
     /*定金管理列表 */
-    mallPresaleDepositList_post:DFshop.env.activeAPI+'/mallPresale/E9lM9uM4ct/deposit/list',
+    mallPresaleDepositList_post:'/mallPresale/E9lM9uM4ct/deposit/list',
     /*退定金 */
-    mallPresaleAgreedReturnDeposit_post:DFshop.env.activeAPI+'/mallPresale/E9lM9uM4ct/deposit/agreedReturnDeposit',
+    mallPresaleAgreedReturnDeposit_post:'/mallPresale/E9lM9uM4ct/deposit/agreedReturnDeposit',
     /*预售送礼列表 */
-    mallPresaleGiveList_post:DFshop.env.activeAPI+'/mallPresale/E9lM9uM4ct/give/list',
+    mallPresaleGiveList_post:'/mallPresale/E9lM9uM4ct/give/list',
     /*预售送礼类型列表 */
-    mallPresaleGiveDictList_post:DFshop.env.activeAPI+'/mallPresale/E9lM9uM4ct/give/dictList',
+    mallPresaleGiveDictList_post:'/mallPresale/E9lM9uM4ct/give/dictList',
     /*删除预售送礼 */
-    mallPresaleGiveDelete_post:DFshop.env.activeAPI+'/mallPresale/E9lM9uM4ct/give/delete',
+    mallPresaleGiveDelete_post:'/mallPresale/E9lM9uM4ct/give/delete',
     /*保存预售送礼设置 */
-    mallPresaleGiveSave_post:DFshop.env.activeAPI+'/mallPresale/E9lM9uM4ct/give/save',     
+    mallPresaleGiveSave_post:'/mallPresale/E9lM9uM4ct/give/save',     
     
     /*拍卖列表 */
-    mallAuctionList_post:DFshop.env.activeAPI+'/mallAuction/E9lM9uM4ct/list',
+    mallAuctionList_post:'/mallAuction/E9lM9uM4ct/list',
     /*获取拍卖信息 */
-    mallAuctionAuctionInfo_post:DFshop.env.activeAPI+'/mallAuction/E9lM9uM4ct/auctionInfo',
+    mallAuctionAuctionInfo_post:'/mallAuction/E9lM9uM4ct/auctionInfo',
     /*保存拍卖信息 */
-    mallAuctionSave_post:DFshop.env.activeAPI+'/mallAuction/E9lM9uM4ct/save',
+    mallAuctionSave_post:'/mallAuction/E9lM9uM4ct/save',
     /*删除、使拍卖活动失效 */
-    mallAuctionDelete_post:DFshop.env.activeAPI+'/mallAuction/E9lM9uM4ct/delete',
+    mallAuctionDelete_post:'/mallAuction/E9lM9uM4ct/delete',
     /*保证金列表 */
-    mallAuctionMarginList_post:DFshop.env.activeAPI+'/mallAuction/E9lM9uM4ct/margin/list',
+    mallAuctionMarginList_post:'/mallAuction/E9lM9uM4ct/margin/list',
     /*拍卖退保证金 */ 
-    mallAuctionAgreedReturnMargin_post:DFshop.env.activeAPI+'/mallAuction/E9lM9uM4ct/margin/agreedReturnMargin',
+    mallAuctionAgreedReturnMargin_post:'/mallAuction/E9lM9uM4ct/margin/agreedReturnMargin',
     
     /*批发列表 */
-    mallWholesaleList_post:DFshop.env.activeAPI+'/mallWholesale/E9lM9uM4ct/list',
+    mallWholesaleList_post:'/mallWholesale/E9lM9uM4ct/list',
     /*获取批发信息 */
-    mallWholesalePifaInfo_post:DFshop.env.activeAPI+'/mallWholesale/E9lM9uM4ct/pifaInfo',
+    mallWholesalePifaInfo_post:'/mallWholesale/E9lM9uM4ct/pifaInfo',
     /*保存批发活动信息 */
-    mallWholesaleSave_post:DFshop.env.activeAPI+'/mallWholesale/E9lM9uM4ct/save',
+    mallWholesaleSave_post:'/mallWholesale/E9lM9uM4ct/save',
     /*使批发失效、删除 */
-    mallWholesaleDelete_post:DFshop.env.activeAPI+'/mallWholesale/E9lM9uM4ct/delete',
+    mallWholesaleDelete_post:'/mallWholesale/E9lM9uM4ct/delete',
     /*批发商管理列表 */
-    mallPifaShangList_post:DFshop.env.activeAPI+'/mallWholesale/E9lM9uM4ct/wholesalers/list',
+    mallPifaShangList_post:'/mallWholesale/E9lM9uM4ct/wholesalers/list',
     /*批发审核通过、不通过、启用、禁用 */
-    mallWholesalersUpdateStatus_post:DFshop.env.activeAPI+'/mallWholesale/E9lM9uM4ct/wholesalers/updateStatus',
+    mallWholesalersUpdateStatus_post:'/mallWholesale/E9lM9uM4ct/wholesalers/updateStatus',
     /*同步批发商成交量/金额 */
-    mallWholesaleSyncOrderPifa_post:DFshop.env.activeAPI+'/mallWholesale/E9lM9uM4ct/wholesalers/syncOrderPifa',
+    mallWholesaleSyncOrderPifa_post:'/mallWholesale/E9lM9uM4ct/wholesalers/syncOrderPifa',
     /*批发设置 */
-    mallSetWholesale_post:DFshop.env.activeAPI+'/mallWholesale/E9lM9uM4ct/setWholesale',
+    mallSetWholesale_post:'/mallWholesale/E9lM9uM4ct/setWholesale',
     /*保存批发设置 */
-    mallWholesaleSaveSet_post:DFshop.env.activeAPI+'/mallWholesale/E9lM9uM4ct/saveSet',
+    mallWholesaleSaveSet_post:'/mallWholesale/E9lM9uM4ct/saveSet',
     
     /*秒杀管理 */
-    mallSeckillList_post:DFshop.env.activeAPI+'/mallSeckill/E9lM9uM4ct/list',
+    mallSeckillList_post:'/mallSeckill/E9lM9uM4ct/list',
     /*秒杀管理 删除、使失效 */
-    mallSeckillDelete_post:DFshop.env.activeAPI+'/mallSeckill/E9lM9uM4ct/delete',
+    mallSeckillDelete_post:'/mallSeckill/E9lM9uM4ct/delete',
     /*获取秒杀信息 */
-    mallSeckillSeckillInfo_post:DFshop.env.activeAPI+'/mallSeckill/E9lM9uM4ct/seckillInfo',
+    mallSeckillSeckillInfo_post:'/mallSeckill/E9lM9uM4ct/seckillInfo',
     /*保存秒杀 */
-    mallSeckillSave_post:DFshop.env.activeAPI+'/mallSeckill/E9lM9uM4ct/save',
+    mallSeckillSave_post:'/mallSeckill/E9lM9uM4ct/save',
   };
 
   /*公共方法***********************************************************************************************************/

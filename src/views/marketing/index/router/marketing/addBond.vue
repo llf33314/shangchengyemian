@@ -156,7 +156,7 @@ export default {
           if(fname.id != ''){
             joinProduct.id = fname.id;
           }
-          Lib.M.ajax({
+          _this.ajaxRequest({
             'url': DFshop.activeAPI.mallSellerSaveJoinProduct_post,
             'data':{
               joinProduct : joinProduct 
@@ -189,7 +189,7 @@ export default {
     },
     mallSellersJoinProductInfo(id){//获取商品拥金信息
       let _this= this;
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url': DFshop.activeAPI.mallSellersJoinProductInfo_post,
         'data':{
           id : id 

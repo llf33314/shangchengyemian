@@ -286,7 +286,7 @@ export default {
         }else{
             msg = '已失效';
         }
-          Lib.M.ajax({
+          _this.ajaxRequest({
             'url': DFshop.activeAPI.mallAuctionDelete_post,
             'data':{
                 id : id,
@@ -328,7 +328,7 @@ export default {
     },
     comeDown(){//退保证金方法
         let _this = this;
-          Lib.M.ajax({
+          _this.ajaxRequest({
             'url': DFshop.activeAPI.mallAuctionAgreedReturnMargin_post,
             'data':{
                 id : _this.auctionId
@@ -377,7 +377,7 @@ export default {
       },
       mallAuctionList(pageNum){//拍卖列表
           let _this = this;
-          Lib.M.ajax({
+          _this.ajaxRequest({
             'url': DFshop.activeAPI.mallAuctionList_post,
             'data':{
                 curPage : pageNum,
@@ -396,7 +396,7 @@ export default {
       },
       mallAuctionMarginList(pageNum){//保证金列表
           let _this = this;
-          Lib.M.ajax({
+          _this.ajaxRequest({
             'url': DFshop.activeAPI.mallAuctionMarginList_post,
             'data':{
                 curPage : pageNum

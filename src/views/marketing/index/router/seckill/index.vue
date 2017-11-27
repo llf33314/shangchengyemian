@@ -140,7 +140,7 @@ export default {
     },
     mallSeckillList(pageNum){//秒杀列表
       let _this= this;
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url': DFshop.activeAPI.mallSeckillList_post,
         'data':{
           curPage : pageNum,
@@ -162,7 +162,7 @@ export default {
     },
     mallSeckillDelete(id,delType){//删除、使失效方法
       let _this= this;
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url': DFshop.activeAPI.mallSeckillDelete_post,
         'data':{
           id : id,

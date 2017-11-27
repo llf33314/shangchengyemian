@@ -141,7 +141,7 @@ export default {
     },
     mallGroupBuyList(pageNum){
       let _this= this;
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url': DFshop.activeAPI.mallGroupBuyList_post,
         'data':{
           curPage : pageNum,
@@ -163,7 +163,7 @@ export default {
     },
     mallGroupBuyDelete(id,delType){
       let _this= this;
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url': DFshop.activeAPI.mallGroupBuyDelete_post,
         'data':{
           id : id,

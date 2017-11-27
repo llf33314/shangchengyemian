@@ -193,7 +193,7 @@ export default {
     mallProductList(pageNum){
       let _this = this;
       _this.tableData3 = '';
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url':DFshop.activeAPI.mallProductList_post,
         'data':{
           curPage :pageNum,
@@ -221,7 +221,7 @@ export default {
       }else{//下架
         isPublish = -1;
       }
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url':DFshop.activeAPI.mallProductBatchProduct_post,
         'data':{
           ids : _this.ids, 
@@ -237,7 +237,7 @@ export default {
     },
     mallProductCountStatus(){
       let _this = this;
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url':DFshop.activeAPI.mallProductCountStatus_post,
         'success':function (data){
            _this.count = data.data;

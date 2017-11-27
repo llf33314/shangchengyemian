@@ -178,7 +178,7 @@ export default {
     mallFreightList(pageNum){
       let _this= this;
       this.logisticsData = '';
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url': DFshop.activeAPI.mallFreightList_post,
         'data':{
           curPage :pageNum 
@@ -195,7 +195,7 @@ export default {
     },
     mallFreightDelete(id){
       let _this= this;
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url': DFshop.activeAPI.mallFreightDelete_post,
         'data':{
           ids :id 
@@ -212,7 +212,7 @@ export default {
     mallFreightTakeList(pageNum){
       let _this= this;
       _this.tableData = '';
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url': DFshop.activeAPI.mallFreightTakeList_post,
         'data':{
           curPage :pageNum 
@@ -228,7 +228,7 @@ export default {
     },
     mallFreightTakeDelete(id){
       let _this= this;
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url': DFshop.activeAPI.mallFreightTakeDelete_post,
         'data':{
           id :id 

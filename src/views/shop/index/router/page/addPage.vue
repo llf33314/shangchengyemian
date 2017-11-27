@@ -112,7 +112,7 @@ export default {
      */
     pageInfoAjax(id){
       let _this = this;
-      Lib.M.ajax({
+      _this.ajaxRequest({
           'url': DFshop.activeAPI.mallPageNewPageInfo_post,
           'data': {
               id: id
@@ -129,7 +129,7 @@ export default {
           _this.shopOptions = data.data;
         }
       })
-      Lib.M.ajax({//页面类型下来框
+      _this.ajaxRequest({//页面类型下来框
           'url': DFshop.activeAPI.mallPageNewTypeMap_post,
           'success':function (data){
               console.log(data,'page');

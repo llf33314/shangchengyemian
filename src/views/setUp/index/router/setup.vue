@@ -141,7 +141,7 @@
         param.pfRemark = paramsForm.pfRemark;
         param.pfApplyRemark = paramsForm.pfApplyRemark;
         param.busMessageJson = paramsForm.busMessageJson;
-        Lib.M.ajax({
+        _this.ajaxRequest({
               'url': DFshop.activeAPI.mallPaySetSave_post,
               'data':param,
               'success':function (data){
@@ -158,7 +158,7 @@
       mallPaySetPaySetInfo(){//获取设置信息
         let _this = this;
         _this.form = '';
-        Lib.M.ajax({
+        _this.ajaxRequest({
           'url': DFshop.activeAPI.mallPaySetPaySetInfo_post,
           'success':function (data){
             _this.form = data.data;

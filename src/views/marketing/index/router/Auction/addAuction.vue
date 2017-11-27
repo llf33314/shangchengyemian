@@ -224,7 +224,7 @@
                 auction.aucStartTime = Lib.M.format(new Date(time));
                 auction.aucEndTime = _this.endTime;
           }
-          Lib.M.ajax({
+          _this.ajaxRequest({
             'url': DFshop.activeAPI.mallAuctionSave_post,
             'data':{
                 auction : auction
@@ -258,7 +258,7 @@
     },
     mallAuctionAuctionInfo(id){//获取拍卖信息
         let _this = this;
-        Lib.M.ajax({
+        _this.ajaxRequest({
         'url': DFshop.activeAPI.mallAuctionAuctionInfo_post,
         'data':{
             id : id

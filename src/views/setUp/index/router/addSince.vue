@@ -160,7 +160,7 @@
             param.take = paramsForm;
             param.imageList = imageList;
             param.timeList = timeList;
-            Lib.M.ajax({
+            _this.ajaxRequest({
               'url': DFshop.activeAPI.mallFreightTakeSave_post,
               'data':param,
               'success':function (data){
@@ -208,7 +208,7 @@
       mallFreightTakeInfo(id){
         let _this = this;
         _this.ruleForm = '';
-        Lib.M.ajax({
+        _this.ajaxRequest({
           'url': DFshop.activeAPI.mallFreightTakeInfo_post,
           'data':{
             id :id 

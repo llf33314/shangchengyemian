@@ -452,7 +452,7 @@ export default {
           param.withdrawalLowestMoney = '';
         }
         param.sellerRemark = _this.$refs[formName].model.sellerRemark;
-        Lib.M.ajax({
+        _this.ajaxRequest({
           'url': DFshop.activeAPI.mallSellersSaveSellerSet_post,
           'data': {sellerSet:param},
           'success':function (data){
@@ -571,7 +571,7 @@ export default {
     },
     mallSellersGetSellerSet(){//超级销售员基础设置
       let _this= this;
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url': DFshop.activeAPI.mallSellersGetSellerSet_post,
         'success':function (data){
            _this.setupForm = data.data.sellerSet;
@@ -581,7 +581,7 @@ export default {
     },
     mallSellersJoinProduct(pageNum){//商品佣金设置列表
       let _this= this;
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url': DFshop.activeAPI.mallSellersJoinProduct_post,
         'data':{
             curPage : pageNum,
@@ -602,7 +602,7 @@ export default {
     },
     mallSellersCheckList(pageNum){//推荐审核列表
       let _this= this;
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url': DFshop.activeAPI.mallSellersCheckList_post,
         'data':{
             curPage : pageNum,
@@ -626,7 +626,7 @@ export default {
       }else{
         msg = '审核不通过'
       }
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url': DFshop.activeAPI.mallSellersCheckSeller_post,
         'data':{
             id : sellerId,
@@ -644,7 +644,7 @@ export default {
     },
     mallSellersList(pageNum){//销售员列表
       let _this= this;
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url': DFshop.activeAPI.mallSellersList_post,
         'data':{
             curPage : pageNum,
@@ -671,7 +671,7 @@ export default {
         startTime = Lib.M.format(new Date(cashTime[0]));
         endTime = Lib.M.format(new Date(cashTime[1]));
       }
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url': DFshop.activeAPI.mallSellersWithDrawList_post,
         'data':{
             curPage : pageNum,
@@ -710,7 +710,7 @@ export default {
       }else{
         msg = '已删除';
       }
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url': DFshop.activeAPI.mallSellerSetJoinProductStatus_post,
         'data':{
             id : id,
@@ -734,7 +734,7 @@ export default {
       }else{
         msg = '已启用';
       }
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url': DFshop.activeAPI.mallSellerStartUseSeller_post,
         'data':{
             id : id,

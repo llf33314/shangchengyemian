@@ -247,7 +247,7 @@ export default {
           param["seckill"] = seckill;
           param["specArr"] = JSON.stringify(_speciList);
           console.log(param,'speac');
-          Lib.M.ajax({
+          _this.ajaxRequest({
             'url': DFshop.activeAPI.mallSeckillSave_post,
             'data':param,
             'success':function (data){
@@ -280,7 +280,7 @@ export default {
     },
     mallSeckillSeckillInfo(id){//获取秒杀信息
       let _this= this;
-      Lib.M.ajax({
+      _this.ajaxRequest({
         'url': DFshop.activeAPI.mallSeckillSeckillInfo_post,
         'data':{
           id : id 
