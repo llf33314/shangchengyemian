@@ -17,9 +17,8 @@ import Vue from 'vue';
 //Vue.use(AlertPlugin); //全局注册alert事件，注册之后，不需要每个页面都import alert
 //Vue.use(LoadingPlugin ); //全局注册alert事件，注册之后，不需要每个页面都import alert
 //--- VUX UI 注册 END --
-// import ui from '@/components/gt-ui/index.js'
-
-// Vue.use(ui);
+import ui from 'components/gt-ui/index.js'//素材库
+Vue.use(ui);
 Vue.use(ElementUI);
 
 
