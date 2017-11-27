@@ -14,166 +14,170 @@
                     <div class="index-input-box">
                         <div class="p-box" style="margin-bottom: 20px;">
                             <div>
-                                <span>
+                                <span v-if="goodsData.page.rowCount > 0">
                                     选择活动状态 :
-                                    <el-select v-model="goodsShop" placeholder="请选择">
-                                    <el-option
-                                        class="max-input"
-                                        v-for="item in options"
-                                        :key="item.value"
-                                        :label="item.label"
-                                        :value="item.value">
-                                    </el-option>
+                                    <el-select v-model="type" placeholder="请选择" @change="searchAuction">
+                                        <el-option class="max-input" label="进行中" :value="1"></el-option>
+                                        <el-option class="max-input" label="未开始" :value="-1"></el-option>
+                                        <el-option class="max-input" label="已结束" :value="2"></el-option>
                                     </el-select>
                                 </span>
-                                <span>
-                                    选择时间 :
-                                    <el-select v-model="goodsShop" placeholder="请选择">
-                                    <el-option
-                                        class="max-input"
-                                        v-for="item in options"
-                                        :key="item.value"
-                                        :label="item.label"
-                                        :value="item.value">
+                                <span v-if="goodsData.page.rowCount > 0">
+                                    选择店铺 :
+                                    <el-select v-model="shopId" placeholder="请选择" @change="searchAuction">
+                                    <el-option class="max-input" v-for="item in shopList"
+                                        :key="item.id" :label="item.sto_name" :value="item.id">
                                     </el-option>
                                     </el-select>
                                 </span>
                             </div>
                         <span>
-                            <router-link >
-                                <el-button 
-                                type="warning"
-                                ><i class="iconfont icon-cplay1"></i>
-                                视频教程</el-button>
-                            </router-link>
+                            <a :href="goodsData.videourl">
+                                <el-button type="warning"><i class="iconfont icon-cplay1"></i>视频教程</el-button>
+                            </a>
                         </span>
                         </div>
                     </div>
-                    <router-link to="/auction/addauction">
-                    <el-button 
-                        type="primary"
-                    >新建拍卖</el-button>
+                    <router-link to="/auction/addauction/0">
+                        <el-button type="primary">新建拍卖</el-button>
                     </router-link>
                 </div>
-                <el-table
-                    :data="goodsData"
-                    style="width: 100%">
+                <el-table :data="goodsData.page.subList" style="width: 100%" v-if="goodsData.page.rowCount > 0">
                     <el-table-column
-                        prop="name"
+                        prop="proName"
                         label="拍卖商品">
                     </el-table-column>
                     <el-table-column
-                        prop="shop"
+                        prop="shopName"
                         label="所属店铺">
                     </el-table-column>
                     <el-table-column
-                        prop="date"
+                        prop="aucStartPrice"
                         label="起拍价(元)">
                     </el-table-column>
                     <el-table-column
+                        prop="nowPrice"
                         label="结束价(元)">
+                    </el-table-column>
+                    <el-table-column label="有效时间">
                         <template scope="scope">
-                            <span v-if="scope.row.statu === 1">
-                            进行中
-                            </span>
-                            <span v-if="scope.row.statu === 2">
-                            已结束
-                            </span>
-                            <span v-if="scope.row.statu === 0">
-                            未开始
-                            </span>
+                            {{scope.row.aucStartTime}} - {{scope.row.aucEndTime}}
+                        </template>
+                    </el-table-column>
+                     <el-table-column label="活动状态">
+                         <template scope="scope">
+                            <span v-if="scope.row.status === 1">进行中</span>
+                            <span v-if="scope.row.status === -1">已结束</span>
+                            <span v-if="scope.row.status === 0">未开始</span>
+                            <span v-if="scope.row.status === -2">已失效</span>
                         </template>
                     </el-table-column>
                     <el-table-column
-                        prop="date"
-                        label="有效时间">
-                    </el-table-column>
-                     <el-table-column
-                        prop="date"
-                        label="活动状态">
-                    </el-table-column>
-                    <el-table-column
-                        prop="date"
+                        prop="createTime"
                         label="创建时间">
                     </el-table-column>
-                    <el-table-column
-                        label="操作"
-                        min-width="120">
-                    <template scope="scope">
-                        <el-button
-                        size="small"
-                        @click="handleDelete()"
-                        >删除</el-button>
-                    </template>
+                    <el-table-column label="操作" min-width="120">
+                        <template scope="scope">
+                            <el-button size="small" class="buttonBlue" v-if="scope.row.status == 0 || (scope.row.joinId == 0 && scope.row.status == 1)"
+                             @click="jumpRouter('/auction/addauction/'+scope.row.id)">编辑</el-button>
+                            <el-button size="small" class="buttonBlue" v-if="scope.row.status == 0 || (scope.row.joinId == 0 && scope.row.status == 1)"
+                                @click="invalidAuction(scope.row.id,-2)">失效</el-button>
+                            <el-button size="small" class="buttonBlue" @click="preview(scope.row.twoCodePath)"
+                                v-if="scope.row.status == 1">预览</el-button>
+                            <el-button size="small" @click="handleDelete(scope.row.id,-1)"
+                                v-if="scope.row.status != 1">删除</el-button>
+                        </template>
                     </el-table-column>
                 </el-table>
+                <div class="shop-textr" v-if="goodsData.page.rowCount > 0">
+                    <el-pagination
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :current-page.sync="goodsData.page.curPage"
+                        :page-size="goodsData.page.pageSize"
+                        layout="prev, pager, next, jumper"
+                        :total="goodsData.page.rowCount">
+                    </el-pagination>
                 </div>
+                </div>
+                <content-no :show="contentNo" v-if="goodsData.page.rowCount == 0"></content-no>
             </el-tab-pane>
             <el-tab-pane label="保证金管理" name="2">
                 <div class="common-content">
-                    <el-table
-                        ref="multipleTable"
-                        :data="shopData"
-                        tooltip-effect="dark"
-                        style="width: 100%">
+                    <el-table ref="multipleTable" :data="baozhengjinData.page.subList" v-if="baozhengjinData.page.rowCount > 0"
+                        tooltip-effect="dark" style="width: 100%">
                         <el-table-column
-                        prop="name"
+                        prop="proName"
                         label="拍卖商品">
                         </el-table-column>
                         <el-table-column
-                        prop="shop"
+                        prop="shopName"
                         label="所属店铺">
                         </el-table-column>
                         <el-table-column
-                        prop="href"
+                        prop="aucNo"
                         label="竞拍编号">
                         </el-table-column> 
                         <el-table-column
-                        prop="href"
+                        prop="marginMoney"
                         label="保证金金额">
                         </el-table-column> 
                         <el-table-column
-                        prop="href"
                         label="保证金状态">
+                            <template scope="scope">
+                                <span v-if="scope.row.marginStatus == 0">未支付</span>
+                                <span v-if="scope.row.marginStatus == 1">已支付</span>
+                                <span v-if="scope.row.marginStatus == -1">已返还</span>
+                                <span v-if="scope.row.marginStatus == -2">不返还</span>
+                            </template>
                         </el-table-column> 
                         <el-table-column
-                        prop="href"
+                        prop="payTime"
                         label="支付时间">
                         </el-table-column> 
                         <el-table-column
                         prop="href"
                         label="返还时间">
                         </el-table-column> 
-                        <el-table-column
-                            label="操作">
-                        <template scope="scope">
-                             <el-button
-                            size="small"
-                            class="buttonBlue"
-                            @click="viewDetails()"
-                            >退保证金</el-button>
-                        </template>
+                        <el-table-column label="操作">
+                            <template scope="scope">
+                                <el-button size="small" class="buttonBlue" 
+                                @click="viewDetails(scope.row.id,scope.row.aucNo,scope.row.payWay,scope.row.marginMoney)"
+                                >退保证金</el-button>
+                            </template>
                         </el-table-column>
                     </el-table>
-                    <el-dialog
-                        title="退保证金"
-                        :visible.sync="dialogViewDetails"
+                    <div class="shop-textr" v-if="baozhengjinData.page.rowCount > 0"> 
+                        <el-pagination
+                            @size-change="handleSizeChange1"
+                            @current-change="handleCurrentChange1"
+                            :current-page.sync="baozhengjinData.page.curPage"
+                            :page-size="baozhengjinData.page.pageSize"
+                            layout="prev, pager, next, jumper"
+                            :total="baozhengjinData.page.rowCount">
+                        </el-pagination>
+                        <content-no v-if="baozhengjinData.page.rowCount == 0"></content-no>
+                    </div>
+                    <el-dialog title="退保证金" :visible.sync="dialogViewDetails"
                         size="tiny">
                         <div class="pifa-dialog-ul">
                             <p class="pifa-li">
                                 <span>退保证金:</span>
-                                <span>¥ 144.00</span>
+                                <span>¥ {{auctionMoney}}</span>
                             </p>
                         </div>
                          <span slot="footer" class="dialog-footer">
-                            <el-button type="primary" @click="dialogViewDetails = false">退保证金</el-button>
-                            <el-button @click="dialogViewDetails = false">取 消</el-button>
+                            <el-button type="primary" @click="comeDown()" v-if="auctionPayWay != 3">退保证金</el-button>
+                            <a :href="alipayUrl" v-if="auctionPayWay == 3">
+                                <el-button type="primary">退保证金</el-button>
+                            </a>
+                            <el-button id="gtLongUrlCopy" @click="copyLink" :data-clipboard-text="alipayUrl" 
+                                v-if="auctionPayWay == 3">复制退保证金链接</el-button>
                         </span>
                     </el-dialog>
                 </div>
             </el-tab-pane>
         </el-tabs>
-        <content-no :show="contentNo"></content-no>
     </div>
   </div>
 </template>
@@ -188,115 +192,116 @@ export default {
   data () {
     return {
       contentNo:'GSmodule',
-      activeName:'2',
-      goodsShop:'',
-      goodsStatu:'',
-      dialogVisible: false,
-      startTime:'',
-      endTime:'',
-      goodsData: [{
-        date: '2016-05-02',
-        name: '手机',
-        shop: '谷通科技2',
-        statu: 1
-      }, {
-        date: '2016-05-04',
-        name: '黑色毛衣',
-        shop: '谷通科技1',
-        statu: 2
-      }, {
-        date: '2016-05-01',
-        name: '帽子',
-        shop: '谷通科技6',
-        statu: 0
-      }, {
-        date: '2016-05-03',
-        name: '裙子',
-        shop: '谷通科技8',
-        statu: 2
-      }],
-      options: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }],
-      shopData: [{
-        date: '2016-05-02',
-        name: '手机',
-        shop: '谷通科技2',
-        statu: 1,
-        href:'222'
-      }, {
-        date: '2016-05-04',
-        name: '黑色毛衣',
-        shop: '谷通科技1',
-        statu: 0,
-        href:'5464'
-      }, {
-        date: '2016-05-01',
-        name: '帽子',
-        shop: '谷通科技6',
-        statu: 0,
-       
-        href:'5464646'
-      }, {
-        date: '2016-05-03',
-        name: '裙子',
-        shop: '谷通科技8',
-        statu: 1,
-        href:'12315646'
-      }],
-      input:'',
-      value3:'',
-      form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
-        },
-        restaurants: [],
-        state4: '',
-        timeout:  null,
-        dialogViewDetails:false,
+      activeName:'1',
+      type:'',
+      shopId:'',
+      goodsData: {
+          page:{
+              subList:[],
+          }
+      },
+      shopList: [],
+      baozhengjinData: {
+          page:{
+              subList:[],
+          }
+      },
+      restaurants: [],
+      timeout:  null,
+      dialogViewDetails:false,
+      auctionMoney:'',
+      auctionId:'',
+      auctionPayWay:'',
+      auctionOrderNo:'',
+      alipayUrl : ''
+    }
+  },
+  watch:{
+    activeName :function(t,f){
+      let _href= window.location.href;
+      sessionStorage.setItem('href', _href);
+    },
+    $route :function(t,f){
+      this.activeName= t.params.activeName;
     }
   },
   methods: {
+    searchAuction(){//拍卖搜索
+        this.mallAuctionList(1);
+    },
+    handleSizeChange(val) {
+        console.log(`每页 ${val} 条`);
+        this.mallAuctionList(val);
+    },
+    handleCurrentChange(val) {
+    //   this.pageNum = val;
+      console.log(`当前页: ${val}`);
+      this.mallAuctionList(val);
+    },
+    handleSizeChange1(val) {
+        console.log(`每页 ${val} 条`);
+        this.mallAuctionMarginList(val);
+    },
+    handleCurrentChange1(val) {
+    //   this.pageNum = val;
+      console.log(`当前页: ${val}`);
+      this.mallAuctionMarginList(val);
+    },
     handleClick(tab, event) {
       let _activeName = tab.name;
+      this.$router.push(_activeName);
       console.log(_activeName);
-     
-      },
-    handleDelete(){
+    },
+    handleDelete(id,type){//删除拍卖事件
       let _this= this;
       let msg ={
         'dialogTitle':'确定要删除此拍卖商品？',//文本标题
         'dialogMsg': '',//文本内容
         'callback': {
           'btnOne': function(){
-
+              _this.mallAuctionDelete(id,type);
           }
         }
       }
       _this.$root.$refs.dialog.showDialog(msg); 
     },
-    invalidDelete(){
+    invalidAuction(id,type){//使拍卖活动失效事件
       let _this= this;
       let msg ={
-        'dialogTitle':'您确定要将此批发活动失效吗？',//文本标题
+        'dialogTitle':'您确定要将此拍卖活动失效吗？',//文本标题
         'dialogMsg': '失效后不能再进行交易',//文本内容
         'callback': {
           'btnOne': function(){
-
+              _this.mallAuctionDelete(id,type);
           }
         }
       }
       _this.$root.$refs.dialog.showDialog(msg); 
+    },
+    mallAuctionDelete(id,type){//删除、使拍卖失效方法
+        let _this = this;
+        let msg = '';
+        if(type == -1){
+            msg = '删除成功';
+        }else{
+            msg = '已失效';
+        }
+          Lib.M.ajax({
+            'url': DFshop.activeAPI.mallAuctionDelete_post,
+            'data':{
+                id : id,
+                type : type
+            },
+            'success':function (data){
+                if(data.code == 1){
+                    _this.$message({
+                        message: msg,
+                        type: 'success'
+                    });
+                    _this.mallAuctionList(_this.goodsData.page.curPage);
+                }
+            }
+          });
     },
     toggleSelection(rows) {
         if (rows) {
@@ -313,12 +318,37 @@ export default {
     onSubmit() {
     console.log('submit!');
     },
-    /**
-     *查看详情
-     */
-    viewDetails(){
+    viewDetails(id,orderNo,payWay,money){//退保证金弹出框
         this.dialogViewDetails=true;
+        this.auctionId = id;
+        this.auctionOrderNo = orderNo;
+        this.auctionPayWay = payWay;
+        this.auctionMoney = money;
+        this.alipayUrl = this.alipayUrl+'?out_trade_no='+this.auctionOrderNo+'&busId='+this.busId+'&desc=退保证金';
     },
+    comeDown(){//退保证金方法
+        let _this = this;
+          Lib.M.ajax({
+            'url': DFshop.activeAPI.mallAuctionAgreedReturnMargin_post,
+            'data':{
+                id : _this.auctionId
+            },
+            'success':function (data){
+
+            }
+          });
+    },
+    copyLink(){//复制退定金链接
+        var self = this;
+        var clipboard = new Lib.Clipboard("#gtLongUrlCopy");
+        clipboard.on('success', function(e) {
+        self.$message({
+            message: '复制成功',
+            type: 'success'
+        });
+        clipboard.destroy();
+        });
+      },
      loadAll() {
         return [
           { "value": "三全鲜食（北新泾店）", "address": "长宁区新渔路144号" },
@@ -344,11 +374,65 @@ export default {
       },
       handleSelect(item) {
         console.log(item);
+      },
+      mallAuctionList(pageNum){//拍卖列表
+          let _this = this;
+          Lib.M.ajax({
+            'url': DFshop.activeAPI.mallAuctionList_post,
+            'data':{
+                curPage : pageNum,
+                type : _this.type,
+                shopId : _this.shopId
+            },
+            'success':function (data){
+                _this.goodsData = data.data;
+                $.each(_this.goodsData.page.subList,function(i){
+                    let oldTime = this.createTime;
+                    this.createTime = Lib.M.format(oldTime);
+                });
+                console.log(goodsData,"goodsData")
+            }
+          });
+      },
+      mallAuctionMarginList(pageNum){//保证金列表
+          let _this = this;
+          Lib.M.ajax({
+            'url': DFshop.activeAPI.mallAuctionMarginList_post,
+            'data':{
+                curPage : pageNum
+            },
+            'success':function (data){
+                _this.baozhengjinData = data.data;
+                $.each(_this.baozhengjinData.page.subList,function(i){
+                    let oldTime = this.payTime;
+                    this.payTime = Lib.M.format(oldTime);
+                });
+                console.log(_this.baozhengjinData,'_this.baozhengjinData ');
+            }
+          });
+      },
+      preview(){//预览
+          let _this = this;
+          let msg ={
+            'title':'',
+            'urlQR': DFshop.activeAPI.mallStoreGenerateQRCode_get,
+            'pageLink': _this.path+'/views/marketing/index.html#/'
+          }
+            _this.$root.$refs.dialogQR.showDialog(msg);//调用方法
       }
   },
   mounted() {
-        this.restaurants = this.loadAll();
-    }   
+    let _this = this;
+    _this.activeName = _this.$route.params.activeName;
+    _this.restaurants = this.loadAll();
+    _this.mallAuctionList(1);
+    _this.mallAuctionMarginList(1);
+    DFshop.method.storeList({
+      'success'(data){
+        _this.shopList = data.data;
+      }
+    });
+  }   
 }
 </script>
 

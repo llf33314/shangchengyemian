@@ -3,7 +3,7 @@
     <div class="common-nav">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: '/' }">商城营销</el-breadcrumb-item>
-        <el-breadcrumb-item>团购管理</el-breadcrumb-item>
+        <el-breadcrumb-item>秒杀管理</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="group-main">
@@ -26,13 +26,13 @@
           </el-col>
         </el-row>
         <!-- <router-link to="/addgroup"> -->
-        <el-button type="primary" style="margin-top: 20px;" @click="jumpRouter('/addgroup/0')">新建团购</el-button>
+        <el-button type="primary" style="margin-top: 20px;" @click="jumpRouter('/addSeckill/0')">新建秒杀</el-button>
         <!-- </router-link> -->
       </div>
       <div class="group-content" v-if="tableData.page.rowCount > 0">
         <el-table :data="tableData.page.subList" style="width: 100%">
           <el-table-column
-            prop="gname"
+            prop="sname"
             label="活动名称">
           </el-table-column>
           <el-table-column
@@ -41,7 +41,7 @@
           </el-table-column>
           <el-table-column label="有效时间">
             <template scope="scope">
-              {{scope.row.gstartTime}}至{{scope.row.gendTime}}
+              {{scope.row.sstartTime}}至{{scope.row.sendTime}}
             </template>
           </el-table-column>
           <el-table-column label="活动状态">
@@ -59,7 +59,7 @@
           <el-table-column  label="操作">
             <template scope="scope">
               <el-button size="small" class="buttonBlue" v-if="scope.row.status == 0 || (scope.row.status == 1 && scope.row.joinId == '')" 
-                @click="jumpRouter('/addgroup/'+scope.row.id)">编辑</el-button>
+                @click="jumpRouter('/addSeckill/'+scope.row.id)">编辑</el-button>
               <el-button size="small" class="buttonBlue" v-if="scope.row.status == 0 || (scope.row.status == 1 && scope.row.joinId == '')" 
                 @click="InvalidData(scope.row.id)">失效</el-button>
               <el-button size="small" class="buttonBlue" @click="preview(scope.row.twoCodePath)">预览</el-button>
@@ -95,7 +95,6 @@ export default {
   data () {
     return {
       contentNo:'gruop',
-      // isShow: false,
       value: '',
       tableData: [],
       pageNum: 1 ,
@@ -107,42 +106,42 @@ export default {
   methods: {
     handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
-      },
-    handleCurrentChange(val) {
-      this.pageNum = val;
-      console.log(`当前页: ${val}`);
-      this.mallGroupBuyList(val);
+        this.mallSeckillList(val);
     },
-    InvalidData(id){
+    handleCurrentChange(val) {
+        console.log(`当前页: ${val}`);
+        this.mallSeckillList(val);
+    },
+    InvalidData(id){//使失效事件
       let _this= this;
       let msg ={
         'dialogTitle':'您确定要将此团购活动失效吗？',//文本标题
         'dialogMsg': '失效后不能再进行团购',//文本内容
         'callback': {
           'btnOne': function(){
-            _this.mallGroupBuyDelete(id,-2);
+              _this.mallSeckillDelete(id,-2);
           }
         }
       }
       _this.$root.$refs.dialog.showDialog(msg);   
     },
-    deleteData(id){
+    deleteData(id){//删除事件
       let _this= this;
       let msg ={
         'dialogTitle':'您确定要删除此团购活动吗？',//文本标题
         'dialogMsg': '',//文本内容
         'callback': {
           'btnOne': function(){
-            _this.mallGroupBuyDelete(id,-1);
+              _this.mallSeckillDelete(id,-1);
           }
         }
       }
       _this.$root.$refs.dialog.showDialog(msg);   
     },
-    mallGroupBuyList(pageNum){
+    mallSeckillList(pageNum){//秒杀列表
       let _this= this;
       Lib.M.ajax({
-        'url': DFshop.activeAPI.mallGroupBuyList_post,
+        'url': DFshop.activeAPI.mallSeckillList_post,
         'data':{
           curPage : pageNum,
           type : _this.type  
@@ -159,19 +158,19 @@ export default {
       });
     },
     search(){
-      this.mallGroupBuyList(1);
+      this.mallSeckillList(1);
     },
-    mallGroupBuyDelete(id,delType){
+    mallSeckillDelete(id,delType){//删除、使失效方法
       let _this= this;
       Lib.M.ajax({
-        'url': DFshop.activeAPI.mallGroupBuyDelete_post,
+        'url': DFshop.activeAPI.mallSeckillDelete_post,
         'data':{
           id : id,
           type : delType  
         },
         'success':function (data){
-          _this.mallGroupBuyList(_this.pageNum);
-           console.log(data.data)
+          _this.mallSeckillList(_this.tableData.page.curPage);
+           //console.log(data.data)
         }
       });
     },
@@ -187,7 +186,7 @@ export default {
     }
   },
   mounted(){
-    this.mallGroupBuyList(1);
+    this.mallSeckillList(1);
   }
 }
 </script>

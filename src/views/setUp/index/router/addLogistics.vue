@@ -2,80 +2,147 @@
 <div class="addLogistics-wrapper">
   <div class="common-nav">
     <el-breadcrumb separator="/">
-      <el-breadcrumb-item :to="{ path: '/logistics' }">物流管理</el-breadcrumb-item>
-      <el-breadcrumb-item>订单详情</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/logistics/logistics' }">物流管理</el-breadcrumb-item>
+      <el-breadcrumb-item>编辑物流信息</el-breadcrumb-item>
     </el-breadcrumb>
   </div>
   <div class="addLogistics-main">
   <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
-    <el-form-item label="模板名称 :" prop="name">
+    <el-form-item label="模板名称 :" prop="ruleForm.name">
       <el-input v-model="ruleForm.name" placeholder="请输入模板名字" class="add-input"></el-input>
       <p class="addLogistics-warn">物流名称限制20字数，1个汉字等于2个数字，符号。</p>
     </el-form-item>
-    <el-form-item label="默认快递公司 :" prop="region" class="icon-warn">
-      <el-select v-model="ruleForm.region" placeholder="请选择活动区域" class="add-input" >
-        <el-option :label="option.name" :value="option.value" :key="option.value" v-for="option in options" ></el-option>
-        <!-- <el-option label="申通" value="shanghai"></el-option>
-        <el-option label="中通" value="beijing"></el-option> -->
+    <el-form-item label="默认快递公司 :" prop="express" class="icon-warn">
+      <el-select v-model="ruleForm.express" placeholder="请选择活动区域" class="add-input" @change="aaa()">
+        <el-option :label="option.item_value" :value="option.item_key" :key="option.item_key" v-for="(option,index) in options" ></el-option>
       </el-select>
     </el-form-item>
-    <el-form-item label="所属店铺：" prop="shop" class="icon-warn">
-       <el-select v-model="ruleForm.shop" placeholder="请输入所属店铺" class="add-input" @click="aaa(ruleForm.shop)">
-        <el-option :label="option.name" :value="option.value" :key="option.value" :aa='option.aa' v-for="option in options"></el-option>
+    <el-form-item label="所属店铺：" prop="shopId" class="icon-warn">
+       <el-select v-model="ruleForm.shopId" placeholder="请输入所属店铺" class="add-input" @click="aaa(ruleForm.shopId)">
+        <el-option :label="option.sto_name" :value="option.id" :key="option.id" :aa='option.sto_name' v-for="(option,index) in shopList"></el-option>
       </el-select>
     </el-form-item>
-    <el-form-item label="计价方式 :" prop="resource">
-      <el-radio-group v-model="ruleForm.resource" >
-        <el-radio label="1">统一运费</el-radio>
-        <el-radio label="2">按件数</el-radio>
-        <el-radio label="3">按重量</el-radio>
-        <el-radio label="4">按公斤</el-radio>
+    <el-form-item label="计价方式 :" prop="ruleForm.priceType">
+      <el-radio-group v-model="ruleForm.priceType" >
+        <el-radio :label="0">统一运费</el-radio>
+        <el-radio :label="1">按件数</el-radio>
+        <el-radio :label="2">按重量</el-radio>
+        <el-radio :label="3">按公里</el-radio>
       </el-radio-group>
     </el-form-item>
     <el-form-item label="运费 :" prop="money">
-      <el-input  v-model="ruleForm.money" class="add-input" v-if="ruleForm.resource == 1">
+      <el-input  v-model="ruleForm.money" class="add-input" v-if="ruleForm.priceType == 0">
         <template slot="prepend">¥</template>
       </el-input>
+      <el-table
+        :data="Data"
+        style="width: 100%"
+        v-else-if="ruleForm.priceType == 1">
+        <el-table-column
+          prop="date"
+          label="首件（个）">
+          <template scope="scope">
+            <el-input  v-model="scope.row.firstNums" style="width:88px"></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="name"
+          label="运费（元）">
+          <template scope="scope">
+            <el-input v-model="scope.row.money" style="width:88px"></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="address"
+          label="续件（个）">
+          <template scope="scope">
+            <el-input v-model="scope.row.addNums" style="width:88px"></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="address"
+          label="续费（元）">
+          <template scope="scope">
+            <el-input v-model="scope.row.addMoney" style="width:88px"></el-input>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <el-table
+        :data="Data"
+        style="width: 100%"
+        v-else-if="ruleForm.priceType == 2">
+        <el-table-column
+          prop="date"
+          label="首重（Kg）">
+          <template scope="scope">
+            <el-input  v-model="scope.row.firstNums" style="width:88px"></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="name"
+          label="运费（元）">
+          <template scope="scope">
+            <el-input v-model="scope.row.money" style="width:88px"></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="address"
+          label="续重（Kg）">
+          <template scope="scope">
+            <el-input v-model="scope.row.addNums" style="width:88px"></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="address"
+          label="续费（元）">
+          <template scope="scope">
+            <el-input v-model="scope.row.addMoney" style="width:88px"></el-input>
+          </template>
+        </el-table-column>
+      </el-table>
+
       <el-table
         :data="Data"
         style="width: 100%"
         v-else>
         <el-table-column
           prop="date"
-          label="日期">
+          label="首公里（km）">
           <template scope="scope">
-            <el-input  v-model="scope.row.freight" style="width:88px"></el-input>
+            <el-input  v-model="scope.row.firstNums" style="width:88px"></el-input>
           </template>
         </el-table-column>
         <el-table-column
           prop="name"
-          label="姓名">
+          label="运费（元）">
           <template scope="scope">
-            <el-input  v-model="scope.row.freight" style="width:88px"></el-input>
+            <el-input v-model="scope.row.money" style="width:88px"></el-input>
           </template>
         </el-table-column>
         <el-table-column
           prop="address"
-          label="地址">
+          label="续公里（km）">
           <template scope="scope">
-            <el-input  v-model="scope.row.freight" style="width:88px"></el-input>
+            <el-input v-model="scope.row.addNums" style="width:88px"></el-input>
           </template>
         </el-table-column>
         <el-table-column
           prop="address"
-          label="地址">
+          label="续费（元）">
           <template scope="scope">
-            <el-input  v-model="scope.row.freight" style="width:88px"></el-input>
+            <el-input v-model="scope.row.addMoney" style="width:88px"></el-input>
           </template>
         </el-table-column>
       </el-table>
+
     </el-form-item>
     <el-form-item label="配送区域和运费 :" >
-      <el-switch on-text="开启" off-text="关闭" v-model="ruleForm.delivery" class="add-input"></el-switch>
+      <el-switch on-text="开启" off-text="关闭" v-model="ruleForm.isResultMoney" class="add-input"></el-switch>
       <el-table
         :data="tableData"
         style="width: 100%"
-        v-if="ruleForm.delivery">
+        v-if="ruleForm.isResultMoney == 1">
         <el-table-column
           label="可配送区域">
           <template scope="scope">
@@ -83,40 +150,58 @@
               <p>{{ scope.row.dels }}</p>
               <p>
                 <a @click="addRegion(scope.row.dels)">编辑</a>
-                <a>删除</a>
+                <a @click="delDistributionArea(scope.row)">删除</a>
               </p>
             </div>
           </template>
         </el-table-column>
         <el-table-column
+          label="首件（个）">
+          <template scope="scope">
+            <el-input  v-model="scope.row.firstNums" style="width:88px"></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column
           label="运费（元）">
           <template scope="scope">
-            <el-input  v-model="scope.row.freight" style="width:88px"></el-input>
+            <el-input  v-model="scope.row.money" style="width:88px"></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="续件（个）">
+          <template scope="scope">
+            <el-input  v-model="scope.row.addNums" style="width:88px"></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="续费（元）">
+          <template scope="scope">
+            <el-input  v-model="scope.row.addMoney" style="width:88px"></el-input>
           </template>
         </el-table-column>
         <el-table-column
           label="包邮数量">
           <template scope="scope">
-            满  <el-input  v-model="scope.row.num" style="width:88px"></el-input> 件包邮
+            满  <el-input  v-model="scope.row.noMoneyNum" style="width:88px"></el-input> 件包邮
           </template>
         </el-table-column>
         <el-table-column
           label="包邮价格">
           <template scope="scope">
-            满  <el-input  v-model="scope.row.money" style="width:88px">
+            满  <el-input  v-model="scope.row.noMoney" style="width:88px">
               <template slot="prepend">¥</template>
               </el-input>  包邮
           </template>
         </el-table-column>
       </el-table>
-      <p class="table-button" v-if="ruleForm.delivery" @click="addTable"><a>指定可配送区域和运费</a></p>
+      <p class="table-button" v-if="ruleForm.isResultMoney == 1" @click="addTable"><a>指定可配送区域和运费</a></p>
     </el-form-item>
     <el-form-item label="包邮数量 :">
-      满 <el-input  v-model="ruleForm.desc" style="width:220px"></el-input> 件包邮
+      满 <el-input  v-model="ruleForm.noMoneyNum" style="width:220px"></el-input> 件包邮
       <p class="addLogistics-warn">不填写代表没有包邮数量</p>
     </el-form-item>
     <el-form-item label="包邮价格 :" >
-      满 <el-input  v-model="ruleForm.desc" style="width:220px">
+      满 <el-input  v-model="ruleForm.noMoney" style="width:220px">
          <template slot="prepend">¥</template>
          </el-input> 包邮
       <p class="addLogistics-warn">不填写代表没有包邮价格</p>
@@ -133,10 +218,11 @@
   size="small">
     <div class="dialog-main">
       <el-transfer
-        filterable
+        filterable='false'
         :filter-method="filterMethod"
         filter-placeholder="请输入城市拼音"
         :right-default-checked="[1]"
+        :titles="['城市列表', '已选中城市']"
         v-model="value2"
         :data="data2"
         @change="handleChange">
@@ -151,7 +237,7 @@
 </template>
 
 <script>
-
+  import Lib from 'assets/js/Lib';
   export default {
     
     data() {
@@ -165,43 +251,17 @@
           callback(new Error('请选择所属店铺'));
         }
       };
-      const generateData2 = _ => {
-        const data = [];
-        const cities = ['上海', '北京', '广州', '深圳', '南京', '西安', '成都',];
-        const pinyin = ['shanghai', 'beijing', 'guangzhou', 'shenzhen', 'nanjing', 'xian', 'chengdu'];
-        cities.forEach((city, index) => {
-          data.push({
-            label: city,
-            key: index,
-            pinyin: pinyin[index]
-          });
-        });
-        return data;
-      };
       return {
-        ruleForm: {
-          name: '',
-          region: '',
-          shop:'',
-          money:'',
-          resource: '1',
-          delivery:false,
-          desc:'',
-          table:{
-            table1:'',
-            table2:'',
-            table3:'',
-          },
-          model:{
-            shop:'',
-            aa:''
-          }
+         ruleForm: {
+          priceType: 0,
         },
-        data2: generateData2(),
+        data2:[],
         value2: [],
         filterMethod(query, item) {
-          return item.pinyin.indexOf(query) > -1;
+          // return item.pinyin.indexOf(query) > -1;
+          return null;
         },
+        area:[],
         rules: {
           name: [
             { required: true, message: '请输入模板名称', trigger: 'blur' }
@@ -213,9 +273,9 @@
             { validator: checkshop, trigger: 'change' }
           ],
           money: [
-            { required: true, message: '请输入运费', trigger: 'change' }
+            { required: true, message: '请输入运费', trigger: 'blur' }
           ],
-          resource: [
+          priceType: [
             { required: true, message: '请填计价方式', trigger: 'change' }
           ]
         },
@@ -224,52 +284,48 @@
             freight: '',
             num: '',
             money:''
-          }, {
-            dels: '北京,上海,北京,上海',
-            name: '王小虎',
-            num: '',
-            money:''
-        }],
-        options:[{
-          name: '北京',
-          value: 1,
-          aa:'哈哈'
-        },
-        {
-          name: 'b',
-          value: 2,
-          aa:'嘻嘻'
-        },
-        {
-          name: 'a',
-          value: 3,
-          aa:'LAL'
-        }],
+          }],
+        options:[],
         dialogVisible : false,
-        Data: [{
-            date: '2016-05-02',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1518 弄'
-          }, {
-            date: '2016-05-04',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1517 弄'
-          }, {
-            date: '2016-05-01',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1519 弄'
-          }, {
-            date: '2016-05-03',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1516 弄'
-          }]
+        Data: [],
+        shopList:[],
       }
     },
     methods: {
       submitForm(formName) {
+        let _this = this;
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            alert('submit!');
+            let pfName = _this.$refs[formName].model;
+            let freight = {};
+            freight["name"]=pfName.name;
+            freight["shopId"]=pfName.shopId;
+            freight["isNoMoney"]=pfName.isNoMoney;
+            freight["noMoneyNum"]=pfName.noMoneyNum;
+            freight["noMoney"]=pfName.noMoney;
+            freight["isResultMoney"]=pfName.isResultMoney;
+            freight["expressId"]=pfName.expressId;
+            freight["express"]=pfName.express;
+            if(pfName.id != null && pfName.id != ""){
+              freight.id = pfName.id;
+            }
+            var params = {};
+            params["freight"] = JSON.stringify(freight);
+            // if(dDetailObj != null){
+            //   params["delDetail"] = JSON.stringify(dDetailObj);
+            // }
+            // if(dProvinceObj != null){
+            //   params["delPro"] = JSON.stringify(dProvinceObj);
+            // }
+            Lib.M.ajax({
+              'url': DFshop.activeAPI.mallFreightSave_post,
+              'data':{
+                params: params
+              },
+              'success':function (data){
+                //console.log(_this.ruleForm);
+              }
+            });
           } else {
             console.log('error submit!!');
             return false;
@@ -289,8 +345,22 @@
         this.tableData.push(newTab);
       },
       addRegion(dels){
+        this.data2 = this.generateData2();
         console.log(dels);
         this.dialogVisible = true;
+      },
+      delDistributionArea(row){
+        let _this= this;
+        let msg = {
+          'dialogTitle': '确认删除吗？',
+          // 'dialogMsg': '删除后，数据将无法恢复哦~',
+          'callback': {
+          'btnOne': function () {
+            
+          }
+          }
+        };
+        _this.$root.$refs.dialog.showDialog(msg);
       },
       handleChange(value, direction, movedKeys) {
         //todo
@@ -305,8 +375,82 @@
       aaa(e,index){
         // let _aa = this.options[e].aa
         console.log(e,e);
+        //console.log(this.ruleForm.express);
+      },
+      mallFreightInfo(id){
+        let _this= this;
+        _this.ruleForm = '';
+        Lib.M.ajax({
+          'url': DFshop.activeAPI.mallFreightInfo_post,
+          'data':{
+            id :id 
+          },
+          'success':function (data){
+            _this.ruleForm = data.data;
+            //console.log(_this.ruleForm);
+          }
+      });
+    },
+    mallFreightExpressList(){
+      let _this= this;
+      _this.options = '';
+      Lib.M.ajax({
+        'url': DFshop.activeAPI.mallFreightExpressList_post,
+        'success':function (data){
+          _this.options = data.data;
+          //console.log(_this.options);
+        }
+      });
+    },
+    mallShopList(){
+      let _this= this;
+      _this.shopList = '';
+      Lib.M.ajax({
+        'url': DFshop.activeAPI.mallStoreStoreList_post,
+        'success':function (data){
+          _this.shopList = data.data;
+         // console.log(_this.shopList);
+        }
+      });
+    },
+    mallGetArea(){
+      let _this= this;
+      _this.area = [];
+      Lib.M.ajax({
+        'url': DFshop.activeAPI.mallGetArea_post,
+        'success':function (data){
+          _this.area = data.data;
+          //console.log(_this.area);
+        }
+      });
+    },
+    generateData2(){
+        const data = [];
+        const cities = this.area;
+        cities.forEach((city, index) => {
+           data.push({
+             label: city.city_name,
+             key: city.city_parent
+          });
+         });
+        return data;
+      },
+      // filterMethod(query, item) {
+      //   console.log(this.data2)
+      //   return item.cities.indexOf(query) > -1;
+      // },
+    },
+    mounted(){
+      if(this.$route.params.id != '' && this.$route.params.id !='undefined'){
+        this.mallFreightInfo(this.$route.params.id);
       }
-    }
+      this.mallFreightExpressList();
+      this.mallShopList();
+    }, 
+    beforeMount(){
+      this.mallGetArea();
+    }, 
+
   }
 </script>
 

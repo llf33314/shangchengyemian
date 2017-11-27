@@ -44,8 +44,8 @@
             要求没有自有微信支付平台账户的商家必须参加担保交易，否则多粉平台不予提供支持
          </el-row>
       </div>
-      <el-button type="primary" v-if="isColor == '#cacaca'">立即加入担保交易</el-button>
-      <el-button @click="dialogFormVisible = true"  v-else>退出担保交易</el-button>
+      <el-button type="primary" v-if="isColor == '#cacaca'" @click="mallSecuritytradeAdd()">立即加入担保交易</el-button>
+      <el-button @click="exitGuarantee()"  v-else>退出担保交易</el-button>
     </div>
 
     <el-dialog title="退出担保交易" :visible.sync="dialogFormVisible">
@@ -53,11 +53,11 @@
         <p>申请退出多粉微商城担保交易</p>
         <p>为改进并提升我们的服务，请告知您的退出理由</p>
       </div>
-      <el-form :model="form">
+      <el-form >
         <el-form-item label="退出理由 :" :label-width="formLabelWidth">
-          <el-select v-model="form.region" placeholder="请选择活动区域">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
+          <el-select v-model="itemKey" placeholder="请选择活动区域">
+            <el-option :label="op.item_value" :value="op.item_key" v-for="(op,index) in form" :key="op.item_key"></el-option>
+            <!-- <el-option label="区域二" value="beijing"></el-option> -->
           </el-select>
         </el-form-item>
         <el-form-item label="补充意见 :" :label-width="formLabelWidth">
@@ -65,7 +65,7 @@
             type="textarea"
             :rows="2"
             placeholder="请输入内容"
-            v-model="form.textarea">
+            v-model="textarea">
           </el-input>
         </el-form-item>
         <el-form-item label="生效时间 :" :label-width="formLabelWidth" class="fontRed">
@@ -73,7 +73,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button type="primary" @click="submitExit()">确 定</el-button>
         <el-button  @click="dialogFormVisible = false">取 消</el-button>
       </div>
     </el-dialog>
@@ -88,26 +88,84 @@ export default {
   },
   data () {
     return {
-        isColor:'#cacaca',//待加入状态--颜色
+        isColor:'',//待加入状态--颜色
         dialogFormVisible:false,
-        form: {
-          name: '',
-          region: '',
-          date1: '',
-          date2: '',
-          delivery: false,
-          type: [],
-          resource: '',
-          desc: '',
-          textarea:''
-        },
+        form: {},
+        itemKey:'',
+        textarea:'',
         formLabelWidth: '120px'
     }
   },
   methods: {
+    mallSecuritytradeAdd(){
+      let _this= this;
+      Lib.M.ajax({
+        'url': DFshop.activeAPI.mallSecuritytradeAdd_post,
+        'success':function (data){
+          console.log(data);
+          _this.$message({
+            message: '加入成功',
+            type: 'success'
+          });
+          _this.mallIsSecuritytrade();
+        }
+      });
+    },
+    mallIsSecuritytrade(){
+      let _this= this;
+      Lib.M.ajax({
+        'url': DFshop.activeAPI.mallIsSecuritytrade_post,
+        'success':function (data){
+          console.log(data);
+          if(data.data.isSecuritytrade){
+            _this.isColor = '#34d063';//已加入状态--颜色
+          }else{
+            _this.isColor = '#cacaca';//待加入状态--颜色
+          }
+        }
+      });
+    },
+    mallQuitDanbaoReasonList(){
+      let _this= this;
+      _this.form = '';
+      Lib.M.ajax({
+        'url': DFshop.activeAPI.mallQuitDanbaoReasonList_post,
+        'success':function (data){
+          console.log(data.data);
+          _this.form = data.data;
+        }
+      });
+    },
+    exitGuarantee(){
+      this.dialogFormVisible = true;
+      this.mallQuitDanbaoReasonList();
+    },
+    mallSecuritytradeSave(){
+      let _this= this;
+      Lib.M.ajax({
+        'url': DFshop.activeAPI.mallSecuritytradeSave_post,
+        'data':{
+          quitReasonId:_this.itemKey,
+          remark:_this.textarea
+        },
+        'success':function (data){
+          console.log(data);
+          _this.$message({
+            message: '退出成功',
+            type: 'success'
+          });
+          _this.dialogFormVisible = false;
+          _this.mallIsSecuritytrade();
+        }
+      });
+    },
+    submitExit(){
+      this.mallSecuritytradeSave();
+    }
   },
   mounted(){
-     this.isColor = '#34d063';//已加入状态--颜色
+     this.mallIsSecuritytrade();
+     //this.isColor = '#34d063';
   }
 }
 </script>

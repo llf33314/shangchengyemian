@@ -5,7 +5,7 @@
       <div class="logistics-main">
         <div class="index-shopInfo">
           <p class="shop-box">
-            <el-button type="primary" @click="jumpRouter('addlogistics')" >新建物流</el-button>
+            <el-button type="primary" @click="jumpRouter('/addlogistics/'+id)" >新建物流</el-button>
             <el-button type="warning"><i class="iconfont icon-cplay1"></i>视频教程</el-button>
           </p>
         </div>
@@ -13,7 +13,7 @@
           <div v-if="isSince">
             <el-table :data="logisticsData.page.subList" style="width: 100%" class="block" v-if="logisticsData.page.pageCount>0">
               <el-table-column
-                prop="express"
+                prop="name"
                 label="模板名称">
               </el-table-column>
               <el-table-column
@@ -40,75 +40,82 @@
                 <template scope="scope">
                   <el-button class="buttonBlue"
                     size="small"
-                    @click="handleEdit(scope.$index, scope.row.id)">编辑</el-button>
+                    @click="jumpRouter('/addlogistics/'+scope.row.id)">编辑</el-button>
                   <el-button
                     size="small"
-                    @click="handleDelete(scope.$index, scope.row.id)">删除</el-button>
+                    @click="handleDelete(scope.$index, scope.row.id,1)">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
           </div>
         </div>
       </div>
+      <div class="block shop-textr" v-if="logisticsData.page.pageCount>0">
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :page-size="logisticsData.page.pageSize"
+          layout="prev, pager, next, jumper"
+          :total="logisticsData.page.pageCount">
+        </el-pagination>
+      </div>
     </el-tab-pane>
-    <el-tab-pane label="上面自提" name="since">
+    <el-tab-pane label="上门自提" name="since">
       <div class="logistics-main">
         <div class="index-shopInfo">上门自提功能
           <el-switch style="margin-left:30px;"
-            v-model="sinceSwitch"
+            v-model="tableData.isTakeTheir"
             on-text="开启"
             off-text="关闭">
           </el-switch>
           <p>启用上门自提功能后，买家可以就近选择你预设的自提点，下单后你需要尽快将商品配送至指定自提点。</p>
         </div>
-        <div class="logistics-content" v-if="sinceSwitch">
-          <div v-if="isSince">
-            <router-link to="/addSince">
-              <el-button type="primary" >新增自提点</el-button>
-            </router-link>
+        <div class="logistics-content">
+          <div>
+            <el-button type="primary" @click="jumpRouter('/addSince/'+id)">新增自提点</el-button>
             <el-table
-              :data="tableData"
+              :data="tableData.page.subList"
               style="width: 100%"
-              class="block">
+              class="block" v-if="tableData.page.pageCount>0">
               <el-table-column
-                prop="name"
+                prop="visitName"
                 label="自提点名称"
                 max-width="250">
               </el-table-column>
               <el-table-column
-                prop="address"
+                prop="visitAddressDetail"
                 label="自提点地址"
                 max-width="500">
               </el-table-column>
               <el-table-column
-                prop="phone"
+                prop="visitContactNumber"
                 label="联系电话">
               </el-table-column>
               <el-table-column label="操作">
                 <template scope="scope">
                   <el-button class="buttonBlue"
                     size="small"
-                    @click="handleEdit(scope.$index, scope.row.id)">编辑</el-button>
+                    @click="jumpRouter('/addSince/'+scope.row.id)">编辑</el-button>
                   <el-button
                     size="small"
-                    @click="handleDelete(scope.$index, scope.row.id)">删除</el-button>
+                    @click="handleDelete(scope.$index, scope.row.id,2)">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
           </div>
         </div>
       </div>
+      <div class="block shop-textr" v-if="tableData.page.pageCount>0">
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :page-size="tableData.page.pageSize"
+          layout="prev, pager, next, jumper"
+          :total="tableData.page.pageCount">
+        </el-pagination>
+      </div>
     </el-tab-pane>
-    <div class="block shop-textr" v-if="isPage">
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :page-size="logisticsData.page.pageSize"
-        layout="prev, pager, next, jumper"
-        :total="logisticsData.page.pageCount">
-      </el-pagination>
-    </div>
-    <content-no :show="contentNo" v-if="!isSince" ></content-no>
+    <content-no :show="contentNo" v-if="tableData.page.pageCount == 0 || logisticsData.page.pageCount == 0" ></content-no>
   </el-tabs>
 </div>
 </template>
@@ -130,23 +137,31 @@ export default {
         logisticsData: [],
         dialogWarn: true,
         curPage:1,
+        tableData:[],
     }
   },
   methods: {
     handleClick(tab, event) {
-      this.contentNo = tab.name
+      this.contentNo = tab.name;
+      console.log(tab.name,'tab');
+      this.jumpRouter('/logistics/'+tab.name);
+      //this.activeName = tab.name;
     },
-    handleEdit(index, row) {
-      console.log(index, row);
-    },
-    handleDelete(index, id) {
+    // handleEdit(index, row) {
+    //   console.log(index, row);
+    // },
+    handleDelete(index, id,type) {
       let _this= this;
       let msg = {
         'dialogTitle': '您确定要执行此操作吗？',
         'dialogMsg': '删除后，数据将无法恢复哦~',
         'callback': {
         'btnOne': function () {
-          _this.mallFreightDelete(id);
+          if(type == 1){
+            _this.mallFreightDelete(id);
+          }else{
+            _this.mallFreightTakeDelete(id);
+          }
         }
         }
       };
@@ -157,7 +172,7 @@ export default {
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
-      //this.curPage = ${val};
+      this.curPage = val;
       console.log(val)
     },
     mallFreightList(pageNum){
@@ -190,13 +205,50 @@ export default {
             message: '删除成功',
             type: 'success'
           });
-          _this.mallFreightList(1);
+          _this.mallFreightList(this.curPage);
+        }
+      });
+    },
+    mallFreightTakeList(pageNum){
+      let _this= this;
+      _this.tableData = '';
+      Lib.M.ajax({
+        'url': DFshop.activeAPI.mallFreightTakeList_post,
+        'data':{
+          curPage :pageNum 
+        },
+        'success':function (data){
+           _this.tableData = data.data;
+           //console.log(data.data.isTakeTheir);
+           _this.tableData.isTakeTheir = !!data.data.isTakeTheir;
+           //console.log(_this.tableData.isTakeTheir);
+           //console.log(Number(_this.tableData.isTakeTheir));
+        }
+      });
+    },
+    mallFreightTakeDelete(id){
+      let _this= this;
+      Lib.M.ajax({
+        'url': DFshop.activeAPI.mallFreightTakeDelete_post,
+        'data':{
+          id :id 
+        },
+        'success':function (data){
+           _this.$message({
+            message: '删除成功',
+            type: 'success'
+          });
+          _this.mallFreightTakeList(this.curPage);
         }
       });
     },
   },
   mounted(){
     this.mallFreightList(1);
+    this.mallFreightTakeList(1);
+    let _href = window.location.hash.split('/')[2];
+    this.activeName = _href;
+    console.log(this.activeName);
   }
 }
 </script>

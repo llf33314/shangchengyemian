@@ -43,30 +43,36 @@ import h5Table from './router/H5/table'
 import addH5 from './router/H5/addH5'
 //模块购买
 import modular from './router/modular/index'
+//秒杀管理
+import seckill from './router/seckill/index'
+//秒杀管理--新建秒杀
+import addSeckill from './router/seckill/addSeckill'
 const routes = [
   { path: '/', component: Index},
   { path: '/group', component: Group},
-  { path: '/addgroup', component: addGruop},
+  { path: '/addgroup/:id', component: addGruop},
   { path: '/marketing/:activeName', component: Marketing},
   // { path: '/marketing/:activeName/:pageNO', component: Marketing},
-  { path: '/addBond', component: AddBond},
+  { path: '/addBond/:id', component: AddBond},
   { path: '/integralmall', component: IntegralMall},
   { path: '/integralmall/goods', component: addGoods},
   { path: '/integralmall/banner', component: addBanner},
-  { path: '/presale', component: Presale},
-  { path: '/presale/addpresale', component: addPresale},
-  { path: '/pifa', component: Pifa},
-  { path: '/pifa/addPifa', component: addPifa},
+  { path: '/presale/:activeName', component: Presale},
+  { path: '/presale/addpresale/:id', component: addPresale},
+  { path: '/pifa/:activeName', component: Pifa},
+  { path: '/addPifa/:id', component: addPifa},
   { path: '/dwbj', component: Dwbj},
   { path: '/dwbj/addBj', component: addDwbj},
   { path: '/dwbj/addHT', component: addDwbj},
   { path: '/dwbj/addContract', component: addContract},
-  { path: '/auction', component: Auction},
-  { path: '/auction/addauction', component: addAuction},
+  { path: '/auction/:activeName', component: Auction},
+  { path: '/auction/addauction/:id', component: addAuction},
   { path: '/h5', component: h5},
   { path: '/h5/table', component: h5Table},
   { path: '/h5/addH5', component: addH5},
   { path: '/modular', component: modular},
+  { path: '/seckill', component: seckill},
+  { path: '/addSeckill/:id', component: addSeckill},
 ]
 
 Vue.use(VueRouter)

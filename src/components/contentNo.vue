@@ -1,21 +1,21 @@
 <template>
     <div class="index-contentNo" >
         <i class="iconfont icon-tishi"></i>
-        <p v-if="show === 'shop'">亲，您还没有店铺，<router-link to=''>点击这里</router-link> 创建您的第一家店铺吧</p>
-        <p v-else-if="show === 'goods'">亲，您还没有发布商品，<router-link to=''>点击这里</router-link> 发布您的第一件商品吧</p>
-        <p v-else-if="show === 'page'">您还没有创建分组，<router-link to=''>点击这里</router-link> 建立分组吧</p>
-        <p v-else-if="show === 'module'">您还没有创建模板，<router-link to=''>点击这里</router-link> 设置模板吧</p>
-        <p v-else-if="show === 'since'">您还没有创建自提点，<router-link to=''>点击这里</router-link> 新建自提点</p>
-        <p v-else-if="show === 'logistics'">您还没有创建物流模板，<router-link to=''>点击这里</router-link> 创建模板</p>
-        <p v-else-if="show === 'gruop'">您还没有发布团购商品，<router-link to=''>点击这里</router-link> 发布您的团购商品</p>
-        <p v-else-if="show === 'commission'">您还没有发布佣金商品，<router-link to=''>点击这里</router-link> 发布您的积分商品</p>
-        <p v-else-if="show === 'JFgoods'">您还没有发布积分商品，<router-link to=''>点击这里</router-link> 发布您的佣金商品</p>
-        <p v-else-if="show === 'ysgl'">您还没有发布预售商品，<router-link to=''>点击这里</router-link> 发布您的预售商品</p>
-        <p v-else-if="show === 'pifa'">您还没有发布批发商品，<router-link to=''>点击这里</router-link> 发布您的批发商品</p>
-        <p v-else-if="show === 'baojia'">您还没有发布报价单，<router-link to=''>点击这里</router-link> 新增报价单</p>
-        <p v-else-if="show === 'hetong'">您还没有发布合同，<router-link to=''>点击这里</router-link> 新增合同</p>
-        <p v-else-if="show === 'GSmodule'">您还没有创建公司模板，<router-link to=''>点击这里</router-link> 新增合同</p>
-        <p v-else-if="show === 'H5'">您还没有创建H5商城，<router-link to=''>点击这里</router-link> 新增H5页面</p>
+        <p v-if="show === 'shop'">亲，您还没有店铺，<a :href="window +'/views/setUp/index.html#/setup'">点击这里</a> 创建您的第一家店铺吧</p>
+        <p v-else-if="show === 'goods'">亲，您还没有发布商品，<a :href="window +'/views/setUp/index.html#/setup'">点击这里</a> 发布您的第一件商品吧</p>
+        <p v-else-if="show === 'page'">您还没有创建分组，<a :href="window +'/views/setUp/index.html#/setup'">点击这里</a> 建立分组吧</p>
+        <p v-else-if="show === 'module'">您还没有创建模板，<a :href="window +'/views/setUp/index.html#/setup'">点击这里</a> 设置模板吧</p>
+        <p v-else-if="show === 'since'">您还没有创建自提点，<a :href="window +'/views/setUp/index.html#/setup'">点击这里</a> 新建自提点</p>
+        <p v-else-if="show === 'logistics'">您还没有创建物流模板，<a :href="window +'/views/setUp/index.html#/setup'">点击这里</a> 创建模板</p>
+        <p v-else-if="show === 'gruop'">您还没有发布团购商品，<a :href="window +'/views/setUp/index.html#/setup'">点击这里</a> 发布您的团购商品</p>
+        <p v-else-if="show === 'commission'">您还没有发布佣金商品，<a :href="window +'/views/setUp/index.html#/setup'">点击这里</a> 发布您的积分商品</p>
+        <p v-else-if="show === 'JFgoods'">您还没有发布积分商品，<a :href="window +'/views/setUp/index.html#/setup'">点击这里</a> 发布您的佣金商品</p>
+        <p v-else-if="show === 'ysgl'">您还没有发布预售商品，<a :href="window +'/views/setUp/index.html#/setup'">点击这里</a> 发布您的预售商品</p>
+        <p v-else-if="show === 'pifa'">您还没有发布批发商品，<a :href="window +'/views/setUp/index.html#/setup'">点击这里</a> 发布您的批发商品</p>
+        <p v-else-if="show === 'baojia'">您还没有发布报价单，<a :href="window +'/views/setUp/index.html#/setup'">点击这里</a> 新增报价单</p>
+        <p v-else-if="show === 'hetong'">您还没有发布合同，<a :href="window +'/views/setUp/index.html#/setup'">点击这里</a> 新增合同</p>
+        <p v-else-if="show === 'GSmodule'">您还没有创建公司模板，<a :href="window +'/views/setUp/index.html#/setup'">点击这里</a> 新增合同</p>
+        <p v-else-if="show === 'H5'">您还没有创建H5商城，<a :href="window +'/views/setUp/index.html#/setup'">点击这里</a> 新增H5页面</p>
         <p v-else-if="show === 'order'">您还没有相关订单信息哦</p>
         <p v-else-if="show === 'trade'">还没有相关交易记录</p>
         <p v-else> 还没有相关数据</p>
@@ -26,7 +26,7 @@ export default {
     props:['show'],
     data() {
         return {
-            
+            window:''
         }
     },
     methods: {
@@ -34,6 +34,7 @@ export default {
     },
     mounted(){
         console.log(typeof this.show);
+        this.window = window.location.origin
     }
 }
 </script>
