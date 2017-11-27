@@ -3,6 +3,70 @@ import Vue from 'vue'
 
 Vue.mixin({
     methods:{
+
+    /**
+     * isAdminUser
+     * @param success  //强求后执行方法
+     */
+    isAdminUser(opt){
+        this.ajaxRequest({
+            'url': DFshop.activeAPI.isAdminUser_post,
+            'success':function (data){
+                if(typeof opt.success == 'function') opt.success(data);
+            }
+        });
+    }, 
+     /**
+     * 店铺搜索下拉列表
+     * @param success  //成功执行方法
+     */
+    storeList(opt){
+        this.ajaxRequest({
+            'url': DFshop.activeAPI.mallStoreStoreList_post,
+            'success':function (data){
+                if(typeof opt.success == 'function') opt.success(data);
+            }
+        });
+      },
+      /*获取地区列表 */
+      getAreaList(opt){
+        this.ajaxRequest({
+          'url': DFshop.activeAPI.mallGetArea_post,
+          'data':{
+            pid:opt.cityId
+          },
+          'success':function (data){
+              if(typeof opt.success == 'function') opt.success(data);
+          }
+        });
+      },
+      /*根据店铺id获取活动商品列表 */
+      mallGroupBuyGetProduct(opt){
+        this.ajaxRequest({
+          'url': DFshop.activeAPI.mallGroupBuyGetProduct_post,
+          'data':{
+            defaultProId:opt.defaultProId,
+            shopId:opt.shopId,
+            proName:opt.proName,
+            curPage:opt.curPage
+          },
+          'success':function (data){
+              if(typeof opt.success == 'function') opt.success(data);
+          }
+        });
+      },
+      /*根据商品id获取商品规格、库存 */
+      mallGetSpecificaByProId(opt){
+        this.ajaxRequest({
+          'url': DFshop.activeAPI.mallGetSpecificaByProId_post,
+          'data':{
+            proId:opt.proId
+          },
+          'success':function (data){
+              if(typeof opt.success == 'function') opt.success(data);
+          }
+        });
+      },
         /**
 	  * @param {String} type			请求的类型，默认post
 	  * @param {String} url				请求地址
@@ -16,81 +80,80 @@ Vue.mixin({
 	  * @param return 
 	*/
 	ajaxRequest(opt) {
-        
-            let vm = this;
-            let opts = opt || {};
-            let status = opt.status || true;
-            if (!opts.url) {
-                alert('请填写接口地址');
-                return false;
-            }
-            //配置请求头
-            axios({
-                "method": opts.type || 'post',
-                "url": window.DFshop.api + opts.url,
-                "params": opts.data || {},
-                "headers": {
-                    "Content-type": "application/json;charset=UTF-8"
-                },
-                // `baseURL` 将自动加在 `url` 前面，除非 `url` 是一个绝对 URL。
-                // 它可以通过设置一个 `baseURL` 便于为 axios 实例的方法传递相对 URL
-                //"baseURL": window.h5App.api,//打包时注释
-                "timeout": opts.time || 10 * 1000,
-                "responseType": opts.dataType || 'json'
-            }).then(function (res) {
-    
-                if (res.status == 200) {
-    
-                    if (opts.success) {
-                        
-                        //需要登陆（需要跳转）
-                        if(res.data.code == 1001){
-                            return
-                        }
-                        //需要刷新本页面
-                        if(res.data.code == 1002 || res.data.code == 1005){
-                            window.location.reload(); 
-                            return
-                        }
-                        //商家已过期（需要跳转）
-                        if(res.data.code == 1004){
+        let vm = this;
+        let opts = opt || {};
+        let status = opt.status || true;
+        if (!opts.url) {
+            alert('请填写接口地址');
+            return false;
+        }
+        //配置请求头
+        axios({
+            "method": opts.type || 'post',
+            "url": window.DFshop.api + opts.url,
+            "params": opts.data || {},
+            "headers": {
+                "Content-type": "application/json;charset=UTF-8"
+            },
+            // `baseURL` 将自动加在 `url` 前面，除非 `url` 是一个绝对 URL。
+            // 它可以通过设置一个 `baseURL` 便于为 axios 实例的方法传递相对 URL
+            //"baseURL": window.h5App.api,//打包时注释
+            "timeout": opts.time || 10 * 1000,
+            "responseType": opts.dataType || 'json'
+        }).then(function (res) {
+            if (res.status == 200) {
 
-                            return
-                        }
-                        //请求失败 1 请求数据为空1000  参数传值不完整1003
-                        //商品已被删除或未上架1006  店铺已被删除1007 活动被删除1011
-                        if(status){
-                            if(res.data.code != 0 ){
-                                let msg={
-                                    type :'error',
-                                    msg :  res.data.msg
-                                }
-                                vm.$parent.$refs.bubble.show_tips(msg);
-                                return
+                if (opts.success) {
+                    
+                    //需要登陆（需要跳转）
+                    if(res.data.code == 1001){
+                        return
+                    }
+                    //需要刷新本页面
+                    if(res.data.code == 1002 || res.data.code == 1005){
+                        window.location.reload(); 
+                        return
+                    }
+                    //商家已过期（需要跳转）
+                    if(res.data.code == 1004){
+
+                        return
+                    }
+                    //请求失败 1 请求数据为空1000  参数传值不完整1003
+                    //商品已被删除或未上架1006  店铺已被删除1007 活动被删除1011
+                    if(status){
+                        if(res.data.code != 0 ){
+                            let msg={
+                                type :'error',
+                                msg :  res.data.msg
                             }
+                            vm.$parent.$refs.bubble.show_tips(msg);
+                            return
                         }
-                        opts.success(res.data, res);
                     }
-    
-                } else {
-
-                    if (data.error) {
-                        opts.error(error);
-                    } else {
-                        console.log('error');
-                    }
-    
+                    opts.success(res.data, res);
                 }
-    
-            }).catch(function (error) {
-                console.log(error);
-                if (opts.error) {
+
+            } else {
+
+                if (data.error) {
                     opts.error(error);
                 } else {
-                    console.log('catch');
+                    console.log('error');
                 }
-            });
-    
+
+            }
+
+        }).catch(function (error) {
+            console.log(error);
+            if (opts.error) {
+                opts.error(error);
+            } else {
+                console.log('catch');
+            }
+        });
+
         },
-    }
+    },
+    
 })

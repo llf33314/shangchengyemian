@@ -20,7 +20,8 @@
         <!--selected-->
         <div class="shop-addshop-item clearfix" v-for="(item,index) in  data.data" 
               :class="{'selected': index === selected}"
-              @click="selectedItem(index,item)">
+              @click="selectedItem(index,item)"
+              :key="index">
           <div class="shop-addshop-img" >
              <defaultImg :background="data.imgUrl+item.imageUrl"></defaultImg>
           </div>
@@ -37,9 +38,11 @@
         <el-form ref="form" :model="form" label-width="80px">
            <el-form-item label="店铺头像 :">
             <div class="addshop-IDImg">
-              <!-- <material></material> -->
-              <div class="shop-IDUpload">
-               <gt-material  v-on:imgdata="imgdata"></gt-material>
+              <div class="shop-IDUpload" @click="material()">
+                <div class="avatar-uploader" 
+                    :style="{backgroundImage: 'url(' + addshopImg + ')'}">
+                  <i class="el-icon-plus" v-if="!addshopImg"></i>
+                </div>
               </div>
               <span class="p-warn">图片比例：1:1(必填)</span>
             </div>
@@ -118,7 +121,7 @@ export default {
        Telephones:[{
             phone:''
         }],
-      imgUpload:''
+      addshopImg:''
     }
   },
   methods: {
@@ -178,13 +181,16 @@ export default {
     },
     Submit(){
       let _this = this;
-      if(!_this.imgUpload){
+      if(!_this.addshopImg){
          this.$message({
               message: '请上传店铺头像',
               type: 'warning'
         });
         return
       }
+
+      let addshopImg = '/image/'+_this.addshopImg.split('/image/')[1];
+
       if(!_this.form.stoLinkman){
          this.$message({
               message: '联系人不能为空',
@@ -196,6 +202,7 @@ export default {
   　　for (let i in this.Telephones){
       　　var str = this.Telephones[i].phone
           if(_this.stoIsSms){
+            if(!_this.phone(str)) return;
               _this.phone(str);
           }
       　　arr.push(str);
@@ -205,7 +212,7 @@ export default {
           id: '',
           stoName:_this.form.businessName,
           wxShopId: _this.form.id,
-          stoHeadImg: _this.imgUpload,
+          stoHeadImg: addshopImg,
           stoLinkman: _this.form.stoLinkman,  
           stoPhone: _this.form.telephone, 
           stoPicture: _this.form.imageUrl,
@@ -214,6 +221,7 @@ export default {
           stoSmsTelephone: arr||'', 
           stoQqCustomer: _this.form.stoQqCustomer||''
       }
+      
       _this.ajaxRequest({
           'url': DFshop.activeAPI.mallStoreSave_post,
           'data': {
@@ -262,13 +270,28 @@ export default {
     deleteTelephone(index,data){
         data.splice(index, 1);
     },
-    /**
-     * 接收上传图片组件数据
-     * @param 上传图片地址
+     /** 
+     * 调用素材库
      */
-    imgdata(img){
-        this.imgUpload = img;
-    }
+    material(){
+      let _this = this;
+      _this.$material({
+        imageboxUrl: DFshop.activeAPI.materialUrl,   //地址
+        modal: true,       //遮罩
+        selecType: true,   //是否多选
+        width: 820, //宽度
+        height: 500, //高度
+        lockScroll: false, //弹出框后是否锁定滚动轴
+        closeOnClickModal: false, //点击遮罩是否关闭
+        closeOnPressEscape: false
+      }).then(function (val) {
+        //确认
+          _this.addshopImg = val[0].url;
+        }).catch(function (error) {
+        //取消
+      }) 
+
+    },
   },
   mounted() {
     this.shopAjax();

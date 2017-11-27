@@ -11,6 +11,7 @@
             <p class="shopInfo-name" v-text="tabelData.userName">商家名称</p>
             <div class="shopInfo-button">
               <el-button type="primary" 
+                v-if="tabelData.isShopAdd == 0"
                 @click="jumpRouter('shop/addShop')" >新增店铺</el-button>
               <el-button type="primary"
                 @click="jumpRouter('shop/addPage/0')">新建微页面</el-button>
@@ -23,33 +24,36 @@
               <template scope="scope">
                 <div class="index-list-shop">
                   <div class="list-shop-img">
-                    <defaultImg :background="imgUrl+scope.row.sto_picture"></defaultImg>
+                    <defaultImg :background="imgUrl+scope.row.stoPicture"></defaultImg>
                   </div>
                   <div class="list-shop-dtl">
-                    <p v-text="scope.row.sto_name"></p>
-                     <!-- <div class="list-shop-txt">
-                      <div :class="{'pass':isPass1}"> 
-                        <i class="iconfont icon-renzheng"></i> 个人认证
+                    <p v-text="scope.row.stoName"></p>
+                     <div class="list-shop-txt">
+                      <div class="pass" > 
+                        <i class="iconfont icon-renzheng"></i> 
+                        <span v-if="scope.row.certStoType == 0">个人</span><span v-else>企业</span>认证
                       </div>
-                      <div :class="{'pass':isPass2}">
+                      <div :class="{'pass':isSecuritytrade}">
                         <i class="iconfont icon-renzheng"></i> 担保交易
                       </div>
-                      <div :class="{'pass':isPass3}">
-                          <i class="iconfont icon-renzheng"></i >线下店铺
+                      <div class="pass">
+                          <i class="iconfont icon-renzheng "></i >线下店铺{{scope.row.certStoCategoryName}}
                       </div>
-                      <div :class="{'pass':isPass4}">
-                          <i class="iconfont icon-renzheng"></i> 直营店
+                      <div :class="{'pass':scope.row.certStoCategoryName}">
+                          <i class="iconfont icon-renzheng"></i>
+                          <span v-if="scope.row.certStoCategoryName ">{{scope.row.certStoCategoryName}}</span>
+                          <span v-else>普通店铺</span>
                       </div>
-                    </div>  -->
+                    </div> 
                   </div>
                 </div>
               </template>
             </el-table-column>
-            <el-table-column label="店铺地址" prop="sto_address" min-width="150">
+            <el-table-column label="店铺地址" prop="stoAddress" min-width="150">
             </el-table-column>
-            <el-table-column label="联系人" prop="sto_linkman">
+            <el-table-column label="联系人" prop="stoLinkman">
             </el-table-column>
-            <el-table-column label="联系电话" prop="sto_phone">
+            <el-table-column label="联系电话" prop="stoPhone">
             </el-table-column>
             <el-table-column label="操作" min-width="180">
               <template scope="scope">
@@ -113,6 +117,7 @@
                   >预览</el-button>
                   <el-button  size="small"
                               class="buttonBlue"
+                              @click="shopLink(scope.row.pageId)"
                   >链接</el-button>
                   <el-button  size="small"
                   @click="handleDelete(scope.row,'page')">删除</el-button>
@@ -131,8 +136,10 @@
               <div class="style-card" v-for="(style,index) in styles"
                   @click="styleSelected(style.style,style.item_key,index)"
                   :class="{'selected': index === styleSelect }"
+                  :key = "index"
                   >
-                <em :style="{background: color}" v-for="color in style.style ">
+                <em :style="{background: color}" v-for="(color,i) in style.style "
+                    :key="i">
                 </em> 
               </div>
             </div>
@@ -141,7 +148,8 @@
          <div class="index-style-content clearfix">
           <div class="index-style-title">当前风格示例：</div>
           <div class="index-style-preview">
-            <div class="preview-item style-change1">
+            <div class="preview-item style-change1"
+                :style="{backgroundImage: 'url(' + bgimg1 + ')'}">
               <div class="module1" :style="{background:isColor[0]}">
               </div>
               <div class="module2" :style="{color:isColor[0]}">
@@ -171,7 +179,8 @@
                 </div>
               </div>
             </div>
-            <div class="preview-item style-change2">
+            <div class="preview-item style-change2"
+                :style="{backgroundImage: 'url(' + bgimg2 + ')'}">
               <div class="module1" :style="{color:isColor[0]}">
                 ¥ <span>7,199.</span>00
               </div>
@@ -190,7 +199,8 @@
                 </div>
               </div>
             </div>
-            <div class="preview-item style-change3">
+            <div class="preview-item style-change3"
+            :style="{backgroundImage: 'url(' + bgimg3 + ')'}">
               <div class="module1">
                 <i class="iconfont icon-dui" :style="{color:isColor[0]}"></i>
                 <i class="iconfont icon-dui" :style="{color:isColor[0]}"></i>
@@ -216,7 +226,7 @@
         </div>
       </div>
     </el-tab-pane>
-    <content-no :show="contentNo" v-if="tabelData.page.pageSize == 0 "></content-no>
+    <content-no :show="contentNo" v-if="tabelData.page.rowCount == 0 "></content-no>
     <div class="shop-textr" v-if="tabelData.page.pageCount>1">
       <el-pagination
         @size-change="handleSizeChange"
@@ -234,6 +244,10 @@
 import Lib from 'assets/js/Lib';
 import defaultImg from 'components/defaultImg';
 import contentNo from 'components/contentNo';
+
+import bgimg1 from '../img/style1.png';
+import bgimg2 from '../img/style2.png';
+import bgimg3 from '../img/style3.png';
 export default {
   components: {
     defaultImg,contentNo 
@@ -266,6 +280,10 @@ export default {
       isColor: [],
       dialogVisible: false,//二维码弹出框
       contentNo: 'shop',//没有数据显示
+      isSecuritytrade:'',// 是否加入担保交易   0未加入 1已加入
+      bgimg1:bgimg1,//全站风格背景图
+      bgimg2:bgimg2,
+      bgimg3:bgimg3
     }
   },
   watch: {
@@ -311,10 +329,11 @@ export default {
           curPage :Page 
         },
         'success':function (data){
-          console.log(data.data.page);
+          console.log(data.data,'data.data');
           _this.tabelData = data.data;
           _this.imgUrl = data.imgUrl;
           _this.path = data.path;
+          _this.isSecuritytrade = data.data.isSecuritytrade;
         }
       });
     },
@@ -430,15 +449,17 @@ export default {
     pageAjax(Page,shopId){
       let _this = this;
       this.tabelData = '';
-      console.log(shopId)
+
+      //初次请求店铺列表
       if(!shopId){
-         DFshop.method.storeList({
+         _this.storeList({
           'success'(data){
             console.log(data.data,'Id');
             _this.shopOptions = data.data;
           }
         })
       }
+
       _this.ajaxRequest({
         'url': DFshop.activeAPI.mallPageNewlist_post,
         'data':{
@@ -447,7 +468,6 @@ export default {
         },
         'success':function (data){
           _this.tabelData = data.data;
-         
           $.each(_this.tabelData.page.subList, function(i){
             let oldTime = _this.pag_create_time;
             _this.pag_create_time = Lib.M.format(oldTime);
@@ -469,10 +489,9 @@ export default {
         _this.ajaxRequest({
         'url': DFshop.activeAPI.mallStoreGetStyleList_post,
         'success':function (data){
-          console.log(data.data);
-          _this.style_key = data.data.styleSelect;
+          _this.styleSelect = data.data.styleKey-1;
           _this.styles = data.data.styleList;
-          _this.isColor = data.data.styleList[data.data.styleKey].style;
+          _this.isColor = data.data.styleList[_this.styleSelect].style;
         }
       });
     },
@@ -484,7 +503,7 @@ export default {
       index === this.styleSelect?this.styleSelect = false:this.styleSelect = index;
       let _this=this;
       _this.styleSelect = index;
-      _this.isColor=colors;
+      _this.isColor = colors;
       _this.style_key = styleKey;
     },
     /**
@@ -515,7 +534,7 @@ export default {
     let _this = this;
     let _href = window.location.hash.split('/')[1];
     _this.activeName = _href;
-    DFshop.method.isAdminUser({
+    _this.isAdminUser({
       'success':function (data){
         if(data.code == -1)return;
         _this.switchAjax(_this.activeName);
