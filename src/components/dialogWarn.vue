@@ -11,8 +11,8 @@
     },
     time: 3,//秒数（默认3）
   }
-  _this.$root.$refs.dialog.showDialog(msg);//调用方法
--->
+  _this.$root.$refs.dialog.showDialog(msg);//调用方法 -->
+
 <el-dialog
     title="提示"
     :visible.sync="dialogWarn"

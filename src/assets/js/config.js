@@ -30,7 +30,7 @@ import common from './common';
        * @type {String}
        * @memberof DF.env
        */
-      activeAPI: 'http://mall.yifriend.net:8080'
+      activeAPI: '/api'
     },
     test: { // 测试环境
       debug: true,
@@ -51,7 +51,7 @@ import common from './common';
    * 环境配置
    * @type {env.develop|{debug, API, WXCore, LoginUrl}}
    */
-  DFshop.env = env.develop;
+  DFshop.env = env.test;
 
   DFshop.activeAPI = {
     /*调用素材库*/
