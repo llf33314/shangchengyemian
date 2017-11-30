@@ -23,6 +23,7 @@ export default {
 @import '../assets/css/mixins.less';
 @import '../assets/css/base.less';
 .notice-main{
+    display: none;
     position: fixed;
     right: 0;
     bottom: 55px;

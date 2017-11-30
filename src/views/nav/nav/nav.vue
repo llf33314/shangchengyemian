@@ -1,7 +1,7 @@
 <template>
   <div class="nav">
-    <a href="/views/survey/index.html">商城概况</a> 
-    <a href="/views/shop/index.html#/shop">店铺管理(差查看大图)</a>
+    <a href="/views/survey/index.html">商城概况(完成)</a> 
+    <a href="/views/shop/index.html#/shop">店铺管理(差关于首页编辑和展示页面)</a>
     <a href="/views/goods/index.html">商品管理</a>
     <a href="/views/order/index.html#/All">订单管理</a>
     <a href="/views/trade/index.html">交易管理</a>

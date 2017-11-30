@@ -3,10 +3,9 @@
 * let msg ={
     //必写
     'title':'',//标题
-    'imgUrl':'',//二维码图片链接
-    'urlQR':'',//请求接口--二维码
-    'pageLink':''//页面链接
-    },
+    'urlQR': //请求接口--二维码 默认 DFshop.activeAPI.mallStoreGenerateQRCode_get,
+    'pageLink': ''//页面链接
+    }
   }
   _this.$root.$refs.dialogQR.showDialog(msg);//调用方法
 -->
@@ -46,16 +45,8 @@
     data(){
       return {
         copyUrlVisible: false,
-        // copeData:{//请求返回内容
-        //   erweima:'',
-        //   longUrl:'正在生成链接...',//页面链接
-        //   shortUrl:'正在生成链接...',//短信链接
-        //   downUrl: ''
-        // },
         erweima:'',//二维码
         title:'',//标题
-        //urlLink:'',//请求接口--链接
-        //urlData:'',//请求参数
         pageLink:'',//页面链接
         shortUrl:'正在生成链接...',
       }
@@ -95,36 +86,31 @@
         let vm = this;
         vm.title = msg.title || '' ;
         vm.pageLink = msg.pageLink|| '';
-        vm.imgUrl = msg.imgUrl || ''
-        //vm.urlData = .urlData || '';
-        //vm.urlLink = msg.urlLink || '';
+        vm.urlQR =  msg.urlQR || DFshop.activeAPI.mallStoreGenerateQRCode_get;
+        vm.erweima = vm.urlQR +"?url="+ msg.pageLink;//生成二维码链接
         vm.copyUrlVisible = true;
-        if(msg.imgUrl != ''){
-          vm.erweima = msg.imgUrl;
-        }else{
-          vm.erweima = msg.urlQR+"?url="+msg.pageLink;//生成二维码链接
-        }
-        //vm.linkAjax(msg.urlLink,msg.urlData);
+        console.log(vm.erweima,vm.urlQR,'----------------')
       },
       /**
        * 链接请求
        * @param url  //请求接口
        * @param data  //请求参数
-       *
-      linkAjax(url,data){
-        let _this = this;
-          this.ajaxRequest({
-          'url': url,
-          'data':{
-            pageId: data 
-          },
-          'success':function (data){
-              _this.copeData.longUrl= data.data.storeLink;
-              _this.copeData.shortUrl= data.data.smsLink;
-              _this.copeData.erweima = _this.urlQR+"?url="+data.data.storeLink;
-          }
-        });
-      },*/
+       */
+      // linkAjax(url,data){
+      //   let _this = this;
+      //     this.ajaxRequest({
+      //     'url': _this.urlQR,
+      //     'data':{
+      //       url: _this.pageLink 
+      //     },
+      //     'success':function (data){
+      //       console.log(data,'链接二维码')
+      //         _this.copeData.longUrl= data.data.storeLink;
+      //         _this.copeData.shortUrl= data.data.smsLink;
+      //         _this.copeData.erweima = _this.urlQR+"?url="+data.data.storeLink;
+      //     }
+      //   });
+      // },
     }
   }
 </script>

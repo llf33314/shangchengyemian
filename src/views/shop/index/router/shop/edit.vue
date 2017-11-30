@@ -14,7 +14,10 @@
         </el-form-item>
         <el-form-item label="店铺头像 :">
             <div class="shop-edit-Upload">
-                <gt-material :imgList="imgUrl+form.stoHeadImg" v-on:imgdata="imgdata"></gt-material>
+                <gt-material @change="newImgData" 
+                            :img="form.stoHeadImg"
+                            :imgUrl="imgUrl"
+                ></gt-material>
             </div>
             <span class="shop-prompt" style="margin-left:20px;vertical-align: bottom;">图片比例：1:1</span>
         </el-form-item>
@@ -34,8 +37,8 @@
                         v-for="(Telephone,index) in Telephones"
                         :key="index">
                     <el-input   class="el-telephone"
-                                v-model="Telephone.phone" 
-                                placeholder="请输入推送手机">
+                            v-model="Telephone.phone" 
+                            placeholder="请输入推送手机">
                     </el-input>
                     <i class="el-i el-icon-circle-cross" v-show=" Telephones.length>1" @click="deleteTelephone(index,Telephones)"></i>
                     <a class="fontBlue" v-if="Telephones.length === index+1 &&Telephones.length < 5" @click="addTelephone(Telephone.phone)">新增</a>
@@ -118,6 +121,7 @@ export default {
                 });
                 return false;
             }
+            let _imgUpload = '/image/'+_this.imgUpload.split('/image/')[1];
         　　for (let i in this.Telephones){
             　　var str = this.Telephones[i].phone
                 if(_this.form.stoIsSms){
@@ -130,7 +134,7 @@ export default {
                 id: _this.$route.params.shopId,
                 stoName:_this.form.stoName,
                 wxShopId: _this.form.wxShopId,
-                stoHeadImg: _this.imgUpload ,
+                stoHeadImg: _imgUpload ,
                 stoLinkman: _this.form.stoLinkman,  
                 stoPhone: _this.form.stoPhone, 
                 stoPicture: _this.form.stoPicture,
@@ -139,7 +143,7 @@ export default {
                 stoSmsTelephone: arr, 
                 stoQqCustomer: _this.form.stoQqCustomer
             }
-            
+            //console.log(sto,'sto')
             _this.ajaxRequest({
                 'url': DFshop.activeAPI.mallStoreSave_post,
                 'data': {
@@ -195,6 +199,13 @@ export default {
          */
         imgdata(img){
             this.imgUpload = img;
+        },
+        /** 
+         * 素材库图片
+        */
+        newImgData(value){
+            this.imgUpload = value;
+            console.log(value);
         }
     },
     mounted() {

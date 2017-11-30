@@ -15,7 +15,7 @@
     <div class="shop-authentication-content">
       <el-form ref="form" :model="form" label-width="175px" :rules="rules">
         <el-form-item label="店铺名称 :" >
-          {{data.sto_name}}
+          {{data.stoName}}
         </el-form-item>
         <el-form-item label="主体信息 :">
           <el-radio-group v-model="stoType" @change="resetForm('form')">
@@ -33,12 +33,12 @@
           <el-form-item label="身份证正面：" prop="IDImg1">
             <div class="shop-IDImg">
               <div class="shop-IDUpload">
-                <div class="material-square" @click="materiallayer('idCardFront')" :class="idCardFront == '' ? 'border':''">
+                <div class="material-square" @click="materiallayer(1)" :class="imgs.idCardFront == '' ? 'border':''">
                   <i class="el-icon-plus"></i>
-                  <img class="img"  v-if="idCardFront != ''" :src="idCardFront" />
-                  <div class="delete" v-if="idCardFront != '' " @click.stop="stopDelete">
-                    <i class="el-icon-view" @click.stop="showBigImg(idCardFront)"></i>
-                    <i class="el-icon-delete2" @click.stop="deleteImg('idCardFront')"></i>
+                  <img class="img"  v-if="imgs.idCardFront != ''" :src="imgs.idCardFront" />
+                  <div class="delete" v-if="imgs.idCardFront != '' " @click.stop="stopDelete">
+                    <i class="el-icon-view" @click.stop="showBigImg(imgs.idCardFront)"></i>
+                    <i class="el-icon-delete2" @click.stop="deleteImg(1)"></i>
                   </div>
                 </div>
               </div>
@@ -53,12 +53,12 @@
            <el-form-item label="身份证背面：" prop="IDImg2">
             <div class="shop-IDImg">
               <div class="shop-IDUpload">
-                <div class="material-square" @click="materiallayer('idCardBack')" :class="idCardBack == '' ? 'border':''">
+                <div class="material-square" @click="materiallayer(2)" :class="imgs.idCardBack == '' ? 'border':''">
                   <i class="el-icon-plus"></i>
-                  <img class="img"  v-if="idCardBack != ''" :src="idCardBack" />
-                  <div class="delete" v-if="idCardBack != '' " @click.stop="stopDelete">
-                    <i class="el-icon-view" @click.stop="showBigImg(idCardBack)"></i>
-                    <i class="el-icon-delete2" @click.stop="deleteImg('idCardBack')"></i>
+                  <img class="img"  v-if="imgs.idCardBack != ''" :src="imgs.idCardBack" />
+                  <div class="delete" v-if="imgs.idCardBack != '' " @click.stop="stopDelete">
+                    <i class="el-icon-view" @click.stop="showBigImg(imgs.idCardBack)"></i>
+                    <i class="el-icon-delete2" @click.stop="deleteImg(2)"></i>
                   </div>
                 </div>
               </div>
@@ -82,12 +82,12 @@
             <div class="img-title">身份证正面</div>
             <div class="shop-IDImg">
               <div class="shop-IDUpload">
-                <div class="material-square" @click="materiallayer('idCardFront')" :class="idCardFront == '' ? 'border':''">
+                <div class="material-square" @click="materiallayer(1)" :class="imgs.idCardFront == '' ? 'border':''">
                   <i class="el-icon-plus"></i>
-                  <img class="img"  v-if="idCardFront != ''" :src="idCardFront" />
-                  <div class="delete" v-if="idCardFront != '' " @click.stop="stopDelete">
-                    <i class="el-icon-view" @click.stop="showBigImg(idCardFront)"></i>
-                    <i class="el-icon-delete2" @click.stop="deleteImg('idCardFront')"></i>
+                  <img class="img"  v-if="imgs.idCardFront != ''" :src="imgs.idCardFront" />
+                  <div class="delete" v-if="imgs.idCardFront != '' " @click.stop="stopDelete">
+                    <i class="el-icon-view" @click.stop="showBigImg(imgs.idCardFront)"></i>
+                    <i class="el-icon-delete2" @click.stop="deleteImg(1)"></i>
                   </div>
                 </div>
               </div>
@@ -103,12 +103,12 @@
             <div class="img-title">身份证背面</div>
             <div class="shop-IDImg">
               <div class="shop-IDUpload">
-                <div class="material-square" @click="materiallayer('idCardBack')" :class="idCardBack == '' ? 'border':''">
+                <div class="material-square" @click="materiallayer(2)" :class="imgs.idCardBack == '' ? 'border':''">
                   <i class="el-icon-plus"></i>
-                  <img class="img"  v-if="idCardBack != ''" :src="idCardBack" />
-                  <div class="delete" v-if="idCardBack != '' " @click.stop="stopDelete">
-                    <i class="el-icon-view" @click.stop="showBigImg(idCardBack)"></i>
-                    <i class="el-icon-delete2" @click.stop="deleteImg('idCardBack')"></i>
+                  <img class="img"  v-if="imgs.idCardBack != ''" :src="imgs.idCardBack" />
+                  <div class="delete" v-if="imgs.idCardBack != '' " @click.stop="stopDelete">
+                    <i class="el-icon-view" @click.stop="showBigImg(imgs.idCardBack)"></i>
+                    <i class="el-icon-delete2" @click.stop="deleteImg(2)"></i>
                   </div>
                 </div>
               </div>
@@ -123,12 +123,12 @@
           <el-form-item label=" 营业执照 :" prop="imgLicense1">
             <div class="shop-IDImg">
               <div class="shop-IDUpload">
-                <div class="material-square" @click="materiallayer('busLicenseImg')" :class="busLicenseImg == '' ? 'border':''">
+                <div class="material-square" @click="materiallayer(3)" :class="imgs.busLicenseImg == '' ? 'border':''">
                   <i class="el-icon-plus"></i>
-                  <img class="img"  v-if="busLicenseImg != ''" :src="busLicenseImg" />
-                  <div class="delete" v-if="busLicenseImg != '' " @click.stop="stopDelete">
-                    <i class="el-icon-view" @click.stop="showBigImg(idCardBack)"></i>
-                    <i class="el-icon-delete2" @click.stop="deleteImg('idCardBack')"></i>
+                  <img class="img"  v-if="imgs.busLicenseImg != ''" :src="imgs.busLicenseImg" />
+                  <div class="delete" v-if="imgs.busLicenseImg != '' " @click.stop="stopDelete">
+                    <i class="el-icon-view" @click.stop="showBigImg(imgs.idCardBack)"></i>
+                    <i class="el-icon-delete2" @click.stop="deleteImg(3)"></i>
                   </div>
                 </div>
               </div>
@@ -150,6 +150,7 @@
                   @click="choiceShoptype(index,shop.childList,shop.item_key)"
                   :class="{'shop-button-choice': index === button1 }"
                   v-text="shop.value"
+                  :key="index"
                   ></div>
             </div>
           </el-form-item>
@@ -159,20 +160,21 @@
                   v-for="(shoptype,index) in shoptypes2"
                   @click="choiceProvetype(index,shoptype.id)"
                   :class="{'shop-button-choice': index === button2 }"
-                  v-text="shoptype.title"></div>
+                  v-text="shoptype.title"
+                  :key="index"></div>
             </div>
           </el-form-item>
           <div v-if="isShow">
            <el-form-item label="商标使用许可合同 :" v-if="isMapTwo == 8"  prop="imgLicense3">
-            <div class="img-title" style="text-align:left">非原件照片需加盖公司红色公章并且需要注明商标许可性质为独占性许可</div>
+            <div class="img-title" style="text-align:left">非原件照片需加盖公司红色公章并且需要注明商标许可性质为独占性许可 </div>
             <div class="shop-IDImg">
               <div class="shop-IDUpload">
-                <div class="material-square" @click="materiallayer('certImgUrls',0)" :class="certImgUrls[0] == '' ? 'border':''">
+                <div class="material-square" @click="materiallayer(4)" :class="imgs.certImgUrl == '' ? 'border':''">
                   <i class="el-icon-plus"></i>
-                  <img class="img"  v-if="certImgUrls[0] != ''" :src="certImgUrls[0]" />
-                  <div class="delete" v-if="certImgUrls[0] != '' " @click.stop="stopDelete">
-                    <i class="el-icon-view" @click.stop="showBigImg(certImgUrls[0])"></i>
-                    <i class="el-icon-delete2" @click.stop="deleteImg('certImgUrls',0)"></i>
+                  <img class="img"  v-if="imgs.certImgUrl != ''" :src="imgs.certImgUrl" />
+                  <div class="delete" v-if="imgs.certImgUrl != '' " @click.stop="stopDelete">
+                    <i class="el-icon-view" @click.stop="showBigImg(imgs.certImgUrl)"></i>
+                    <i class="el-icon-delete2" @click.stop="deleteImg(4)"></i>
                   </div>
                 </div>
               </div>
@@ -190,12 +192,12 @@
             <div class="img-title">非原件照片需加盖公司红色公章</div>
             <div class="shop-IDImg">
               <div class="shop-IDUpload">
-                <div class="material-square" @click="materiallayer('certImgUrls',1)" :class=" certImgUrls[1] == '' ? 'border':''">
+                <div class="material-square" @click="materiallayer(4)" :class=" imgs.certImgUrl == '' ? 'border':''">
                   <i class="el-icon-plus"></i>
-                  <img class="img"  v-if="certImgUrls[1] != ''" :src="certImgUrls[1]" />
-                  <div class="delete" v-if="certImgUrls[1] != '' " @click.stop="stopDelete">
-                    <i class="el-icon-view" @click.stop="showBigImg(certImgUrls[1])"></i>
-                    <i class="el-icon-delete2" @click.stop="deleteImg('certImgUrls',1)"></i>
+                  <img class="img"  v-if="imgs.certImgUrl != ''" :src="imgs.certImgUrl" />
+                  <div class="delete" v-if="imgs.certImgUrl != '' " @click.stop="stopDelete">
+                    <i class="el-icon-view" @click.stop="showBigImg(imgs.certImgUrl)"></i>
+                    <i class="el-icon-delete2" @click.stop="deleteImg(4)"></i>
                   </div>
                 </div>
               </div>
@@ -207,16 +209,37 @@
               </div>
             </div>
           </el-form-item>
-          <el-form-item label="商标注册证 :" v-if="isMapTwo == 7 || isMapTwo == 8 "  prop="imgLicense4">
+          <el-form-item label="商标注册证 :" v-if="isMapTwo == 7 "  prop="imgLicense4">
             <div class="img-title">非原件照片需加盖公司红色公章</div>
             <div class="shop-IDImg">
               <div class="shop-IDUpload">
-                <div class="material-square" @click="materiallayer('certImgUrls',2)" :class="certImgUrls[2] == '' ? 'border':''">
+                <div class="material-square" @click="materiallayer(4)" :class="imgs.certImgUrl == '' ? 'border':''">
                   <i class="el-icon-plus"></i>
-                  <img class="img"  v-if="certImgUrls[2] != ''" :src="certImgUrls[2]" />
-                  <div class="delete" v-if="certImgUrls[2] != '' " @click.stop="stopDelete">
-                    <i class="el-icon-view" @click.stop="showBigImg(certImgUrls[2])"></i>
-                    <i class="el-icon-delete2" @click.stop="deleteImg('certImgUrls',2)"></i>
+                  <img class="img"  v-if="imgs.certImgUrl != ''" :src="imgs.certImgUrl" />
+                  <div class="delete" v-if="imgs.certImgUrl != '' " @click.stop="stopDelete">
+                    <i class="el-icon-view" @click.stop="showBigImg(imgs.certImgUrl)"></i>
+                    <i class="el-icon-delete2" @click.stop="deleteImg(4)"></i>
+                  </div>
+                </div>
+              </div>
+              <span>示例 :</span>
+              <div class="shop-img ID-img6">
+                 <div class="shop-img2" @click="showBigImg(imgLicense4)">
+                  <i class="el-icon-view"></i>
+                </div>
+              </div>
+            </div>
+          </el-form-item>
+          <el-form-item label="商标注册证 :" v-if="isMapTwo == 8 "  prop="imgLicense4">
+            <div class="img-title">非原件照片需加盖公司红色公章</div>
+            <div class="shop-IDImg">
+              <div class="shop-IDUpload">
+                <div class="material-square" @click="materiallayer(5)" :class="imgs.tradeMarkImg == '' ? 'border':''">
+                  <i class="el-icon-plus"></i>
+                  <img class="img"  v-if="imgs.tradeMarkImg != ''" :src="imgs.tradeMarkImg" />
+                  <div class="delete" v-if="imgs.tradeMarkImg != '' " @click.stop="stopDelete">
+                    <i class="el-icon-view" @click.stop="showBigImg(imgs.tradeMarkImg)"></i>
+                    <i class="el-icon-delete2" @click.stop="deleteImg(5)"></i>
                   </div>
                 </div>
               </div>
@@ -241,8 +264,22 @@
               </div>
             </div>
             <div class="shop-IDImg">
-              <div class="shop-IDUpload">
-                <gt-material  ></gt-material>
+              <div  class="shop-IDUpload" v-if="imgs.imageList.length >0 "
+                    style="margin-bottom:10px;"
+                    v-for=" (img,index) in imgs.imageList"
+                    :key="index">
+                <div class="material-square">
+                  <img class="img" :src="img" />
+                  <div class="delete"  @click.stop="stopDelete">
+                    <i class="el-icon-view" @click.stop="showBigImg(img)"></i>
+                    <i class="el-icon-delete2" @click.stop="deleteImg(6,index)"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="shop-IDUpload" v-if="imgs.imageList.length < 5 ">
+                <div class="material-square border" @click="materiallayer(6)" >
+                  <i class="el-icon-plus"></i>
+                </div>
               </div>
             </div>
           </el-form-item>
@@ -250,12 +287,12 @@
             <div class="img-title">非原件照片需加盖公司红色公章</div>
             <div class="shop-IDImg">
               <div class="shop-IDUpload">
-                 <div class="material-square" @click="materiallayer('certImgUrls',3)" :class=" certImgUrls[3] == '' ? 'border':''">
+                 <div class="material-square" @click="materiallayer(4)" :class=" imgs.certImgUrl == '' ? 'border':''">
                   <i class="el-icon-plus"></i>
-                  <img class="img"  v-if="certImgUrls[3] != ''" :src="certImgUrls[3]" />
-                  <div class="delete" v-if="certImgUrls[3] != '' " @click.stop="stopDelete">
-                    <i class="el-icon-view" @click.stop="showBigImg(certImgUrls[3])"></i>
-                    <i class="el-icon-delete2" @click.stop="deleteImg('certImgUrls',3)"></i>
+                  <img class="img"  v-if="imgs.certImgUrl != ''" :src="imgs.certImgUrl" />
+                  <div class="delete" v-if="imgs.certImgUrl != '' " @click.stop="stopDelete">
+                    <i class="el-icon-view" @click.stop="showBigImg(imgs.certImgUrl)"></i>
+                    <i class="el-icon-delete2" @click.stop="deleteImg(4)"></i>
                   </div>
                 </div>
               </div>
@@ -273,12 +310,12 @@
             <div class="img-title">非原件照片需加盖公司红色公章</div>
             <div class="shop-IDImg">
               <div class="shop-IDUpload">
-                 <div class="material-square" @click="materiallayer('certImgUrls',4)" :class=" certImgUrls[4] == '' ? 'border':''">
+                 <div class="material-square" @click="materiallayer(4)" :class=" imgs.certImgUrl == '' ? 'border':''">
                   <i class="el-icon-plus"></i>
-                  <img class="img"  v-if="certImgUrls[4] != ''" :src="certImgUrls[4]" />
-                  <div class="delete" v-if="certImgUrls[4] != '' " @click.stop="stopDelete">
-                    <i class="el-icon-view" @click.stop="showBigImg(certImgUrls[4])"></i>
-                    <i class="el-icon-delete2" @click.stop="deleteImg('certImgUrls',4)"></i>
+                  <img class="img"  v-if="imgs.certImgUrl != ''" :src="imgs.certImgUrl" />
+                  <div class="delete" v-if="imgs.certImgUrl != '' " @click.stop="stopDelete">
+                    <i class="el-icon-view" @click.stop="showBigImg(imgs.certImgUrl)"></i>
+                    <i class="el-icon-delete2" @click.stop="deleteImg(4)"></i>
                   </div>
                 </div>
               </div>
@@ -296,12 +333,12 @@
             <div class="img-title">非原件照片需加盖公司红色公章</div>
             <div class="shop-IDImg">
               <div class="shop-IDUpload">
-                 <div class="material-square" @click="materiallayer('certImgUrls',5)" :class=" certImgUrls[5] == '' ? 'border':''">
+                 <div class="material-square" @click="materiallayer(4)" :class=" imgs.certImgUrl == '' ? 'border':''">
                   <i class="el-icon-plus"></i>
-                  <img class="img"  v-if="certImgUrls[5] != ''" :src="certImgUrls[5]" />
-                  <div class="delete" v-if="certImgUrls[5] != '' " @click.stop="stopDelete">
-                    <i class="el-icon-view" @click.stop="showBigImg(certImgUrls[5])"></i>
-                    <i class="el-icon-delete2" @click.stop="deleteImg('certImgUrls',5)"></i>
+                  <img class="img"  v-if="imgs.certImgUrl != ''" :src="imgs.certImgUrl" />
+                  <div class="delete" v-if="imgs.certImgUrl != '' " @click.stop="stopDelete">
+                    <i class="el-icon-view" @click.stop="showBigImg(imgs.certImgUrl)"></i>
+                    <i class="el-icon-delete2" @click.stop="deleteImg(4)"></i>
                   </div>
                 </div>
               </div>
@@ -317,11 +354,21 @@
           </el-form-item>
           </div >
         </div>
+        <el-form-item label="手机号" v-if="data.stoSmsTelephone == '' ">
+            <el-input v-model="telephone" placeholder="请输入获取验证码手机号"></el-input>
+            <el-button type="primary" 
+                      @click="getCode(telephone)" 
+                      :disabled="code != '获取验证码'">{{code}}</el-button>
+            <span class="shop-promptText" style="margin-bottom:67px;">验证短信将发送到该手机号码</span>
+        </el-form-item>
         <el-form-item label="短信验证码：" prop="code">
             <el-input v-model="form.code" placeholder="请输入短信验证码"></el-input>
-            <el-button type="primary">获取验证码</el-button>
-            <span class="shop-promptText" style="margin-bottom:67px;">验证短信将发送到该店铺绑定的推送手机：+86 {{data.sto_name}} </span>
-          </el-form-item>
+            <el-button  type="primary" 
+                        v-if="data.stoSmsTelephone != ''"
+                        @click="getCode(data.stoSmsTelephone)" 
+                        :disabled="code != '获取验证码'">{{code}}</el-button>
+            <span class="shop-promptText" style="margin-bottom:67px;" v-if="data.stoSmsTelephone != '' ">验证短信将发送到该店铺绑定的推送手机：+86 {{data.stoSmsTelephone}} </span>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary"@click="submitForm('form')">提交认证</el-button>
         </el-form-item>
@@ -332,22 +379,12 @@
         <img width="100%" :src="largeSrc" alt="" class="img">
     </el-dialog>
 
-    <el-dialog
-      title="素材库"
-      :visible.sync="materialvisible"
-      class="material-dialog"
-      size="small">
-      <div>
-        <iframe :src="materialUrl" class="material"></iframe>
-      </div>
-    </el-dialog>
   </div>
 </div>
 </template>
 
 <script>
 import Lib from 'assets/js/Lib';
-import gtMaterial from 'components/material/material'
 //图片
 import imgID1 from '../../../img/ID1_1.png' //身份证正面
 import imgID2 from '../../../img/ID2_1.png' //身份证反面
@@ -360,9 +397,6 @@ import imgLicense6 from '../../../img/ID8.png'//关系认证书
 
 
 export default {
-  components: {
-    gtMaterial
-  },
   data () {
     var formName = (rule, value, callback) => {
       if (!value) {
@@ -404,58 +438,66 @@ export default {
       }else{
         callback();
       }
-    };formBusLicenseNo
+    };
     var formIDImg1 = (rule, value, callback) => {
-      if (!value) {
+      let img = this.imgs.idCardFront;
+      if (!img) {
         return callback(new Error('请上传身份证正面图片'));
       }else{
         callback();
       }
     };
     var formIDImg2 = (rule, value, callback) => {
-      if (!value) {
+      let img = this.imgs.idCardBack;
+      if (!img) {
         return callback(new Error('请上传身份证反面图片'));
       }else{
         callback();
       }
     };
-    var formImgLicense1 = (rule, value, callback) => {
-      if (!value) {
+    var formbusLicenseImg = (rule, value, callback) => {
+      let img = this.imgs.busLicenseImg;
+      if (!img) {
         return callback(new Error('请上传营业执照图片'));
       }else{
         callback();
       }
     };
     var formImgLicense2 = (rule, value, callback) => {
-      if (!value) {
+      let img = this.imgs.busLicenseImg;
+      if (!img) {
         return callback(new Error('请上传商标注册通知书图片'));
       }else{
         callback();
       }
     };
     var formImgLicense3 = (rule, value, callback) => {
-      if (!value) {
+      let img = this.imgs.busLicenseImg;
+      if (!img) {
         return callback(new Error('请上传商标使用许可合同图片'));
       }else{
         callback();
       }
     };
     var formImgLicense4 = (rule, value, callback) => {
-      if (!value) {
+      let img = this.imgs.busLicenseImg;
+      if (!img) {
         return callback(new Error('请上传商标注册证图片'));
       }else{
         callback();
       }
     };
     var formImgLicense5 = (rule, value, callback) => {
-      if (!value) {
+      let img = this.imgs.busLicenseImg;
+      if (!img) {
         return callback(new Error('请上传微信渠道授权证书图片'));
       }else{
         callback();
       }
     };
     var formImgLicense6 = (rule, value, callback) => {
-      if (!value) {
+      let img = this.imgs.busLicenseImg;
+      if (!img) {
         return callback(new Error('请上传证件图片'));
       }else{
         callback();
@@ -463,7 +505,7 @@ export default {
     };
     return {
       data:{},//店铺数据
-      stoType: 1,//主体类型, 0个人 1企业
+      stoType: 0,//主体类型, 0个人 1企业
       form: {},
       dialogimg:false,
       dialogImageUrl:'',
@@ -489,11 +531,15 @@ export default {
       imgLicense4:imgLicense4,
       imgLicense5:imgLicense5,
       imgLicense6:imgLicense6,
-      idCardFront:'',//身份证正面
-      idCardBack:'',//身份证反面
-      busLicenseImg:'',//营业执照号
-      certImgUrls:["","","","","",""],//商标注册通知书,商标注册证，商标使用许可合同，渠道授权书，证明函文件
-      docImg:[],//补充资料的图片地址
+      imgs:{//数据图片
+        idCardFront: '',//身份证正面--1
+        idCardBack: '',//身份证反面--2
+        busLicenseImg: '',//营业执照--3
+        certImgUrl: '',//商标注册通知书,商标注册证，商标使用许可合同，渠道授权书，证明函文件--4 资料一个使用
+        tradeMarkImg:'',//商标注册证  资料二个使用
+        isCertDoc: 0,//是否有补充资料  0无 1有
+        imageList: [],//补充资料的图片地址--5
+      },
       rules: {
         name: [
           { validator: formName, trigger: 'blur' }
@@ -517,7 +563,7 @@ export default {
           { validator: formIDImg2, trigger: 'blur' }
         ],
         imgLicense1:[
-          { validator: formImgLicense1, trigger: 'blur' }
+          { validator: formbusLicenseImg, trigger: 'blur' }
         ],
         imgLicense2:[
           { validator: formImgLicense2, trigger: 'blur' }
@@ -544,7 +590,9 @@ export default {
       largeSrc: '',
       img:'',
       itemImg:'',
-      itemNum:''
+      itemNum:'',
+      telephone:'',//验证手机号
+      code:'获取验证码',//验证码 倒计时
     }
   },
   
@@ -559,7 +607,6 @@ export default {
       this.button2 = false;
       this.isShow = false;
       this.isMapOne = key;
-      this.certImgUrls=["","","","","",""]
       if(!shoptypes){
         this.isProve = false;
         return;
@@ -571,175 +618,242 @@ export default {
      选择认证信息
      */
      choiceProvetype(index,id){
-      this.button2 = index;
-      this.isShow = true;
-      this.isMapTwo = id;
-      console.log(this.isMapTwo,'isMapTwo');
+       let _this = this;
+       if( _this.imgs.certImgUrl != '' ){
+        let msg = {
+          'dialogType': 'warn',
+          'dialogTitle': '',
+          'dialogMsg': '您改变了认证信息，以前上传的认证图片将清空',
+          'callback': {
+          'btnOne': function () {
+              _this.button2 = index;
+              _this.isShow = true;
+              _this.isMapTwo = id;
+              _this.imgs.certImgUrl = '';
+              _this.imgs.tradeMarkImg = '';
+            }
+          }
+        }
+        _this.$root.$refs.dialogWarn.showDialog(msg);  
+      }else{
+        _this.button2 = index;
+        _this.isShow = true;
+        _this.isMapTwo = id;
+      } 
     },
+    /** 
+     * 查看大图
+    */
     showBigImg(img){
-      this.materialLargeSrcVisible=true;
+      this.materialLargeSrcVisible = true;
       this.largeSrc = img;
+    },
+    /**
+     * 获取短信验证码
+     * @param mobile 手机号
+     */
+    getCode(mobile){
+      let _this = this;
+      if(Lib.M.validPhone(mobile)){
+        let time = 60;
+        let Interval = setInterval(()=>{
+            if(time == 1){
+              clearInterval(Interval);
+              _this.code = '获取验证码';
+            }else{
+              time--;
+              _this.code = time+'s后可重发';
+            }
+        },1000);
+        _this.ajaxRequest({
+          'url': DFshop.activeAPI.mallStoreCertGetValCode_post,
+          'data': {
+            mobile:mobile
+          },
+          'success':function (data){
+          }
+        });
+      }else{
+        _this.$message({
+          message: '请输入正确的手机号',
+          type: 'warning'
+        });
+      }
     },
     /**
      * 提交认证
      */
     submitForm(formName) {
-      let _this= this; 
-      console.log(_this.form,'form');
-      console.log(_this.certImgUrls)
+      let _this= this;
       let _data ={
-            stoType: _this.stoType,        //主体类型, 0个人 1企业
-            stoId: _this.data,            //店铺ID
-            name: _this.form.name,        //姓名或法人
-            companyName: _this.form.name, //,企业名称
-            idNumber: _this.form.idNumber,//身份证号码
-            idCardFront: '/image'+ _this.idCardFront.split("image")[1],//身份证正面
-            idCardBack: '/image'+_this.idCardBack.split("image")[1],  //身份证反面
-            busLicenseImg: '/image'+_this.busLicenseImg.split("image")[1],            //营业执照
-            busLicenseNo: '',             //营业执照号
-            stoCategory: _this.isMapOne,  //店铺类型
-            certType:  _this.isMapTwo,    //认证类型
-            certImgUrl: '',               //商标注册通知书,商标注册证，商标使用许可合同，渠道授权书，证明函文件
-            isCertDoc: '',                //是否有补充资料  0无 1有
-            docImg:''  ,                  //补充资料的图片地址  多个用逗号隔开
-            code: ''                      //验证码
-          }
-          console.log(_data)
-    //   _this.$refs[formName].validate((valid) => {
-    //     if (valid) {
-    //        _this.$message({
-    //         message: '恭喜你，保存成功',
-    //         type: 'success'
-    //         });
-    //       _this.jumpRoute('/shop');
-    //       let _data ={
-    //         stoType: _this.stoType,        //主体类型, 0个人 1企业
-    //         stoId: _this.data,            //店铺ID
-    //         name: _this.form.name,        //姓名或法人
-    //         companyName: _this.form.name, //,企业名称
-    //         idNumber: _this.form.idNumber,//身份证号码
-    //         idCardFront: _this.idCardFront,//身份证正面
-    //         idCardBack: _this.idCardBack,  //身份证反面
-    //         busLicenseImg: '',            //营业执照
-    //         busLicenseNo: '',             //营业执照号
-    //         stoCategory: _this.isMapOne,  //店铺类型
-    //         certType:  _this.isMapTwo,    //认证类型
-    //         certImgUrl: '',               //商标注册通知书,商标注册证，商标使用许可合同，渠道授权书，证明函文件
-    //         isCertDoc: '',                //是否有补充资料  0无 1有
-    //         docImg:''  ,                  //补充资料的图片地址  多个用逗号隔开
-    //         code: ''                      //验证码
-    //       }
-    //       console.log(_data)
-    //       /*_this.ajaxRequest({
-    //         'url': DFshop.activeAPI.mallStoreCertSave_post,
-    //         'data': _data,
-    //          'success':function (data){
-    //              this.$message({
-    //              message: '恭喜你，保存成功',
-    //              type: 'success'
-    //              });
-    //             _this.jumpRoute('/shop');
-    //         }
-    //       });*/
-    //     } else {
-    //       return false;
-    //     }
-    //   });
+        stoType: _this.stoType,        //主体类型, 0个人 1企业
+        stoId: _this.data.id,            //店铺ID
+        name: _this.form.name,        //姓名或法人
+        companyName: _this.form.companyName  || '', //,企业名称
+        idNumber: _this.form.idNumber || '', //身份证号码
+        idCardFront: '/image'+ _this.imgs.idCardFront.split("image")[1],//身份证正面
+        idCardBack: '/image'+_this.imgs.idCardBack.split("image")[1],  //身份证反面
+        busLicenseNo: _this.form.busLicenseNo || '',             //营业执照号
+        stoCategory: _this.isMapOne || '',  //店铺类型
+        certType:  _this.isMapTwo || '' ,    //认证类型
+        isCertDoc: 0||'',                //是否有补充资料  0无 1有
+        code: ''                      //验证码
+      }
+      if(_this.imgs.busLicenseImg){//营业执照
+        _data.busLicenseImg = '/image'+_this.imgs.busLicenseImg.split("image")[1];      
+      }
+      if(_this.imgs.tradeMarkImg != ''){
+        _data.tradeMarkImg = '/image'+_this.imgs.tradeMarkImg.split("image")[1];
+      }
+      if(_this.imgs.imageList != ''){
+        _data.isCertDoc =1;
+        let arr = [];
+        _this.imgs.imageList.forEach((item,i)=>{
+          let img = '/image'+item.split("image")[1];
+          arr.push({
+            imageUrl: img,
+            assType : 6 
+          });
+        })
+        _data.imageList = arr;
+      }
+      console.log(_data,'提交认证数据')
+      _this.$refs[formName].validate((valid) => {
+        if (valid) {
+          _this.ajaxRequest({
+            'url': DFshop.activeAPI.mallStoreCertSave_post,
+            'data': _data,
+             'success':function (data){
+                 this.$message({
+                 message: '恭喜你，保存成功',
+                 type: 'success'
+                 });
+                _this.jumpRoute('/shop');
+            }
+          });
+        } else {
+          return false;
+        }
+      });
      },
     /**
-     * 获取认证的店铺类型
+     * 获取认证的店铺类型  
      */
     mallStoreMapAjax(){
       let _this = this;
         _this.ajaxRequest({
         'url': DFshop.activeAPI.mallStoreCertCategoryMap_post,
+        'data':{
+            id:_this.data.id
+        },
         'success':function (data){
-          console.log(data.data);
-          _this.shoptypes1 = data.data
+          _this.shoptypes1 = data.data;
         }
       });
     },
     resetForm(formName) {
       this.form = {};
-      this.idCardFront = '';//身份证正面
-      this.idCardBack = '' ;//身份证反面
+      this.imgs.idCardFront = '';//身份证正面
+      this.imgs.idCardBack = '' ;//身份证反面
       this.$refs[formName].resetFields();
     },
-    materiallayer(item,num) {
-        let _this =this;
-        let _link = DFshop.activeAPI.materialUrl + window.location.href;
-        _this.materialUrl = _link;
-        _this.materialvisible = true;
-        _this.itemImg = item;
-        _this.itemNum = num || '';
+    /**
+     * 调用素材库
+     * @param item 上传类型 
+     * @param num  集合某个
+     * 1身份证正面
+     * 2身份证反面
+     * 3营业执照号
+     * 4商标注册通知书,商标注册证，商标使用许可合同，渠道授权书，证明函文件--集合
+     * 5补充资料的图片地址--集合
+     */
+    materiallayer(item,num){
+      let _this = this;
+      console.log(item,'上传');
+      _this.$material({
+        imageboxUrl: DFshop.activeAPI.materialUrl,   //地址
+        modal: true,       //遮罩
+        selecType: true,   //是否多选
+        width: 820, //宽度
+        height: 500, //高度
+        lockScroll: false, //弹出框后是否锁定滚动轴
+        closeOnClickModal: false, //点击遮罩是否关闭
+        closeOnPressEscape: false
+        }).then(function (val) {
+            //确认
+            if(item === 1){
+              _this.imgs.idCardFront = val[0].url;
+            }else if(item === 2){
+              _this.imgs.idCardBack = val[0].url;
+            }else if(item === 3){
+              _this.imgs.busLicenseImg = val[0].url;
+            }else if(item === 4){
+              _this.imgs.certImgUrl = val[0].url;   
+            }else if(item === 5){
+              _this.imgs.tradeMarkImg = val[0].url;
+            }else if(item === 6){//可多选
+                let _add = true;//重复排除条件
+                _this.imgs.imageList.forEach((item,i) => {
+                  val.forEach((test,j)=>{
+                    //重复添加提示
+                    if(_add && test.url == item) {
+                       _this.$message({
+                        message: '请不要重复添加',
+                        type: 'warning'
+                      });
+                      return _add = false;
+                    }
+                  });
+                });
+                if(!_add)return;//重复不添加
+                let oLength = _this.imgs.imageList.length;
+                val.forEach((test,j)=>{
+                    if((oLength+j)<5){
+                        _this.imgs.imageList.push(test.url);
+                    }else{
+                      _this.$message({
+                        message: '已选择图片超过5张,系统默认筛选您所选的前五张',
+                        type: 'warning'
+                      });
+                    }
+                });
+              }
+            
+        }).catch(function (error) {
+            //取消
+        })
     },
     /*
     * 删除图片
     * */
-    deleteImg(data,num) {
+    deleteImg(item,num) {
       let  _this = this;
-      _this.itemNum = num || '';
-      this.imgUpload(data,_this.itemNum);
-    },
-    /**
-     * 判断图片上传
-     * @param 上传图片地址
-     */
-    imgUpload(obj,num,img){
-      console.log(obj,num,img)
-      if(obj == 'idCardFront'){
-          this.idCardFront = img || '';
-      }
-      if(obj == 'idCardBack'){
-          this.idCardBack = img || '';
-      }
-      if(obj == 'busLicenseImg'){
-        this.busLicenseImg = img || '';
-      }
-      if( obj == 'certImgUrls'){
-        console.log(this.certImgUrls,'index1')
-        this.certImgUrls.forEach((item,index)=>{
-          if( num == index){
-            console.log(this.certImgUrls[index],'index1')
-            this.certImgUrls[index] = img ||  '';
-            this.itemNum = '';
-            console.log(this.certImgUrls,'index2')
-          }
-        })
-        console.log(this.certImgUrls,'index2')
+      console.log(item,num)
+      if(item === 1){
+        _this.imgs.idCardFront = '';
+      }else if(item === 2){
+        _this.imgs.idCardBack = '';
+      }else if(item === 3){
+        _this.imgs.busLicenseImg = '';
+      }else if(item === 4){
+        _this.imgs.certImgUrl = '';
+      }else if(item === 5){
+        _this.imgs.tradeMarkImg = '';
+      }else if(item === 6){
+        _this.imgs.imageList.pop([num]);
       }
     }
     
   },
   mounted() {
     this.data = JSON.parse(this.$route.query.data);
-    console.log(this.data);
     this.mallStoreMapAjax();
-    let _this = this,imgUpload;
-      window.addEventListener("message", function (e) {
-        console.log(e,'aaa');
-        const num = e.data.length - 1;
-        if (!num) return false;
-        var newList = [];
-        e.data.substring(6, num).split(',').forEach((item) => {
-          newList.push(item.substring(1, (item.length - 1)))
-        })
-        _this.materialvisible = false;
-        if(newList == ""){
-          imgUpload = '';
-        }else{
-           //_this.img = newList[1];
-           //imgUpload = '/image'+ _this.img.split("image")[1];
-           imgUpload = newList[1];
-        }
-        _this.imgUpload(_this.itemImg,_this.itemNum,imgUpload);
-        console.log(_this.itemImg,_this.itemNum,imgUpload);
-      });
+    console.log(this.data,'传递数据data');
   },
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 @import '../../../../../assets/css/mixins.less';
   section{
     display: inline-block;

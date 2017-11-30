@@ -69,7 +69,7 @@
                 </el-button>
                 <el-button  size="small"
                             class="buttonBlue"
-                            @click="authentication(scope.row.storeCert,scope.row)"
+                            @click="authentication(scope.row.certId,scope.row)"
                 >认证</el-button>
                 <el-button  size="small"
                 @click="handleDelete(scope.row.id,'shop')">删除</el-button>
@@ -334,17 +334,20 @@ export default {
           _this.imgUrl = data.imgUrl;
           _this.path = data.path;
           _this.isSecuritytrade = data.data.isSecuritytrade;
+
+          console.log(_this.tabelData,'_this.tabelData');
         }
       });
     },
     /**
      * 认证页跳转
      * @param data      店铺信息
-     * @param cert      判断是否认证  
+     * @param certId    判断不为空为已认证
      */
-    authentication(cert,data){
+    authentication(certId,data){
       let _this = this;
-      if(!cert) return _this.jumpRouter('shop/authentication/',data);
+      console.log(certId,'cert',data)
+      if(!certId) return _this.jumpRouter('shop/authentication/',data);
       let msg = {
         'dialogType': 'warn',
         'dialogTitle': '',
@@ -364,8 +367,7 @@ export default {
     shopLink(data){
       let _this = this;
       let msg ={
-        'title':'',
-        'urlQR': DFshop.activeAPI.mallStoreGenerateQRCode_get,
+        'title':'店铺链接',
         'pageLink': _this.path+'/views/goods/index.html#/'
       }
       _this.$root.$refs.dialogQR.showDialog(msg);//调用方法
@@ -400,14 +402,14 @@ export default {
       _this.ajaxRequest({
         'url': DFshop.activeAPI.mallPageNewDelete_post,
         'data':{
-          ids : ids
+          ids : ids.id
         },
-        contentType: 'application/json',
         'success':function (data){
           _this.$message({
             message: '删除成功',
             type: 'success'
           });
+          _this.pageAjax(1);
         }
       });
     },
@@ -454,7 +456,6 @@ export default {
       if(!shopId){
          _this.storeList({
           'success'(data){
-            console.log(data.data,'Id');
             _this.shopOptions = data.data;
           }
         })

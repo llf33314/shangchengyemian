@@ -38,11 +38,8 @@
         <el-form ref="form" :model="form" label-width="80px">
            <el-form-item label="店铺头像 :">
             <div class="addshop-IDImg">
-              <div class="shop-IDUpload" @click="material()">
-                <div class="avatar-uploader" 
-                    :style="{backgroundImage: 'url(' + addshopImg + ')'}">
-                  <i class="el-icon-plus" v-if="!addshopImg"></i>
-                </div>
+              <div class="shop-IDUpload" >
+               <gt-material @change="newImgData" ></gt-material>
               </div>
               <span class="p-warn">图片比例：1:1(必填)</span>
             </div>
@@ -270,28 +267,12 @@ export default {
     deleteTelephone(index,data){
         data.splice(index, 1);
     },
-     /** 
-     * 调用素材库
-     */
-    material(){
-      let _this = this;
-      _this.$material({
-        imageboxUrl: DFshop.activeAPI.materialUrl,   //地址
-        modal: true,       //遮罩
-        selecType: true,   //是否多选
-        width: 820, //宽度
-        height: 500, //高度
-        lockScroll: false, //弹出框后是否锁定滚动轴
-        closeOnClickModal: false, //点击遮罩是否关闭
-        closeOnPressEscape: false
-      }).then(function (val) {
-        //确认
-          _this.addshopImg = val[0].url;
-        }).catch(function (error) {
-        //取消
-      }) 
-
-    },
+    /** 
+     * 素材库图片
+    */
+    newImgData(value){
+      this.addshopImg = value;
+    }
   },
   mounted() {
     this.shopAjax();
