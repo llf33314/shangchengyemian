@@ -202,6 +202,9 @@
     mallSeckillSeckillInfo_post: '/mallSeckill/E9lM9uM4ct/seckillInfo',
     /*保存秒杀 */
     mallSeckillSave_post: '/mallSeckill/E9lM9uM4ct/save',
+
+    /**获取收入金额列表*/
+    getCountListByDate_post:'/mallCountIncome/E9lM9uM4ct/getCountListByDate',
   };
 
 

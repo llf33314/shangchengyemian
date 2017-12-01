@@ -8,49 +8,42 @@
     </div>
     <div class="index-main">
       <div class="index-header">
-        <el-select v-model="value" placeholder="请选择"
-          v-if="isTotal">
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
+        <el-select v-model="shopSelect" placeholder="请选择" @change="searchCount()" > <!--v-if="isTotal"-->
+            <el-option label="全部" value=""></el-option>
+          <el-option class="max-input" v-for="item in shopList"
+                :key="item.id" :label="item.sto_name" :value="item.id">
+            </el-option>
         </el-select>
-        <p v-else>店铺 ：广东谷通</p>
+        <!-- <p v-else>店铺 ：<span v-text="shopNameSelect"></span></p> -->
       </div>
       <div class="index-content">
         <div class="index-item statistics-main">
           <div class="item-content">
             <div class="col1">
-              <p style="color:#fa4c54">24</p>
+              <p v-text="dataCount.todayPayOrderNum" style="color:#fa4c54"></p>
               <div>今日付款订单</div>
             </div>
             <div class="col1">
-              <p>¥1971.00</p>
+              <p v-text="dataCount.yesterIncomeCount">¥1971.00</p>
               <div>今日总收入</div>
             </div>
             <div class="col1">
-              <p>￥1971.00</p>
+              <p v-text="dataCount.sevenIncomeCount" >￥1971.00</p>
               <div>7天总收入</div>
             </div>
             <div class="col1">
-              <p>12</p>
+              <p v-text="dataCount.waitPayOrderNum">12</p>
               <div>待付款订单数</div>
             </div>
              <div class="col1">
-              <p>1</p>
+              <p v-text="dataCount.waitDeliveryOrderNum">1</p>
               <div>待发货订单数</div>
             </div>
           </div>
         </div>
         <div class="index-item line-main">
           <p class="item-title">选择时间 :
-            <el-date-picker
-              v-model="value6"
-              type="daterange"
-              placeholder="选择日期范围">
-            </el-date-picker>
+            <el-date-picker v-model="value6" type="daterange" placeholder="选择日期范围" @change="searchDate()" ></el-date-picker>
           </p>
           <div class="line-content ">
             <span class="line-unit">
@@ -81,13 +74,106 @@ export default {
   },
   data () {
     return {
-      value6: '',
+      dataCount:{
+          todayPayOrderNum:'',
+          waitDeliveryOrderNum:'',
+          waitPayOrderNum:'',
+          sevenIncomeCount:'',
+          yesterIncomeCount:'',
+          data:[]
+        },
+      shopSelect:'',//搜索店铺选中店铺ID
+      shopList: [],
+      startDate:new Date(new Date().setTime(new Date().getTime() - 3600 * 1000 * 24 * 30)),
+      endDate:new Date(),
+      value6: [new Date(new Date().setTime(new Date().getTime() - 3600 * 1000 * 24 * 30)),new Date()],
       chart: null,
-      isTotal: true
+      isTotal: true,
+      chartDate:[]
     }
   },
   methods: {
+   
+    /**获取统计数据 */
+    getCountList(shopId,startDate,endDate){
+      let _this = this;
+      this.ajaxRequest({
+        'url': DFshop.activeAPI.getCountListByDate_post,
+        'data':{
+          shopId :shopId,
+          startDate:startDate,
+          endDate:endDate
+        },
+        'success':function (data){
+          // console.log(data);
+          _this.dataCount = data.data;
+          _this.dataCount.yesterIncomeCount = '¥ '+data.data.yesterIncomeCount;
+           _this.dataCount.sevenIncomeCount = '¥ '+data.data.sevenIncomeCount;
+            // console.log(_this.dataCount.data.length);
+           _this.initChart();
+        }
+      });
+    },
+    /**切换店铺 */
+     searchCount(){
+         if(this.shopSelect != ''){
+             this.isTotal=false;
+         }else{
+            this.isTotal=true;
+         }
+      
+      if(this.value6!=null){
+        this.getCountList(this.shopSelect,this.value6[0],this.value6[1]);
+      }else{
+        this.getCountList(this.shopSelect);
+      }
+   },
+   /**查询日期 */
+   searchDate(){
+     let that=this;
+     if(that.value6 ==","||that.value6==undefined){
+        that.defaultDate();
+        this.getCountList(this.shopSelect);
+     }else{
+      let start = new Date(this.value6[0]);
+      let startDate = new Date(start.getFullYear() + '-' + (start.getMonth() + 1) + '-' + start.getDate());
+      let end = new Date(this.value6[1]);
+      let endDate = new Date(end.getFullYear() + '-' + (end.getMonth() + 1) + '-' + end.getDate());
+      this.loopGenerateDate(startDate,endDate);
+
+      this.getCountList(this.shopSelect,this.value6[0],this.value6[1]);
+    } 
+     
+   },
+   /**生成默认日期 */
+   defaultDate(){
+      let that=this;
+      var start = that.startDate;
+      let startDate = new Date(start.getFullYear() + '-' + (start.getMonth() + 1) + '-'+ start.getDate());
+      let end = that.endDate;
+      let endDate = new Date(end.getFullYear() + '-' + (end.getMonth() + 1) + '-' + end.getDate());
+    
+      this.loopGenerateDate(startDate,endDate);
+   },
+   /**遍历生成日期列表 */
+   loopGenerateDate(startTime,endTime){
+       this.chartDate=[];
+      //  console.log(startTime);
+      //  console.log(endTime);
+        let i=0;
+        while((endTime.getTime()-startTime.getTime())>=0){
+          // let year = startTime.getFullYear();
+          // let month = startTime.getMonth().toString().length==1?"0"+startTime.getMonth().toString():startTime.getMonth();
+          let day = startTime.getDate().toString().length==1? startTime.getDate():startTime.getDate();
+          // console.log(year+"-"+month+"-"+day);
+          // console.log(day);
+          this.chartDate[i]=day;
+          i++;
+          startTime.setDate(startTime.getDate()+1);
+        }
+   },
    initChart() {
+      let _this = this;
       this.chart = echarts.init(this.$refs.myEchart);
       // 把配置和数据放这里
       this.chart.setOption({
@@ -122,13 +208,14 @@ export default {
         xAxis: {
             type: 'category',
             boundaryGap: false,
-            data: [
-              '1','2','3','4','5','6','7',
-              '8','9','10','11','12','13','14',
-              '15','16','17','18','19','20','21',
-              '22','23','24','25','26','27','28',
-              '29','30'
-              ]
+            data:_this.chartDate
+            // data: [
+            //   '11','2','3','4','5','6','7',
+            //   '8','9','10','11','12','13','14',
+            //   '15','16','17','18','19','20','21',
+            //   '22','23','24','25','26','27','28',
+            //   '29','30'
+            //   ]
         },
         yAxis: {
             type: 'value',
@@ -138,7 +225,8 @@ export default {
                 name:'收入金额',
                 type:'line',
                 stack: '总量',
-                data:[500, 700, 1010, 2200, 100, 2300, 2100]
+                data:_this.dataCount.data
+                // data:[0,0,0,0,500, 700, 1010, 2200, 100, 2300, 2100,]
             }
         ]
       })
@@ -153,7 +241,16 @@ export default {
     
   },
   mounted(){
-    this.initChart();
+    let _this = this;
+    console.log(_this.startDate);
+    _this.defaultDate();
+      /**请求数据 */
+    this.getCountList(this.shopSelect,this.value6[0],this.value6[1]);
+    this.storeList({
+      'success'(data){
+        _this.shopList = data.data;
+      }
+    });     
   },
 }
 </script>
