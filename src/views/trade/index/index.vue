@@ -62,7 +62,7 @@
               </el-form-item >
               <div></div>
                 <el-button type="primary" @click="search()">筛选</el-button>
-                <el-button type="primary" @clilk="exportTrade()">批量导出</el-button>
+                <el-button type="primary" @click="exportTrade()">批量导出</el-button>
             </el-form>
           </div>
           <div class="index-content">
@@ -78,6 +78,9 @@
                 <el-table-column
                   prop="createTime"
                   label="时间">
+                  <template scope="scope">
+                    <div>{{scope.row.createTime|format}}</div>
+                  </template>
                 </el-table-column>
                 <el-table-column
                   prop="proName"
@@ -146,6 +149,7 @@
  <script>
 import Lib from 'assets/js/Lib';
 import contentNo from 'components/contentNo';
+import Filter from 'assets/js/vueFilter';
 export default {
   components: {
     contentNo
@@ -194,35 +198,6 @@ export default {
           }]
         },
         value7: ''
-        // tableData: [{
-        //     date: '2016-08-42',
-        //     goods:'中国有嘻哈',
-        //     name: 'PGone',
-        //     number: '01584977413136',
-        //     money:'¥720.00',
-        //     statu:'进行中'
-        //   }, {
-        //     date: '2016-08-42',
-        //     goods:'july',
-        //     name: '小白',
-        //     number: '01584977413136',
-        //     money:'¥720.00',
-        //     statu:'进行中'
-        //   }, {
-        //     date: '2016-05-02',
-        //     goods:'万磁王',
-        //     name: 'BrAnTB',
-        //     number: '01584977413136',
-        //     money:'¥720.00',
-        //     statu:'完成'
-        //   }, {
-        //     date: '2016-05-02',
-        //     goods:'BrAnTB',
-        //     name: 'PGone',
-        //     number: '01584977413136',
-        //     money:'¥720.00',
-        //     statu:'进行中'
-        //   }]
     }
   },
   methods: {
@@ -256,7 +231,21 @@ export default {
     /**批量导出 */
     exportTrade(){
         let _this = this;
-        window.location.href = DFshop.activeAPI.exportTradeOrder_post;
+        console.log("导出");
+        let str = "?1=1";
+        if(_this.searchData.orderNo != ""){
+            str += "&orderNo="+_this.searchData.orderNo;
+        }
+        if(_this.searchData.status != ""){
+            str += "&status="+_this.searchData.status;
+        }
+        if(_this.searchData.startTime != ""){
+            str += "&startTime="+_this.searchData.startTime.toISOString().slice(0,10);
+        }
+        if(_this.searchData.endTime != ""){
+            str += "&endTime="+_this.searchData.endTime.toISOString().slice(0,10);
+        }
+        window.open(DFshop.activeAPI.exportTradeOrder_post+str);
     },
     /**
      * 交易记录多页请求
