@@ -149,6 +149,7 @@
             <el-pagination
               @current-change="handleCurrentChange"
               :page-size="tableData3.page.pageSize"
+              :current-page='tableData3.page.curPage'
               layout="prev, pager, next, jumper"
               :total="tableData3.page.rowCount">
             </el-pagination>
@@ -221,7 +222,7 @@ export default {
       _this.ids = ids.toString();
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      console.log(val,val)
       this.screenData.curPage = val;
       this.mallProductList(this.screenData)
     },

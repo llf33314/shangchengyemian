@@ -21,32 +21,38 @@
                 <div class="item-content">
                    <el-form :model="basicsInfo"  ref="basicsInfo" label-width="105px" class="demo-ruleForm">
                     <el-form-item label="选择店铺 :" prop="shop" :rules="rules.shop">
-                       <el-select v-model="fromSelected.shop" placeholder="请选择店铺">
+                       <el-select v-model="data.pro.shopId" placeholder="请选择店铺">
                         <el-option
-                            v-for="item in basicsInfo.shopOptions"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value">
+                            v-for="item in shopList"
+                            :key="item.id"
+                            :label="item.address"
+                            :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="商品分组 :" prop="grouping" :rules="rules.grouping">
-                        <el-select v-model="fromSelected.grouping" multiple placeholder="请选择分组信息">
+                        <!-- <el-cascader
+                            expand-trigger="hover"
+                            :options="options"
+                            v-model="selectedOptions2"
+                            @change="handleChange">
+                        </el-cascader> -->
+                        <el-select v-model="fromSelected.grouping" multiple placeholder="请选择分组信息" @change="grouping(fromSelected.grouping)">
                             <el-option
-                            v-for="item in basicsInfo.grouping"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value">
+                            v-for="item in data.proGroupList"
+                            :key="item.groupPId"
+                            :label="item.groupName"
+                            :value="item.groupPId">
                             </el-option>
                         </el-select>
                         <span class="fontBlue">新建分组</span>
                     </el-form-item>
                      <el-form-item label="商品类型 :" prop="goodsStatus">
-                         <el-radio-group v-model="fromSelected.goodsStatus">
-                            <el-radio label="1" class="item-radio">实物商品</el-radio>
-                            <el-radio label="2" class="item-radio">虚拟商品（非会员卡，无需物流）</el-radio>
-                            <el-radio label="3" class="item-radio">虚拟商品（会员卡，无需物流）</el-radio>
-                            <el-radio label="4" class="item-radio">虚拟商品（流量包，无需物流）</el-radio>
+                         <el-radio-group v-model="data.pro.proTypeId">
+                            <el-radio :label="0" class="item-radio">实物商品</el-radio>
+                            <el-radio :label="1" class="item-radio">虚拟商品（非会员卡，无需物流）</el-radio>
+                            <el-radio :label="2" class="item-radio">虚 拟商品（会员卡，无需物流）</el-radio>
+                            <el-radio :label="3" class="item-radio">虚拟商品（流量包，无需物流）</el-radio>
                         </el-radio-group>
                     </el-form-item>
                     </el-form>
@@ -251,7 +257,9 @@ export default {
   data () {
     return {
         title:'发布',
-        data:{},//传递数据
+        goodsId:'',//商品id
+        data:{},//填充数据
+        shopList:{},//店铺列表
         input3:'',
         active: 1,//步骤页初始，
         checked1:true,
@@ -392,22 +400,61 @@ export default {
     /** 
      *  编辑请求
      */
-    addAjax(){
-
-    }
+    editAjax(){
+        let _this = this;
+        _this.ajaxRequest({
+            'url': DFshop.activeAPI.mallProductToEdit_post,
+            'data':{
+                id:_this.goodsId
+            },
+            'success':function (data){
+                console.log(data,'编辑请求数据');
+                _this.data = data.data;
+                _this.groupListAjax({
+                    data:{
+                        shopId: _this.data.pro.shopId ,
+                        proId: _this.data.pro.id,
+                        groups:'',
+                    },
+                    success(data){
+                        console.log(data,'分组');
+                        _this.groupListData = data.data.groupList
+                    }
+                })
+            }
+        });
+    },
     /** 
      *  新增请求
      */
+    addAjax(){
+        let _this = this;
+        let data={};
+        _this.ajaxRequest({
+            'url': DFshop.activeAPI.mallProductAdd_post,
+            'data':data,
+            'success':function (data){
+                    
+            }
+        });
+    },
   },
   mounted(){
-      console.log(this.$route.params.id)
-      if(this.$route.params.type == 'add'){
+    console.log(this.$route.params.id)
+    if(this.$route.params.type == 'add'){
 
-      }else{
-          this.title = '编辑'
-          this.goodId = this.$route.params.id;
-      }
-      
+    }else{
+        this.title = '编辑'
+        this.goodsId = this.$route.params.id;
+        this.editAjax();
+    }
+    let _this = this;
+    _this.storeList({
+        'success'(data) {
+            console.log(data,'店铺列表')
+            _this.shopList = data.data;
+        }
+    })
   }
 }
 </script>

@@ -23,9 +23,9 @@ Vue.filter('currency', function (value,symbol='¥',dat=2) {
   * @param date 时间戳    
   * @param return 
 */
-Vue.filter('format', function (value,symbol='¥',dat=2) {
+Vue.filter('format', function (value) {
   let add0 = (m) => m<10?'0'+m:m;
-  let time = new Date(date);
+  let time = new Date(value);
   let y = time.getFullYear();
   let m = time.getMonth()+1;
   let d = time.getDate();
@@ -39,9 +39,9 @@ Vue.filter('format', function (value,symbol='¥',dat=2) {
   * @param date 时间戳    
   * @param return 
 */
-Vue.filter('formatNot', function (value,symbol='¥',dat=2) {
+Vue.filter('formatNot', function (value) {
   let add0 = (m) => m<10?'0'+m:m;
-  let time = new Date(date);
+  let time = new Date(value);
   let y = time.getFullYear();
   let m = time.getMonth()+1;
   let d = time.getDate();

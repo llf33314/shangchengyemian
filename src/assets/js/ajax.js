@@ -55,6 +55,22 @@ Vue.mixin({
           }
         });
       },
+        /** 
+         * 分组列表请求(包含下级)
+         */
+        groupListAjax(opt){
+            this.ajaxRequest({
+                'url': DFshop.activeAPI.mallProductGetGroups_post,
+                'data':{
+                    shopId: opt.shopId,
+                    proId: opt.proId,
+                    groups: opt.groups,
+                },
+                'success':function (data){
+                    if(typeof opt.success == 'function') opt.success(data);
+                }
+            });
+        },
       /*根据商品id获取商品规格、库存 */
       mallGetSpecificaByProId(opt){
         this.ajaxRequest({

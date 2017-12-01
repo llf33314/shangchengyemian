@@ -24,6 +24,9 @@
     isAdminUser_post: '/mall/E9lM9uM4ct/isAdminUser',
     /*商城概况*/
     mallCount_post: '/mall/E9lM9uM4ct/count',
+    /**
+     * 店铺管理相关接口
+     */
     /*店铺列表 （分页）*/
     mallStoreList_post: '/mallStore/E9lM9uM4ct/list',
     /*获取配色风格列表*/
@@ -101,13 +104,30 @@
     mallStoreCertSave_post: '/mallStore/E9lM9uM4ct/cert/save',
     /*获取认证的店铺类型*/
     mallStoreCertCategoryMap_post: '/mallStore/E9lM9uM4ct/cert/categoryMap',
-
+    /**
+     * 商品管理相关接口
+     */
     /*商品列表 */
     mallProductList_post: '/mallProduct/E9lM9uM4ct/list',
     /**删除、送审、上架、下架商品 */
     mallProductBatchProduct_post: '/mallProduct/E9lM9uM4ct/batchProduct',
     /* 获取各状态下商品数量 */
     mallProductCountStatus_post: '/mallProduct/E9lM9uM4ct/countStatus',
+    /*编辑商品 */
+    mallProductToEdit_post:'/mallProduct/E9lM9uM4ct/to_edit',
+    /*新增商品 */
+    mallProductAdd_post:'/mallProduct/E9lM9uM4ct/add',
+    /*获取商品分组列表 (包含下级) */
+    mallProductGetGroups_post:'/mallProduct/E9lM9uM4ct/group/getGroups',
+    /*获取商品分组信息*/
+    mallProductGroupInfo_post:'/mallProduct/E9lM9uM4ct/group/groupInfo',
+    /*分组列表*/
+    mallProductGroupList_post:'/mallProduct/E9lM9uM4ct/group/list',
+    /*删除分组*/
+    mallProductGroupDelete_post:'/mallProduct/E9lM9uM4ct/group/delete',
+    /*推荐分组*/
+    mallProductGroupRecommend_post:'/mallProduct/E9lM9uM4ct/group/recommend',
+
 
     /*团购列表 */
     mallGroupBuyList_post: '/mallGroupBuy/E9lM9uM4ct/list',
