@@ -48,25 +48,7 @@ export default {
   components: {
   },
   data () {
-    var validateSort = (rule, value, callback) => {
-      if (!Number(value)) {
-        callback(new Error('请输入序号'));
-      }else if(value.toString().length>4){
-        callback(new Error('请输入1~4位数字'));
-      }else{
-        callback();
-      }
-    }
-    var validateGroupName = (rule, value, callback) => {
-      let  Reg= /^[\u4E00-\u9FA5\uf900-\ufa2d\w\.\s]{1,6}$/g;
-      if (value === null ) {
-        callback(new Error('请输入分组名称'));
-      }else if(!Reg.test(value)){
-        callback(new Error('最多输入6位汉字或12位字符'));
-      }else{
-        callback();
-      }
-    }
+    
     return {
       shopList:[],//店铺列表
       form:{

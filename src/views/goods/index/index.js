@@ -51,7 +51,7 @@ const routes = [
     path: '/childlist/:pId', component: Group_childlist
   },
   {
-    path: '/addChild', component: Group_addChildl
+    path: '/addChild/:id', component: Group_addChildl
   },
   {
     path: '/addGoodsPage', component: GoodsPage_add

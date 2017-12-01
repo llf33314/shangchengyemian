@@ -92,6 +92,9 @@
 <style lang="less" type="text/css" scoped>
 @import '../../assets/css/mixins.less';
 //上传图片 无图
+section{
+  height: 100%;
+}
 .avatar-uploaderNo{
   border: 1px dashed #d9d9d9;
   border-radius: 6px;

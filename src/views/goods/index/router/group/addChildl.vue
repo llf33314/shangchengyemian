@@ -8,30 +8,26 @@
       </el-breadcrumb>
     </div>
     <div class="addgroup-wrapper">
-      <el-form  label-width="90px" :model="formLabelAlign" 
+      <el-form  label-width="90px" :model="form" :rules="rules"  ref="form"
                 class="addgroup-form">
         <el-form-item label="父级分类 :" >
           <span>日常用品</span>
         </el-form-item>
-        <el-form-item label="分组名称 :">
-          <el-input v-model="formLabelAlign.region" placeholder="请输入分组名称"></el-input>
+        <el-form-item label="分组名称 :" prop="groupName">
+          <el-input v-model="form.groupName" placeholder="请输入分组名称"></el-input>
         </el-form-item>
-        <el-form-item label="排序方式 :">
-          <el-select v-model="value" placeholder="按热度排序">
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
+        <el-form-item label="排序方式 :" >
+         <el-select v-model="form.sortOrder" placeholder="按选择排序模式">
+            <el-option label="按热度排列" :value="1"></el-option>
+            <el-option label="按序号排列(由大到小)" :value="2"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="序号 :">
-          <el-input v-model="formLabelAlign.type" placeholder="请输入分组序号"></el-input>
+        <el-form-item label="序号 :" prop="sort">
+          <el-input v-model="form.sort" placeholder="请输入分组序号"></el-input>
         </el-form-item>
         <el-form-item label="分类图片 :">
             <div class="shop-edit-Upload">
-                <imgUpload></imgUpload>
+                <gt-material @change="newImgData" ></gt-material>
             </div>
             <span class="shop-prompt">
                 图片建议尺寸：190*190px
@@ -47,37 +43,48 @@
 </template>
 <script>
 import Lib from 'assets/js/Lib';
-import imgUpload from 'components/imgUpload'
+import gtMaterial from 'components/material/material'
 export default {
   components: {
-      imgUpload
+      gtMaterial
   },
   data () {
+    var validateSort = (rule, value, callback) => {
+      if (!Number(value)) {
+        callback(new Error('请输入序号'));
+      }else if(value.toString().length>4){
+        callback(new Error('请输入1~4位数字'));
+      }else{
+        callback();
+      }
+    }
+    var validateGroupName = (rule, value, callback) => {
+      let  Reg= /^[\u4E00-\u9FA5\uf900-\ufa2d\w\.\s]{1,6}$/g;
+      if (value === null ) {
+        callback(new Error('请输入分组名称'));
+      }else if(!Reg.test(value)){
+        callback(new Error('最多输入6位汉字或12位字符'));
+      }else{
+        callback();
+      }
+    }
     return {
       shopList:[],//店铺列表
-      labelPosition: 'right',
-      formLabelAlign: {
-        name: '',
-        region: '',
-        type: ''
+      form:{
+        shopId:'',//店铺id
+        groupName:'',//分组名称
+        sortOrder:1 ,//排序方式
+        sort:'',//序号
       },
-      options: [{
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
-        }, {
-          value: '选项4',
-          label: '龙须面'
-        }, {
-          value: '选项5',
-          label: '北京烤鸭'
-        }],
-        value: ''
+      addImg:'',//分类图片
+      rules: {
+        groupName: [
+          { validator: validateGroupName, trigger: 'blur' },
+        ],
+        sort: [
+          { validator: validateSort, trigger: 'blur' },
+        ]
+      }
     }
   },
   methods: {
@@ -110,6 +117,12 @@ export default {
             _this.$router.push({path:'/grouping'})
           }
       });
+    },
+    /** 
+     * 获取素材图片
+     */
+    newImgData(value){
+      this.addImg = value;
     }
   },
   mounted(){
