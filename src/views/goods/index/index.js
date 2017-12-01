@@ -48,7 +48,7 @@ const routes = [
     path: '/addGroup', component: Group_addGrouping
   },
   {
-    path: '/childlist', component: Group_childlist
+    path: '/childlist/:pId', component: Group_childlist
   },
   {
     path: '/addChild', component: Group_addChildl

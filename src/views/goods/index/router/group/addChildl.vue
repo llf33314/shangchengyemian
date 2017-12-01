@@ -54,6 +54,7 @@ export default {
   },
   data () {
     return {
+      shopList:[],//店铺列表
       labelPosition: 'right',
       formLabelAlign: {
         name: '',
@@ -80,11 +81,35 @@ export default {
     }
   },
   methods: {
-    /**
-     * 保存跳转
+    /** 
+     * 表单验证
      */
-    onSubmit(){
-      this.$router.push({path:'/childlist'})
+    submitForm(formName) {
+      let _this = this;
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          _this.groupSaveAjax();
+        } else {
+          return false;
+        }
+      });
+    },
+    /**
+     * 保存分组信息
+     */
+    groupSaveAjax(){
+      let _this = this;
+      _this.ajaxRequest({
+          'url': DFshop.activeAPI.mallProductGroupSave_post,
+          'data': _this.form,
+          'success':function (data){
+            _this.$message({
+              message: '新增保存成功',
+              type: 'success'
+            });
+            _this.$router.push({path:'/grouping'})
+          }
+      });
     }
   },
   mounted(){

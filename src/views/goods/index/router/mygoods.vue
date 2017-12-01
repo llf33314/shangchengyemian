@@ -191,11 +191,6 @@ export default {
       }
     }
   },
-  watch:{
-    'screenData'(a,b){
-      console.log(a,b,'------------')
-    }
-  },
   methods: {
     /**
      * 全选

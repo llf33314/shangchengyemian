@@ -66,7 +66,7 @@
             <el-button  
               size="small"
               class="buttonBlue"
-              @click="jumpRouter('childlist')">
+              @click="jumpRouter('childlist/'+scope.row.id)">
               子类列表
             </el-button>
             <el-button  
@@ -227,26 +227,23 @@ export default {
      * @param data 推介分组数据 lDelete 1未推荐（存在）   0已推荐（不存在）
      */
     recommend(data){
-      console.log(data.lDelete,'1未推荐 0已推荐')
       let _this = this;
       let _data = {
           groupId: data.id,//分组ID
       }
       if(data.lDelete == 1 ){
-        //推荐
-        console.log(data,data.lDelete == 1,'推荐');
+        //未推荐 去推荐
         _data.status = 1 ;// 0推荐
-       // _this.recommendAjax(_data);
+       _this.recommendAjax(_data);
       }else{
-        //取消推荐
-        console.log(data,data.lDelete == 1,'取消推荐');
+        //已推荐 取消推荐
         let msg ={
           dialogTitle:'取消推荐提醒',//文本标题
           dialogMsg:'确定要取消选中分组的推荐吗？',
           callback: {
               btnOne:()=>{
                 _data.status = 2;
-                //_this.recommendAjax(_data);
+                _this.recommendAjax(_data);
               }
           },
         }

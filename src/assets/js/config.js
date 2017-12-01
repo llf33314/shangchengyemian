@@ -127,7 +127,8 @@
     mallProductGroupDelete_post:'/mallProduct/E9lM9uM4ct/group/delete',
     /*推荐分组*/
     mallProductGroupRecommend_post:'/mallProduct/E9lM9uM4ct/group/recommend',
-
+    /*保存分组信息 */
+    mallProductGroupSave_post:'/mallProduct/E9lM9uM4ct/group/save',
 
     /*团购列表 */
     mallGroupBuyList_post: '/mallGroupBuy/E9lM9uM4ct/list',
