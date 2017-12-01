@@ -245,7 +245,7 @@ export default {
         if(_this.searchData.endTime != ""){
             str += "&endTime="+_this.searchData.endTime.toISOString().slice(0,10);
         }
-        window.open(DFshop.activeAPI.exportTradeOrder_post+str);
+        window.open(DFshop.activeAPI.exportTradeOrder_get+str);
     },
     /**
      * 交易记录多页请求

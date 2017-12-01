@@ -235,7 +235,7 @@
     /**交易记录列表*/
     tradeList_post:'/mallOrder/E9lM9uM4ct/tradeList',
     /**导出交易记录订单*/
-    exportTradeOrder_post: DFshop.api+'/mallOrder/E9lM9uM4ct/exportTradeOrder'
+    exportTradeOrder_get: DFshop.api+'/mallOrder/E9lM9uM4ct/exportTradeOrder'
   };
 
 
