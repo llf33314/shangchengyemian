@@ -34,8 +34,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api':{
-        // target: 'http://mall.yifriend.net/',
-        target:'http://192.168.2.118:8080/',
+        target: 'http://mall.yifriend.net/',
         changeOrigin: true,
         pathRewrite: {
           '^/api': '/'
