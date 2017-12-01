@@ -105,29 +105,17 @@ Vue.mixin({
 
                 if (opts.success) {
                     
-                    //需要登陆（需要跳转）
+                    //需要登陆（需要跳转）todo
                     if(res.data.code == 1001){
                         return
                     }
-                    //需要刷新本页面
-                    if(res.data.code == 1002 || res.data.code == 1005){
-                        window.location.reload(); 
-                        return
-                    }
-                    //商家已过期（需要跳转）
-                    if(res.data.code == 1004){
-
-                        return
-                    }
-                    //请求失败 1 请求数据为空1000  参数传值不完整1003
-                    //商品已被删除或未上架1006  店铺已被删除1007 活动被删除1011
+                    
                     if(status){
                         if(res.data.code != 0 ){
-                            let msg={
-                                type :'error',
-                                msg :  res.data.msg
-                            }
-                            vm.$parent.$refs.bubble.show_tips(msg);
+                            vm.$message({
+                                message: res.data.msg,
+                                type: 'warning'
+                            });
                             return
                         }
                     }

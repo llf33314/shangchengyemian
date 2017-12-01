@@ -1,9 +1,6 @@
 <template>
   <div class="index-wrapper">
     <el-tabs v-model="activeName" @tab-click="handleClick">
-      <!-- <el-tab-pane v-for="tab in tabs" :label="tab.label"
-      :name="tab.name" >
-      </el-tab-pane> -->
       <el-tab-pane label="我的商品" name="mygoods"></el-tab-pane>
       <el-tab-pane label="分组管理" name="grouping"></el-tab-pane>
       <el-tab-pane label="商品页模板" name="goodspage"></el-tab-pane>

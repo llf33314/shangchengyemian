@@ -3,7 +3,7 @@
     <div class="common-nav">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: '/goodspage' }">我的商品</el-breadcrumb-item>
-        <el-breadcrumb-item>发布商品</el-breadcrumb-item>
+        <el-breadcrumb-item>{{title}}商品</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="mygoods-main">
@@ -250,6 +250,8 @@ export default {
   },
   data () {
     return {
+        title:'发布',
+        data:{},//传递数据
         input3:'',
         active: 1,//步骤页初始，
         checked1:true,
@@ -384,12 +386,28 @@ export default {
       if(this.active == 2)this.isTowPage=false,this.isPassPage =false,this.isThreePage=true;
       if(this.active++ > 2) this.active = 1;
     },
-    aaa(text){
-        console.log(text);
-    },
     showAddoption(e){
         e?this.addoption = false:this.addoption = true;
+    },
+    /** 
+     *  编辑请求
+     */
+    addAjax(){
+
     }
+    /** 
+     *  新增请求
+     */
+  },
+  mounted(){
+      console.log(this.$route.params.id)
+      if(this.$route.params.type == 'add'){
+
+      }else{
+          this.title = '编辑'
+          this.goodId = this.$route.params.id;
+      }
+      
   }
 }
 </script>

@@ -13,6 +13,7 @@
    */
   // h5App.api ="";
   DFshop.api = "/api";
+  //get请求   接口前加上 DFshop.api
 
   /*start 请求接口***********************************************************************************************************/
   
@@ -30,11 +31,11 @@
     /*页面列表（分页）*/
     mallPageNewlist_post: '/mallPage/E9lM9uM4ct/list',
     /*店铺二维码生成*/
-    mallStoreGenerateQRCode_get: '/mallStore/E9lM9uM4ct/generateQRCode',
+    mallStoreGenerateQRCode_get: DFshop.api+'/mallStore/E9lM9uM4ct/generateQRCode',
     /*店铺链接*/
     mallStoreLink_post: '/mallStore/E9lM9uM4ct/link',
     /*下载提取二维码*/
-    mallDownQr_get: '/mall/E9lM9uM4ct/downQr',
+    mallDownQr_get: DFshop.api+'/mall/E9lM9uM4ct/downQr',
     /*商家店铺请求*/
     mallStorestoreInfo_post: '/mallStore/E9lM9uM4ct/storeInfo',
     /*可新增店铺门店列表*/
@@ -53,6 +54,9 @@
     mallStoreStoreList_post: '/mallStore/E9lM9uM4ct/storeList',
     /*页面类型 (可用于下拉框)*/
     mallPageNewTypeMap_post: '/mallPage/E9lM9uM4ct/typeMap',
+    /*获取短信验证码 */
+    mallStoreCertGetValCode_post: '/mallStore/E9lM9uM4ct/cert/getValCode',
+
 
     /*物流管理列表*/
     mallFreightList_post: '/mallFreight/E9lM9uM4ct/list',

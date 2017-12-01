@@ -57,7 +57,7 @@ const routes = [
     path: '/addGoodsPage', component: GoodsPage_add
   },
   {
-    path: '/releaseGoods', component: mygoods_releaseGoods
+    path: '/releaseGoods/:id', component: mygoods_releaseGoods
   }
 ]
 

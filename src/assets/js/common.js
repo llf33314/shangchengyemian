@@ -45,6 +45,19 @@ var Rxports = {
 		}
 	},
 	/**
+	 *  数组去重复
+	 * @param arr 判断数组 false 不重复
+	 */
+	isRepeat(arr){
+		var hash = {};
+		for(var i in arr) {
+			if(hash[arr[i]])
+				  return true;
+			hash[arr[i]] = true;
+		}
+		return false;
+	},
+	/**
 	  * 获取url传过来的参数
 	  * @param name 	获取的参数
 	  * @param Url 		自定义获取参数的链接

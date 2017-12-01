@@ -1,25 +1,21 @@
 <template>
   <section >
-    <div class="material-square" @click="materiallayer()" :class="img == '' ? 'border':''">
-      <i class="el-icon-plus"></i>
-      <img class="img"  v-if="img != ''" :src="img" />
-      <div class="delete" v-if="img != '' " @click.stop="stopDelete">
-        <i class="el-icon-view" @click.stop="largeImg"></i>
-        <i class="el-icon-delete2" @click.stop="deleteImg"></i>
-      </div>
+    <div @click.self="material()"
+        :style="{backgroundImage: 'url(' +imgdata + ')'}"
+        :class="[imgdata?'avatar-uploader':'avatar-uploaderNo']">
+        <i  class="el-icon-plus" 
+            @click.self="material()" 
+            v-if="!imgdata"></i>
+        <div class="avatar-layer">
+          <i class="el-icon-search" @click.self="largeImg(imgdata)"></i>
+          <i class="el-icon-delete" @click.self="deleteImg"></i>
+        </div>
     </div>
-    <el-dialog v-model="materialLargeSrcVisible" size="small">
-        <img width="100%" :src="img" alt="" class="img">
-    </el-dialog>
 
-    <el-dialog
-      title="素材库"
-      :visible.sync="materialvisible"
-      class="material-dialog"
-      size="small">
-      <div>
-        <iframe :src="materialUrl" class="material"></iframe>
-      </div>
+    <el-dialog v-model="materialLargeSrcVisible" size="small">
+        <div class="largeSrc-box">
+          <img width="100%" :src="largeSrc" alt="" class="img">
+        </div>
     </el-dialog>
 
   </section>
@@ -27,69 +23,66 @@
 
 <script>
   export default {
-    props: {
-      imgList: {
-        type: String,
-        default :''
-      }
-    },
+    props:['img','imgUrl'],
     data(){
       return{
-        materialvisible: false,
-        materialUrl: '',
-        square: true,
+        imgdata:'',
         materialLargeSrcVisible: false,
-        largeSrc: '',
-        img:''
+        largeSrc:''
       }
     },
     watch:{
-      imgList(n,o){
-        this.img = this.imgList;
+      'img'(a,b){
+        this.imgdata = this.imgUrl + a;
+        console.log(this.imgdata,'this.imgdata');
+      },
+      'imgdata'(a,b){
+        this.stopDelete();
       }
     },
     mounted: function () {
-      let _this = this,imgUpload;
-      // window.addEventListener("message", function (e) {
-      //   const num = e.data.length - 1;
-      //   if (!num) return false;
-      //   var newList = [];
-      //   e.data.substring(6, num).split(',').forEach((item) => {
-      //     newList.push(item.substring(1, (item.length - 1)))
-      //   })
-      //   _this.materialvisible = false;
-      //   if(newList == ""){
-      //     imgUpload = '';
-      //   }else{
-      //      _this.img = newList[1];
-      //      imgUpload = '/image'+ _this.img.split("image")[1];
-      //   }
-      //   _this.$emit('imgdata',imgUpload);
-      // });
+
     },
     methods: {
-      // 调用素材库
-      materiallayer() {
-        let _this =this;
-        let _link = DFshop.activeAPI.materialUrl + window.location.href;
-        _this.materialUrl = _link;
-        _this.materialvisible = true;
+      /** 
+      * 调用素材库
+      */
+      material(){
+        let _this = this;
+        _this.$material({
+          imageboxUrl: DFshop.activeAPI.materialUrl,   //地址
+          modal: true,       //遮罩
+          selecType: true,   //是否多选
+          width: 820, //宽度
+          height: 500, //高度
+          lockScroll: false, //弹出框后是否锁定滚动轴
+          closeOnClickModal: false, //点击遮罩是否关闭
+          closeOnPressEscape: false
+        }).then(function (val) {
+          //确认
+            _this.imgdata = val[0].url;
+          }).catch(function (error) {
+          //取消
+        }) 
+
       },
       /*
        * 删除图片
        * */
       deleteImg() {
-        this.img = ''
+        this.imgdata = ''
       },
       /*
        * 放大
        * */
-      largeImg() {
-        this.materialLargeSrcVisible = true
-        this.largeSrc = this.imgList[0].url
+      largeImg(img) {
+        console.log(img,'img')
+        
+        this.largeSrc = img;
+        this.materialLargeSrcVisible = true;
       },
       stopDelete() {
-
+        this.$emit('change',this.imgdata)
       }
     }
   }
@@ -98,91 +91,75 @@
 
 <style lang="less" type="text/css" scoped>
 @import '../../assets/css/mixins.less';
-  section{
-    display: inline-block;
-    vertical-align: bottom;
+//上传图片 无图
+.avatar-uploaderNo{
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  .ik-box;
+  .ik-box-pack(center);
+  .ik-box-align(center);
+  background: #fbfdff;
+  background-size: cover; 
+  line-height: 0;
+  i{
+      display: block;
+      color: #c0ccda;
+  }
+  
+}
+.avatar-layer{
+  display: none;
+}
+  //上传图片 有图
+.avatar-uploader{
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  .ik-box;
+  .ik-box-pack(center);
+  .ik-box-align(center);
+  background: #f9f8f8;
+  background-size: cover; 
+  line-height: 0;
+  &>i{
+      display: block;
+      color: #c0ccda;
+  }
+
+  &:hover .avatar-layer{
+    display: block;
     width: 100%;
     height: 100%;
-  }
-  .material {
-    width: 100%;
-    height: 450px;
-    border: 0;
-  }
-  .border{
-    .border-radius(3px);
-    border: 2px dashed #c0ccda;
+    background: rgba(0, 0, 0, .3);
+    position: absolute;
+    top:  0;
+    left: 0;
     .ik-box;
     .ik-box-pack(center);
     .ik-box-align(center);
-  }
-  .material-square {
-    background-color: #fbfdff;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    height: 100%;
-    .el-icon-plus {
-      color: #c0ccda;
-    }
-    .img {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-    }
-    &:hover .delete {
-      .ik-box;
-      .ik-box-pack(center);
-      .ik-box-align(center);
-    }
-    .delete {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      border: 2px solid rgba(0, 0, 0, 0);
-      left: 0;
-      background-color: rgba(0, 0, 0, .3);
-      z-index: 1;
-      color: #fff;
-      font-size: 18px;
-      line-height: 77px;
-      display: none;
+    i{
+        display: block;
+        color: #fff;
+        font-size: 18px;
+        cursor: pointer;
+        margin: 5px;
+        font-weight: 100;
     }
   }
-
-  .rectangle {
-    width: 220px;
-    border-radius: 3px;
-  }
-
-  .material-dialog {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, .3);
-    z-index: 9999;
-    text-align: center;
-    .content {
-      background-color: #fff;
-      padding: 0 10px 10px;
-      overflow: hidden;
-      border-radius: 5px;
-      min-width: 700px;
-      max-width:1000px;
-      display: inline-block;
-      margin-top:10%;
-      .title {
-        line-height: 50px;
-        height: 50px;
-        font-weight: 700;
-        text-align: left;
-      }
-    }
-  }
+}
+.largeSrc-box{
+  margin: 0 auto;
+  max-width: 500px;
+  max-height: 500px;
+}
 
 </style>
