@@ -2,7 +2,7 @@
   <div class="index-mygoods">
     <div class="index-shopInfo clearfix">
       <div class="shopInfo-content">
-        <div class="shopInfo-selectbox" v-if="isShow">
+        <div class="shopInfo-selectbox" v-if="count.status_total>0">
            <el-select v-model="screenData.proType" placeholder="请选择" class="shopInfo-select"@change="search_type(1)">
             <el-option label="全部商品" :value="0"></el-option>
             <el-option label="已上架" :value="1"></el-option>
@@ -20,14 +20,14 @@
         </div>
       </div>
     </div>
-    <div class="index-mygoods-content" v-if="isShow" >
+    <div class="index-mygoods-content" v-if="count.status_total>0">
       <el-tabs v-model="activeName" type="card" @tab-click="search_type(2)">
         <el-tab-pane :label="'全部( '+count.status_total+' )'" name="0"></el-tab-pane>
         <el-tab-pane :label="'已上架( '+count.status1+' )'" name="1"></el-tab-pane>
         <el-tab-pane :label="'未上架( '+count.status2+' )'" name="2"></el-tab-pane>
         <el-tab-pane :label="'审核未通过( '+count.status3+' )'" name="3"></el-tab-pane>
       </el-tabs>
-      <el-table ref="multipleTable" :data="tableData3.page.subList" tooltip-effect="dark"
+      <el-table ref="multipleTable" :data="subList" tooltip-effect="dark"
         style="width: 100%" @selection-change="handleSelectionChange">
         <el-table-column
           type="selection"
@@ -78,11 +78,14 @@
             <span v-if="scope.row.isPublish == 1 && scope.row.checkStatus == 1">
               已上架
             </span>
-            <span  v-if="scope.row.isPublish == 0 && scope.row.checkStatus == 1">
+            <span  v-if="scope.row.isPublish == -1 && scope.row.checkStatus == 1">
               未上架
             </span>
             <span class="shop-red" v-if="scope.row.checkStatus == -1">
               审核不通过
+            </span>
+            <span class="shop-red" v-if="scope.row.checkStatus == -2">
+              还未审核
             </span>
           </template>
          </el-table-column>
@@ -136,7 +139,7 @@
       <el-row>
         <el-col :span="16">
           <div style="margin-top: 20px">
-            <el-button @click="toggleSelection(tableData3.page.subList)">全选</el-button>
+            <el-button @click="toggleSelection(subList)">全选</el-button>
             <el-button @click="toggleSelection()">取消全选</el-button>
             <el-button @click="mallProductBatchProduct(ids,1)">批量删除</el-button>
             <el-button @click="mallProductBatchProduct(ids,3)">批量上架</el-button>
@@ -145,20 +148,20 @@
           </div>
         </el-col>
         <el-col :span="8">
-          <div class="block shop-textr" v-if="tableData3.page.pageCount>0" style="margin-top: 20px">
+          <div class="block shop-textr" v-if="page.pageCount>0" style="margin-top: 20px">
             <el-pagination
               @current-change="handleCurrentChange"
-              :page-size="tableData3.page.pageSize"
-              :current-page='tableData3.page.curPage'
+              :page-size="page.pageSize"
+              :current-page='page.curPage'
               layout="prev, pager, next, jumper"
-              :total="tableData3.page.rowCount">
+              :total="page.rowCount">
             </el-pagination>
           </div> 
         </el-col>
       </el-row>
       
     </div>
-    <contentNo :show="contentNo" v-else></contentNo>
+    <contentNo :show="contentNo" v-if="count.status_total ==  0"></contentNo>
   </div>
 </template>
 
@@ -173,14 +176,14 @@ export default {
   },
    data() {
     return {
-      isShow: true,//是否有数据显示
       activeName: '0',
       isStatus:1,//0:未审核；1:已上架，2：未上架
-      tableData3: [],
       contentNo:'good',//没有数据显示
       shopList:'',
+      subList:[],//列表数据
+      page:{},//页面数据
       ids:'',
-      count:'',
+      count:2,
       imgUrl:'',
       webPath:'',
       screenData:{//筛选数据
@@ -217,7 +220,6 @@ export default {
       _this.ids = ids.toString();
     },
     handleCurrentChange(val) {
-      console.log(val,val)
       this.screenData.curPage = val;
       this.mallProductList(this.screenData)
     },
@@ -268,13 +270,21 @@ export default {
         'url':DFshop.activeAPI.mallProductList_post,
         'data':data,
         'success':function (data){
-          //接口后期会改todo
-          _this.count = data.data.count;
+          if(data.data.count != null){
+            _this.count = data.data.count;
+          }
           _this.tableData3 = data.data;
+          _this.subList = data.data.page.subList;
+          _this.page = {
+            curPage:  data.data.page.curPage,
+            pageCount: data.data.page.pageCount,
+            pageSize: data.data.page.pageSize,
+            rowCount: data.data.page.rowCount
+          }
           _this.imgUrl = data.imgUrl;
           _this.webPath = data.webPath;
-          _this.mallProductCountStatus(_this.screenData);
         }
+      
       });
     },
     /**
@@ -300,17 +310,6 @@ export default {
         }
       });
     },
-    /* 获取各状态下商品数量 */
-    mallProductCountStatus(data){
-      let _this = this;
-      _this.ajaxRequest({
-        'url':DFshop.activeAPI.mallProductCountStatus_post,
-        'data':data,
-        'success':function (data){
-          _this.count = data.data;
-        }
-      });
-    },
     /** 
      * 链接二维码
      */
@@ -331,7 +330,6 @@ export default {
   mounted(){
     let _this = this;
     _this.mallProductList(_this.screenData);
-    _this.mallProductCountStatus();
     this.storeList({
       'success'(data){
         _this.shopList = data.data;

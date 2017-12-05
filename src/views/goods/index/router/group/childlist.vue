@@ -8,7 +8,7 @@
     </div>
      <div class="index-shopInfo clearfix">
       <el-button type="primary"
-        @click="jumpRouter('/addChild/'+$route.params.pId)">新增子类分组</el-button>
+        @click="jumpRouter('/addGroup/addChild/'+$route.params.pId)">新增子类分组</el-button>
     </div>
     <div class="childlist-wrapper" v-if="subList != ''">
       <el-table
@@ -56,7 +56,8 @@
           <template scope="scope">
             <el-button  
               size="small"
-              class="buttonBlue">
+              class="buttonBlue"
+              @click="jumpRouter('/addGroup/editChild/'+scope.row.id)">
               编辑
             </el-button>
             <el-button  
