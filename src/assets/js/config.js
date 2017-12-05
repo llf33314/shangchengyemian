@@ -129,6 +129,15 @@
     mallProductGroupRecommend_post:'/mallProduct/E9lM9uM4ct/group/recommend',
     /*保存分组信息 */
     mallProductGroupSave_post:'/mallProduct/E9lM9uM4ct/group/save',
+    /*商品页模板列表（分页） */
+    mallProductTemplateList_post:'/mallProduct/E9lM9uM4ct/template/list',
+    /*删除商品页模板 */
+    mallProductTemplateDelete_post:'/mallProduct/E9lM9uM4ct/template/delete',
+    /*保存商品页模板 */
+    mallProductTemplateSave_post:'/mallProduct/E9lM9uM4ct/template/save',
+    /*获取商品页模板信息 */
+    mallProductTemplateInfo_post:'/mallProduct/E9lM9uM4ct/template/templateInfo',
+
 
     /*团购列表 */
     mallGroupBuyList_post: '/mallGroupBuy/E9lM9uM4ct/list',

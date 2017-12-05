@@ -52,7 +52,7 @@ const routes = [
     path: '/childlist/:pId', component: Group_childlist
   },
   {
-    path: '/addGoodsPage', component: GoodsPage_add
+    path: '/addGoodsPage/:pageId', component: GoodsPage_add
   },
   {
     path: '/releaseGoods/:id', component: mygoods_releaseGoods

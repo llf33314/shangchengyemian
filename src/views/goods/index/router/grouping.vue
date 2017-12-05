@@ -87,7 +87,7 @@
           <el-button @click="toggleSelection()">取消选择</el-button>
           <el-button @click="handleDelete()">批量删除</el-button>
         </div>
-        <div class="block shop-textr" v-if="page.pageCount>0" >
+        <div class="block shop-textr" v-if="page.pageCount>1" >
           <el-pagination
             @current-change="handleCurrentChange"
             @selection-change="toggleSelection"
