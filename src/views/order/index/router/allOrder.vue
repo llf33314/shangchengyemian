@@ -576,7 +576,7 @@ export default {
       var updateMoneyData={
           "orderId":orderId,
           "orderMoney":orderMoney,
-          "detailObj":detailObj 
+          "detailObj":JSON.stringify(detailObj)
       }
       _this.ajaxRequest({
         'url': DFshop.activeAPI.updateStatus_post,
