@@ -18,6 +18,8 @@
         <p v-else-if="show === 'H5'">您还没有创建H5商城，<a :href="window +'/views/setUp/index.html#/setup'">点击这里</a> 新增H5页面</p>
         <p v-else-if="show === 'order'">您还没有相关订单信息哦</p>
         <p v-else-if="show === 'trade'">还没有相关交易记录</p>
+        <p v-else-if="show === 'openComment'">您还没有开启评论功能，<a :href="window +'/views/setUp/index.html#/setup'">点击这里</a> 开启吧</p>
+        <p v-else-if="show === 'colseBuyerComment'">暂时还没有买家评论哦</p>
         <p v-else> 还没有相关数据</p>
     </div>
 </template>

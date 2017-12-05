@@ -57,6 +57,8 @@
                     type="daterange"
                     align="right"
                     placeholder="选择日期范围"
+                    value-format="yyyy-MM-dd"
+                    @change="changePicker"
                     :picker-options="pickerOptions2">
                   </el-date-picker>
               </el-form-item >
@@ -174,10 +176,6 @@ export default {
         isPage:true,//潘墩列表页数多页
         activeName: 'index',//默认首页显示
         activeName2: '0',
-        formInline: {
-          user: '',
-          region: ''
-        },
         pickerOptions2: {
           shortcuts: [{
             text: '近7天',
@@ -222,11 +220,18 @@ export default {
     search(){
       let _this = this;
       _this.searchData.curPage = 1;
-      if(_this.value7 != "" ){
-        _this.searchData.startTime=this.value7[0];
-        _this.searchData.endTime=this.value7[1];
-      }
       _this.tradeList(_this.searchData);
+    },
+     changePicker(value){
+       let _this = this;
+       if(value != "" ){
+          let date=value.split(" - ");
+        _this.searchData.startTime=date[0];
+        _this.searchData.endTime=date[1];
+      }else{
+        _this.searchData.startTime='';
+        _this.searchData.endTime='';
+      }
     },
     /**批量导出 */
     exportTrade(){
@@ -239,11 +244,11 @@ export default {
         if(_this.searchData.status != ""){
             str += "&status="+_this.searchData.status;
         }
-        if(_this.searchData.startTime != ""){
-            str += "&startTime="+_this.searchData.startTime.toISOString().slice(0,10);
+        if(_this.searchData.startTime != null){
+            str += "&startTime="+_this.searchData.startTime;
         }
-        if(_this.searchData.endTime != ""){
-            str += "&endTime="+_this.searchData.endTime.toISOString().slice(0,10);
+         if(_this.searchData.endTime != null){
+            str += "&endTime="+_this.searchData.endTime;
         }
         window.open(DFshop.activeAPI.exportTradeOrder_post+str);
     },

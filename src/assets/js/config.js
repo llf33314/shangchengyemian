@@ -234,7 +234,31 @@
     /**交易记录列表*/
     tradeList_post:'/mallOrder/E9lM9uM4ct/tradeList',
     /**导出交易记录订单*/
-    exportTradeOrder_post: DFshop.api+'/mallOrder/E9lM9uM4ct/exportTradeOrder'
+    exportTradeOrder_post: DFshop.api+'/mallOrder/E9lM9uM4ct/exportTradeOrder',
+
+    /**
+     * 评论管理相关接口
+     */
+    /**评论列表*/
+    mallCommentList_post:'/mallComment/E9lM9uM4ct/list',
+    /**回复评论*/
+    mallCommentReply_post:'/mallComment/E9lM9uM4ct/reply',
+
+    /**
+    * 订单管理相关接口
+    */
+    /**订单管理列表 */
+    mallOrderList_post:'/mallOrder/E9lM9uM4ct/list',
+    /**获取订单详情*/
+    orderInfo_post:'/mallOrder/E9lM9uM4ct/orderInfo',
+    /**修改状态 */
+    updateStatus_post:'/mallOrder/E9lM9uM4ct/updateStatus',
+    /**获取取消订单理由列表 */
+    cancelReasonMap_post:'/mallOrder/E9lM9uM4ct/cancelReasonMap',
+    /**修改退款状态 */
+    updateReturn_post:'/mallOrder/E9lM9uM4ct/updateReturn',
+    /**导出订单记录订单*/
+    exportMallOrderr_get: DFshop.api+'/mallOrder/E9lM9uM4ct/exportMallOrder',
   };
 
 
