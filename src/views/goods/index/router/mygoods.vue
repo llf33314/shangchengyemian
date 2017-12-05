@@ -2,7 +2,7 @@
   <div class="index-mygoods">
     <div class="index-shopInfo clearfix">
       <div class="shopInfo-content">
-        <div class="shopInfo-selectbox" v-if="isShow">
+        <div class="shopInfo-selectbox" v-if="count.status_total>0">
            <el-select v-model="screenData.proType" placeholder="请选择" class="shopInfo-select"@change="search_type(1)">
             <el-option label="全部商品" :value="0"></el-option>
             <el-option label="已上架" :value="1"></el-option>
@@ -20,14 +20,14 @@
         </div>
       </div>
     </div>
-    <div class="index-mygoods-content" v-if="isShow" >
+    <div class="index-mygoods-content" v-if="count.status_total>0">
       <el-tabs v-model="activeName" type="card" @tab-click="search_type(2)">
         <el-tab-pane :label="'全部( '+count.status_total+' )'" name="0"></el-tab-pane>
         <el-tab-pane :label="'已上架( '+count.status1+' )'" name="1"></el-tab-pane>
         <el-tab-pane :label="'未上架( '+count.status2+' )'" name="2"></el-tab-pane>
         <el-tab-pane :label="'审核未通过( '+count.status3+' )'" name="3"></el-tab-pane>
       </el-tabs>
-      <el-table ref="multipleTable" :data="tableData3.page.subList" tooltip-effect="dark"
+      <el-table ref="multipleTable" :data="subList" tooltip-effect="dark"
         style="width: 100%" @selection-change="handleSelectionChange">
         <el-table-column
           type="selection"
@@ -78,11 +78,14 @@
             <span v-if="scope.row.isPublish == 1 && scope.row.checkStatus == 1">
               已上架
             </span>
-            <span  v-if="scope.row.isPublish == 0 && scope.row.checkStatus == 1">
+            <span  v-if="scope.row.isPublish == -1 && scope.row.checkStatus == 1">
               未上架
             </span>
             <span class="shop-red" v-if="scope.row.checkStatus == -1">
               审核不通过
+            </span>
+            <span class="shop-red" v-if="scope.row.checkStatus == -2">
+              还未审核
             </span>
           </template>
          </el-table-column>
@@ -111,7 +114,7 @@
             <el-button  size="small" 
                         class="buttonBlue" 
                         v-if=" scope.row.checkStatus == 1 && scope.row.isPublish == 1"
-                        @click="shopQR(scope.row)">
+                        @click="shopQR(scope.row,1)">
               链接
             </el-button>
             <el-button  size="small" 
@@ -122,7 +125,8 @@
             </el-button>
             <el-button  size="small" 
                         class="buttonBlue" 
-                        v-if=" scope.row.checkStatus == 1 && scope.row.isPublish == 1">
+                        v-if=" scope.row.checkStatus == 1 && scope.row.isPublish == 1"
+                        @click="shopQR(scope.row,2)">
               到店购买
             </el-button>
             <el-button  size="small" 
@@ -136,7 +140,7 @@
       <el-row>
         <el-col :span="16">
           <div style="margin-top: 20px">
-            <el-button @click="toggleSelection(tableData3.page.subList)">全选</el-button>
+            <el-button @click="toggleSelection(subList)">全选</el-button>
             <el-button @click="toggleSelection()">取消全选</el-button>
             <el-button @click="mallProductBatchProduct(ids,1)">批量删除</el-button>
             <el-button @click="mallProductBatchProduct(ids,3)">批量上架</el-button>
@@ -145,20 +149,20 @@
           </div>
         </el-col>
         <el-col :span="8">
-          <div class="block shop-textr" v-if="tableData3.page.pageCount>0" style="margin-top: 20px">
+          <div class="block shop-textr" v-if="page.pageCount>0" style="margin-top: 20px">
             <el-pagination
               @current-change="handleCurrentChange"
-              :page-size="tableData3.page.pageSize"
-              :current-page='tableData3.page.curPage'
+              :page-size="page.pageSize"
+              :current-page='page.curPage'
               layout="prev, pager, next, jumper"
-              :total="tableData3.page.rowCount">
+              :total="page.rowCount">
             </el-pagination>
           </div> 
         </el-col>
       </el-row>
       
     </div>
-    <contentNo :show="contentNo" v-else></contentNo>
+    <contentNo :show="contentNo" v-if="count.status_total ==  0"></contentNo>
   </div>
 </template>
 
@@ -173,14 +177,14 @@ export default {
   },
    data() {
     return {
-      isShow: true,//是否有数据显示
       activeName: '0',
       isStatus:1,//0:未审核；1:已上架，2：未上架
-      tableData3: [],
       contentNo:'good',//没有数据显示
       shopList:'',
+      subList:[],//列表数据
+      page:{},//页面数据
       ids:'',
-      count:'',
+      count:2,
       imgUrl:'',
       webPath:'',
       screenData:{//筛选数据
@@ -189,11 +193,6 @@ export default {
         shopId : '',  //店铺ID
         proName: ''   //商品名称
       }
-    }
-  },
-  watch:{
-    'screenData'(a,b){
-      console.log(a,b,'------------')
     }
   },
   methods: {
@@ -222,7 +221,6 @@ export default {
       _this.ids = ids.toString();
     },
     handleCurrentChange(val) {
-      console.log(val,val)
       this.screenData.curPage = val;
       this.mallProductList(this.screenData)
     },
@@ -273,13 +271,21 @@ export default {
         'url':DFshop.activeAPI.mallProductList_post,
         'data':data,
         'success':function (data){
-          //接口后期会改todo
-          _this.count = data.data.count;
+          if(data.data.count != null){
+            _this.count = data.data.count;
+          }
           _this.tableData3 = data.data;
+          _this.subList = data.data.page.subList;
+          _this.page = {
+            curPage:  data.data.page.curPage,
+            pageCount: data.data.page.pageCount,
+            pageSize: data.data.page.pageSize,
+            rowCount: data.data.page.rowCount
+          }
           _this.imgUrl = data.imgUrl;
           _this.webPath = data.webPath;
-          _this.mallProductCountStatus(_this.screenData);
         }
+      
       });
     },
     /**
@@ -289,45 +295,96 @@ export default {
     */
     mallProductBatchProduct(ids,type){
       let _this = this;
+      let _message = '';//提示文本
+      let _dialogMsg = '';//提示内容
+
+      if(ids == '' ){
+        _this.$message({
+          message:'请选择需要'+_message+'的商品',
+          type: 'warning'
+        });
+        return
+      }
+
+      if(type ==1){
+        _message = '删除'
+        _dialogMsg = '点击确定后，就不可以恢复哦~'
+      }else if(type == 4){
+        _message = '下架'
+        _dialogMsg = '点击确定后，手机端将不会显示该商品信息。'
+      }
+
+      if(type ==1 || type == 4){
+        let msg ={
+          dialogMsg: _dialogMsg,
+          dialogTitle: '您确定要'+_message+'选中商品吗？',
+          callback: {
+                btnOne:()=>{
+                   _this.productAJAX(ids,type)
+                }
+            },
+        }
+       _this.$root.$refs.dialogWarn.showDialog(msg); 
+      }else{
+        _this.productAJAX(ids,type)
+      }
+    },
+    /** 
+     * 删除、送审、上架、下架商品请求
+     * @param type 类型 1删除 2送审 3上架 4下架
+     * @param ids 商品ID集合，用逗号隔开    必传
+     */
+    productAJAX(ids,type){
+      let _this = this;
       _this.ajaxRequest({
         'url':DFshop.activeAPI.mallProductBatchProduct_post,
         'data':{
           ids: ids,
           type: type
         },
-
         'success':function (data){
+          let message = '';
+          if(type == 1){
+              message = '删除成功'
+          }
+          if(type == 2){
+              message = '送审成功'
+          }
+          if(type == 3){
+              message = '该商品已上架至手机端'
+          }
+          if(type == 4){
+              message = '该商品已从手机端下架'
+          }
           _this.$message({
-            message: '操作成功',
+            message: message,
             type: 'success'
           });
           _this.mallProductList(_this.screenData);
         }
       });
     },
-    /* 获取各状态下商品数量 */
-    mallProductCountStatus(data){
-      let _this = this;
-      _this.ajaxRequest({
-        'url':DFshop.activeAPI.mallProductCountStatus_post,
-        'data':data,
-        'success':function (data){
-          _this.count = data.data;
-        }
-      });
-    },
     /** 
      * 链接二维码
+     * @param data 
+     * @param type 1链接 2到店购买
      */
-    shopQR(data){
+    shopQR(data,type){
       let _this = this;
+      let title = '';
       /**
        * 手机端地址
        * /goods/details/:shopId/:busId/:type（活动类型）/:goodsId/:activityId（活动id）
        */
+      if(type ==1 ){
+        title = '商品链接'
+      }else{
+        title = '到店购买'
+        //todo 到店购买 链接目前没有
+      }
       let _pageLink = _this.webPath+'goods/details/'+data.shopId+'/'+data.busId+'/0/'+data.id+'/0';
       let msg ={
-        title:'商品链接',
+        title: title,
         pageLink: _pageLink//页面链接
       };
       _this.$root.$refs.dialogQR.showDialog(msg);//调用方法
@@ -336,7 +393,6 @@ export default {
   mounted(){
     let _this = this;
     _this.mallProductList(_this.screenData);
-    _this.mallProductCountStatus();
     this.storeList({
       'success'(data){
         _this.shopList = data.data;

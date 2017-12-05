@@ -423,8 +423,8 @@ export default {
         let msg;
         if(type ==='shop'){
           msg = {
-            'dialogTitle': '确定要删除此商铺吗？',
-            'dialogMsg': '删除后此店铺信息和商品都清空',
+            'dialogTitle': '您确定要删除该店铺吗？',
+            'dialogMsg': '该店铺下还有相关联的商品、活动等信息，删除店铺后，这些信息都不可以恢复！',
             'callback': {
             'btnOne': function () {
                 _this.shopDelete(ids)
@@ -433,8 +433,8 @@ export default {
           }
         }if(type ==='page'){
           msg = {
-            'dialogTitle': '确定要删除此页面吗？',
-            'dialogMsg': '删除后此页面信息和页面都清空',
+            'dialogTitle': '您确定要删除该页面信息吗？',
+            'dialogMsg': '点击确定后，删除信息不可以恢复！ ',
             'callback': {
             'btnOne': function () {
                 _this.pageDelete(ids)
@@ -527,7 +527,6 @@ export default {
       });
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
       this.shopAjax(val);
     }
   },

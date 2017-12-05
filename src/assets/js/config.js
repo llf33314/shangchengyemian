@@ -127,6 +127,16 @@
     mallProductGroupDelete_post:'/mallProduct/E9lM9uM4ct/group/delete',
     /*推荐分组*/
     mallProductGroupRecommend_post:'/mallProduct/E9lM9uM4ct/group/recommend',
+    /*保存分组信息 */
+    mallProductGroupSave_post:'/mallProduct/E9lM9uM4ct/group/save',
+    /*商品页模板列表（分页） */
+    mallProductTemplateList_post:'/mallProduct/E9lM9uM4ct/template/list',
+    /*删除商品页模板 */
+    mallProductTemplateDelete_post:'/mallProduct/E9lM9uM4ct/template/delete',
+    /*保存商品页模板 */
+    mallProductTemplateSave_post:'/mallProduct/E9lM9uM4ct/template/save',
+    /*获取商品页模板信息 */
+    mallProductTemplateInfo_post:'/mallProduct/E9lM9uM4ct/template/templateInfo',
 
 
     /*团购列表 */
@@ -234,6 +244,7 @@
     /**交易记录列表*/
     tradeList_post:'/mallOrder/E9lM9uM4ct/tradeList',
     /**导出交易记录订单*/
+<<<<<<< HEAD
     exportTradeOrder_post: DFshop.api+'/mallOrder/E9lM9uM4ct/exportTradeOrder',
 
     /**
@@ -259,6 +270,9 @@
     updateReturn_post:'/mallOrder/E9lM9uM4ct/updateReturn',
     /**导出订单记录订单*/
     exportMallOrderr_get: DFshop.api+'/mallOrder/E9lM9uM4ct/exportMallOrder',
+=======
+    exportTradeOrder_get: DFshop.api+'/mallOrder/E9lM9uM4ct/exportTradeOrder'
+>>>>>>> e293038289fc3d33164e6c32cf6f4caaeca901a0
   };
 
 

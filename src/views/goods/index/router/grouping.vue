@@ -2,7 +2,7 @@
   <div class="index-page">
      <div class="index-shopInfo clearfix">
       <el-button type="primary"
-        @click="jumpRouter('addGroup')">新增分组</el-button>
+        @click="jumpRouter('addGroup/add')">新增分组</el-button>
     </div>
     <div class="index-page-content" v-if="subList != ''">
       <el-table
@@ -66,8 +66,13 @@
             <el-button  
               size="small"
               class="buttonBlue"
-              @click="jumpRouter('childlist')">
+              @click="jumpRouter('childlist/'+scope.row.id)">
               子类列表
+            </el-button>
+            <el-button 
+              class="buttonBlue"
+              size="small" @click="jumpRouter('addGroup/edit/'+scope.row.id)">
+              编辑
             </el-button>
             <el-button  
               size="small" @click="handleDelete(scope.row.id)">
@@ -82,7 +87,7 @@
           <el-button @click="toggleSelection()">取消选择</el-button>
           <el-button @click="handleDelete()">批量删除</el-button>
         </div>
-        <div class="block shop-textr" v-if="page.pageCount>0" >
+        <div class="block shop-textr" v-if="page.pageCount>1" >
           <el-pagination
             @current-change="handleCurrentChange"
             @selection-change="toggleSelection"
@@ -227,26 +232,23 @@ export default {
      * @param data 推介分组数据 lDelete 1未推荐（存在）   0已推荐（不存在）
      */
     recommend(data){
-      console.log(data.lDelete,'1未推荐 0已推荐')
       let _this = this;
       let _data = {
           groupId: data.id,//分组ID
       }
       if(data.lDelete == 1 ){
-        //推荐
-        console.log(data,data.lDelete == 1,'推荐');
+        //未推荐 去推荐
         _data.status = 1 ;// 0推荐
-       // _this.recommendAjax(_data);
+       _this.recommendAjax(_data);
       }else{
-        //取消推荐
-        console.log(data,data.lDelete == 1,'取消推荐');
+        //已推荐 取消推荐
         let msg ={
           dialogTitle:'取消推荐提醒',//文本标题
           dialogMsg:'确定要取消选中分组的推荐吗？',
           callback: {
               btnOne:()=>{
                 _data.status = 2;
-                //_this.recommendAjax(_data);
+                _this.recommendAjax(_data);
               }
           },
         }

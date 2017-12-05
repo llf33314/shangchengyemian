@@ -25,8 +25,6 @@ import Grouping from './router/grouping'
 import Group_addGrouping from './router/group/addGroup'
 //分组管理--子类列表
 import Group_childlist from './router/group/childlist'
-//分组管理--新建子类分组
-import Group_addChildl from './router/group/addChildl'
 //商品页管理
 import GoodsPage from './router/goodsPage'
 //商品页管理--新建
@@ -45,16 +43,16 @@ const routes = [
           { path: '/goodsPage', component: GoodsPage}
       ]
   },{
-    path: '/addGroup', component: Group_addGrouping
+    path: '/addGroup/:add', component: Group_addGrouping//新增分组
   },
   {
-    path: '/childlist', component: Group_childlist
+    path: '/addGroup/:add/:Id', component: Group_addGrouping//新增子集分组
   },
   {
-    path: '/addChild', component: Group_addChildl
+    path: '/childlist/:pId', component: Group_childlist
   },
   {
-    path: '/addGoodsPage', component: GoodsPage_add
+    path: '/addGoodsPage/:pageId', component: GoodsPage_add
   },
   {
     path: '/releaseGoods/:id', component: mygoods_releaseGoods

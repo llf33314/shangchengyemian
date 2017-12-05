@@ -15,8 +15,7 @@
         <el-form-item label="店铺头像 :">
             <div class="shop-edit-Upload">
                 <gt-material @change="newImgData" 
-                            :img="form.stoHeadImg"
-                            :imgUrl="imgUrl"
+                            :img="imgUrl+form.stoHeadImg"
                 ></gt-material>
             </div>
             <span class="shop-prompt" style="margin-left:20px;vertical-align: bottom;">图片比例：1:1</span>

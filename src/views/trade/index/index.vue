@@ -250,7 +250,7 @@ export default {
          if(_this.searchData.endTime != null){
             str += "&endTime="+_this.searchData.endTime;
         }
-        window.open(DFshop.activeAPI.exportTradeOrder_post+str);
+        window.open(DFshop.activeAPI.exportTradeOrder_get+str);
     },
     /**
      * 交易记录多页请求

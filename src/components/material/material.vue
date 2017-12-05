@@ -1,17 +1,38 @@
 <template>
   <section >
-    <div @click.self="material()"
-        :style="{backgroundImage: 'url(' +imgdata + ')'}"
-        :class="[imgdata?'avatar-uploader':'avatar-uploaderNo']">
+    <!--单个上传-->
+    <div @click.self="material()" v-if="!isImg"
+        :style="{backgroundImage: 'url(' +newImg + ')'}"
+        :class="[newImg?'avatar-uploader':'avatar-uploaderNo']">
         <i  class="el-icon-plus" 
             @click.self="material()" 
-            v-if="!imgdata"></i>
+            v-if="!newImg"></i>
         <div class="avatar-layer">
-          <i class="el-icon-search" @click.self="largeImg(imgdata)"></i>
+          <i class="el-icon-search" @click.self="largeImg(newImg)"></i>
           <i class="el-icon-delete" @click.self="deleteImg"></i>
         </div>
     </div>
-
+    <!--多个上传-->
+    <div class="avatar-box" v-else>
+         <div v-for=" (item,index) in newimgList.imgList"
+              :style="{backgroundImage: 'url(' +newimgList.path+item + ')',
+                      width:newimgList.width,
+                      height:newimgList.height}"
+              :key="index"
+              class="avatar-uploader">
+              <div class="avatar-layer">
+                <i class="el-icon-search" @click.self="largeImg(newimgList.path+item)"></i>
+                <i class="el-icon-delete" @click.self="deleteImg(index)"></i>
+              </div>
+        </div>
+        <div @click ="material()"
+          :style="{'width':newimgList.width,'height':newimgList.height,'line-height':newimgList.height}"
+          class="avatar-uploaderNo"
+          :class="{'shop-box-center':isImg}">
+          <i  class="el-icon-plus" >
+          </i>
+      </div>
+    </div>
     <el-dialog v-model="materialLargeSrcVisible" size="small">
         <div class="largeSrc-box">
           <img width="100%" :src="largeSrc" alt="" class="img">
@@ -23,25 +44,41 @@
 
 <script>
   export default {
-    props:['img','imgUrl'],
+    props:['img','imgList'],
     data(){
       return{
         imgdata:'',
+        newImg:'',
+        newimgList:{
+          width:'75px',//图片大小 
+          height:'75px',//图片大小
+          path:'',//域名
+          max: 0,//上传限制张数
+          imgList:[],//数据对象
+        },
+        style:'',
+        isImg: false,//单个false， 多个true
         materialLargeSrcVisible: false,
         largeSrc:''
       }
     },
     watch:{
       'img'(a,b){
-        this.imgdata = this.imgUrl + a;
-        console.log(this.imgdata,'this.imgdata');
+        //单个上传数据
+          this.newImg = a;
+          this.isImg = false;
+         
+      },
+      'imgList'(a,b){
+        //多个上传数据
+          this.newimgList = a;
+          this.isImg = true;
       },
       'imgdata'(a,b){
         this.stopDelete();
       }
     },
     mounted: function () {
-
     },
     methods: {
       /** 
@@ -60,7 +97,13 @@
           closeOnPressEscape: false
         }).then(function (val) {
           //确认
-            _this.imgdata = val[0].url;
+            if(_this.isImg){
+              //多个 tudo
+
+            }else{
+              //单个
+              _this.newImg = val[0].url;
+            }
           }).catch(function (error) {
           //取消
         }) 
@@ -68,9 +111,18 @@
       },
       /*
        * 删除图片
+       * index  多个上传时删除索引
        * */
-      deleteImg() {
-        this.imgdata = ''
+      deleteImg(index) {
+        let _this = this;
+        if(_this.isImg){
+          //多个
+              
+          }else{
+          //单个
+            _this.newImg = '';
+        }
+        
       },
       /*
        * 放大
@@ -92,6 +144,16 @@
 <style lang="less" type="text/css" scoped>
 @import '../../assets/css/mixins.less';
 //上传图片 无图
+section{
+  height: 100%;
+}
+.avatar-box{
+  .avatar-uploaderNo,
+  .avatar-uploader{
+    display: inline-block;
+    margin-right: 5px;
+  }
+}
 .avatar-uploaderNo{
   border: 1px dashed #d9d9d9;
   border-radius: 6px;
@@ -106,6 +168,7 @@
   background: #fbfdff;
   background-size: cover; 
   line-height: 0;
+  text-align: center;
   i{
       display: block;
       color: #c0ccda;
