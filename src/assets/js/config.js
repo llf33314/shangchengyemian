@@ -244,8 +244,7 @@
     /**交易记录列表*/
     tradeList_post:'/mallOrder/E9lM9uM4ct/tradeList',
     /**导出交易记录订单*/
-<<<<<<< HEAD
-    exportTradeOrder_post: DFshop.api+'/mallOrder/E9lM9uM4ct/exportTradeOrder',
+    exportTradeOrder_get: DFshop.api+'/mallOrder/E9lM9uM4ct/exportTradeOrder',
 
     /**
      * 评论管理相关接口
@@ -270,9 +269,6 @@
     updateReturn_post:'/mallOrder/E9lM9uM4ct/updateReturn',
     /**导出订单记录订单*/
     exportMallOrderr_get: DFshop.api+'/mallOrder/E9lM9uM4ct/exportMallOrder',
-=======
-    exportTradeOrder_get: DFshop.api+'/mallOrder/E9lM9uM4ct/exportTradeOrder'
->>>>>>> e293038289fc3d33164e6c32cf6f4caaeca901a0
   };
 
 
