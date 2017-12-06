@@ -145,7 +145,7 @@ export default {
      * @param val 页数
      */
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      this.groupListAjax(val);
     },
     /** 
      *分组列表（分页)

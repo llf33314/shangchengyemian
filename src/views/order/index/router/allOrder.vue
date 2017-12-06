@@ -137,7 +137,7 @@
                 </p>
                 <p>
                   <a  @click="jumpRouter('order/detail/'+order.id)">订单详情</a>
-                  <a  @click="printOrders()">打印订单</a>
+                  <a  @click="printOrders(order.id,1)">打印订单</a>
                   <a @click="showDialogRemark(order.id)">备注</a>
                 </p>
               </div>
@@ -201,7 +201,6 @@
         </div>
         <div class="block shop-textr" v-if="isPage">
           <el-pagination
-            @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page='tableData.page.curPage'
             :page-size="tableData.page.pageSize"
@@ -331,16 +330,17 @@
         </el-dialog>
         <el-dialog title="打印订单" :visible.sync="dialogPrintOrders" class="print-orders">
           <div class="print-box">
-            <p class="title"> 商城订单 </p>
-            <p class="phone">联系电话： 13267172272</p>
+            <p class="title"> {{printData.orderName}} </p>
+            <p class="phone">联系电话： {{printData.phone}}</p>
+            <span class="page_num" v-if="printData.totalPage>1">共2页 第2页</span>
             <div class="order_layer_main">
               <ul class="clearfix order_list">
-                <li class="text-overflow">客户名称：刘博博</li>
-                <li class="text-overflow">所属店铺：广东谷通科技有限公司</li>
-                <li class="text-overflow">客户电话：13872995974</li>
-                <li class="text-overflow">订单编号：SC1496632171380</li>
-                <li class="text-overflow">客户地址：河北省唐山市路北区索拉卡的加分拉时间段</li>
-                <li class="text-overflow">下单时间：2017-06-05 11:09:31</li>
+                <li class="text-overflow">客户名称：{{printData.memberName}}</li>
+                <li class="text-overflow">所属店铺：{{printData.store}}</li>
+                <li class="text-overflow">客户电话：{{printData.memberPhone}}</li>
+                <li class="text-overflow">订单编号：{{printData.orderNum}}</li>
+                <li class="text-overflow">客户地址：{{printData.memberAddress}}</li>
+                <li class="text-overflow">下单时间：{{printData.orderTime}}</li>
               </ul>
               <table border="1" cellspacing="0" cellpadding="0" width="100%" class="order_tab">
                 <tbody>
@@ -352,28 +352,38 @@
                     <th width="80">优惠</th>
                     <th width="80">小计</th>
                   </tr>
-                  <tr>
+                  <tr v-for="(item,index) in printData.lists"
+                  :key="index">
                     <td></td>
-                    <td>343121212</td>
-                    <td>0.01</td>
-                    <td>6</td>
-                    <td>null</td>
-                    <td>48.00</td>
+                    <td>{{item.name}}</td>
+                    <td>{{item.amount}}</td>
+                    <td>{{item.num}}</td>
+                    <td>{{item.disount?item.disount:''}}</td>
+                    <td>{{item.subtotal}}</td>
                   </tr>
                   <tr>
                     <td colspan="3" style="border-right: none;">买家留言：</td>
-                    <td colspan="3" style="border-left: none;">应收总额： ￥72.0</td>
+                    <td colspan="3" style="border-left: none;">应收总额： ￥{{printData.totalAmount}}</td>
                   </tr>
                 </tbody>
               </table>
-              <div>配送方式：快递配送</div>
+              <div>配送方式：{{printData.deliveryType}}</div>
               <div>商家备注：</div>
             </div>
           </div>
           <div slot="footer" class="dialog-footer">
+            <div class="shop-inblock" v-if="printData.totalPage>1">
+              <el-pagination
+                :page-size="5"
+                @current-change="printChange"
+                layout="prev, pager, next, jumper"
+                :current-page='printData.curPage'
+                :total="5*printData.totalPage">
+              </el-pagination>
+            </div>
             <el-button type="primary">打印</el-button>
             <el-button>打印预览</el-button>
-          </div>
+          </div>  
         </el-dialog>
 
       </div>
@@ -418,7 +428,8 @@ export default {
         dialogCancelOrder:false,
         dialogUpMoneyVisible:false,
         dialogSellerRemark:false,
-        dialogPrintOrders:true,//打印订单
+        dialogPrintOrders:false,//打印订单
+        printData:'',//打印数据
         imgUrl:'',
         value7: '',
         shopList:[],
@@ -758,9 +769,6 @@ export default {
       _this.searchData.status = _this.activeName2;
       _this.mallOrderList(_this.searchData);
     },
-    handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
-    },
     handleCurrentChange(val) {
       // console.log(`当前页: ${val}`);
       this.searchData.curPage=val;
@@ -805,9 +813,29 @@ export default {
     },
     /** 
      * 打印订单
+     * @param id 选择打印id
+     * @param curPage 页数
      */
-    printOrders(){
-      
+    printOrders(id,curPage){
+      let _this = this;
+       _this.ajaxRequest({
+        'url': DFshop.activeAPI.exportMallOrderr_post,
+        'data':{
+          curPage: curPage || 1, //页数
+          orderId: id //订单ID  必传
+        },
+        'success':function (data){
+          console.log(data.data,'打印数据');
+          _this.printData = data.data;
+          _this.dialogPrintOrders = true;
+        }
+      });
+    },
+    /** 
+     * 
+     */
+    printChange(val){
+      this.printOrders(data,val)
     }
   },
   mounted(){

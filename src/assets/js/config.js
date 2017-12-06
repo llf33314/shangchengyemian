@@ -267,6 +267,8 @@
     cancelReasonMap_post:'/mallOrder/E9lM9uM4ct/cancelReasonMap',
     /**修改退款状态 */
     updateReturn_post:'/mallOrder/E9lM9uM4ct/updateReturn',
+    /**打印订单*/
+    exportMallOrderr_post:'/mallOrder/E9lM9uM4ct/toPrintMallOrder',
     /**导出订单记录订单*/
     exportMallOrderr_get: DFshop.api+'/mallOrder/E9lM9uM4ct/exportMallOrder',
   };
