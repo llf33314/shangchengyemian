@@ -137,7 +137,7 @@
                 </p>
                 <p>
                   <a  @click="jumpRouter('order/detail/'+order.id)">订单详情</a>
-                  <a>打印订单</a>
+                  <a  @click="printOrders()">打印订单</a>
                   <a @click="showDialogRemark(order.id)">备注</a>
                 </p>
               </div>
@@ -329,6 +329,52 @@
             <el-button @click="dialogSellerRemark = false">取 消</el-button>
           </div>
         </el-dialog>
+        <el-dialog title="打印订单" :visible.sync="dialogPrintOrders" class="print-orders">
+          <div class="print-box">
+            <p class="title"> 商城订单 </p>
+            <p class="phone">联系电话： 13267172272</p>
+            <div class="order_layer_main">
+              <ul class="clearfix order_list">
+                <li class="text-overflow">客户名称：刘博博</li>
+                <li class="text-overflow">所属店铺：广东谷通科技有限公司</li>
+                <li class="text-overflow">客户电话：13872995974</li>
+                <li class="text-overflow">订单编号：SC1496632171380</li>
+                <li class="text-overflow">客户地址：河北省唐山市路北区索拉卡的加分拉时间段</li>
+                <li class="text-overflow">下单时间：2017-06-05 11:09:31</li>
+              </ul>
+              <table border="1" cellspacing="0" cellpadding="0" width="100%" class="order_tab">
+                <tbody>
+                  <tr>
+                    <th width="130">商品条形码</th>
+                    <th width="265">商品名称</th>
+                    <th width="80">原价</th>
+                    <th width="46">数量</th>
+                    <th width="80">优惠</th>
+                    <th width="80">小计</th>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>343121212</td>
+                    <td>0.01</td>
+                    <td>6</td>
+                    <td>null</td>
+                    <td>48.00</td>
+                  </tr>
+                  <tr>
+                    <td colspan="3" style="border-right: none;">买家留言：</td>
+                    <td colspan="3" style="border-left: none;">应收总额： ￥72.0</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div>配送方式：快递配送</div>
+              <div>商家备注：</div>
+            </div>
+          </div>
+          <div slot="footer" class="dialog-footer">
+            <el-button type="primary">打印</el-button>
+            <el-button>打印预览</el-button>
+          </div>
+        </el-dialog>
 
       </div>
     </div> 
@@ -372,6 +418,7 @@ export default {
         dialogCancelOrder:false,
         dialogUpMoneyVisible:false,
         dialogSellerRemark:false,
+        dialogPrintOrders:true,//打印订单
         imgUrl:'',
         value7: '',
         shopList:[],
@@ -755,6 +802,12 @@ export default {
           str += "&shopId="+_this.searchData.shopId;
       }
       window.open(DFshop.activeAPI.exportMallOrderr_get+str);
+    },
+    /** 
+     * 打印订单
+     */
+    printOrders(){
+      
     }
   },
   mounted(){
