@@ -209,36 +209,24 @@
           </el-pagination>
         </div>
         <el-dialog title="商品发货" :visible.sync="dialogVisible"  size="small">
-          <el-table :data="orderData.mallOrderDetail" style="width: 100%" border>
-            <el-table-column
-              prop="detProName"
-              label="商品名称"
-              width="300">
-            </el-table-column>
-            <el-table-column
-              prop="detProPrice"
-              label="单价(元)">
-            </el-table-column>
-            <el-table-column
-              prop="detProNum"
-              label="数量"> 
-            </el-table-column>
-            <el-table-column
-              width="200"
-              label="订单编号">
-              <template scope="scope">
-               <div style="padding:5px 0" class="text-overflow">{{ orderData.orderNo }} 
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column
-              label="实付金额(元)">
-               <template scope="scope">
-               <div style="padding:5px 0" class="text-overflow">{{ orderData.orderMoney }} 
-                </div>
-              </template>
-            </el-table-column>
-          </el-table>
+          <table border="1" cellspacing="0" cellpadding="0" width="100%" class="order_tab">
+              <tbody>
+                <tr class="order_tab_header">
+                  <th width="33%">商品名称</th>
+                  <th width="15%">单价(元)</th>
+                  <th width="15%">数量</th>
+                  <th width="22%">订单编号</th>
+                  <th width="15%">实付金额</th>
+                </tr>
+                <tr v-for="(item,index) in orderData.mallOrderDetail" :key="index">
+                  <td>{{item.detProName}}</td>
+                  <td>{{item.detProPrice}}</td>
+                  <td>{{item.detProNum}}</td>
+                  <td class="text-overflow" :rowspan="orderData.mallOrderDetail.length">{{orderData.orderNo}}</td>
+                  <td class="text-overflow" :rowspan="orderData.mallOrderDetail.length">{{orderData.orderMoney}}</td>
+                </tr>
+              </tbody>
+            </table>
           <div class="dialog-list">
             <span>收货信息 :</span>
             {{orderData.receiveAddress}},{{orderData.receiveName}},{{orderData.receivePhone}} 
