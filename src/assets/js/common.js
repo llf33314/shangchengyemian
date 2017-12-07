@@ -181,6 +181,17 @@ var Rxports = {
 		let moneyReg = /^\d{0,6}(.[0-9]{2})?$/;
 		return moneyReg.test(money);
 	},
+	format:function (value) {
+		let add0 = (m) => m<10?'0'+m:m;
+		let time = new Date(value);
+		let y = time.getFullYear();
+		let m = time.getMonth()+1;
+		let d = time.getDate();
+		let h = time.getHours();
+		let mm = time.getMinutes();
+		let s = time.getSeconds();
+		return y+'-'+add0(m)+'-'+add0(d)+' '+add0(h)+':'+add0(mm)+':'+add0(s);
+	  },
 	/**
 	 * 校验身份证
 	 * @param {String} IDcard

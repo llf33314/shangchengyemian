@@ -76,7 +76,7 @@
               <el-tab-pane label="失败" name="4"></el-tab-pane>
             </el-tabs>
             <div class="index-from">
-               <el-table :data="tabelData.page.subList" style="width: 100%">
+               <el-table :data="tabelData.page.subList">
                 <el-table-column
                   prop="createTime"
                   label="时间">
@@ -121,12 +121,12 @@
                 <el-table-column
                   label="操作">
                   <template scope="scope">
-                    <el-button >查看</el-button>
+                     <a target="_blank" :href="'/views/order/index.html#/order/detail/'+scope.row.id">查看</a>
                   </template>
                 </el-table-column>
               </el-table>
             </div>
-            <div class="block shop-textr" v-if="isPage">
+            <div class="block shop-textr" v-if="tabelData.page.pageCount > 1">
               <el-pagination
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
