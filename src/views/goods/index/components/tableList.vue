@@ -1,5 +1,37 @@
 <template>
 <div class="table-spec">
+    <!-- <table border="1" cellspacing="0" cellpadding="0" width="100%" class="order_tab">
+        <tbody>
+            <tr class="order_tab_header">
+                <th width="33%">商品名称</th>
+                <th width="15%">单价(元)</th>
+                <th width="15%">数量</th>
+                <th width="22%">订单编号</th>
+                <th width="15%">实付金额</th>
+            </tr>
+            <tr>
+                <td>aaa</td>
+                <td>bbb</td>
+                <td>ccc</td>
+                <td class="text-overflow" :rowspan="3">1111</td>
+                <td class="text-overflow" :rowspan="3">222</td>
+            </tr>
+            <tr>
+                <td>aaa</td>
+                <td>bbb</td>
+                <td>ccc</td>
+                <td class="text-overflow" :rowspan="2">1111</td>
+                <td class="text-overflow" :rowspan="2">2222</td>
+            </tr>
+            <tr>
+                <td>aaa</td>
+                <td>bbb</td>
+                <td>ccc</td>
+                <td class="text-overflow" :rowspan="1">1111</td>
+                <td class="text-overflow" :rowspan="1">2222</td>
+            </tr>
+        </tbody>
+    </table> -->
     <table class="table table-hover table-bordered">
         <thead>
             <tr class="col-1">
@@ -13,7 +45,8 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="tabledata in tablelists">
+            
+            <tr v-for="(item,index) in tablelists" >
                 <td v-text="tabledata.spec1" class=" border border-b" style="padding-left: 2%;"></td>
                 <td  class="border border-b border-end" >
                     <tr  class="table-list border-b"
@@ -119,9 +152,11 @@ export default {
             }],
         }
     },
-    mounted() {
+    methods:{
 
     },
+    mounted() {
+    }
 }
 </script>
 <style lang="less" scoped>

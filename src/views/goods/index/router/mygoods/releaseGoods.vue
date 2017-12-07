@@ -2,7 +2,7 @@
   <div class="mygoods-wrapper">
     <div class="common-nav">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/goodspage' }">我的商品</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/mygoods' }">我的商品</el-breadcrumb-item>
         <el-breadcrumb-item>{{title}}商品</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -30,21 +30,10 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="商品分组 :" prop="grouping" :rules="rules.grouping">
-                        <!-- <el-cascader
-                            expand-trigger="hover"
-                            :options="options"
-                            v-model="selectedOptions2"
-                            @change="handleChange">
-                        </el-cascader> -->
-                        <el-select v-model="fromSelected.grouping" multiple placeholder="请选择分组信息" @change="grouping(fromSelected.grouping)">
-                            <el-option
-                            v-for="item in data.proGroupList"
-                            :key="item.groupPId"
-                            :label="item.groupName"
-                            :value="item.groupPId">
-                            </el-option>
-                        </el-select>
+                    <el-form-item label="商品分组 :" prop="grouping" :rules="rules.grouping" >
+                        <gt-cascader :row ="groupList"  
+                                    width="'200px'" 
+                                    @change="groupselected"></gt-cascader>
                         <span class="fontBlue">新建分组</span>
                     </el-form-item>
                      <el-form-item label="商品类型 :" prop="goodsStatus">
@@ -250,16 +239,53 @@ import Lib from 'assets/js/Lib';
 import imgUpload from 'components/imgUpload'
 import tableList from '../../components/tableList'
 import tableSpec from '../../components/tableSpec'
+import gtCascader from '../../components/cascader'
 export default {
   components: {
-      imgUpload,tableList,tableSpec
+      imgUpload,tableList,tableSpec,gtCascader
   },
   data () {
     return {
         title:'发布',
         goodsId:'',//商品id
-        data:{},//填充数据
-        shopList:{},//店铺列表
+        data:{
+            pro:{
+                shopId:''
+            }
+        },//填充数据
+        shopList:[],//店铺列表
+        groupList:[],//分组列表
+        options: [{
+          value: 'zhinan',
+          label: '指南',
+          children: [{
+            value: 'shejiyuanze',
+            label: '设计原则',
+            children: [{
+              value: 'yizhi',
+              label: '一致'
+            }, {
+              value: 'fankui',
+              label: '反馈'
+            }, {
+              value: 'xiaolv',
+              label: '效率'
+            }, {
+              value: 'kekong',
+              label: '可控'
+            }]
+          }, {
+            value: 'daohang',
+            label: '导航',
+            children: [{
+              value: 'cexiangdaohang',
+              label: '侧向导航'
+            }, {
+              value: 'dingbudaohang',
+              label: '顶部导航'
+            }]
+          }]
+        }],
         input3:'',
         active: 1,//步骤页初始，
         checked1:true,
@@ -438,10 +464,17 @@ export default {
             }
         });
     },
+    /** 
+     * 选择分组
+     * @param data 选择父类
+     */
+    groupselected(data){
+
+    }
   },
   mounted(){
-    console.log(this.$route.params.id)
-    if(this.$route.params.type == 'add'){
+    console.log(this.$route.params.id,'ididididid');
+    if(this.$route.params.id === 'add'){
 
     }else{
         this.title = '编辑'
@@ -453,6 +486,12 @@ export default {
         'success'(data) {
             console.log(data,'店铺列表')
             _this.shopList = data.data;
+        }
+    })
+    _this.groupListAjax({
+        'success'(data) {
+            console.log(data,'分组列表')
+            _this.groupList = data.data.groupList;
         }
     })
   }
