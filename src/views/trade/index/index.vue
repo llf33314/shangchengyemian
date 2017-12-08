@@ -76,7 +76,7 @@
               <el-tab-pane label="失败" name="4"></el-tab-pane>
             </el-tabs>
             <div class="index-from">
-               <el-table :data="tabelData.page.subList">
+               <el-table :data="subList">
                 <el-table-column
                   prop="createTime"
                   label="时间">
@@ -121,19 +121,19 @@
                 <el-table-column
                   label="操作">
                   <template scope="scope">
-                     <a target="_blank" :href="'/views/order/index.html#/order/detail/'+scope.row.id">查看</a>
+                     <a target="_blank" :href="'/views/order/index.html#/detail/'+scope.row.id">查看</a>
                   </template>
                 </el-table-column>
               </el-table>
             </div>
-            <div class="block shop-textr" v-if="tabelData.page.pageCount > 1">
+            <div class="block shop-textr" v-if="page.pageCount > 0">
               <el-pagination
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
-                :current-page='tabelData.page.curPage'
-                :page-size="tabelData.page.pageSize"
+                :current-page='page.curPage'
+                :page-size="page.pageSize"
                 layout="prev, pager, next, jumper"
-                :total="tabelData.page.rowCount">
+                :total="page.rowCount">
               </el-pagination>
             </div>
           </div>
@@ -164,7 +164,8 @@ export default {
           settlementCount:'',
           usableBalance:''
         },
-        tabelData:[],//交易记录列表
+        subList:[],//列表数据
+        page:{},//页面数据
         searchData:{//筛选数据
            curPage:'',
            orderNo:'',
@@ -258,15 +259,18 @@ export default {
      */
     tradeList(data){
       let _this = this;
-      this.tabelData = '';
       _this.ajaxRequest({
         'url': DFshop.activeAPI.tradeList_post,
         'data':data,
         'success':function (data){
-          console.log(data.data,'data.data');
-          _this.tabelData = data.data;
-        
-          console.log(_this.tabelData,'_this.tabelData');
+          // console.log(data.data,'data.data');
+          _this.subList = data.data.page.subList;
+          _this.page = {
+            curPage:  data.data.page.curPage,
+            pageCount: data.data.page.pageCount,
+            pageSize: data.data.page.pageSize,
+            rowCount: data.data.page.rowCount
+          }
         }
       });
     },

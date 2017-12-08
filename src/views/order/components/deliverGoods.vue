@@ -55,10 +55,7 @@ export default {
     props:{
         row:{
             type: Object
-        },
-        orderid:{
-            type: Number||String
-        }
+        } 
     },
     data: function () {
         return {
@@ -72,15 +69,15 @@ export default {
                 express:'1'
             },
             rules: {
-            expressId: [
-                { type: 'number', required: true, message: '请选择物流公司', trigger: 'blur' },
-            ], 
-            otherExpressName: [
-                { required: true, message: '请输入物流名称', trigger: 'blur' },
-            ],
-            expressDelivery: [
-                { required: true, message: '请输入快递单号', trigger: 'blur' },
-            ]
+                expressId: [
+                    { type: 'number', required: true, message: '请选择物流公司', trigger: 'blur' },
+                ], 
+                otherExpressName: [
+                    { required: true, message: '请输入物流名称', trigger: 'blur' },
+                ],
+                expressDelivery: [
+                    { required: true, message: '请输入快递单号', trigger: 'blur' },
+                ]
             },
             expressList:[],//快递公司列表
         }
@@ -89,7 +86,14 @@ export default {
         'row'(a,b){
             this.orderData = a;
             this.mallExpressList();
+
             this.expressData.orderId = a.id;
+            this.expressData.express = '1';
+            this.expressData.expressWay = '1';
+            this.expressData.expressId = '';
+            this.expressData.expressDelivery ='';
+            this.expressData.otherExpressName ='';
+
         }
     },
     methods:{
@@ -104,51 +108,73 @@ export default {
                 }
             });
         },
+        /**确定 */
         submitForm(formName) {
             let _this = this;
             _this.$refs[formName].validate((valid) => {
                 if (valid) {
-                // var params =JSON.stringify(_this.expressData);
-                if(_this.expressData.expressId != 999){
-                    _this.expressData.otherExpressName='';;
-                }
-                console.log(_this.expressData,'_this.expressData');
-                    
-                _this.ajaxRequest({
-                    'url': DFshop.activeAPI.updateStatus_post,
-                    'data':_this.expressData,
-                    'success':function (data){
-                    // console.log(data,'data.data');
-                    //_this.dialogVisible=false;
-                    _this.$message({
-                        message: '发货成功',
-                        type: 'success'
-                    });
-                    //_this.searchData.curPage=1;
-                    //_this.mallOrderList( _this.searchData);
-                    _this.$emit('code',true);;
+                    if(_this.expressData.expressId != 999){
+                        _this.expressData.otherExpressName='';
                     }
-                });
-                } else {
+                    // console.log(_this.expressData,'_this.expressData');
+                    _this.ajaxRequest({
+                        'url': DFshop.activeAPI.updateStatus_post,
+                        'data':_this.expressData,
+                        'success':function (data){
+                        _this.$message({
+                            message: '发货成功',
+                            type: 'success'
+                        });
+                        _this.$emit('code',true);
+                        }
+                    });
+                } else {              
                 // console.log('error submit!!');
                 return false;
               }
             });
         },
-        /**订单发货  取消*/
+        /** 取消*/
         resetForm(formName) {
-            this.expressData.expressId = '';
-            this.expressData.expressWay ='1';
             this.$refs[formName].resetFields();
             this.$emit('code',false);
         }
         
     },
     mounted() {
+        this.orderData = this.row;
+        this.mallExpressList();
+
+        this.expressData.orderId = this.orderData.id;
+        this.expressData.express = '1';
+        this.expressData.expressWay = '1';
+        this.expressData.expressId = '';
+        this.expressData.expressDelivery ='';
+        this.expressData.otherExpressName ='';
     }
 }
 </script>
 
 <style lang="less" scoped>
+.order_tab{
+        width: 100%;
+        border-color: #dfe6ec;
+        border: 1px solid #dfe6ec;
+        .order_tab_header{
+            width: 100%;
+            background:#eef1f6;
+        }
+        td,th{
+            padding: 10px;
+        }
+    }
 
+    .dialog-list{
+        width: 100%;
+        margin-top:25px; 
+        &>span{
+            margin-right: 28px;
+        }
+        
+    }
 </style>

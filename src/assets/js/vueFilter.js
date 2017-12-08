@@ -24,6 +24,9 @@ Vue.filter('currency', function (value,symbol='¥',dat=2) {
   * @param return 
 */
 Vue.filter('format', function (value) {
+  if(value == "" ||value == undefined){
+    return "";
+  }
   let add0 = (m) => m<10?'0'+m:m;
   let time = new Date(value);
   let y = time.getFullYear();

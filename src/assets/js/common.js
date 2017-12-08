@@ -182,6 +182,9 @@ var Rxports = {
 		return moneyReg.test(money);
 	},
 	format:function (value) {
+		if(value == "" ||value == undefined){
+			return "";
+		}
 		let add0 = (m) => m<10?'0'+m:m;
 		let time = new Date(value);
 		let y = time.getFullYear();
