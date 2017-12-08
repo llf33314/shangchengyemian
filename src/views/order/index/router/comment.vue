@@ -4,10 +4,10 @@
       <div class="index-shopInfo">
         <el-form :inline="true" :model="searchData" class="demo-form-inline">
           <el-form-item class="input-all">
-            <el-input v-model="searchData.queryName" placeholder="订单号/商品名称" @blur="search_name(searchData.queryName)"></el-input>
+            <el-input v-model="searchData.queryName" placeholder="订单号/商品名称" @blur="search()"></el-input>
           </el-form-item>         
           <el-form-item label="选择店铺 :">
-            <el-select v-model="searchData.shopId" placeholder="选择店铺"  @change="search_shop(searchData.shopId)">
+            <el-select v-model="searchData.shopId" placeholder="选择店铺"  @change="search()">
               <el-option label="全部" value=""></el-option>
               <el-option class="max-input" v-for="item in shopList"
                 :key="item.id" :label="item.sto_name" :value="item.id">
@@ -15,7 +15,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="选择状态 :">
-            <el-select v-model="searchData.feel" placeholder="全部" @change="search_feel(searchData.feel)">
+            <el-select v-model="searchData.feel" placeholder="全部" @change="search()">
               <el-option label="全部" value="all"></el-option>
               <el-option label="好评" value="1"></el-option>
               <el-option label="中评" value="0"></el-option>
@@ -29,12 +29,11 @@
         </el-form>
       </div>
       <div class="index-content"  v-if="isTable">
-        <!-- <div v-if="tableData.page"> -->
           <el-tabs v-model="activeName2" type="card" @tab-click="handleClick(activeName2)">
-            <el-tab-pane :label="'全部评论( '+count.total+' )'" name="all"></el-tab-pane>
-            <el-tab-pane :label="'好评( '+count.good+' )'" name="1"></el-tab-pane>
-            <el-tab-pane :label="'中评( '+count.medium+' )'" name="0"></el-tab-pane>
-            <el-tab-pane :label="'差评( '+count.bad+' )'" name="-1"></el-tab-pane>
+            <el-tab-pane :label="'全部评论( '+(count.total|0)+' )'" name="all"></el-tab-pane>
+            <el-tab-pane :label="'好评( '+(count.good|0)+' )'" name="1"></el-tab-pane>
+            <el-tab-pane :label="'中评( '+(count.medium|0)+' )'" name="0"></el-tab-pane>
+            <el-tab-pane :label="'差评( '+(count.bad|0)+' )'" name="-1"></el-tab-pane>
           </el-tabs>
           <div class="index-table-comment">
             <div class="table-header">
@@ -45,7 +44,7 @@
               <div class="table-th col-2">评论时间</div>
               <div class="table-th col-1">状态</div>
             </div>
-            <div class="table-content-box" v-for="comment in tableData.page.subList" :key="comment.id">
+            <div class="table-content-box" v-for="comment in subList" :key="comment.id">
               <div class="table-content">
                 <div class="table-tr" >
                   <div class="table-td  col-3">
@@ -97,16 +96,16 @@
                 </div>
               </div>
             </div>
-             <content-no :show="contentNo" v-if="tableData.page.rowCount == 0 " ></content-no>
+             <content-no :show="contentNo" v-if="page.rowCount == 0 " ></content-no>
           </div>
-          <div class="block shop-textr">
+          <div class="block shop-textr" v-if="page.pageCount > 0">
             <el-pagination
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange"
-              :current-page='tableData.page.curPage'
-              :page-size="tableData.page.pageSize"
+              :current-page='page.curPage'
+              :page-size="page.pageSize"
               layout="prev, pager, next, jumper"
-              :total="tableData.page.rowCount">
+              :total="page.rowCount">
             </el-pagination>
           </div>
         <!-- </div> -->
@@ -126,10 +125,12 @@ export default {
   },
   data () {
     return {
+        contentNo:'',
         isComment: '1', // 0不开启   1开启 2关闭评论及买家评价
         isTable:true,
         activeName2: 'all',
-        tableData:[],//评价记录列表,
+        subList:[],//列表数据
+        page:{},//页面数据
         shopList:[],
         searchData:{//筛选数据
           curPage:'',
@@ -171,22 +172,13 @@ export default {
     }
   },
   methods: {
-    /**名称筛选查询 */
-    search_name(name){
+    /**筛选查询 */
+    search(name){
+      this.activeName2=this.searchData.feel;
       this.searchData.curPage=1;
       this.mallCommentList( this.searchData);
     },
-     /**店铺筛选查询 */
-    search_shop(shopId){
-      this.searchData.curPage=1;
-      this.mallCommentList( this.searchData);
-    },
-     /**状态筛选查询 */
-    search_feel(feel){
-      this.activeName2=feel;
-      this.searchData.curPage=1;
-      this.mallCommentList( this.searchData);
-    },
+ 
      /**时间筛选查询 */
     search_date(value){
       let _this = this;
@@ -220,8 +212,14 @@ export default {
         'url': DFshop.activeAPI.mallCommentList_post,
         'data':data,
         'success':function (data){
-          // console.log(data.data,'data.data');
-          _this.tableData = data.data;
+          _this.subList = data.data.page.subList;
+          _this.page = {
+            curPage:  data.data.page.curPage,
+            pageCount: data.data.page.pageCount,
+            pageSize: data.data.page.pageSize,
+            rowCount: data.data.page.rowCount
+          }
+
            _this.isComment=data.data.isComment;
           _this.count=data.data.count;
           if( _this.isComment == 0){//不开启
@@ -229,7 +227,7 @@ export default {
           }else if( _this.isComment == 2){//关闭评论及买家评价
              _this.contentShow="colseBuyerComment";
           }
-          // console.log(_this.tableData,'_this.tableData');
+ 
         }
       });
     },
