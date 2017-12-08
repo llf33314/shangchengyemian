@@ -1,28 +1,28 @@
 <template>
   <div class="group-box" :style="{width:Width}">
-    <div class="group-selected">
-        <span class="item">
-            <em>aaa</em>
-            <i class="el-icon-circle-close"></i>
-        </span>
-        <span class="item">
-            <em>aaa</em>
-            <i class="el-icon-circle-close"></i>
+    <div class="group-selected"
+        @click.self=" isShow = !isShow">
+        <em class="down" :class="{'is-reverse':isShow}"></em>
+        <span class="item" v-for=" (item,i) in selectedData":key="i">
+            <em>{{item.groupName}}</em>
+            <i class="el-icon-circle-close"  @click.self="deleteData(item.groupId)"></i>
         </span>
     </div>
-    <div class="grouping-option">
+    <div class="grouping-option" v-show="isShow">
         <ul class="option1">
-            <li v-for="(item,index) in Data"
+            <li v-for="(item,index) in oneData"
                 :key="item.index" 
                 class="shop-box-justify"
-                @click="selectoData1(item)">
+                @click="selectedItem(item)"
+                @mouseenter="listHover(item)">
                 <span>{{item.groupName}}</span>
-                <i class="el-icon-arrow-right" v-if="item.isChild>0" ></i>
+                <i class="el-icon-arrow-right" v-if="item.isChild>0"></i>
             </li>
         </ul>
-        <ul class="option2">
-            <li v-for="(test,i) in groupList"
-                :key="i" class="selectoData1">
+        <ul class="option2" v-if="isSelect">
+            <li v-for="(test,i) in towData"
+                :key="i"
+                @click="selectedItem(test)">
                 <span>{{test.groupName}}</span>
             </li>
         </ul>
@@ -33,39 +33,135 @@
 <script>
 export default {
     props:{
-        row:{
-            type: Array,
-            
-        },
         width:{
-            type: String,
+            type: String
+        },
+        value:{
+            type: Array
         }
     },
-    data: function () {
+    data() {
         return {
-            Data:[],
-            Width:'200px'
+            oneData:[],//第一级
+            towData:[],//第二级
+            Width:'200px',
+            isShow: false,
+            isSelect: false,
+            selectedData:[],//选中选项
         }
     },
     watch:{
-        'row'(a,b){
-            this.Data = this.a;
-            console.log(a,'联动数据aaa')
-        },
-        'Width'(a,b){
+        'width'(a,b){
             this.Width = a;
-            console.log(a,'Width')
-        }
+        },
+        'selectedData'(a,b){
+            this.selectedData.forEach((item,i)=>{
+                item.sort = i;
+            })
+            this.$emit('change',this.selectedData);
+        },
     },
     methods:{
         /** 
          * 一级选择
          */
-        selectoData1(){
-
-        }
+        selectedItem(data){
+            let _this = this;
+             let _add = true;//重复排除条件
+             _this.selectedData.forEach((item,i)=>{
+                 if(data.id == item.groupPId || data.id == item.groupId){
+                    if(_add){
+                        _this.$message({
+                        message: '所选有重复,请不要重复添加',
+                        type: 'warning'
+                        });
+                        return _add = false;
+                      }
+                 }
+             })
+            if(!_add) return;//重复不添加
+            if(data.isChild){
+                //有子集
+                data.childGroupList.forEach((item,i) => {
+                    //if(_this.deleteData(item.id)){
+                        let newData = {
+                        // groupName: data.groupName+'/'+item.groupName,
+                            groupName: item.groupName,
+                            groupPId: item.groupPId,
+                            groupId: item.id,
+                            shopId: item.shopId,
+                        }
+                        this.selectedData.push(newData);
+                    //}
+                });
+                
+            }else{
+                //无子集
+                //if(_this.deleteData(data.id)){
+                    let newData = {
+                        groupName: data.groupName,
+                        groupPId: 0,
+                        groupId: data.id,
+                        shopId: data.shopId,
+                    }
+                    this.selectedData.push(newData);
+                //}
+            }
+            this.isShow = false;
+            this.isSelect = false;
+        },
+        /**
+         * hover显示
+         */
+        listHover(data){
+            let _this = this;
+            if(data.isChild == 1 ){
+                this.towData = data.childGroupList;
+                this.isSelect = true;
+            }
+        },
+        /** 
+         * 删除
+         * @param id  删除的id
+         */
+        deleteData(id){
+            //let add = true;//不重复
+            let _this = this;
+            _this.selectedData.forEach((item,i)=>{
+                if(id == item.groupId){
+                    _this.selectedData.splice(i, 1);
+                   // add = false;//重复
+                }
+            })
+           // return add
+        },
+        /** 
+         * 初始值处理
+         * @param val  数据
+         */
+        initialValue(val){
+            let arr = [];
+                val.forEach((item,i)=>{
+                    let newData = {
+                        groupName: item.groupName,
+                        groupPId: item.groupPId,
+                        groupId: item.groupId,
+                        shopId: item.shopId,
+                        id:  item.id
+                    }
+                    arr.push(newData);
+                })
+            this.selectedData = arr;
+         }
     },
     mounted() {
+        let _this = this;
+        _this.initialValue(_this.value);
+        _this.groupListAjax({
+            'success'(data) {
+                _this.oneData = data.data.groupList;
+            }
+        })
     }
 }
 </script>
@@ -82,25 +178,43 @@ export default {
         .border-radius(5px);
         span.item{
             background: #dfe4ed;
-            padding: 4px 8px;
+            padding: 5px 8px;
+            line-height: 1;
             margin: 3px 0 3px 6px;
             .border-radius(5px);
             color:#878d99;
+            display: inline-block;
             i{
                 color: #b4bccc;
             }
         }
         
     }
+    .down{
+        position: absolute;
+        top:45%;
+        margin-top: -3px; 
+        right:5%;
+        content:'';
+        width: 0;
+        height: 0;
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-top: 6px solid #bfcbd9;
+        transform: rotate(0deg);
+        transition: transform .3s;
+    }
+    .is-reverse {
+        transform: rotate(180deg);
+    }
 }
 .grouping-option{
     height: 1;
     position: relative;
     z-index: 9;
-    padding-top:5px; 
     .option1,.option2{
         position: absolute;
-        top: 0;
+        top: 3px;
         width: 100%;
         background: #fff;
         margin-bottom: -17px;

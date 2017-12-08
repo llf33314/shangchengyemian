@@ -43,6 +43,7 @@
 </template>
 
 <script>
+// <gt-material @change="newImgData" :img ="addImg" ></gt-material>
   export default {
     props:['img','imgList'],
     data(){

@@ -19,9 +19,9 @@
             <div class="mygoods-item">
                 <div class="item-title">基本信息</div>
                 <div class="item-content">
-                   <el-form :model="basicsInfo"  ref="basicsInfo" label-width="105px" class="demo-ruleForm">
+                   <el-form :model="form"  ref="basicsInfo" label-width="105px" class="demo-ruleForm">
                     <el-form-item label="选择店铺 :" prop="shop" :rules="rules.shop">
-                       <el-select v-model="data.pro.shopId" placeholder="请选择店铺">
+                       <el-select v-model="form.pro.shopId" placeholder="请选择店铺">
                         <el-option
                             v-for="item in shopList"
                             :key="item.id"
@@ -31,13 +31,17 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="商品分组 :" prop="grouping" :rules="rules.grouping" >
-                        <gt-cascader :row ="groupList"  
-                                    width="'200px'" 
-                                    @change="groupselected"></gt-cascader>
-                        <span class="fontBlue">新建分组</span>
+                        <gt-cascader    :width="'200px'"
+                                        @change="groupselected"
+                                        :value="form.proGroupList">
+                        </gt-cascader>
+                        <router-link to="/grouping">
+                            <span class="fontBlue"
+                            style="vertical-align:top" >新建分组</span>
+                        </router-link>
                     </el-form-item>
                      <el-form-item label="商品类型 :" prop="goodsStatus">
-                         <el-radio-group v-model="data.pro.proTypeId">
+                         <el-radio-group v-model="form.pro.proTypeId">
                             <el-radio :label="0" class="item-radio">实物商品</el-radio>
                             <el-radio :label="1" class="item-radio">虚拟商品（非会员卡，无需物流）</el-radio>
                             <el-radio :label="2" class="item-radio">虚 拟商品（会员卡，无需物流）</el-radio>
@@ -58,7 +62,7 @@
                         </el-form-item>
                         <el-form-item label="商品库存 :">
                             <template>
-                                <tableList :tablelists="basicsInfo"></tableList>
+                                <tableList :specList="form.specList" :invenList="form.invenList"></tableList>
                             </template>
                         </el-form-item>
                         <el-form-item label="商品参数 :" prop="region" :inline="true">
@@ -248,13 +252,10 @@ export default {
     return {
         title:'发布',
         goodsId:'',//商品id
-        data:{
-            pro:{
-                shopId:''
-            }
-        },//填充数据
         shopList:[],//店铺列表
-        groupList:[],//分组列表
+        form:{},//保存填充数据 
+
+
         options: [{
           value: 'zhinan',
           label: '指南',
@@ -435,18 +436,7 @@ export default {
             },
             'success':function (data){
                 console.log(data,'编辑请求数据');
-                _this.data = data.data;
-                _this.groupListAjax({
-                    data:{
-                        shopId: _this.data.pro.shopId ,
-                        proId: _this.data.pro.id,
-                        groups:'',
-                    },
-                    success(data){
-                        console.log(data,'分组');
-                        _this.groupListData = data.data.groupList
-                    }
-                })
+                _this.form = data.data;
             }
         });
     },
@@ -469,7 +459,8 @@ export default {
      * @param data 选择父类
      */
     groupselected(data){
-
+        //console.log(data,'data')
+        this.form.proGroupList = data;
     }
   },
   mounted(){
@@ -488,12 +479,7 @@ export default {
             _this.shopList = data.data;
         }
     })
-    _this.groupListAjax({
-        'success'(data) {
-            console.log(data,'分组列表')
-            _this.groupList = data.data.groupList;
-        }
-    })
+   
   }
 }
 </script>

@@ -1,109 +1,54 @@
 <template>
 <div class="table-spec">
-    <!-- <table border="1" cellspacing="0" cellpadding="0" width="100%" class="order_tab">
+    <table border="1" cellspacing="0" cellpadding="0" width="100%" class="order_tab">
         <tbody>
             <tr class="order_tab_header">
-                <th width="33%">商品名称</th>
-                <th width="15%">单价(元)</th>
-                <th width="15%">数量</th>
-                <th width="22%">订单编号</th>
-                <th width="15%">实付金额</th>
+                <th width="13%" 
+                    v-for="(item,index) in listData"
+                    :key="index">{{item.specName}}</th>
+                <th width="16%">价格(元)</th>
+                <th width="16%">库存</th>
+                <th width="16%">商家编码</th>
+                <th width="8%">销量</th>
+                <th width="5%">是否默认</th>
             </tr>
-            <tr>
-                <td>aaa</td>
-                <td>bbb</td>
-                <td>ccc</td>
-                <td class="text-overflow" :rowspan="3">1111</td>
-                <td class="text-overflow" :rowspan="3">222</td>
-            </tr>
-            <tr>
-                <td>aaa</td>
-                <td>bbb</td>
-                <td>ccc</td>
-                <td class="text-overflow" :rowspan="2">1111</td>
-                <td class="text-overflow" :rowspan="2">2222</td>
-            </tr>
-            <tr>
-                <td>aaa</td>
-                <td>bbb</td>
-                <td>ccc</td>
-                <td class="text-overflow" :rowspan="1">1111</td>
-                <td class="text-overflow" :rowspan="1">2222</td>
-            </tr>
-        </tbody>
-    </table> -->
-    <table class="table table-hover table-bordered">
-        <thead>
-            <tr class="col-1">
-                <th >1</th>
-                <th >2</th>
-                <th >3</th>
-                <th >价格(元)</th>
-                <th >库存</th>
-                <th >商家编码</th>
-                <th >是否默认</th>
-            </tr>
-        </thead>
-        <tbody>
-            
-            <tr v-for="(item,index) in tablelists" >
-                <td v-text="tabledata.spec1" class=" border border-b" style="padding-left: 2%;"></td>
-                <td  class="border border-b border-end" >
-                    <tr  class="table-list border-b"
-                         v-for="tabledata2 in tabledata.spec2">
-                         {{tabledata2}}
-                    </tr>
-                </td>
-                <td  class="border border-b border-end">
-                    <tr class="table-list border-b"
-                        v-for="tabledata3 in tabledata.spec3">
-                        {{tabledata3}}
-                    </tr>
-                    <tr class="table-list border-b"
-                        v-for="tabledata3 in tabledata.spec3">
-                        {{tabledata3}}
-                    </tr>
+            <!--规格总列数-->
+            <tr v-for="(item,index) in invenData"
+                :key="index">
+                
+                <!--最外层循环绑定:rowspan="3" 库存循环 -->
+                <td v-for="(test,i) in listData" lass="text-overflow"
+                    
+                    >
+                    <!--每个规格对应库存ids-->
+                    <!-- :rowspan="[  i+2<listData.length &&  i==0?listData[i+1].specValues.length*listData[i+2].specValues.length:2]" -->
+                    <p v-for="(c,d) in item.specificaIds">
+                        <!--规格 和 库存下的分类id 对应显示 -->
+                        <span v-for="(a,b) in test.specValues" v-if=" c == a.id">
+                            {{a.specValue}}
+                        </span>
+                    </p>
+                    
                 </td>
                 <td>
-                    <tr class="table-list border-b "
-                        v-for="tabledata3 in tabledata.spec3" >
-                        <input v-model="tabledata.money "/>
-                    </tr>
-                    <tr class="table-list border-b "
-                        v-for="tabledata3 in tabledata.spec3" >
-                        <input v-model="tabledata.money "/>
-                    </tr>
+                    <el-input v-model="item.invPrice" placeholder="请输入内容"></el-input>
                 </td>
-                <td >
-                    <tr class="table-list border-b "
-                        v-for="tabledata3 in tabledata.spec3" >
-                        <input v-model="tabledata.num" />
-                    </tr>
-                    <tr class="table-list border-b "
-                        v-for="tabledata3 in tabledata.spec3" >
-                        <input v-model="tabledata.money "/>
-                    </tr>
+                <td>
+                    <el-input v-model="item.invNum" placeholder="请输入内容"></el-input>
                 </td>
-                <td >
-                    <tr class=" table-list border-b "
-                        v-for="tabledata3 in tabledata.spec3">
-                        <input v-model="tabledata.number"/>
-                    </tr>
-                    <tr class="table-list border-b "
-                        v-for="tabledata3 in tabledata.spec3" >
-                        <input v-model="tabledata.money "/>
-                    </tr>
+                <td>
+                    <el-input v-model="item.invCode" ></el-input>
                 </td>
-                <td >
-                    <tr class=" table-list border-b " 
-                        v-for="tabledata3 in tabledata.spec3" >
-                        <el-radio class="radio" v-model="tabledata.dug"></el-radio>
-                    </tr>
-                    <tr class=" table-list border-b " 
-                        v-for="tabledata3 in tabledata.spec3" >
-                        <el-radio class="radio" v-model="tabledata.dug"></el-radio>
-                    </tr>
+                <td>
+                    {{item.invSaleNum==null?'0':item.invSaleNum}}
                 </td>
+                <td>
+                    <el-radio v-model="isDefault" 
+                            :label="index"
+                            @change="changeDefault(index)">
+                            &nbsp
+                    </el-radio>
+                 </td>
             </tr>
         </tbody>
     </table>
@@ -112,19 +57,30 @@
 <script>
 import imgUpload from 'components/imgUpload'
 export default {
-    //props:['tablelists'],
+    props:{
+        specList:{
+            type: Array
+        },
+        invenList:{
+            type: Array
+        }
+    },
     components: {
       imgUpload
     },
-    data: function () {
+    data() {
         return {
+            specData:'',//规格
+            invenData:'',//库存
+            isDefault:1,//是否默认
+
             fromSelected:{//选中的内容
             shop: '',//店铺
             grouping: [],//分组
             goodsStatus: '',//商品类型
             spec:[]//规格
             },
-            radio:1,
+            radio:4,
             tablelists:[{
                 spec1 :'1',
                 spec2:  ['AAA','BBB'],
@@ -152,56 +108,73 @@ export default {
             }],
         }
     },
+    watch:{
+        /** 
+         * 默认值改变
+         */
+        'isDefault'(a,b){
+            console.log(a);
+            this.invenData.forEach((item,i)=>{
+                if(i === a){
+                    item.isDefault = 1;
+                    }
+                })
+            }
+    },
     methods:{
-
+        /** 
+         * 数据重组
+        */
+        newlistData(){
+            let _this = this;
+            //规格遍历
+            _this.invenData.forEach((item,i) => {
+                //specificaIds转换数组 进行匹配
+                item.specificaIds = item.specificaIds.split(",");
+                //库存列表 遍历
+                // _this.listData.forEach((test,j) => {
+                //     //每个规格集合下的specValues
+                //     test.specValues.forEach((n,c)=>{
+                //         item.specificaIds.forEach((e,h)=>{
+                //             if(e==n.id){
+                //                 console.log(n.specValue,e);
+                //                 item.valueName = n.specValue;
+                //             }
+                //         })
+                //     })
+                // })
+            });
+        },
     },
     mounted() {
+        this.listData = this.specList;
+        this.invenData = this.invenList;
+        this.isDefault;
+        this.invenData.forEach((item,i)=>{
+            if(item.isDefault == 1){
+                this.isDefault = i;
+            }
+        })
+        console.log(this.listData,'编辑规格listData');
+        console.log(this.invenList,'编辑库存');
+        this.newlistData()
     }
 }
 </script>
 <style lang="less" scoped>
 @import '../../../../assets/css/mixins.less';
-@border: 1px solid #dfe6ec;
-.table-spec{
+
+.order_tab{
     width: 100%;
-    .border-radius(5px);
-    overflow: hidden;
-    .table{
+    border-color: #dfe6ec;
+    border: 1px solid #dfe6ec;
+    line-height: 1;
+    .order_tab_header{
         width: 100%;
-        border: @border;
-        .table-list{
-            display: inline-block;
-            padding-left: 10%;
-            width: 100%;
-        }
+        background:#eef1f6;
     }
-    .border{
-        border-right: @border;
-    }
-    .border-b{
-        border-bottom: @border;
-    }
-    .border-end{
-         &>tr:last-child{
-              border-bottom: 0;
-         }
-    }
-    thead{
-        background: #eef1f6;
-        th{
-            width: 14%;
-        }
-    }
-    th{
-        padding-left:2%;
-        border-bottom: @border;
-    }
-    input{
-        width: 90px;
-        height: 30px;
-        border: @border;
-        .border-radius(5px);
-        padding: 0 8px; 
+    td,th{
+        padding: 10px;
     }
 }
 </style>
