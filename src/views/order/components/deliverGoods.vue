@@ -142,9 +142,6 @@ export default {
         
     },
     mounted() {
-<<<<<<< HEAD
-        
-=======
         this.orderData = this.row;
         this.mallExpressList();
 
@@ -154,7 +151,6 @@ export default {
         this.expressData.expressId = '';
         this.expressData.expressDelivery ='';
         this.expressData.otherExpressName ='';
->>>>>>> 8fec605f3593fec1504bc19034a5ca17136a119e
     }
 }
 </script>
