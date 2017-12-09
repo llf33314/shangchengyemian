@@ -322,9 +322,11 @@ export default {
       if(_this.tabActive =='/allOrder'){
        _this.searchData.orderType ='0';
        _this.searchData.status ='0';
+       _this.searchData.returnStatus ='';
      }else{
        _this.searchData.orderType ='-1';
        _this.searchData.status ='7';
+       _this.searchData.orderSource ='';
      }
     _this.searchData.curPage=1;
     _this.mallOrderList( _this.searchData);
@@ -460,12 +462,14 @@ export default {
     let _this = this;
      //所有订单,维权订单切换时  改变初始数据
      _this.tabActive=this.$route.path;
-     if(_this.tabActive =='/allOrder'){
+      if(_this.tabActive =='/allOrder'){
        _this.searchData.orderType ='0';
        _this.searchData.status ='0';
+       _this.searchData.returnStatus ='';
      }else{
        _this.searchData.orderType ='-1';
        _this.searchData.status ='7';
+       _this.searchData.orderSource ='';
      }
      _this.storeList({
       'success'(data){

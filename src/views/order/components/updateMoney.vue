@@ -1,48 +1,48 @@
 <template>
- <div class="order_tab_main">
-  <el-table :data="orderData.mallOrderDetail" style="width: 100%" border>
-        <el-table-column
-            prop="detProName"
-            label="商品名称"
-            width="300">
-        </el-table-column>
-        <el-table-column
-            prop="detProPrice"
-            label="单价(元)">
-        </el-table-column>
-        <el-table-column
-            prop="detProNum"
-            label="数量"> 
-        </el-table-column>
-        <el-table-column
-            prop="totalPrice"
-            label="小计(元)">
-        </el-table-column>
-        <el-table-column
-            width="240"
-            label="填写修改商品总价（单价*数量）">
-            <template scope="scope">
-            <el-input placeholder="请输入商品价格" v-model="scope.row.updateMoney" :value="scope.row.totalPrice" ></el-input>
-            </template>
-        </el-table-column>
-    </el-table>
-    <div class="dialog-list">
-        <span>收货信息 :</span>
-        {{orderData.receiveAddress}},{{orderData.receiveName}},{{orderData.receivePhone}} 
-    </div>
-    <div class="dialog-list">
-        <span>买家实付  :</span>
-            {{orderData.orderMoney}}元
-            <span v-if="orderData.orderFreightMoney >0" style="font-size:13px;color:red">(含运费{{orderData.orderFreightMoney}})</span>
+    <div class="order_tab_main">
+        <el-table :data="orderData.mallOrderDetail" style="width: 100%" border>
+            <el-table-column
+                prop="detProName"
+                label="商品名称"
+                width="300">
+            </el-table-column>
+            <el-table-column
+                prop="detProPrice"
+                label="单价(元)">
+            </el-table-column>
+            <el-table-column
+                prop="detProNum"
+                label="数量"> 
+            </el-table-column>
+            <el-table-column
+                prop="totalPrice"
+                label="小计(元)">
+            </el-table-column>
+            <el-table-column
+                width="240"
+                label="填写修改商品总价（单价*数量）">
+                <template scope="scope">
+                <el-input placeholder="请输入商品价格" v-model="scope.row.updateMoney" :value="scope.row.totalPrice" ></el-input>
+                </template>
+            </el-table-column>
+        </el-table>
+        <div class="dialog-list">
+            <span>收货信息 :</span>
+            {{orderData.receiveAddress}},{{orderData.receiveName}},{{orderData.receivePhone}} 
         </div>
-        <div class="dialog-list shop-textr">
-        <el-button type="primary" @click="submitUpMoney()">确定</el-button>
-        <el-button @click="resetForm()">取消</el-button>
+        <div class="dialog-list">
+            <span>买家实付  :</span>
+                {{orderData.orderMoney}}元
+                <span v-if="orderData.orderFreightMoney >0" style="font-size:13px;color:red">(含运费{{orderData.orderFreightMoney}})</span>
+            </div>
+            <div class="dialog-list shop-textr">
+            <el-button type="primary" @click="submitUpMoney()">确定</el-button>
+            <el-button @click="resetForm()">取消</el-button>
+        </div>
     </div>
-</div>
 </template>
 
-<<script>
+<script>
 export default {
     props:{
         data:{

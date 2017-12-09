@@ -28,7 +28,7 @@
           </el-form-item >
         </el-form>
       </div>
-      <div class="index-content"  v-if="isTable">
+      <div class="index-content">
           <el-tabs v-model="activeName2" type="card" @tab-click="handleClick(activeName2)">
             <el-tab-pane :label="'全部评论( '+(count.total|0)+' )'" name="all"></el-tab-pane>
             <el-tab-pane :label="'好评( '+(count.good|0)+' )'" name="1"></el-tab-pane>
@@ -108,7 +108,6 @@
               :total="page.rowCount">
             </el-pagination>
           </div>
-        <!-- </div> -->
       </div>   
     </div> 
     <content-no :show="contentShow" v-if="isComment != 1" style="width:92%"></content-no>
@@ -127,7 +126,6 @@ export default {
     return {
         contentNo:'',
         isComment: '1', // 0不开启   1开启 2关闭评论及买家评价
-        isTable:true,
         activeName2: 'all',
         subList:[],//列表数据
         page:{},//页面数据

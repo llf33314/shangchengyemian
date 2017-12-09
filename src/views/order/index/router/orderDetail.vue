@@ -7,12 +7,18 @@
     </el-breadcrumb>
   </div>
   <div class="order-main">
-    <div class="shop-steps">
+    <div class="shop-steps" v-if="active < 5">
       <el-steps :active="active"  center  style="width:96%">
         <el-step title="买家下单" :description="orderDetail.createTime|format"></el-step>
         <el-step title="买家付款" :description="twoDate"></el-step>
         <el-step title="商家发货" :description="threeDate"></el-step>
         <el-step title="交易完成" :description="fourDate"></el-step>
+      </el-steps>
+    </div>
+    <div class="shop-steps" v-if="active == 5">
+      <el-steps :active="active"  center  style="width:96%">
+        <el-step title="买家下单" :description="orderDetail.createTime|format"></el-step>
+        <el-step title="订单已关闭" :description="fourDate"></el-step>
       </el-steps>
     </div>
     <div class="order-content">
@@ -107,8 +113,22 @@
                <span v-if="returnData.retHandlingWay == 1"> 买家发起退款申请</span>
                 <span v-if="returnData.retHandlingWay == 2">买家发起退货退款申请</span>
               </p>
-              <p v-if="returnData.applyTimes !=null">您还有04天12小时25分响应买家发起的维权，若超过期限没有响应，则系统默认您同意退款，并将款项原路打回买家账户。 </p>
-              <p v-if="returnData.takeTimes !=null">您还有04天12小时25分确认收货，若超过期限没有确认收货，则系统默认您收货，并将款项原路打回买家账户。 </p>
+              <p v-if="returnData.applyTimes">您还有
+                <span class="fs36" style="color:red">
+                    <em v-text="time.DD"></em> 天
+                    <em v-text="time.HH"></em>时
+                    <em v-text="time.mm"></em>分
+                    <em v-text="time.ss"></em>秒</span>
+                    响应买家发起的维权，若超过期限没有响应，则系统默认您同意退款，并将款项原路打回买家账户。
+              </p>
+              <p v-if="returnData.takeTimes">您还有04天12小时25分
+                 <span class="fs36" style="color:red">
+                    <em v-text="time.DD"></em> 天
+                    <em v-text="time.HH"></em>时
+                    <em v-text="time.mm"></em>分
+                    <em v-text="time.ss"></em>秒</span>
+                    确认收货，若超过期限没有确认收货，则系统默认您收货，并将款项原路打回买家账户。
+              </p>
               <div class="order-item-list ">
                 <div class="order-item-title">退款类型 : 
                 </div>
@@ -162,10 +182,10 @@
                 <el-button type="primary" size="small" v-if="returnData.isShowRefuseConfirmTakeButton == 1" @click="openDialog(6,returnData,4)">拒绝确认收货</el-button>
                 
                 <el-button type="primary" size="small" v-if="returnData.isShowUpdateAddressButton == 1" @click="openDialog(6,returnData,5)">修改退货地址</el-button>
-
+                <el-button v-if="returnData.isShowRefuseApplyButton == 1">申请多粉介入</el-button>
                 <!-- <el-button type="primary">确认收货</el-button>
                 <el-button type="primary" :disabled="false" @click="dialogShow">同意</el-button>
-                <el-button type="primary" @click="dialogVisible = true" >拒绝</el-button>
+                <el-button type="primary" @click="dialogVisible = true" > 拒绝</el-button>
                 <el-button >申请多粉介入</el-button> -->
               </div>
             </div>
@@ -274,7 +294,8 @@ export default {
       fourDate:'',  //完成时间
       orderDetail:{}, //订单信息
       imgUrl:'',    //资源前缀
-      returnData:{} //维权信息
+      returnData:{}, //维权信息
+      time: {}
     }
   },
   methods: {
@@ -305,6 +326,13 @@ export default {
               var detail=_this.orderDetail.mallOrderDetail[i];          
               if(JSON.stringify(_this.returnData) == '{}' && detail.returnResult != null){
                 _this.returnData= detail.returnResult;
+                //启动倒计时
+                if(_this.returnData.applyTimes){
+                  _this.setTiming( _this.returnData.applyTimes);
+                }
+                if(_this.returnData.takeTimes){
+                  _this.setTiming( _this.returnData.takeTimes);
+                }
                 console.log( _this.returnData,' _this.returnData');
               }
           };
@@ -312,35 +340,87 @@ export default {
           if(JSON.stringify(_this.returnData) == '{}' ){
             _this.colWidth='';
           }
-
+          
+          _this.twoDate= Lib.M.format(_this.orderDetail.payTime);
+          _this.threeDate= Lib.M.format(_this.orderDetail.expressTime);
+          
           /**得到进度和进度的生成时间 */
           if(_this.orderDetail.orderStatus ==2){
             _this.active=2;
-            _this.twoDate=Lib.M.format(_this.orderDetail.payTime);
           }else if(_this.orderDetail.orderStatus == 3){
             _this.active=3;
-            _this.twoDate=Lib.M.format(_this.orderDetail.payTime);
-            _this.threeDate=Lib.M.format(_this.orderDetail.expressTime);
           }else if(_this.orderDetail.orderStatus == 4){
             _this.active=4;
-            _this.twoDate= Lib.M.format(_this.orderDetail.payTime);
-            _this.threeDate= Lib.M.format(_this.orderDetail.expressTime);
             _this.fourDate= Lib.M.format(_this.orderDetail.updateTime);
-          }else if(_this.orderDetail.orderStatus == 5){//关闭订单
-             
+          }else if(_this.orderDetail.orderStatus == 5){//关闭订单.
+             _this.active=5;
+             _this.fourDate= Lib.M.format(_this.orderDetail.updateTime);
           }
+          
           // console.log(_this.active,"_this.active");
         }
       });
     },
+     /** 
+     * 倒计时
+     */
+    setTiming(time) {
+      //倒计时
+      let _this = this;
+      let Time =time;
+      _this.time = "";
+      this.Interval = setInterval(() => {
+        //做定时器
+        if (Time === 0) {
+          //时间结束
+          clearInterval(_this.Interval);
+          _this.time = _this.timer(0);
+        } else {
+          // 时间未结束
+          Time--;
+          _this.time = _this.timer(Time);
+        }
+      }, 1000);
+    },
+     /**
+     * 活动时间分隔
+     */
+    timer(intDiff) {
+      var day = 0,
+        hour = 0,
+        minute = 0,
+        second = 0;
+      if (intDiff > 0) {
+        day = Math.floor(intDiff / (60 * 60 * 24));
+        hour = Math.floor(intDiff / (60 * 60)) - day * 24;
+        minute = Math.floor(intDiff / 60) - day * 24 * 60 - hour * 60;
+        second =
+          Math.floor(intDiff) -
+          day * 24 * 60 * 60 -
+          hour * 60 * 60 -
+          minute * 60;
+      } else {
+      }
+
+      if (hour <= 9) hour = "0" + hour;
+      if (minute <= 9) minute = "0" + minute;
+      if (second <= 9) second = "0" + second;
+
+      var times = {};
+      times.DD = day;
+      times.HH = hour;
+      times.mm = minute;
+      times.ss = second;
+
+      return times;
+    }
   },
   mounted() {
-
     this.orderDtail(this.$route.params.orderId);
   }
 }
 </script>
 <style lang="less">
-@import '../../less/index.less';
-@import '../../less/order.less';
+  @import '../../less/index.less';
+  @import '../../less/order.less';
 </style>

@@ -59,7 +59,7 @@
         </div>
     </div>
 </template>
-<<script>
+<script>
 export default {
     props:{
         data:{
@@ -86,11 +86,10 @@ export default {
     watch:{
         'returnType'(a,b){
             this.type = a;
+            this.dialogReturn();
         },
         'data'(a,b){
             this.orderData = a;
-            this.dialogReturn();
-     
         },
         'returnData'(a,b){
           this.returnInfo = a;
@@ -99,20 +98,21 @@ export default {
     methods:{  
         /**打开退款 弹出框 */
         dialogReturn(){
-        let _this = this;
- 
-        _this.payName="微信安全支付";
-        if(_this.orderData.orderPayWay== 9){
-            _this.payName="支付宝安全支付";
-        }
+            let _this = this;
+    
+            _this.payName="微信安全支付";
+            if(_this.orderData.orderPayWay== 9){
+                _this.payName="支付宝安全支付";
+            }
 
-        _this.isZhifubao=0;
-        if(_this.orderData.orderPayWay== 7 && _this.orderData.mallDaifu !=null && _this.orderData.mallDaifu.dfPayWay ==2){
-            _this.isZhifubao=1;
-        }
-        if(_this.orderData.orderPayWay== 9 && (_this.type==1 ||_this.type == 3)){
-            _this.isZhifubao=1;
-        }
+            _this.isZhifubao=0;
+            if(_this.orderData.orderPayWay== 7 && _this.orderData.mallDaifu !=null && _this.orderData.mallDaifu.dfPayWay ==2){
+                _this.isZhifubao=1;
+            }
+            if(_this.orderData.orderPayWay== 9 && (_this.type==1 ||_this.type == 3)){
+                _this.isZhifubao=1;
+            }
+             console.log( _this.isZhifubao," _this.isZhifubao");
         },
         /**提交维权信息 */
         submitForm(){
@@ -180,8 +180,8 @@ export default {
                 returnOrder.noReturnReason = _this.noReturnReason;
                 order={};
             } 
-            console.log(returnOrder,"returnOrder");
-            console.log(order,"order");
+            // console.log(returnOrder,"returnOrder");
+            // console.log(order,"order");
              
             _this.ajaxRequest({
                 'url': DFshop.activeAPI.updateReturn_post,
