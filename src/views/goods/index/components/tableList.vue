@@ -18,7 +18,8 @@
                 
                 <!--最外层循环绑定:rowspan="3" 库存循环 -->
                 <td v-for="(test,i) in listData" lass="text-overflow"
-                    
+                    :rowspan="[i+2<listData.length &&  i==0?listData[i+1].specValues.length*listData[i+2].specValues.length:2]"
+                    v-if="index % test.specValues.length == 0"
                     >
                     <!--每个规格对应库存ids-->
                     <!-- :rowspan="[  i+2<listData.length &&  i==0?listData[i+1].specValues.length*listData[i+2].specValues.length:2]" -->
@@ -113,7 +114,6 @@ export default {
          * 默认值改变
          */
         'isDefault'(a,b){
-            console.log(a);
             this.invenData.forEach((item,i)=>{
                 if(i === a){
                     item.isDefault = 1;
@@ -155,8 +155,8 @@ export default {
                 this.isDefault = i;
             }
         })
-        console.log(this.listData,'编辑规格listData');
-        console.log(this.invenList,'编辑库存');
+        //console.log(this.listData,'编辑规格listData');
+        //console.log(this.invenList,'编辑库存');
         this.newlistData()
     }
 }

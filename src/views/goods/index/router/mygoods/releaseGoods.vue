@@ -57,7 +57,7 @@
                    <el-form :model="ruleForm" ref="ruleForm" label-width="105px" class="demo-ruleForm">
                         <el-form-item label="商品规格 :" prop="name">
                             <template>
-                                <tableSpec :tableData="basicsInfo"></tableSpec>
+                                <tableSpec :row="form.specList" :shopId="form.pro.shopId"></tableSpec>
                             </template>
                         </el-form-item>
                         <el-form-item label="商品库存 :">
