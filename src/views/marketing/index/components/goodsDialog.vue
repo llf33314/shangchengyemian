@@ -40,147 +40,117 @@
     </el-dialog>
 </template>
 <script>
-import defaultImg from 'components/defaultImg';
+import defaultImg from "components/defaultImg";
 export default {
-    components:{
-        defaultImg
-    },
-    data() {
-        return  {
-          restaurants: [],
-          state4: '',
-          timeout:  null,
-          gridData: {
-            page:{
-              subList:[],
-            }
-          },
-          isShow: false,
-          pageNum:1,
-          defaultProId:'',
-          shopId:'',
-          proName:'',
-          imgPath : '',
+  components: {
+    defaultImg
+  },
+  data() {
+    return {
+      restaurants: [],
+      state4: "",
+      timeout: null,
+      gridData: {
+        page: {
+          subList: []
         }
-    },
-    watch:{
-      isShow(){
-        let _this = this;
-        DFshop.method.mallGroupBuyGetProduct({
-          'defaultProId':_this.defaultProId,
-          'shopId':_this.shopId,
-          'proName':_this.proName,
-          'curPage':_this.pageNum,
-          'success'(data){
+      },
+      isShow: false,
+      pageNum: 1,
+      defaultProId: "",
+      shopId: "",
+      proName: "",
+      imgPath: ""
+    };
+  },
+  watch: {
+    isShow() {
+      let _this = this;
+      if (_this.isShow) {
+        this.mallGroupBuyGetProduct({
+          defaultProId: _this.defaultProId,
+          shopId: _this.shopId,
+          proName: _this.proName,
+          curPage: _this.pageNum,
+          success(data) {
             _this.gridData = data.data;
             _this.imgPath = data.imgUrl;
-            //console.log(data,'gridData');
           }
         });
       }
-    },
-    methods:{
-        handleSizeChange(val) {
-          //console.log(`每页 ${val} 条`);
-          let _this = this;
-          DFshop.method.mallGroupBuyGetProduct({
-            'defaultProId':_this.defaultProId,
-            'shopId':_this.shopId,
-            'proName':_this.proName,
-            'curPage':val,
-            'success'(data){
-              _this.gridData = data.data;
-            }
-          });
-        },
-        handleCurrentChange(val) {
-          let _this = this;
-          DFshop.method.mallGroupBuyGetProduct({
-            'defaultProId':_this.defaultProId,
-            'shopId':_this.shopId,
-            'proName':_this.proName,
-            'curPage':val,
-            'success'(data){
-              _this.gridData = data.data;
-            }
-          });
-        },
-        selectedData(pro){
-            let _this = this;
-            _this.isShow = false;
-            pro.isChoicePro = false;
-            pro.isReplacePro = true;
-            pro.imgPath = _this.imgPath;
-            _this.$emit('dialogData',pro);
-            console.log(pro,'xuanze');
-        },
-        handleIconClick(){
-          let _this = this;
-          DFshop.method.mallGroupBuyGetProduct({
-            'defaultProId':_this.defaultProId,
-            'shopId':_this.shopId,
-            'proName':_this.proName,
-            'curPage':_this.gridData.page.curPage,
-            'success'(data){
-              _this.gridData = data.data;
-            }
-          });
-        }
-        // loadAll() {
-        //   return [
-        //     { "value": "三全鲜食（北新泾店）", "address": "长宁区新渔路144号" },
-        //     { "value": "Hot honey 首尔炸鸡（仙霞路）", "address": "上海市长宁区淞虹路661号" },
-        //     { "value": "新旺角茶餐厅", "address": "上海市普陀区真北路988号创邑金沙谷6号楼113" },
-        //     { "value": "泷千家(天山西路店)", "address": "天山西路438号" }
-        //   ];
-        // },
-        // querySearchAsync(queryString, cb) {
-        //   var restaurants = this.restaurants;
-        //   debugger
-        //   var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
-
-        //   clearTimeout(this.timeout);
-        //   this.timeout = setTimeout(() => {
-        //     cb(results);
-        //   }, 3000 * Math.random());
-        // },
-        // createStateFilter(queryString) {
-        //   return (state) => {
-        //     return (state.value.indexOf(queryString.toLowerCase()) === 0);
-        //   };
-        // },
-        // handleSelect(item) {
-        //   console.log(item);
-        // }
-    },
-    mounted() {
-      // let _this = this;
-      //   _this.restaurants = _this.loadAll();
-      
     }
-   
-}
+  },
+  methods: {
+    handleSizeChange(val) {
+      //console.log(`每页 ${val} 条`);
+      let _this = this;
+      this.mallGroupBuyGetProduct({
+        defaultProId: _this.defaultProId,
+        shopId: _this.shopId,
+        proName: _this.proName,
+        curPage: val,
+        success(data) {
+          _this.gridData = data.data;
+        }
+      });
+    },
+    handleCurrentChange(val) {
+      let _this = this;
+      this.mallGroupBuyGetProduct({
+        defaultProId: _this.defaultProId,
+        shopId: _this.shopId,
+        proName: _this.proName,
+        curPage: val,
+        success(data) {
+          _this.gridData = data.data;
+        }
+      });
+    },
+    selectedData(pro) {
+      let _this = this;
+      _this.isShow = false;
+      pro.isChoicePro = false;
+      pro.isReplacePro = true;
+      pro.imgPath = _this.imgPath;
+      _this.$emit("dialogData", pro);
+      console.log(pro, "xuanze");
+    },
+    handleIconClick() {
+      let _this = this;
+      this.mallGroupBuyGetProduct({
+        defaultProId: _this.defaultProId,
+        shopId: _this.shopId,
+        proName: _this.proName,
+        curPage: _this.gridData.page.curPage,
+        success(data) {
+          _this.gridData = data.data;
+        }
+      });
+    }
+  },
+  mounted() {}
+};
 </script>
 <style lang="less" scoped>
-@import '../../../../assets/css/mixins.less';
-.addGruop-search{
+@import "../../../../assets/css/mixins.less";
+.addGruop-search {
   margin-bottom: 20px;
 }
-.shop-textr{
+.shop-textr {
   margin-top: 20px;
 }
-.Data-goods{
+.Data-goods {
   .ik-box;
   .ik-box-pack(justify);
   .ik-box-align(center);
   padding: 10px 0;
   line-height: 1;
-  .goods-img{
+  .goods-img {
     width: 56px;
     height: 56px;
     margin-right: 10px;
   }
-  .goods-name{
+  .goods-name {
     width: 128px;
     line-height: 1.5em;
   }
