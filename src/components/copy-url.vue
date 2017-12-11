@@ -85,7 +85,7 @@
       showDialog: function (msg) {
         let vm = this;
         vm.title = msg.title || '' ;
-        vm.pageLink = msg.pageLink|| '';
+        vm.pageLink = msg.path+msg.pageLink|| '';
         vm.urlQR =  msg.urlQR || DFshop.activeAPI.mallStoreGenerateQRCode_get;
         vm.erweima = vm.urlQR +"?url="+ msg.pageLink;//生成二维码链接
         vm.copyUrlVisible = true;
