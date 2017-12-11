@@ -8,16 +8,17 @@
                         filterable
                         allow-create
                         placeholder="关键词"
-                        @change="selectedSpec1(item.specNameId,index)">
+                        @change="selectedSpec1(item.specNameId,index,item)">
                         <el-option
                             v-for="(test,i) in listData"
                             :key="i"
                             :label="test"
-                            :value="i">
+                            :value="Number(i)">
                         </el-option>
                     </el-select>
                     <i class="el-icon-circle-close"
-                        @click="specList.splice(index, 1)"></i>
+                        @click="specList.splice(index, 1)"> 
+                        </i>
                 </div>
                 <div class="table-inline" v-if="index === 0">
                     <el-checkbox v-model="isAddImg" >添加规格图片</el-checkbox>
@@ -87,7 +88,11 @@ export default {
             isShowAdd:'',//添加显示
             selectedSpec:[],//分组选择暂存
             aaaa:'',
+            nameList:[],
 
+
+
+            flag:false,
             fromSelected:{//选中的内容
                 shop: '',//店铺
                 grouping: [],//分组
@@ -97,7 +102,7 @@ export default {
             fromSelecteds:[],
             checked1:'',
             options:[],
-            value10:'',
+            value10:''
         }
     },
     watch: {
@@ -106,16 +111,19 @@ export default {
         },
         'specList'(a,b){
             console.log(a,b,'----------');
-
         }
     },
     mounted() {
         let _this = this;
         this.specList = this.row;
         this.specList[0].specValues.forEach((item,i) => {
+            console.log(item,"item")
             if(item.specImage != null){
                 _this.isAddImg = true;
             }
+        });
+        this.specList.forEach((item,i)=>{
+            _this.$set(_this.nameList,_this.nameList.length,item.specNameId);
         });
         console.log(this.specList,'this.specList');
         this.specificaList()
@@ -162,47 +170,51 @@ export default {
          * 总规格选中
          */
         selectedSpec1(val,index){
+            console.log(10);
             let _this = this;
-            let flag = true;
-            //新选的val 不能和其他两个重复,
-
-            _this.specList.forEach((item,i)=>{
-                console.log(i,index)
-                if(i == index) return;
-                if(item.specNameId == val){
-                    //_this.specList[index].specNameId = oldValue;
-                    _this.$message({
-                        message: '请不要重复添加',
-                        type: 'warning'
-                    });
-                    //重新对应返回原值
-                    console.log(item);
-                    if(index == 0){
-                        _this.isAddImg = false;   
-                    }
-                    _this.specList.splice(index,1);
-                    // debugger
-                    // for(let j in _this.listData){
-                    //     if(_this.listData[j] == item.specName){
-                    //         item.specNameId = j;
-                    //         this.$set(_this.specList,i,item);
-                    //     }
-                    // }
-                    flag = false;
+            let isAdd = true;
+            //排重
+            if(_this.nameList != null && _this.nameList.length > 0){
+                for(let k = 0; k < _this.nameList.length ;k++){
+                    if(_this.nameList[k] == val){
+                        //重新对应返回原值
+                        //拿到规格改变对应的值
+                        let changeData = _this.specList[index];
+                        for(let j in _this.listData){
+                            //遍历总规格列表里的属性值和改变值相等，赋值原来的改变值;
+                            if(_this.listData[j] == changeData.specName){
+                                changeData.specNameId = Number(j);
+                                //this.$set(_this.specList,i,item);
+                            }
+                        }
+                        _this.$message({
+                            message: '请不要重复添加',
+                            type: 'warning'
+                        });
+                        isAdd = false;
+                    } 
                 }
-            })
-            //重复不执行
-            if(!flag) return;
-
-            // for(let i in _this.listData){
-            //     if(i == val){
-            //         console.log(i,val)
-            //         // _this.$message({
-            //         //     message: '请不要重复添加',
-            //         //     type: 'warning'
-            //         // });
-            //     }
-            // }
+            }
+            //新增
+            if(isAdd){
+                console.log('不重复新增');
+                let newId = '';
+                for(let j in _this.listData){
+                    if(j == val){
+                        newId = j;
+                    }
+                }
+                let newData={
+                    erpNameId: _this.specList[index].erpNameId,
+                    productId: _this.specList[index].productId,
+                    specName:  val,
+                    specNameId: Number(newId),
+                    specValues:[]
+                }
+                
+                this.$set(_this.specList,index,newData);
+            }
+            
         },
          /** 
          * 分规格选中
