@@ -33,6 +33,17 @@
                     <el-checkbox v-model="row.isJoin" @change="changeData"></el-checkbox><span>设为参团</span>
                 </td>
             </tr>
+            <tr class="p-tr">
+              <td :colspan="specificesList.length+4">
+                <el-form-item label="批量设置价格：" class="pl-set newgroup">
+                  <el-input v-model.number="price"  style="width:220px;">
+                    <template slot="prepend" >¥</template>
+                  </el-input>
+                </el-form-item>
+                <el-button type="primary" class="fs-button" @click="confirm" style="float:left">确认</el-button>
+                <!-- <el-button class="fs-button" >取消</el-button> -->
+              </td>
+            </tr>
             </tbody>
         </table>
         </el-form>
@@ -51,9 +62,11 @@ export default {
   data: function() {
     return {
       ruleForm: {
-        rowList: []
+        rowList: [],
+        price: 0
       },
-      rules: {}
+      rules: {},
+      price: ""
     };
   },
   watch: {
@@ -78,20 +91,40 @@ export default {
         }
       }
       if (isTrue) {
-      console.log(list, "--rowList");
         //更新值
         this.$emit("update:rowList", list);
       }
     },
-    validateData(){
+    /**
+     * 验证表单价格
+     */
+    validateData() {
       let isValidate = true;
-       this.$refs.ruleForm.validate(valid => {
-         if(!valid){
-           isValidate = false;
-         }
-         console.log(valid,"valid")
-       });
-       return isValidate;
+      this.$refs.ruleForm.validate(valid => {
+        if (!valid) {
+          isValidate = false;
+        }
+      });
+      return isValidate;
+    },
+    confirm() {
+      let price = this.price;
+      let reg = /^[0-9]{1,5}(\.\d{1,2})?$/;
+      if (price === "" || !reg.test(price) || price == 0) {
+        // return callback(new Error("团购价不能为空"));
+        this.$message({
+          showClose: true,
+          message: "请填写正确的价格",
+          type: "warning"
+        });
+        return;
+      }
+      let list = this.ruleForm.rowList;
+      for (let i = 0; i < list.length; i++) {
+        let obj = list[i];
+        obj.groupPrice = price;
+        this.$set(list, i, obj);
+      }
     }
   }
 };
@@ -104,6 +137,30 @@ export default {
   .el-form-item__error {
     position: relative;
     top: 0%;
+  }
+}
+.pl-set {
+  margin-right: 10px;
+  float: left;
+  width: 351px;
+  .el-form-item__label {
+    width: 130px !important;
+  }
+  .el-form-item__content {
+    padding: 0;
+  }
+  .el-form-item__error {
+    text-align: left;
+    margin-left: 28px;
+  }
+}
+// .el-button,
+// .fs-button {
+//   float: left;
+// }
+.p-tr {
+  td {
+    padding: 10px 0;
   }
 }
 </style>

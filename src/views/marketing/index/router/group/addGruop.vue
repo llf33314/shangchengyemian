@@ -32,7 +32,7 @@
                 <p class="p-warn">0/8</p>
             </el-form-item>
             <div class="specificaPrices"  v-if="ruleForm.isSpecifica == 1">
-              <el-form-item label="团购价 :" required>
+              <el-form-item label="团购价 :" required >
                 <specifica-price :rowList.sync="priceList" :specificesList="specificesList" ref="specComp"></specifica-price>
               </el-form-item>
             </div>
@@ -99,8 +99,8 @@ export default {
       let reg = /^[0-9]\d*$/;
       if (value == "") {
         return callback(new Error("参团人数不能为空"));
-      } else if (!reg.test(value)) {
-        return callback(new Error("参团人数必须为数字且不能小于0"));
+      } else if (!reg.test(value) || (value < 1 || value > 8)) {
+        return callback(new Error("参团人数必须在1到8人之间"));
       } else {
         callback();
       }
@@ -123,6 +123,7 @@ export default {
       }
     };
     var formChoicePro = (rule, value, callback) => {
+      console.log(this.boxData.id, "this.boxData.id", this.ruleForm.choicePro);
       if (this.boxData.id === undefined || this.boxData.id === "") {
         return callback(new Error("请选择活动商品"));
       } else {
@@ -133,11 +134,7 @@ export default {
       setJoinGroup: [],
       table: [],
       pickerOptions1: {
-
-
-
-        
-        shortcuts: [  
+        shortcuts: [
           {
             text: "今天",
             onClick(picker) {
@@ -218,6 +215,7 @@ export default {
       shopList: [],
       boxData: {},
       specificesList: [],
+      priceList: [],
       specArrList: [],
       disabledShop: ""
     };
@@ -257,39 +255,45 @@ export default {
     submitForm(formName) {
       //保存团购信息
       let _this = this;
-
-      console.log(this.ruleForm, "ruleForm");
-      console.log(this.priceList, "priceList");
       if (this.ruleForm.isSpecifica == 1) {
         let isVali = this.$refs.specComp.validateData();
-        console.log(isVali, "isVali");
         if (!isVali) {
           return;
         }
       }
       this.$refs[formName].validate(valid => {
         if (valid) {
-          let groupBuy = {};
-          groupBuy = _this.$refs[formName].model;
-          let time = _this.$refs[formName].model.gStartTime;
-          groupBuy.gStartTime = Lib.M.format(new Date(time[0]));
-          groupBuy.gEndTime = Lib.M.format(new Date(time[1]));
-          groupBuy.gName = _this.$refs[formName].model.gName;
-          groupBuy.productId = _this.$refs[formName].model.productId;
+          let formData = _this.$refs[formName].model;
+          let time = formData.gStartTime;
+          let groupBuy = {
+            shopId: formData.shopId, //店铺id
+            productId: formData.productId, //商品id
+            gStartTime: Lib.M.format(new Date(time[0])), //开始时间
+            gEndTime: Lib.M.format(new Date(time[1])), //结束时间
+            gName: formData.gName, //活动名称
+            gPeopleNum: formData.gPeopleNum, //参团人数
+            gPrice: formData.gPrice //活动价
+          };
+          if (formData.id != null || formData.id != "") {
+            groupBuy.id = formData.id;
+          }
           if (!_this.off) {
             groupBuy.gMaxBuyNum = 0;
           }
           let _speciList = [];
-          for (var k = 0; k < _this.specArrList.length; k++) {
-            let arr = {};
-            if (_this.specArrList[k].priceId != "") {
-              arr.id = _this.specArrList[k].priceId;
-            }
-            arr.groupPrice = _this.specArrList[k].groupPrice;
-            arr.invenId = _this.specArrList[k].id;
-            arr.specificaIds = _this.specArrList[k].specificaIds;
-            arr.isJoinGroup = Number(_this.specArrList[k].isJoinGroup);
+          for (var k = 0; k < _this.priceList.length; k++) {
+            let specObj = _this.priceList[k];
+            let arr = {
+              id: specObj.priceId || null,
+              groupPrice: specObj.groupPrice,
+              invenId: specObj.id,
+              specificaIds: specObj.specificaIds,
+              isJoinGroup: Number(specObj.isJoin)
+            };
             _speciList.push(arr);
+            if (k == 0) {
+              groupBuy.gPrice = specObj.groupPrice;
+            }
           }
           let param = {};
           param["groupBuy"] = groupBuy;
@@ -345,22 +349,22 @@ export default {
           let myData = data.data;
           _this.ruleForm = myData;
           _this.ruleForm.gStartTime = [myData.gStartTime, myData.gEndTime];
-          console.log(_this.ruleForm, "table");
           if (data.data.gMaxBuyNum === 0) {
             _this.off = false;
           } else {
             _this.off = true;
-          } 
+          }
           _this.boxData = {
             id: myData.productId,
             pro_price: myData.proPrice,
             pro_name: myData.proName,
             image_url: data.imgUrl + myData.imageUrl,
-            stockTotal: myData.proStockTotal,
-            choicePro: myData.productId
+            stockTotal: myData.proStockTotal
           };
-
-          // this.$refs.ruleForm.validate(valid => {}); //重新验证
+          _this.ruleForm.choicePro = myData.productId;
+          if (myData.isSpecifica == 1) {
+            _this.getSpecificaByProId(myData.productId);
+          }
         }
       });
     },
@@ -383,13 +387,29 @@ export default {
             };
             _this.$set(_this.specificesList, _this.specificesList.length, obj);
           }
+          let formPriceList = _this.ruleForm.priceList;
           _this.priceList.forEach((price, index) => {
             price.isJoin = price.isJoin || true;
+            if (formPriceList != null && formPriceList.length > 0) {
+              price.isJoin = false;
+              for (let j = 0; j < formPriceList.length; j++) {
+                let priceObj = formPriceList[j];
+                if (priceObj.specificaIds == price.specificaIds) {
+                  // console.log(priceObj, "priceObj");
+                  price.priceId = priceObj.id;
+                  price.groupPrice = priceObj.groupPrice;
+                  if (priceObj.isJoinGroup == 1) {
+                    price.isJoin = true;
+                  }
+                  break;
+                }
+              }
+            }
             //  price.groupPrice =  price.groupPrice || 0;
             _this.$set(_this.priceList, index, price);
           });
-          console.log(_this.specificesList, "22222222");
-          console.log(_this.priceList, "22222222");
+          // console.log(_this.specificesList, "22222222");
+          // console.log(_this.priceList, "22222222");
         }
       });
     }

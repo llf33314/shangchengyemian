@@ -33,9 +33,9 @@
         </div>
     </div>
     <div class="dialog-list shop-textr">
-        <el-button type="primary" v-if="dialogType == 'success'">继续新建</el-button>
-        <el-button type="primary" @click="dialogConfirm" v-else>确定</el-button>
-        <el-button @click="handleClose()">取消</el-button>
+        <el-button type="primary" v-if="dialogType == 'success'"  style="float:none">继续新建</el-button>
+        <el-button type="primary" @click="dialogConfirm" v-else style="float:none">确定</el-button>
+        <el-button @click="handleClose()"  style="float:none">取消</el-button>
     </div>
 </el-dialog> 
 </template>
@@ -115,6 +115,8 @@ export default {
   }  
 </script>
 
+<style lang="less">
+</style>
 <style lang="less" scoped>
 @import '../assets/css/base.less';
 .el-dialog{
