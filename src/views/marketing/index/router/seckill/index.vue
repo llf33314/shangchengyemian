@@ -19,7 +19,7 @@
               <el-option label="已失效" :value="-2"></el-option>
             </el-select>
           </el-col>
-          <el-col :span="12" class="shop-textr">
+          <el-col :span="12" class="shop-textr" v-if="tableData.videourl != null">
             <a :href="tableData.videourl">
               <el-button type="warning"><i class="iconfont icon-cplay1"></i>视频教程</el-button>
             </a>
@@ -29,8 +29,8 @@
         <el-button type="primary" style="margin-top: 20px;" @click="jumpRouter('/addSeckill/0')">新建秒杀</el-button>
         <!-- </router-link> -->
       </div>
-      <div class="group-content" v-if="tableData.page.rowCount > 0">
-        <el-table :data="tableData.page.subList" style="width: 100%">
+      <div class="group-content" v-if="(tableData.page != null && tableData.page.subList != null) || loading" >
+        <el-table v-loading.body="loading" element-loading-text="拼命加载中" :data="tableData.page.subList" style="width: 100%" >
           <el-table-column
             prop="sname"
             label="活动名称">
@@ -62,13 +62,14 @@
                 @click="jumpRouter('/addSeckill/'+scope.row.id)">编辑</el-button>
               <el-button size="small" class="buttonBlue" v-if="scope.row.status == 0 || (scope.row.status == 1 && scope.row.joinId == '')" 
                 @click="InvalidData(scope.row.id)">失效</el-button>
-              <el-button size="small" class="buttonBlue" @click="preview(scope.row.twoCodePath)">预览</el-button>
+              <el-button size="small" class="buttonBlue" v-if="scope.row.status == 1 || scope.row.status == 0" 
+                @click="preview(scope.row)">预览</el-button>
               <el-button size="small" @click="deleteData(scope.row.id)" 
                 v-if="scope.row.status != 1">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
-        <div class="shop-textr">
+        <div class="shop-textr"  v-if="tableData.page.pageCount > 1">
           <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
@@ -85,121 +86,141 @@
 </template>
 
 <script>
-
-import Lib from 'assets/js/Lib';
-import contentNo from 'components/contentNo';
+import Lib from "assets/js/Lib";
+import contentNo from "components/contentNo";
 export default {
   components: {
     contentNo
   },
-  data () {
+  data() {
     return {
-      contentNo:'gruop',
-      value: '',
-      tableData: [],
-      pageNum: 1 ,
-      type:'',
-      path:'',
-      imgUrl:'',
-    }
+      contentNo: "seckill",
+      value: "",
+      tableData: {
+        page: {
+          rowCount: {}
+        }
+      },
+      pageNum: 1,
+      type: "",
+      path: "",
+      imgUrl: "",
+      webPath: "", //手机端域名
+      loading: true
+    };
   },
   methods: {
     handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
-        this.mallSeckillList(val);
+      console.log(`每页 ${val} 条`);
+      this.mallSeckillList(val);
     },
     handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
-        this.mallSeckillList(val);
+      console.log(`当前页: ${val}`);
+      this.mallSeckillList(val);
     },
-    InvalidData(id){//使失效事件
-      let _this= this;
-      let msg ={
-        'dialogTitle':'您确定要将此团购活动失效吗？',//文本标题
-        'dialogMsg': '失效后不能再进行团购',//文本内容
-        'callback': {
-          'btnOne': function(){
-              _this.mallSeckillDelete(id,-2);
+    InvalidData(id) {
+      //使失效事件
+      let _this = this;
+      let msg = {
+        dialogTitle: "您确定要将此团购活动失效吗？", //文本标题
+        dialogMsg: "失效后不能再进行团购", //文本内容
+        callback: {
+          btnOne: function() {
+            _this.mallSeckillDelete(id, -2);
           }
         }
-      }
-      _this.$root.$refs.dialog.showDialog(msg);   
+      };
+      _this.$root.$refs.dialog.showDialog(msg);
     },
-    deleteData(id){//删除事件
-      let _this= this;
-      let msg ={
-        'dialogTitle':'您确定要删除此团购活动吗？',//文本标题
-        'dialogMsg': '',//文本内容
-        'callback': {
-          'btnOne': function(){
-              _this.mallSeckillDelete(id,-1);
+    deleteData(id) {
+      //删除事件
+      let _this = this;
+      let msg = {
+        dialogTitle: "您确定要删除此团购活动吗？", //文本标题
+        dialogMsg: "", //文本内容
+        callback: {
+          btnOne: function() {
+            _this.mallSeckillDelete(id, -1);
           }
         }
-      }
-      _this.$root.$refs.dialog.showDialog(msg);   
+      };
+      _this.$root.$refs.dialog.showDialog(msg);
     },
-    mallSeckillList(pageNum){//秒杀列表
-      let _this= this;
+    mallSeckillList(pageNum) {
+      //秒杀列表
+      let _this = this;
       _this.ajaxRequest({
-        'url': DFshop.activeAPI.mallSeckillList_post,
-        'data':{
-          curPage : pageNum,
-          type : _this.type  
+        url: DFshop.activeAPI.mallSeckillList_post,
+        data: {
+          curPage: pageNum,
+          type: _this.type
         },
-        'success':function (data){
-           _this.tableData = data.data;
-           _this.path = data.path;
-           _this.imgUrl = data.imgUrl;
-           $.each(_this.tableData.page.subList,function(i){
-             let oldTime = this.createTime;
-             this.createTime = Lib.M.format(oldTime);
-           });
+        success: function(data) {
+          _this.tableData = data.data;
+          _this.path = data.path;
+          _this.webPath = data.webPath;
+          _this.imgUrl = data.imgUrl;
+          _this.loading = false;
+          $.each(_this.tableData.page.subList, function(i) {
+            let oldTime = this.createTime;
+            this.createTime = Lib.M.format(oldTime);
+          });
         }
       });
     },
-    search(){
+    search() {
+      this.loading = true;
       this.mallSeckillList(1);
     },
-    mallSeckillDelete(id,delType){//删除、使失效方法
-      let _this= this;
+    mallSeckillDelete(id, delType) {
+      //删除、使失效方法
+      let _this = this;
       _this.ajaxRequest({
-        'url': DFshop.activeAPI.mallSeckillDelete_post,
-        'data':{
-          id : id,
-          type : delType  
+        url: DFshop.activeAPI.mallSeckillDelete_post,
+        data: {
+          id: id,
+          type: delType
         },
-        'success':function (data){
+        success: function(data) {
           _this.mallSeckillList(_this.tableData.page.curPage);
-           //console.log(data.data)
+          //console.log(data.data)
         }
       });
     },
-    preview(imgUrl){
+    preview(obj) {
       let _this = this;
-      let msg ={
-        'title':'',
-        'imgUrl':_this.imgUrl+imgUrl,
-        'urlQR': '',
-        'pageLink': _this.path+'/views/marketing/index.html#/'
-      }
+      let msg = {
+        title: "预览",
+        urlQR: "",
+        path: _this.webPath,
+        pageLink:
+          "/goods/details/" +
+          obj.shopId +
+          "/" +
+          obj.userId +
+          "/3/" +
+          obj.productId +
+          "/" +
+          obj.id
+      };
       _this.$root.$refs.dialogQR.showDialog(msg);
     }
   },
-  mounted(){
+  mounted() {
     this.mallSeckillList(1);
   }
-}
+};
 </script>
 
 <style lang="less" scoped>
-.index-shopInfo{
+.index-shopInfo {
   font-size: 13px;
 }
-.group-content{
+.group-content {
   width: 100%;
   padding: 30px 63px;
 }
-.shop-textr{
+.shop-textr {
   margin-top: 20px;
 }
 </style>

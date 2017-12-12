@@ -10,7 +10,7 @@
     <div class="addGruop-main">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
             <el-form-item label="所属店铺 :" prop="shopId" required>
-                <el-select v-model="ruleForm.shopId" v-bind:disabled="disabledShop" placeholder="请选择店铺" class="addGruop-input">
+                <el-select v-model="ruleForm.shopId" v-bind:disabled="disabledShop" placeholder="请选择店铺" class="addGruop-input"  @change="changeShop">
                     <el-option :label="option.sto_name" :value="option.id" :key="option.id" v-for="option in shopList">
                     </el-option>
                 </el-select>
@@ -29,7 +29,6 @@
                 <el-input v-model="ruleForm.gPrice" class="addGruop-input" >
                     <template slot="prepend">¥</template>
                 </el-input>
-                <p class="p-warn">0/8</p>
             </el-form-item>
             <div class="specificaPrices"  v-if="ruleForm.isSpecifica == 1">
               <el-form-item label="团购价 :" required >
@@ -38,7 +37,7 @@
             </div>
              <!-- range-separator="至"  start-placeholder="开始日期"  end-placeholder="结束日期" -->
             <el-form-item label="活动时间 :" prop="gStartTime" required>
-                <el-date-picker v-model="ruleForm.gStartTime" type="datetimerange" align="right"
+                <el-date-picker v-model="ruleForm.gStartTime" type="datetimerange" align="right" :editable="false"
                   placeholder="请选择活动时间" :picker-options="pickerOptions1">
                 </el-date-picker>
             </el-form-item>
@@ -109,7 +108,7 @@ export default {
       let reg = /^[0-9]{1,5}(\.\d{1,2})?$/;
       if (value === "") {
         return callback(new Error("团购价不能为空"));
-      } else if (!reg.test(value) || value == 0) {
+      } else if (!reg.test(value) || value <= 0) {
         return callback(new Error("团购价最多只能是大于0的5位数"));
       } else {
         callback();
@@ -123,8 +122,7 @@ export default {
       }
     };
     var formChoicePro = (rule, value, callback) => {
-      console.log(this.boxData.id, "this.boxData.id", this.ruleForm.choicePro);
-      if (this.boxData.id === undefined || this.boxData.id === "") {
+      if (this.boxData == null) {
         return callback(new Error("请选择活动商品"));
       } else {
         callback();
@@ -210,14 +208,17 @@ export default {
         choicePro: [
           { validator: formChoicePro, trigger: "change", message: "请选择活动商品" }
         ],
-        gMaxBuyNum: [{ validator: formMaxBuyNum, trigger: "blur" }]
+        gMaxBuyNum: [
+          { validator: formMaxBuyNum, trigger: "blur", message: "请输入限购人数" }
+        ]
       },
       shopList: [],
-      boxData: {},
+      boxData: null,
       specificesList: [],
       priceList: [],
       specArrList: [],
-      disabledShop: ""
+      disabledShop: "",
+      selectShopId: 0
     };
   },
   watch: {
@@ -229,6 +230,22 @@ export default {
     }
   },
   methods: {
+    //改变店铺，清空选择的商品
+    changeShop(val) {
+      //重新选择店铺清空选择的商品和规格
+      if (this.selectShopId > 0 && this.ruleForm.productId > 0) {
+        this.selectShopId = this.ruleForm.shopId;
+        this.isChoicePro = true;
+        this.isReplacePro = false;
+        this.specificesList = [];
+        this.priceList = [];
+        this.boxData = null;
+        this.ruleForm.choicePro = null;
+        this.ruleForm.isSpecifica = 0;
+        this.ruleForm.productId = null;
+        this.$refs.ruleForm.validate(valid => {});
+      }
+    },
     /**
      * 选中商品事件
      */
@@ -275,24 +292,37 @@ export default {
             gPrice: formData.gPrice //活动价
           };
           if (formData.id != null || formData.id != "") {
-            groupBuy.id = formData.id;
+            groupBuy.id = formData.id || null;
           }
           if (!_this.off) {
             groupBuy.gMaxBuyNum = 0;
           }
           let _speciList = [];
-          for (var k = 0; k < _this.priceList.length; k++) {
-            let specObj = _this.priceList[k];
-            let arr = {
-              id: specObj.priceId || null,
-              groupPrice: specObj.groupPrice,
-              invenId: specObj.id,
-              specificaIds: specObj.specificaIds,
-              isJoinGroup: Number(specObj.isJoin)
-            };
-            _speciList.push(arr);
-            if (k == 0) {
-              groupBuy.gPrice = specObj.groupPrice;
+          let isJoin = false;
+          if (_this.ruleForm.isSpecifica == 1) {
+            for (var k = 0; k < _this.priceList.length; k++) {
+              let specObj = _this.priceList[k];
+              let arr = {
+                id: specObj.priceId || null,
+                groupPrice: specObj.activityPrice,
+                invenId: specObj.id,
+                specificaIds: specObj.specificaIds,
+                isJoinGroup: Number(specObj.isJoin)
+              };
+              if (specObj.isJoin) {
+                isJoin = true;
+              }
+              _speciList.push(arr);
+              if (k == 0) {
+                groupBuy.gPrice = specObj.activityPrice;
+              }
+            }
+            if (!isJoin) {
+              _this.$message({
+                message: "您还没选择要参与团购的的规格",
+                type: "warning"
+              });
+              return;
             }
           }
           let param = {};
@@ -395,9 +425,8 @@ export default {
               for (let j = 0; j < formPriceList.length; j++) {
                 let priceObj = formPriceList[j];
                 if (priceObj.specificaIds == price.specificaIds) {
-                  // console.log(priceObj, "priceObj");
                   price.priceId = priceObj.id;
-                  price.groupPrice = priceObj.groupPrice;
+                  price.activityPrice = priceObj.groupPrice;
                   if (priceObj.isJoinGroup == 1) {
                     price.isJoin = true;
                   }
@@ -416,14 +445,6 @@ export default {
   },
   mounted() {
     let _this = this;
-    if (_this.$route.params.id != 0) {
-      _this.disabledShop = true;
-      _this.mallGroupBuyInfo(_this.$route.params.id);
-      _this.isReplacePro = true;
-    } else {
-      _this.disabledShop = false;
-      _this.isChoicePro = true;
-    }
 
     _this.storeList({
       success(data) {
@@ -438,6 +459,15 @@ export default {
         }
       }
     });
+
+    if (_this.$route.params.id != 0) {
+      _this.disabledShop = true;
+      _this.mallGroupBuyInfo(_this.$route.params.id);
+      _this.isReplacePro = true;
+    } else {
+      _this.disabledShop = false;
+      _this.isChoicePro = true;
+    }
   }
 };
 </script>

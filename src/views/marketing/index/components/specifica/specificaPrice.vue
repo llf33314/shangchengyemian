@@ -1,21 +1,21 @@
 <template>
-    <div class="spec_tab_main" v-if="specificesList != null && rowList != null">
+    <div class="spec_tab_main" v-if="specificesList != null && rowList != null && rowList.length > 0">
         <el-form :model="ruleForm" :rules="rules"  ref="ruleForm" label-width="100px" class="demo-ruleForm">
         <table border="1" cellspacing="0" cellpadding="0" width="100%" class="order_tab">
             <tbody>
             <tr class="order_tab_header">
                 <th width="15%" v-for="(spec,index) in specificesList" :key="index">{{spec.specificaName}}</th>
                 <th width="15%">原价</th>
-                <th width="15%">拼团价</th>
+                <th width="15%">{{tipMsg || "拼团"}}价</th>
                 <th width="18%">库存</th>
-                <th width="11%">参与团购</th>
+                <th width="11%">参与{{tipMsg || "团购"}}</th>
             </tr>
             <tr v-for="(row , index) in ruleForm.rowList" :key="index">
                 <td class="text-overflow" v-for="(value,index2) in row.specList" :key="index2">{{value.specificaValue}}</td>
                 <td class="text-overflow" >{{row.invPrice}}</td>
                 <td>
                     <el-form-item 
-                        :prop="'rowList.'+index+'.groupPrice'"
+                        :prop="'rowList.'+index+'.activityPrice'"
                         label-width="0"
                         inline
                         class="newgroup"
@@ -23,14 +23,14 @@
                             { required: true, message: '请输入价格'},
                             { type: 'number',min:0.01,max:99999.99, message: '价格最多只能是大于0的5位小数'}
                         ]">
-                        <el-input class="addGruop-input" style="width:130px" v-model.number="row.groupPrice" @blur="changeData" >
+                        <el-input class="addGruop-input" style="width:130px" v-model.number="row.activityPrice" @blur="changeData" >
                             <template slot="prepend">¥</template>
                         </el-input>
                     </el-form-item>
                 </td>
                 <td class="text-overflow" >{{row.invNum}}</td>
                 <td >
-                    <el-checkbox v-model="row.isJoin" @change="changeData"></el-checkbox><span>设为参团</span>
+                    <el-checkbox v-model="row.isJoin" @change="changeData(row,index)" :label="'设为'+(tipMsg || '参团')"></el-checkbox>
                 </td>
             </tr>
             <tr class="p-tr">
@@ -57,6 +57,9 @@ export default {
     },
     specificesList: {
       type: Array
+    },
+    tipMsg: {
+      type: String
     }
   },
   data: function() {
@@ -72,18 +75,21 @@ export default {
   watch: {
     rowList(a, b) {
       this.ruleForm.rowList = this.rowList;
+      console.log(this.ruleForm.rowList, this.rowList);
     }
   },
   mounted() {},
   methods: {
-    changeData() {
+    changeData(obj, index) {
+      this.$set(this.ruleForm.rowList, index, obj);
+
       let list = this.ruleForm.rowList;
       let isTrue = true;
       for (let i = 0; i < list.length; i++) {
         let obj = list[i];
         if (obj.isJoin) {
           let reg = /^[0-9]{1,5}(\.\d{1,2})?$/;
-          let value = obj.groupPrice;
+          let value = obj.activityPrice;
           if (value === "" || !reg.test(value) || value == 0) {
             isTrue = false;
             break;
@@ -122,7 +128,7 @@ export default {
       let list = this.ruleForm.rowList;
       for (let i = 0; i < list.length; i++) {
         let obj = list[i];
-        obj.groupPrice = price;
+        obj.activityPrice = price;
         this.$set(list, i, obj);
       }
     }

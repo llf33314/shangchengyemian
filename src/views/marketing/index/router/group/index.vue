@@ -29,8 +29,8 @@
         <el-button type="primary" style="margin-top: 20px;" @click="jumpRouter('/addgroup/0')">新建团购</el-button>
         <!-- </router-link> -->
       </div>
-      <div class="group-content" v-if="tableData.page.rowCount > 0">
-        <el-table :data="tableData.page.subList" style="width: 100%">
+      <div class="group-content"  v-if="(tableData.page != null && tableData.page.subList != null) || loading">
+        <el-table  v-loading.body="loading" element-loading-text="拼命加载中" :data="tableData.page.subList" style="width: 100%">
           <el-table-column prop="gname" label="活动名称">
           </el-table-column>
           <el-table-column prop="shopName"  label="所属店铺">
@@ -58,13 +58,14 @@
                 @click="jumpRouter('/addgroup/'+scope.row.id)">编辑</el-button>
               <el-button size="small" class="buttonBlue" v-if="scope.row.status == 0 || (scope.row.status == 1 && scope.row.joinId == '')" 
                 @click="InvalidData(scope.row.id)">失效</el-button>
-              <el-button size="small" class="buttonBlue" @click="preview(scope.row.twoCodePath,scope.row)">预览</el-button>
+              <el-button size="small" class="buttonBlue" v-if="scope.row.status == 1 || scope.row.status == 0" 
+               @click="preview(scope.row.twoCodePath,scope.row)">预览</el-button>
               <el-button size="small" @click="deleteData(scope.row.id)" 
                 v-if="scope.row.status != 1">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
-        <div class="shop-textr">
+        <div class="shop-textr" v-if="tableData.page.pageCount > 1">
           <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
@@ -96,8 +97,9 @@ export default {
       pageNum: 1,
       type: "",
       path: "",
-      webPath:"",//手机端域名
-      imgUrl: ""
+      webPath: "", //手机端域名
+      imgUrl: "",
+      loading: true
     };
   },
   methods: {
@@ -148,6 +150,7 @@ export default {
           _this.path = data.path;
           _this.webPath = data.webPath;
           _this.imgUrl = data.imgUrl;
+          _this.loading = false;
           $.each(_this.tableData.page.subList, function(i) {
             let oldTime = this.createTime;
             this.createTime = Lib.M.format(oldTime);
@@ -156,6 +159,7 @@ export default {
       });
     },
     search() {
+      this.loading = true;
       this.mallGroupBuyList(1);
     },
     mallGroupBuyDelete(id, delType) {
@@ -172,14 +176,22 @@ export default {
         }
       });
     },
-    preview(imgUrl,obj) {
+    preview(imgUrl, obj) {
       let _this = this;
-      console.log(obj,"obj",_this.imgUrl + imgUrl)
+      console.log(obj, "obj", _this.imgUrl + imgUrl);
       let msg = {
         title: "预览",
         urlQR: "",
-        path:_this.webPath,
-        pageLink:  "/goods/details/"+obj.shopId+"/"+obj.userId+"/1/"+obj.productId+"/"+obj.id
+        path: _this.webPath,
+        pageLink:
+          "/goods/details/" +
+          obj.shopId +
+          "/" +
+          obj.userId +
+          "/1/" +
+          obj.productId +
+          "/" +
+          obj.id
       };
       _this.$root.$refs.dialogQR.showDialog(msg);
     }
