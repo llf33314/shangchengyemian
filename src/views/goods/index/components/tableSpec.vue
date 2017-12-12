@@ -3,12 +3,13 @@
         <div class="table-spec-box" v-if="specList.length>0" v-for="(item,index) in specList" :key="index">
             <div class="table-spec-title">
                 <div class="table-inline">
+                    
                     <el-select
                         v-model="item.specNameId"
                         filterable
                         allow-create
                         placeholder="关键词"
-                        @change="selectedSpec1(item.specNameId,index,item)">
+                        @change="selectedSpec1(item.specNameId,index)">
                         <el-option
                             v-for="(test,i) in listData"
                             :key="i"
@@ -17,7 +18,7 @@
                         </el-option>
                     </el-select>
                     <i class="el-icon-circle-close"
-                        @click="specList.splice(index, 1)"> 
+                        @click.self="removeList(index)"> 
                         </i>
                 </div>
                 <div class="table-inline" v-if="index === 0">
@@ -25,17 +26,18 @@
                 </div>
             </div>
             <div class="table-spec-option" >
-                <div class="table-inline" v-for=" (test,i) in item.specValues" :key="i">
+                <div class="table-inline" v-for=" (test,i) in item.specValues" :key="i" >
                     <div class="item-selected">
                         {{test.specValue}}
-                        <i @click="remove(index)" class="el-icon-circle-close"></i>
+                        <i @click="remove(index,i)" class="el-icon-circle-close"></i>
                     </div>
-                    <div class="table-img" v-if="isAddImg && index === 0 && test.specImage != ''" >
-                        <gt-material :img="imgUrl+test.specImage"></gt-material>
+                    <div class="table-img" v-if="isAddImg && index === 0" >
+                        <gt-material v-if="isAddImg":img="imgUrl+test.specImage"></gt-material>
+                        <gt-material v-else></gt-material>
                     </div>
                 </div>
                 <div class="table-inline fontBlue table-spec-add"
-                     style="padding-left:15px;" >
+                     style="padding-left:15px;">
                     <span @click="showAddoption(item.specNameId,index)">+添加</span>
                     <div class="table-spec-add-option" v-if="index === isShowAdd">
                         <el-select
@@ -51,11 +53,11 @@
                                 :value="i">
                             </el-option>
                         </el-select>
-                        <el-button type="primary" @click="addoptions(value10)">确定</el-button>
+                        <el-button type="primary" @click="addoptions(selectedSpec,index)">确定</el-button>
                         <el-button @click="isShowAdd='';selectedSpec =''">取消</el-button>
                     </div>
                 </div>
-                <p v-if="!isAddImg && index === 0">目前只支持为第一个规格设置不同的规格图片 设置后，用户选择不同规格会显示不同图片 建议尺寸：640 x 640像素</p>
+                <p v-if="isAddImg && index === 0">目前只支持为第一个规格设置不同的规格图片 设置后，用户选择不同规格会显示不同图片 建议尺寸：640 x 640像素</p>
             </div>
         </div>
         <div class="table-spec-button"  v-if=" specList.length<3">
@@ -87,12 +89,10 @@ export default {
             isAddImg:false,//添加规格图片
             isShowAdd:'',//添加显示
             selectedSpec:[],//分组选择暂存
-            aaaa:'',
+            flag: true,
             nameList:[],
 
 
-
-            flag:false,
             fromSelected:{//选中的内容
                 shop: '',//店铺
                 grouping: [],//分组
@@ -109,15 +109,18 @@ export default {
         'row'(a){
             this.specList = a;
         },
-        'specList'(a,b){
-            console.log(a,b,'----------');
+        'nameList'(a,b){
+            console.log(a,b,'-----nameList-----');
+        },
+        'listData'(a,b){
+            console.log(a,b,'有新增規格');
+            //this.flag = false;
         }
     },
     mounted() {
         let _this = this;
         this.specList = this.row;
         this.specList[0].specValues.forEach((item,i) => {
-            console.log(item,"item")
             if(item.specImage != null){
                 _this.isAddImg = true;
             }
@@ -125,8 +128,7 @@ export default {
         this.specList.forEach((item,i)=>{
             _this.$set(_this.nameList,_this.nameList.length,item.specNameId);
         });
-        console.log(this.specList,'this.specList');
-        this.specificaList()
+        _this.specificaList();
     },
     methods: {
         /** 
@@ -145,23 +147,24 @@ export default {
                     shopId: _this.shopId
                 },
                 'success':function (data){
-                    
+
                     if(id == null){
                         //总列表
                         _this.listData = data.data;
                         _this.imgUrl = data.imgUrl;
                         console.log(data,'总规格列表');
+
                     }else{
                         //分类表
                         console.log(data,'分组规格列表',id);
                         _this.specList.forEach((item,i)=>{
+                            //对应规格列表 添加 分组下的所有规格（all_specList）方便后期添加排重对比
                             if(item.specNameId == id){
                                 item.all_specList = data.data;
-                                _this.$set(_this.specList,i,item)
+                                _this.$set(_this.specList,i,item);
                                 
                             }
                         })
-                        console.log(_this.specList,'新_this.specList')
                     }
                 }
             });
@@ -169,50 +172,92 @@ export default {
         /** 
          * 总规格选中
          */
-        selectedSpec1(val,index){
-            console.log(10);
+        selectedSpec1(val,index,i){
             let _this = this;
+            console.log(val,index,'aaaa',i);
+            
+            if(!this.flag){
+                if(_this.nameList.length == index+1){
+                    this.flag = true;
+                }
+                return;
+            }
+            
             let isAdd = true;
             //排重
             if(_this.nameList != null && _this.nameList.length > 0){
                 for(let k = 0; k < _this.nameList.length ;k++){
+
                     if(_this.nameList[k] == val){
                         //重新对应返回原值
-                        //拿到规格改变对应的值
-                        let changeData = _this.specList[index];
-                        for(let j in _this.listData){
-                            //遍历总规格列表里的属性值和改变值相等，赋值原来的改变值;
-                            if(_this.listData[j] == changeData.specName){
-                                changeData.specNameId = Number(j);
-                                //this.$set(_this.specList,i,item);
-                            }
-                        }
+                        isAdd = false;
+                        //重复提示
                         _this.$message({
                             message: '请不要重复添加',
                             type: 'warning'
                         });
-                        isAdd = false;
+                        //拿到规格改变对应的值
+                        
+                        let changeData = _this.specList[index];
+                        for(let j in _this.listData){
+                            //遍历总规格列表里的属性值和改变值相等，赋值原来的改变值;
+                            if(_this.listData[j] == changeData.specName){
+                                _this.specList[index].specNameId = Number(j);
+                                _this.$set(_this.specList,index,changeData);
+                            }
+                        }
                     } 
                 }
             }
             //新增
             if(isAdd){
-                console.log('不重复新增');
-                let newId = '';
-                for(let j in _this.listData){
-                    if(j == val){
-                        newId = j;
+                
+                let newId = '';//新增id
+                let newName = '';//新增id
+                let index2  = 0;
+                let _isAdd = true;
+                //总规格中有对应新增
+                for(let k in _this.listData){
+                    if(k == val && _isAdd){
+                        newId = k;
+                        newName = _this.listData[k];
+                        _isAdd = false;
                     }
+                    index2 = k;
                 }
+                //无对应新增
+                if(_isAdd){
+                    newId = index2 + 1;
+                    newName = val
+                    _this.$set(_this.listData,newId,val);
+                    //新增自定义规格
+                    /*
+                    *新增名称
+                    * @param  type: 1 规格 2参数
+                    * @param  specName:名称
+                    * @param  shopId: 店铺ID
+                    * */
+
+                    // _this.addSpecifica(1,{
+                    //     type:1,
+                    //     specName: newName,
+                    //     shopId: _this.shopId
+                    // },index)
+                }
+                
+                //添加新增
                 let newData={
                     erpNameId: _this.specList[index].erpNameId,
                     productId: _this.specList[index].productId,
-                    specName:  val,
-                    specNameId: Number(newId),
+                    specName:  newName,
+                    specNameId:Number(newId),
                     specValues:[]
                 }
                 
+                this.isAddImg = false;
+
                 this.$set(_this.specList,index,newData);
+                this.$set(_this.nameList,index,Number(newId));
             }
             
         },
@@ -221,7 +266,7 @@ export default {
          */
         selectedSpec2(val,index){
             let _this = this;
-            console.log(val,'分---------',index);
+            console.log(_this.specList[index])
             let flag = true;
             val.forEach((item,i)=>{
                 //排重
@@ -238,10 +283,19 @@ export default {
                     
                 })
                 //新增
-                console.log(item)
-                if(!_this.specList[index].all_specList.hasOwnProperty(item) && flag){
-                    console.log('新增');
 
+                if(!_this.specList[index].all_specList.hasOwnProperty(item) && flag && val.length>0){
+                    /*
+                    *新增名称
+                    * @param  type: 1 规格 2参数
+                    * @param specValue  值
+                    * @param specId: 名称ID
+                    * */
+                    // this.addSpecifica(2,{
+                    //     type:1,
+                    //     specValue: item.toString(),
+                    //     specId: _this.specList[index].specNameId
+                    // },index)
                 }
             })
             
@@ -268,13 +322,23 @@ export default {
          * @param specId: 名称ID
 
          */
-        addSpecifica(type,data){
+        addSpecifica(type,opt,index){
             let _this = this;
             _this.ajaxRequest({
-                'url': DFshop.activeAPI.mallProductaddSpecifica_post,
-                'data':data,
+                'url': DFshop.activeAPI.mallProductSpecaddSpecifica_post,
+                'data':opt,
                 'success':function (data){
-
+                    if(type == 1){
+                        //规格    
+                        _this.specificaList();
+                        // _this.specList[index].specName = _this.specList[index].specNameId;
+                        // _this.specList[index].specNameId = data.data;
+                        console.log(_this.specList[index],'1111');
+                    }
+                    if(type == 2){
+                        //参数
+                        _this.specificaList(opt.specId);
+                    }
                 }
             });
         },
@@ -290,24 +354,50 @@ export default {
                 specValues:[]
             }
             this.specList.push(data);
-           
         },
         /** 
          * 删除规格行列
          */
         removeList(index) {
             this.specList.splice(index, 1);
+            this.nameList.splice(index, 1);
+            if(this.nameList.length > 0){
+                this.flag = false;
+            }
         },
-
-
-        addoptions(data){
-            this.options.push(data);
-            console.log(this.options);
-            console.log(data);
+        /** 
+         * 删除分组规格
+         */
+        remove(index,i){
+            let _this = this;
+            this.specList[index].specValues.splice(i, 1);
         },
-        remove: function (index) {
-            this.options.splice(index, 1);
-        }
+        /** 
+         * 选择分组下规格
+         */
+        addoptions(opt,index){
+            let _this = this;
+            //新增的集合
+            let _data = this.specList[index];
+            for(let i in _data.all_specList){
+                //对应的分类添加
+                opt.forEach((test,j)=>{
+                    if(i == test){
+                       let newData = _this.specList[index].specValues;
+                       let item ={
+                            erpValueId: null,        //进销存ID
+                            specValue:  _data.all_specList[i],     //规格值名称
+                            specValueId: i,      //规格值ID
+                            id: null,             //规格ID
+                            specImage: null
+                       }
+                        newData.push(item);
+                        _this.isShowAdd = false;
+                    }
+                })
+            }
+            _this.selectedSpec ="";//新增后清空
+        },
     }
 }
 </script>
