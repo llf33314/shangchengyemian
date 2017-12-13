@@ -9,7 +9,7 @@
     <div class="group-main">
       <div class="index-shopInfo">
         <el-row>
-          <el-col :span="12" >
+          <el-col :span="12"  >
             活动状态：
             <el-select v-model="type" placeholder="请选择" @change="search()">
               <el-option label="全部" :value="null"></el-option>
@@ -178,7 +178,7 @@ export default {
     },
     preview(imgUrl, obj) {
       let _this = this;
-      console.log(obj, "obj", _this.imgUrl + imgUrl);
+      // console.log(obj, "obj", _this.imgUrl + imgUrl);
       let msg = {
         title: "预览",
         urlQR: "",

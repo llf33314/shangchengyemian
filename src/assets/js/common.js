@@ -48,11 +48,11 @@ var Rxports = {
 	 *  数组去重复
 	 * @param arr 判断数组 false 不重复
 	 */
-	isRepeat(arr){
+	isRepeat(arr) {
 		var hash = {};
-		for(var i in arr) {
-			if(hash[arr[i]])
-				  return true;
+		for (var i in arr) {
+			if (hash[arr[i]])
+				return true;
 			hash[arr[i]] = true;
 		}
 		return false;
@@ -181,20 +181,20 @@ var Rxports = {
 		let moneyReg = /^\d{0,6}(.[0-9]{2})?$/;
 		return moneyReg.test(money);
 	},
-	format:function (value) {
-		if(value == "" ||value == undefined){
+	format: function (value) {
+		if (value == "" || value == undefined) {
 			return "";
 		}
-		let add0 = (m) => m<10?'0'+m:m;
+		let add0 = (m) => m < 10 ? '0' + m : m;
 		let time = new Date(value);
 		let y = time.getFullYear();
-		let m = time.getMonth()+1;
+		let m = time.getMonth() + 1;
 		let d = time.getDate();
 		let h = time.getHours();
 		let mm = time.getMinutes();
 		let s = time.getSeconds();
-		return y+'-'+add0(m)+'-'+add0(d)+' '+add0(h)+':'+add0(mm)+':'+add0(s);
-	  },
+		return y + '-' + add0(m) + '-' + add0(d) + ' ' + add0(h) + ':' + add0(mm) + ':' + add0(s);
+	},
 	/**
 	 * 校验身份证
 	 * @param {String} IDcard
@@ -283,6 +283,25 @@ var Rxports = {
 		if (day < 1 || day > iaMonthDays[month - 1])
 			return false
 		return true
+	},
+	/**
+	 * 验证中文字数长度 
+	 * val  验证值
+	 * maxLength 最大长度
+	 */
+	validateChineseLength: function (val, MaxLenght) {
+		var strlenght = 0; // 初始定义长度为0
+		var txtval = $.trim(val);
+		var regexCh = /[u00-uff]/;
+		// return !regexCh.test(str);
+		for (var i = 0; i < txtval.length; i++) {
+			if (!regexCh.test(txtval.charAt(i))) {
+				strlenght = strlenght + 2; // 中文为2个字符
+			} else {
+				strlenght = strlenght + 1; // 英文一个字符
+			}
+		}
+		return strlenght > MaxLenght ? false : true;
 	}
 };
 

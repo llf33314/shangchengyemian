@@ -42,13 +42,16 @@ Vue.mixin({
       },
       /*根据店铺id获取活动商品列表 */
       mallGroupBuyGetProduct(opt){
+
         this.ajaxRequest({
           'url': DFshop.activeAPI.mallGroupBuyGetProduct_post,
           'data':{
             defaultProId:opt.defaultProId,
             shopId:opt.shopId,
             proName:opt.proName,
-            curPage:opt.curPage
+            curPage:opt.curPage,
+            isCommission:opt.isCommission,
+            isIntegral:opt.isIntegral
           },
           'success':function (data){
               if(typeof opt.success == 'function') opt.success(data);

@@ -15,56 +15,55 @@
 </template>
 
 <script>
-import defaultImg from 'components/defaultImg';
+import defaultImg from "components/defaultImg";
 export default {
-    props:['boxdata'],
-    components:{
-        defaultImg
-    },
-    data() {
-        return  {
-            data:'',
-        }
-    },
-    methods:{
-
-    },
-    mounted(){
-        
-    }
-}
+  props: ["boxdata"],
+  components: {
+    defaultImg
+  },
+  data() {
+    return {
+      data: ""
+    };
+  },
+  watch: {
+    boxdata() {}
+  },
+  methods: {},
+  mounted() {}
+};
 </script>
 
 <style lang="less" scoped>
-@import '../../../../assets/css/mixins.less';
-.goods-box{
+@import "../../../../assets/css/mixins.less";
+.goods-box {
   width: 100%;
-  .goods-content{
+  .goods-content {
     width: 280px;
     height: 160px;
     border: 1px solid #bfcbd9;
     .border-radius(5px);
-    margin-bottom:10px; 
+    margin-bottom: 10px;
     padding: 10px;
   }
-  .goods-txt{
+  .goods-txt {
     color: #999;
     line-height: 1;
-    margin:10px 0; 
-    }
+    margin: 10px 0;
+  }
 }
-.Data-goods{
+.Data-goods {
   .ik-box;
   .ik-box-pack(justify);
   .ik-box-align(center);
   padding: 10px 0;
   line-height: 1;
-  .goods-img{
+  .goods-img {
     width: 56px;
     height: 56px;
     margin-right: 10px;
   }
-  .goods-name{
+  .goods-name {
     width: 128px;
     line-height: 1.5em;
   }

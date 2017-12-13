@@ -1,134 +1,151 @@
 /**公共样式*/
 
-[v-cloak]{
+[v-cloak] {
     display: none !important;
 }
+
 @import "./mixins.less";
 @import "./base.less";
-
-body{
+body {
     color: #333333;
 }
-.bg{
+
+.bg {
     background: #f4f4f4;
 }
+
+
 /*--------main---------*/
-.common-nav{
+
+.common-nav {
     width: 100%;
     padding: 16px 4%;
-    border:1px solid #eee;
-    font-size:14px; 
-    span{
-        &>span:first-child{
+    border: 1px solid #eee;
+    font-size: 14px;
+    span {
+        &>span:first-child {
             color: @blue;
         }
     }
-    span:last-child{
-        &>span:first-child{
+    span:last-child {
+        &>span:first-child {
             color: #666;
         }
     }
 }
-.shop-steps{
+
+.shop-steps {
     border-bottom: 1px solid #f3f3f3;
 }
-.shop-addSuccess{
+
+.shop-addSuccess {
     width: 100%;
     padding: 80px 0;
     text-align: center;
-    i{
+    i {
         font-size: 42px;
         color: #34d063;
         margin-bottom: 28px;
     }
-    p{
+    p {
         font-size: 16px;
         color: #666;
     }
 }
 
 //灰色header
-.index-shopInfo{
+.index-shopInfo {
     background: @bg-gray;
     padding: 20px 4%;
-    .shopInfo-img{
+    .shopInfo-img {
         width: 70px;
         height: 70px;
         float: left;
         margin-right: 35px;
     }
-    .shopInfo-content{
+    .shopInfo-content {
         float: left;
-        .shopInfo-name{
-            color: 16px; 
-            margin-bottom: 20px;   
+        .shopInfo-name {
+            color: 16px;
+            margin-bottom: 20px;
         }
-        .shopInfo-button{
+        .shopInfo-button {
             font-size: 0;
-            &>button:first-child{
-                margin-left:0;
+            &>button:first-child {
+                margin-left: 0;
             }
-            button{
-                margin-left:20px; 
+            button {
+                margin-left: 20px;
             }
         }
     }
 }
+
 //蓝色字体
-.fontBlue{
+.fontBlue {
     color: #20a0ff;
     margin-right: 5px;
 }
+
 //红色字体
-.fontRed{
+.fontRed {
     color: #ff4949;
 }
+
 //蓝色按钮
-.buttonBlue{
+.buttonBlue {
     border: 1px solid #20a0ff;
     color: #20a0ff;
-    &:hover{
+    &:hover {
         border: 1px solid #58B7FF;
         color: #58B7FF;
     }
 }
+
 //重置页头
-.index-wrapper{
-    .el-tabs__header{
+.index-wrapper {
+    .el-tabs__header {
         padding: 0 4%;
-        margin: 0 ; 
+        margin: 0;
     }
 }
-.shop-prompt{
+
+.shop-prompt {
     font-size: 12px;
     color: #bbbbbb;
 }
+
 //自定义验证 提示*号
-.icon-warn{
-    label
-    label::before{
+.icon-warn {
+    label label::before {
         content: '*';
         color: #ff4949;
         margin-right: 4px;
     }
 }
+
 //表单文本提示
-.p-warn{
+.p-warn {
     line-height: 1.5em;
     color: #999;
     font-size: 12px;
-    a{
+    a {
         color: @blue;
         cursor: pointer;
     }
 }
-.fs14{
+
+.fs14 {
     font-size: 14px;
 }
-.fs12{
+
+.fs12 {
     font-size: 12px;
 }
+
+
 /*-----common------*/
+
 .clearfix {
     zoom: 1;
     _zoom: 1;
@@ -142,40 +159,50 @@ body{
         visibility: hidden;
     }
 }
-.shop-fl{
+
+.shop-fl {
     float: left;
 }
+
 .shop-fr {
     float: right;
 }
-.shop-hide{
+
+.shop-hide {
     display: none;
 }
-.shop-show{
+
+.shop-show {
     display: block;
 }
-.shop-box{
+
+.shop-box {
     .ik-box;
 }
+
 .shop-inblock {
     display: inline-block;
 }
-.shop-box-center{
+
+.shop-box-center {
     .ik-box;
     .ik-box-pack(center);
     .ik-box-align(center);
 }
-.shop-box-justify{
+
+.shop-box-justify {
     .ik-box;
     .ik-box-pack(justify);
     .ik-box-align(center);
 }
-.overflow-x{
+
+.overflow-x {
     overflow: hidden;
     overflow-x: hidden;
 }
+
 //文本对齐
-.shop-textl{
+.shop-textl {
     text-align: left;
 }
 
@@ -186,6 +213,7 @@ body{
 .shop-textc {
     text-align: center;
 }
+
 //超出部分隐藏，并显示....
 .text-overflow {
     white-space: nowrap;
@@ -206,13 +234,12 @@ body{
 
 //多行超出部分隐藏 
 //(使用：距离不够可以手动添加伪类 padding 或 bottom 覆盖)
-.text-more-overflow{
+.text-more-overflow {
     overflow: hidden;
     position: relative;
     text-align: justify;
-    &::after{
-        content: " ... ";
-        //font-weight: bold;
+    &::after {
+        content: " ... "; //font-weight: bold;
         position: absolute;
         bottom: 1px;
         right: 0;
@@ -221,14 +248,36 @@ body{
     }
 }
 
-
 //颜色class
-.shop-red{
+.shop-red {
     color: @red;
 }
 
-
-
-
-
-
+//公用tab 仿饿了么样式
+.order_tab {
+    width: 100%;
+    border-color: #dfe6ec;
+    border: 1px solid #dfe6ec;
+    .order_tab_header {
+        width: 100%;
+        background: #eef1f6;
+    }
+    td,
+    th {
+        text-align: center;
+        border-right: 0;
+        border-left: 0;
+        padding: 10px 0;
+    }
+    tr:hover {
+        // transition: background-color .25s ease;
+        background: #eef1f6;
+    }
+    .dialog-list {
+        width: 100%;
+        margin-top: 25px;
+        &>span {
+            margin-right: 28px;
+        }
+    }
+}

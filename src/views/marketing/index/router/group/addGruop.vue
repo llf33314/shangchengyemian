@@ -15,7 +15,7 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="活动商品 :" prop="choicePro" required>
+            <el-form-item label="活动商品 :" prop="productId" required>
                 <el-button type="primary" @click="showDialog" v-if="isChoicePro">选择商品</el-button>
                 <goods-box :boxdata="boxData" v-if="isReplacePro"></goods-box>
                 <el-button type="primary" @click="showDialog" v-if="isReplacePro">替换商品</el-button>
@@ -43,7 +43,7 @@
             </el-form-item>
             <el-form-item label="参团人数 :" prop="gPeopleNum" required>
                 <el-input  v-model="ruleForm.gPeopleNum" class="addGruop-input"></el-input>
-                <p class="p-warn">0/8</p>
+                <p class="p-warn">1/8</p>
             </el-form-item>
             <el-form-item label="商品限购 :">
                 <el-switch on-text="开启" off-text="关闭" v-model="off"></el-switch>
@@ -83,6 +83,8 @@ export default {
     var formGname = (rule, value, callback) => {
       if (value == "") {
         return callback(new Error("活动名称不能为空"));
+      } else if (!Lib.M.validateChineseLength(value, 100)) {
+        return callback(new Error("最多可输入50位汉字或100位字符"));
       } else {
         callback();
       }
@@ -132,6 +134,9 @@ export default {
       setJoinGroup: [],
       table: [],
       pickerOptions1: {
+        disabledDate(time) {
+          return time.getTime() < Date.now() - 8.64e7;
+        },
         shortcuts: [
           {
             text: "今天",
@@ -202,10 +207,14 @@ export default {
           }
         ],
         gPeopleNum: [
-          { validator: formPeopleNum, trigger: "blur", message: "请输入正确的参团人数" }
+          {
+            validator: formPeopleNum,
+            trigger: "blur",
+            message: "参团人数必须在1到8人之间"
+          }
         ],
         gPrice: [{ validator: formPrice, trigger: "blur", message: "请输入团购价" }],
-        choicePro: [
+        productId: [
           { validator: formChoicePro, trigger: "change", message: "请选择活动商品" }
         ],
         gMaxBuyNum: [
@@ -234,17 +243,16 @@ export default {
     changeShop(val) {
       //重新选择店铺清空选择的商品和规格
       if (this.selectShopId > 0 && this.ruleForm.productId > 0) {
-        this.selectShopId = this.ruleForm.shopId;
         this.isChoicePro = true;
         this.isReplacePro = false;
         this.specificesList = [];
         this.priceList = [];
         this.boxData = null;
-        this.ruleForm.choicePro = null;
         this.ruleForm.isSpecifica = 0;
         this.ruleForm.productId = null;
         this.$refs.ruleForm.validate(valid => {});
       }
+      this.selectShopId = this.ruleForm.shopId;
     },
     /**
      * 选中商品事件
@@ -256,7 +264,6 @@ export default {
       }
       this.isChoicePro = data.isChoicePro;
       this.isReplacePro = data.isReplacePro;
-      this.ruleForm.choicePro = data.id;
       this.ruleForm.isSpecifica = data.is_specifica;
       this.ruleForm.productId = data.id;
       this.boxData = data;
@@ -391,7 +398,6 @@ export default {
             image_url: data.imgUrl + myData.imageUrl,
             stockTotal: myData.proStockTotal
           };
-          _this.ruleForm.choicePro = myData.productId;
           if (myData.isSpecifica == 1) {
             _this.getSpecificaByProId(myData.productId);
           }
