@@ -79,7 +79,7 @@
 </div>
 </template>
 <script>
-import imgUpload from 'components/imgUpload'
+
 export default {
     props:{
         specList:{
@@ -89,48 +89,12 @@ export default {
             type: Array
         }
     },
-    components: {
-      imgUpload
-    },
     data() {
         return {
             specData:'',//规格
             invenData:'',//库存
             isDefault:1,//是否默认
             listData:[],//列表数据
-
-            fromSelected:{//选中的内容
-            shop: '',//店铺
-            grouping: [],//分组
-            goodsStatus: '',//商品类型
-            spec:[]//规格
-            },
-            radio:4,
-            tablelists:[{
-                spec1 :'1',
-                spec2:  ['AAA','BBB'],
-                spec3:  ['aaa','bbb','ccc'],
-                money:'4',
-                num: '无',
-                number:'无',
-                dug: 1,
-            },{
-                spec1 :'1',
-                spec2:  ['AAA','BBB'],
-                spec3:  ['aaa','bbb','ccc'],
-                money:'4',
-                num: '无',
-                number:'无',
-                dug: 1,
-            },{
-                spec1 :'1',
-                spec2:  ['AAA','BBB'],
-                spec3:  ['aaa','bbb','ccc'],
-                money:'4',
-                num: '无',
-                number:'无',
-                dug: 1,
-            }],
         }
     },
     watch:{
