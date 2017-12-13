@@ -17,15 +17,38 @@
                 :key="index">
                 
                 <!--最外层循环绑定:rowspan="3" 库存循环 -->
+                <!--第一个-->
                 <td v-for="(test,i) in listData" lass="text-overflow"
-                    :rowspan="[i+2<listData.length &&  i==0?listData[i+1].specValues.length*listData[i+2].specValues.length:2]"
-                    v-if="index % test.specValues.length == 0"
-                    >
+                    v-if=" listData.length-i == 3 && index%(listData[2].specValues.length*listData[1].specValues.length)==0"
+                    :rowspan="[listData[2].specValues.length*listData[1].specValues.length]"
+                    :key="i">
                     <!--每个规格对应库存ids-->
-                    <!-- :rowspan="[  i+2<listData.length &&  i==0?listData[i+1].specValues.length*listData[i+2].specValues.length:2]" -->
-                    <p v-for="(c,d) in item.specificaIds">
+                    <p v-for="(c,d) in item.specificaIds" :key="d">
                         <!--规格 和 库存下的分类id 对应显示 -->
-                        <span v-for="(a,b) in test.specValues" v-if=" c == a.id">
+                        <span v-for="(a,b) in test.specValues" v-if=" c == a.id" :key="b">
+                            {{a.specValue}}
+                        </span>
+                    </p>
+                    
+                </td>
+                <!--第二个-->
+                <td v-for="(test,i) in listData" lass="text-overflow"
+                    v-if="listData.length-i == 2 && index%(listData[2].specValues.length)==0"
+                    :rowspan="[listData[2].specValues.length]"
+                    :key="i">
+                    <p v-for="(c,d) in item.specificaIds" :key="d">
+                        <span v-for="(a,b) in test.specValues" v-if=" c == a.id" :key="b">
+                            {{a.specValue}}
+                        </span>
+                    </p>
+                    
+                </td>
+                <!--第三个-->
+                <td v-for="(test,i) in listData" lass="text-overflow"
+                    v-if="listData.length-i == 1"
+                    :key="i">
+                    <p v-for="(c,d) in item.specificaIds" :key="d">
+                        <span v-for="(a,b) in test.specValues" v-if=" c == a.id" :key="b">
                             {{a.specValue}}
                         </span>
                     </p>
@@ -74,6 +97,7 @@ export default {
             specData:'',//规格
             invenData:'',//库存
             isDefault:1,//是否默认
+            listData:[],//列表数据
 
             fromSelected:{//选中的内容
             shop: '',//店铺

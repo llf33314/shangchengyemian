@@ -3,7 +3,6 @@
         <div class="table-spec-box" v-if="specList.length>0" v-for="(item,index) in specList" :key="index">
             <div class="table-spec-title">
                 <div class="table-inline">
-                    
                     <el-select
                         v-model="item.specNameId"
                         filterable
@@ -15,6 +14,7 @@
                             :key="i"
                             :label="test"
                             :value="Number(i)">
+                            <div>{{test}}---{{i}}--{{item.specNameId}}</div>
                         </el-option>
                     </el-select>
                     <i class="el-icon-circle-close"
@@ -89,7 +89,8 @@ export default {
             isAddImg:false,//添加规格图片
             isShowAdd:'',//添加显示
             selectedSpec:[],//分组选择暂存
-            flag: true,
+            deleteFlag: true,//删除触发change判断条件
+            ajaxFlag: true,//新增触发change判断条件
             nameList:[],
 
 
@@ -143,7 +144,7 @@ export default {
                 'url': DFshop.activeAPI.mallProductSpecificaList_post,
                 'data':{
                     id: id || null,
-                    type: type || 1,
+                    type: 1,
                     shopId: _this.shopId
                 },
                 'success':function (data){
@@ -174,11 +175,10 @@ export default {
          */
         selectedSpec1(val,index,i){
             let _this = this;
-            console.log(val,index,'aaaa',i);
-            
-            if(!this.flag){
+
+            if(!this.deleteFlag){
                 if(_this.nameList.length == index+1){
-                    this.flag = true;
+                    this.deleteFlag = true;
                 }
                 return;
             }
@@ -230,6 +230,7 @@ export default {
                     newId = index2 + 1;
                     newName = val
                     _this.$set(_this.listData,newId,val);
+                    this.deleteFlag = false;
                     //新增自定义规格
                     /*
                     *新增名称
@@ -237,12 +238,11 @@ export default {
                     * @param  specName:名称
                     * @param  shopId: 店铺ID
                     * */
-
-                    // _this.addSpecifica(1,{
-                    //     type:1,
-                    //     specName: newName,
-                    //     shopId: _this.shopId
-                    // },index)
+                    _this.addSpecifica(1,{
+                        type:1,
+                        specName: newName,
+                        shopId: _this.shopId
+                    },index)
                 }
                 
                 //添加新增
@@ -291,11 +291,11 @@ export default {
                     * @param specValue  值
                     * @param specId: 名称ID
                     * */
-                    // this.addSpecifica(2,{
-                    //     type:1,
-                    //     specValue: item.toString(),
-                    //     specId: _this.specList[index].specNameId
-                    // },index)
+                    this.addSpecifica(2,{
+                        type:1,
+                        specValue: item.toString(),
+                        specId: _this.specList[index].specNameId
+                    },index)
                 }
             })
             
@@ -324,6 +324,7 @@ export default {
          */
         addSpecifica(type,opt,index){
             let _this = this;
+            debugger
             _this.ajaxRequest({
                 'url': DFshop.activeAPI.mallProductSpecaddSpecifica_post,
                 'data':opt,
@@ -331,9 +332,8 @@ export default {
                     if(type == 1){
                         //规格    
                         _this.specificaList();
-                        // _this.specList[index].specName = _this.specList[index].specNameId;
-                        // _this.specList[index].specNameId = data.data;
-                        console.log(_this.specList[index],'1111');
+                        _this.specList[index].specNameId = data.data;
+                        //
                     }
                     if(type == 2){
                         //参数
@@ -359,10 +359,13 @@ export default {
          * 删除规格行列
          */
         removeList(index) {
+            if(index == 0){
+                this.isAddImg = false;
+            }
             this.specList.splice(index, 1);
             this.nameList.splice(index, 1);
             if(this.nameList.length > 0){
-                this.flag = false;
+                this.deleteFlag = false;
             }
         },
         /** 
