@@ -405,7 +405,7 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-@import '../../../../assets/css/mixins.less';
+@import '../../../../../../assets/css/mixins.less';
 .table-spec{
     width: 100%;
     border: 1px solid #bfcbd9;
