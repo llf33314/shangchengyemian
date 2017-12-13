@@ -137,6 +137,10 @@
     mallProductTemplateSave_post:'/mallProduct/E9lM9uM4ct/template/save',
     /*获取商品页模板信息 */
     mallProductTemplateInfo_post:'/mallProduct/E9lM9uM4ct/template/templateInfo',
+    /*获取规格名称和值 */
+    mallProductSpecificaList_post:'/mallProduct/E9lM9uM4ct/spec/getSpecificaList',
+    /*获取规格名称和值*/
+    mallProductSpecaddSpecifica_post: '/mallProduct/E9lM9uM4ct/spec/addSpecifica',
 
 
     /*团购列表 */

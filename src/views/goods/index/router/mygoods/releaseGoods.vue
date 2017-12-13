@@ -56,24 +56,38 @@
                 <div class="item-content">
                    <el-form :model="ruleForm" ref="ruleForm" label-width="105px" class="demo-ruleForm">
                         <el-form-item label="商品规格 :" prop="name">
-                            <template>
-                                <tableSpec :row="form.specList" :shopId="form.pro.shopId"></tableSpec>
-                            </template>
+                            <tableSpec :row="form.specList" :shopId="form.pro.shopId"></tableSpec>
                         </el-form-item>
-                        <el-form-item label="商品库存 :">
-                            <template>
-                                <tableList :specList="form.specList" :invenList="form.invenList"></tableList>
-                            </template>
+                        <el-form-item label="商品库存 :" v-if="form.specList !=''">
+                            <tableList :specList="form.specList" :invenList="form.invenList"></tableList>
                         </el-form-item>
-                        <el-form-item label="商品参数 :" prop="region" :inline="true">
-                            <el-select v-model="formInline.region" placeholder="请选择商品参数名">
-                                <el-option label="区域一" value="shanghai"></el-option>
-                                <el-option label="区域二" value="beijing"></el-option>
-                            </el-select>
-                            <el-select v-model="formInline.region" placeholder="请选择商品参数值">
-                                <el-option label="区域一" value="shanghai"></el-option>
-                                <el-option label="区域二" value="beijing"></el-option>
-                            </el-select>
+                        <el-form-item label="商品参数 :" prop="region" >
+                            <p v-for="(item,index) in form.paramList" :key="index">
+                                <el-select  v-model="item.paramsNameId" 
+                                            filterable
+                                            allow-create
+                                            placeholder="请选择商品参数名"
+                                            @change="params1">
+                                    <el-option v-for="(test,i) in paramList" 
+                                            :key="i"
+                                            :label="test" 
+                                            :value="Number(i)">
+                                    </el-option>
+                                </el-select>
+                                <el-select v-model="item.paramsValueId" 
+                                            placeholder="请选择商品参数值"
+                                            filterable
+                                            allow-create
+                                            @change="params2">
+                                    <el-option v-for="(test,i) in form.paramList" 
+                                            :key="i"
+                                            :label="item.paramsValueId" 
+                                            :value="Number(item.paramsValue)">
+                                    </el-option>
+                                </el-select>
+                                <a class="fontBlue" v-if="index == 0" @click="">新增</a>
+                                <a v-else>删除</a>
+                            </p>
                         </el-form-item>
                         <el-form-item label="总库存 :" :rules="rules.region" prop="region">
                             <div class="item-inline">
@@ -241,9 +255,10 @@
 
 import Lib from 'assets/js/Lib';
 import imgUpload from 'components/imgUpload'
-import tableList from '../../components/tableList'
-import tableSpec from '../../components/tableSpec'
-import gtCascader from '../../components/cascader'
+import tableList from './components/tableList' //规格列表
+import tableSpec from './components/tableSpec'//选择规格
+import gtCascader from './components/cascader'//多选分类多级联动下拉框
+//import param
 export default {
   components: {
       imgUpload,tableList,tableSpec,gtCascader
@@ -253,7 +268,8 @@ export default {
         title:'发布',
         goodsId:'',//商品id
         shopList:[],//店铺列表
-        form:{},//保存填充数据 
+        form:{},//保存填充数据
+        paramList:[],//参数列表
 
 
         options: [{
@@ -459,8 +475,35 @@ export default {
      * @param data 选择父类
      */
     groupselected(data){
-        //console.log(data,'data')
         this.form.proGroupList = data;
+    },
+    /** 
+     * 获取参数请求
+     * id: 不为空 则查询值 
+     *type: 1 规格 2参数
+     *shopId: 店铺ID
+     */
+    paramListAjax(id){
+        let _this = this;
+        _this.ajaxRequest({
+            'url': DFshop.activeAPI.mallProductSpecificaList_post,
+            'data':{
+                id: id || null,
+                type: 2 ,
+                shopId: _this.shopId
+            },
+            'success':function (data){
+
+                if(id == null){
+                    //总列表
+                    _this.paramList = data.data;
+                    console.log(data,'总参数列表');
+                }else{
+                    //分类表
+                    console.log(data,'分组参数列表',id);
+                }
+            }
+        });
     }
   },
   mounted(){
@@ -479,7 +522,7 @@ export default {
             _this.shopList = data.data;
         }
     })
-   
+    this.paramListAjax();
   }
 }
 </script>

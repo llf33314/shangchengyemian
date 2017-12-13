@@ -1,7 +1,7 @@
 <template>
   <div class="group-box" :style="{width:Width}">
     <div class="group-selected"
-        @click.self=" isShow = !isShow">
+        @click.stop=" isShow = !isShow">
         <em class="down" :class="{'is-reverse':isShow}"></em>
         <span class="item" v-for=" (item,i) in selectedData":key="i">
             <em>{{item.groupName}}</em>
@@ -161,6 +161,10 @@ export default {
             'success'(data) {
                 _this.oneData = data.data.groupList;
             }
+        })
+        $('body').on('click',()=>{
+            this.isShow = false;
+            this.isSelect = false;
         })
     }
 }

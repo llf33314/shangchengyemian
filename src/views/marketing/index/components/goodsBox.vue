@@ -1,5 +1,5 @@
 <template>
-<div class="goods-box">
+<div class="goods-box" v-if="boxdata != null">
     <div class="goods-content">
         <div class="Data-goods">
             <div class="goods-img">
