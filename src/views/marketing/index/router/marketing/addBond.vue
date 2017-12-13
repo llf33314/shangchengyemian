@@ -15,7 +15,7 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="选择商品 :" prop="region" required>
+            <el-form-item label="选择商品 :" prop="product_id" required>
                 <el-button type="primary" @click="showDialog" v-if="isChoicePro">选择商品</el-button>
                 <goods-box :boxdata="boxData" v-if="isReplacePro"></goods-box>
                 <el-button type="primary" v-if="isReplacePro" @click="showDialog">替换商品</el-button>
@@ -29,9 +29,9 @@
             </el-form-item>
             <el-form-item label="商品佣金：" prop="commission_rate" required>
                 <span v-if="ruleForm.commission_type !== 2">
-                    <el-input v-model="ruleForm.commission_rate " class="addBond-input"></el-input>%
+                    <el-input v-model="ruleForm.commission_rate" class="addBond-input"></el-input>%
                 </span>
-                 <el-input v-model="ruleForm.commission_rate " class="addBond-input" v-if="ruleForm.commission_type ==2">
+                 <el-input v-model="ruleForm.commission_rate" class="addBond-input" v-if="ruleForm.commission_type ==2">
                      <template slot="prepend">¥</template>
                  </el-input>
                  <p class="p-warn" v-if="disabledCommission">商品佣金按百分比的计算公式：商品价*（佣金商品佣金/100）</p>
@@ -46,36 +46,36 @@
 </div>
 </template>
 <script>
-import Lib from 'assets/js/Lib';
-import goodsBox from '../../components/goodsBox';
-import goodsDialog from '../../components/goodsDialog';
+import Lib from "assets/js/Lib";
+import goodsBox from "../../components/goodsBox";
+import goodsDialog from "../../components/goodsDialog";
 export default {
-  components:{
-    goodsBox,goodsDialog
+  components: {
+    goodsBox,
+    goodsDialog
   },
   data() {
     var formRegion = (rule, value, callback) => {
-      console.log(this.boxData.id,'this.boxData');
-      if (this.boxData.id === undefined || this.boxData.id === '') {
-        return callback(new Error('请选择活动商品'));
-      } else{
+      if (this.boxData == null) {
+        return callback(new Error("请选择活动商品"));
+      } else {
         callback();
       }
     };
     var formShopId = (rule, value, callback) => {
-      if (value === '') {
-        return callback(new Error('请选择所属店铺'));
-      } else{
+      if (value === "") {
+        return callback(new Error("请选择所属店铺"));
+      } else {
         callback();
       }
     };
     var formCommissionType = (rule, value, callback) => {
-      if (value === '') {
-        return callback(new Error('请选择佣金类型'));
-      } else{
-        if(value === 1){
+      if (value === "") {
+        return callback(new Error("请选择佣金类型"));
+      } else {
+        if (value === 1) {
           this.disabledCommission = true;
-        }else{
+        } else {
           this.disabledCommission = false;
         }
         callback();
@@ -85,159 +85,165 @@ export default {
       let _this = this;
       let reg = /^[0-9]{1,5}(\.\d{1,2})?$/;
       let max = 8;
-      if (value === '') {
-        return callback(new Error('商品佣金不能为空'));
-      }else if(_this.ruleForm.commission_type == 1){//百分比
-          if(Number(value) > 70 || !reg.test(value)){
-            return callback(new Error('根据微信规则，佣金比例最高不可超过70%'));//按百分比显示提示文字
-          }
-      }else if(_this.ruleForm.commission_type == 2){//固定金额
+      if (value === "") {
+        return callback(new Error("商品佣金不能为空"));
+      } else if (_this.ruleForm.commission_type == 1) {
+        //百分比
+        if (Number(value) > 70 || !reg.test(value)) {
+          return callback(new Error("根据微信规则，佣金比例最高不可超过70%")); //按百分比显示提示文字
+        }
+      } else if (_this.ruleForm.commission_type == 2) {
+        //固定金额
         var proPrice = _this.ruleForm.proPrice;
-        if(proPrice != null && proPrice != ""){
-          proPrice = proPrice*1;
-          max = (proPrice*0.7).toFixed(2);
-          if(Number(value)*1 > max || !reg.test(value)){
-           return callback(new Error('商品佣金最多只能是大于0的5位数,且不能超过商品的70%'));//按固定金额显示提示文字
+        if (proPrice != null && proPrice != "") {
+          proPrice = proPrice * 1;
+          max = (proPrice * 0.7).toFixed(2);
+          if (Number(value) * 1 > max || !reg.test(value)) {
+            return callback(new Error("商品佣金最多只能是大于0的5位数,且不能超过商品的70%")); //按固定金额显示提示文字
           }
         }
-      } else{
-        callback();
       }
+      callback();
     };
     return {
       ruleForm: {
-        shop_id:'',
+        shop_id: "",
         commission_type: 1,
-        region: '',
-        commission_rate: '',//商品佣金
-        product_id:'',
+        commission_rate: "", //商品佣金
+        product_id: ""
       },
       rules: {
-        shop_id:[
-          { validator : formShopId, trigger: 'change' },
+        shop_id: [
+          { validator: formShopId, trigger: "change", message: "请选择所属店铺" }
         ],
-        commission_type: [
-          { validator : formCommissionType, trigger: 'change' },
-        ],
-        region: [
-          { validator : formRegion, trigger: 'change' }
-        ],
+        commission_type: [{ validator: formCommissionType, trigger: "change" }],
+        product_id: [{ validator: formRegion, trigger: "change" }],
         commission_rate: [
-          { validator : formCommissionRate, trigger: 'blur' }
+          { validator: formCommissionRate, trigger: "blur", message: "" }
         ]
       },
-      shopList:[],
-      boxData:{},
-      isChoicePro:'',
-      isReplacePro:'',
-      disabledShop:'',
-      disabledCommission : true,
+      shopList: [],
+      boxData: null,
+      isChoicePro: "",
+      isReplacePro: "",
+      disabledShop: "",
+      disabledCommission: true
     };
   },
   methods: {
-    selectDialogData(data){
+    selectDialogData(data) {
+      if (data.id == this.ruleForm.product_id) {
+        return false;
+      }
       this.isChoicePro = data.isChoicePro;
       this.isReplacePro = data.isReplacePro;
       this.ruleForm.isSpecifica = data.is_specifica;
       this.ruleForm.product_id = data.id;
       this.boxData = data;
       this.boxData.image_url = data.imgPath + data.image_url;
+      //重新验证表单
+      this.$refs.ruleForm.validate(valid => {});
     },
-    submitForm(formName) {//保存商品佣金设置
-      let _this= this;
-      _this.$refs[formName].validate((valid) => {
+    submitForm(formName) {
+      //保存商品佣金设置
+      let _this = this;
+      console.log(_this.$refs[formName]);
+      _this.$refs[formName].validate(valid => {
+        console.log(valid, "valid");
         if (valid) {
           let fname = _this.$refs[formName].model;
-          let joinProduct = {};
-          joinProduct.shopId = fname.shop_id;
-          joinProduct.productId = fname.product_id;
-          joinProduct.commissionRate = fname.commission_rate;
-          joinProduct.commissionType = fname.commission_type;
-          if(fname.id != ''){
-            joinProduct.id = fname.id;
-          }
+          let joinProduct = {
+            shopId: fname.shop_id,
+            productId: fname.product_id,
+            commissionRate: fname.commission_rate,
+            commissionType: fname.commission_type,
+            id: fname.id || null
+          };
           _this.ajaxRequest({
-            'url': DFshop.activeAPI.mallSellerSaveJoinProduct_post,
-            'data':{
-              joinProduct : joinProduct 
+            url: DFshop.activeAPI.mallSellerSaveJoinProduct_post,
+            data: {
+              joinProduct: joinProduct
             },
-            'success':function (data){
-                if(data.code == 1){
-                    _this.$message({
-                      message: '保存成功',
-                      type: 'success'
-                    });
-                    _this.jumpRouter('/marketing/2');
-                }
+            success: function(data) {
+              _this.$message({
+                message: "保存成功",
+                type: "success"
+              });
+              _this.jumpRouter("/marketing/2");
             }
           });
-
         } else {
-          console.log('error submit!!');
+          console.log("error submit!!");
           return false;
         }
       });
     },
-    resetForm(formName) {//重置表单
+    resetForm(formName) {
+      //重置表单
       this.$refs[formName].resetFields();
     },
-    returnPage(){//返回上一页
+    returnPage() {
+      //返回上一页
       window.history.go(-1);
     },
-    showDialog(){
-      this.$refs.goodsDialog.isShow=true;
+    showDialog() {
+      this.$refs.goodsDialog.isShow = true;
+      this.$refs.goodsDialog.isCommission = true;
     },
-    mallSellersJoinProductInfo(id){//获取商品拥金信息
-      let _this= this;
+    mallSellersJoinProductInfo(id) {
+      //获取商品拥金信息
+      let _this = this;
       _this.ajaxRequest({
-        'url': DFshop.activeAPI.mallSellersJoinProductInfo_post,
-        'data':{
-          id : id 
+        url: DFshop.activeAPI.mallSellersJoinProductInfo_post,
+        data: {
+          id: id
         },
-        'success':function (data){
-          if(data.code == 1){
-            _this.ruleForm = data.data;
-            console.log(_this.ruleForm,'table');
-            _this.boxData={
-              id : data.data.product_id,
-              pro_price : data.data.proPrice,
-              pro_name : data.data.proName,
-              image_url : data.imgUrl + data.data.imageUrl,
-              stockTotal : data.data.proStockTotal
-            }
-          }
+        success: function(data) {
+          _this.ruleForm = data.data;
+          console.log(_this.ruleForm, "table");
+          _this.boxData = {
+            id: data.data.product_id,
+            pro_price: data.data.proPrice,
+            pro_name: data.data.proName,
+            image_url: data.imgUrl + data.data.imageUrl,
+            stockTotal: data.data.proStockTotal
+          };
         }
       });
     }
   },
-  mounted(){
+  mounted() {
     let _this = this;
-    DFshop.method.storeList({
-      'success'(data){
+    _this.storeList({
+      success(data) {
         _this.shopList = data.data;
+        let shopId = _this.ruleForm.shop_id; //没有默认选择的店铺
+        if (shopId == null || shopId == "" || shopId == 0) {
+          //默认选中第一个店铺
+          _this.ruleForm.shop_id = _this.shopList[0].id;
+        }
       }
     });
-    
-    if(_this.$route.params.id != 0){
+    if (_this.$route.params.id > 0) {
       _this.disabledShop = true;
       _this.mallSellersJoinProductInfo(_this.$route.params.id);
       _this.isReplacePro = true;
-    }else{
+    } else {
       _this.disabledShop = false;
       _this.isChoicePro = true;
     }
   }
-}
+};
 </script>
 
 
 <style lang="less" scoped>
-@import '../../../../../assets/css/mixins.less';
-.addBond-main{
-    padding:40px 4%;
-    .addBond-input{
-        width: 220px
-    }
+@import "../../../../../assets/css/mixins.less";
+.addBond-main {
+  padding: 40px 4%;
+  .addBond-input {
+    width: 220px;
+  }
 }
 </style>
 

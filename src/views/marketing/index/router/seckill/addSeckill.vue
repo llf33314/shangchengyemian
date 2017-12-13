@@ -15,7 +15,7 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="活动商品 :" prop="choicePro" required>
+            <el-form-item label="活动商品 :" prop="productId" required>
                 <el-button type="primary" @click="showDialog" v-if="isChoicePro">选择商品</el-button>
                 <goods-box :boxdata="boxData" v-if="isReplacePro"></goods-box>
                 <el-button type="primary" @click="showDialog" v-if="isReplacePro">替换商品</el-button>
@@ -83,9 +83,10 @@ export default {
       }
     };
     var formSname = (rule, value, callback) => {
-      console.log(value, "formSname");
       if (value == "") {
         return callback(new Error("活动名称不能为空"));
+      } else if (!Lib.M.validateChineseLength(value, 100)) {
+        return callback(new Error("最多可输入50位汉字或100位字符"));
       } else {
         callback();
       }
@@ -99,7 +100,6 @@ export default {
       }
     };
     var formPrice = (rule, value, callback) => {
-      console.log(value, "formPrice");
       let reg = /^[0-9]{1,5}(\.\d{1,2})?$/;
       if (value === "") {
         return callback(new Error("秒杀价不能为空"));
@@ -188,7 +188,7 @@ export default {
           { validator: formShopId, trigger: "change", message: "请选择所属店铺" }
         ],
         sName: [{ validator: formSname, trigger: "blur", message: "请输入活动名称" }],
-        choicePro: [
+        productId: [
           { validator: formChoicePro, trigger: "change", message: "请选择活动商品" }
         ],
         sStartTime: [
@@ -236,6 +236,7 @@ export default {
         this.ruleForm.productId = null;
         this.$refs.ruleForm.validate(valid => {});
       }
+      this.selectShopId = this.ruleForm.shopId;
     },
     selectDialogData(data) {
       if (data.id == this.ruleForm.productId) {
@@ -244,7 +245,6 @@ export default {
       //活动商品列表弹出框
       this.isChoicePro = data.isChoicePro;
       this.isReplacePro = data.isReplacePro;
-      this.ruleForm.choicePro = data.id;
       this.ruleForm.isSpecifica = data.is_specifica;
       this.ruleForm.productId = data.id;
       this.boxData = data;
@@ -376,7 +376,6 @@ export default {
             image_url: data.imgUrl + myData.imageUrl,
             stockTotal: myData.proStockTotal
           };
-          _this.ruleForm.choicePro = myData.productId;
           if (myData.isSpecifica == 1) {
             _this.getSpecificaByProId(_this.ruleForm.productId);
           }

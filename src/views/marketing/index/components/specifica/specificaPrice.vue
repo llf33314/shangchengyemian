@@ -138,7 +138,7 @@ export default {
 <style lang="less">
 .newgroup {
   .el-form-item__content {
-    padding: 10px 0;
+    // padding: 10px 0;
   }
   .el-form-item__error {
     position: relative;
@@ -164,41 +164,8 @@ export default {
 // .fs-button {
 //   float: left;
 // }
-.p-tr {
-  td {
-    padding: 10px 0;
-  }
-}
 </style>
 
 <style lang="less" scoped>
-.order_tab {
-  width: 100%;
-  border-color: #dfe6ec;
-  border: 1px solid #dfe6ec;
-  .order_tab_header {
-    width: 100%;
-    background: #eef1f6;
-  }
-  td,
-  th {
-    // padding: 10px;
-    height: 40px;
-    line-height: 40px;
-    text-align: center;
-    border-right: 0px;
-  }
-}
 
-.dialog-list {
-  width: 100%;
-  margin-top: 25px;
-  & > span {
-    margin-right: 28px;
-  }
-}
-tr:hover {
-  // transition: background-color .25s ease;
-  background: #eef1f6;
-}
 </style>
