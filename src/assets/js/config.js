@@ -271,6 +271,41 @@
     exportMallOrderr_post:'/mallOrder/E9lM9uM4ct/toPrintMallOrder',
     /**导出订单记录订单*/
     exportMallOrderr_get: DFshop.api+'/mallOrder/E9lM9uM4ct/exportMallOrder',
+
+    /**
+     * 对外报价相关接口
+     */
+    /**报价单列表 */ 
+    purchaseOrderList_post:'/purchase/E9lM9uM4ct/order/list',
+    /**获取所有店铺的商品*/
+    purchaseOrderGetProductAll_post:'/purchase/E9lM9uM4ct/order/getProductAll',
+    /**保存报价单 */
+    purchaseOrderSave_post:'/purchase/E9lM9uM4ct/order/save',
+    /**获取报价单信息 */
+    purchaseOrderInfo_post:'/purchase/E9lM9uM4ct/order/orderInfo',
+
+
+    /**合同列表 */
+    purchaseContractList_post:'/purchase/E9lM9uM4ct/contract/list',
+    /**保存合同 */
+    purchaseContractSave_post:'/purchase/E9lM9uM4ct/contract/save',
+    /**获取合同信息 */
+    purchaseContractInfo_post:'/purchase/E9lM9uM4ct/contract/contractInfo',
+    /**删除合同 */
+    purchaseContractDelete_post:'/purchase/E9lM9uM4ct/contract/delete',
+    /**查询所有的合同 */
+    purchaseAllcontractList_post:'/purchase/E9lM9uM4ct/contract/contractList',
+
+    /**公司模板列表 */
+    purchaseCompanyList_post:'/purchase/E9lM9uM4ct/company/list',
+    /**保存公司模板 */
+    purchaseCompanySave_post:'/purchase/E9lM9uM4ct/company/save',
+    /**获取公司模板信息 */
+    purchaseCompanyInfo_post:'/purchase/E9lM9uM4ct/company/companyInfo',
+    /**删除公司模板 */
+    purchaseCompanyDelete_post:'/purchase/E9lM9uM4ct/company/delete',
+    /**查询所有的公司模板 */
+    purchaseCompanyModeList_post:'/purchase/E9lM9uM4ct/company/companyModeList',
   };
 
 
