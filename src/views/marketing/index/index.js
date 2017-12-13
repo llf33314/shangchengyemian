@@ -26,11 +26,13 @@ import Pifa from './router/pifa/index'
 //批发管理 --新建
 import addPifa from './router/pifa/addpifa'
 //对外报价
-import Dwbj from './router/dwbj/index'
+import purchase from './router/purchase/index'
 //对外报价--新建
-import addDwbj from './router/dwbj/addBj.vue'
+import addPurchase from './router/purchase/addBj.vue'
 //对外报价--新建合同
-import addContract from './router/dwbj/addContract'
+import addContract from './router/purchase/addContract'
+//对外报价--新建公司模板
+import addCompany from './router/purchase/addCompany'
 //拍卖管理
 import Auction  from './router/Auction/index'
 //拍卖管理--新建拍卖
@@ -47,6 +49,7 @@ import modular from './router/modular/index'
 import seckill from './router/seckill/index'
 //秒杀管理--新建秒杀
 import addSeckill from './router/seckill/addSeckill'
+import quillEditor from 'vue-quill-editor'; //调用编辑器
 const routes = [
   { path: '/', component: Index},
   { path: '/group', component: Group},
@@ -61,10 +64,15 @@ const routes = [
   { path: '/presale/addpresale/:id', component: addPresale},
   { path: '/pifa/:activeName', component: Pifa},
   { path: '/addPifa/:id', component: addPifa},
-  { path: '/dwbj', component: Dwbj},
-  { path: '/dwbj/addBj', component: addDwbj},
-  { path: '/dwbj/addHT', component: addDwbj},
-  { path: '/dwbj/addContract', component: addContract},
+
+  { path: '/purchase/:activeName', component: purchase},
+  { path: '/order/add', component: addPurchase},
+  { path: '/order/update/:id', component: addPurchase},
+  { path: '/contract/add', component: addContract},
+  { path: '/contract/update/:id', component: addContract},
+  { path: '/company/add', component: addCompany},
+  { path: '/company/update/:id', component: addCompany},
+
   { path: '/auction/:activeName', component: Auction},
   { path: '/auction/addauction/:id', component: addAuction},
   { path: '/h5', component: h5},
@@ -76,6 +84,7 @@ const routes = [
 ]
 
 Vue.use(VueRouter)
+Vue.use(quillEditor)
 
 const router = new VueRouter({
   routes:routes

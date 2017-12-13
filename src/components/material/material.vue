@@ -35,7 +35,7 @@
     </div>
     <el-dialog v-model="materialLargeSrcVisible" size="small">
         <div class="largeSrc-box">
-          <img width="100%" :src="largeSrc" alt="" class="img">
+          <img :src="largeSrc" alt="" class="img">
         </div>
     </el-dialog>
 
@@ -224,6 +224,12 @@ section{
   margin: 0 auto;
   max-width: 500px;
   max-height: 500px;
+  text-align: center;
+  img{
+    width: auto;
+    max-width: 100%;
+    max-height: 100%;
+  }
 }
 
 </style>
