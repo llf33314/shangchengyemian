@@ -52,7 +52,7 @@
                 </div>
             </div>
             <div class="mygoods-item">
-                <div class="item-title">库存/规格{{form.paramList}}</div>
+                <div class="item-title">库存/规格</div>
                 <div class="item-content">
                    <el-form :model="ruleForm" ref="ruleForm" label-width="105px" class="demo-ruleForm">
                         <el-form-item label="商品规格 :" prop="name">
@@ -62,21 +62,21 @@
                             <tableList :specList="form.specList" :invenList="form.invenList"></tableList>
                         </el-form-item>
                         <el-form-item label="商品参数 :" prop="region" >
-                            <gt-param :row="form.paramList" @change="paramSelected"></gt-param>
+                            <gt-param :row="form.paramList" :shopId="form.pro.shopId" @change="paramSelected"></gt-param>
                         </el-form-item>
                         <el-form-item label="总库存 :" :rules="rules.region" prop="region">
                             <div class="item-inline">
-                                <el-input v-model="formInline.user"></el-input>
+                                <el-input v-model="form.pro.proStockTotal" :disabled="true"></el-input>
                             </div>
                             <span>
-                                <el-checkbox v-model="checked2">页面不显示商品库存</el-checkbox>
+                                <el-checkbox v-model="form.pro.isShowStock">页面不显示商品库存</el-checkbox>
                             </span>
                             <p class="shop-prompt">总库存为 0 时，会上架到【已售罄的商品】列表里</p>
                         </el-radio-group>
                         </el-form-item>
                         <el-form-item label="商品编码 ：" prop="name">
                             <div style="width:220px">
-                                <el-input v-model="ruleForm.name"></el-input>
+                                <el-input v-model="form.pro.proCode"></el-input>
                             </div>
                         </el-form-item>
                     </el-form>
@@ -88,41 +88,48 @@
                    <el-form :model="ruleForm" ref="ruleForm" label-width="105px" class="demo-ruleForm">
                         <el-form-item label="商品名称 :" prop="name" :rules="rules.name">
                             <div style="width:460px;" class="item-inline">
-                                <el-input v-model="formInline.user"></el-input>
+                                <el-input v-model="form.pro.proName"></el-input>
+                                
                             </div>
+                            <span class="shop-prompt">
+                                商品标签最多输入200个字符
+                            </span>
                         </el-form-item>
                         <el-form-item label="价格 :" prop="region" :inline="true" :rules="rules.name">
                             <div class="item-inline">
-                                <el-input v-model="input3">
+                                <el-input v-model="form.pro.proPrice">
                                     <template slot="prepend">¥</template>
                                 </el-input>
                             </div>
-                            <div class="item-inline" style="width:180px;color:#999;">
-                                <p class="">原价：￥99.99</p>
-                                该原价价格只作展示作用
+                            <div class="item-inline" style="width:135px;color:#999;">
+                                <p style="width:100%">原价：￥99.99</p>
+                            
                             </div>
+                            <span class="shop-prompt">该原价价格只作展示作用</span>
                         </el-form-item>
                         <el-form-item label="商品图片 :" :rules="rules.region" prop="region">
                             <div class="item-img">
-                                <gtMaterial></gtMaterial>
+                                <gtMaterial :imgList="form.imageList"></gtMaterial>
                             </div>
-                            <p class="shop-prompt">图片尺寸：870px*716px；您可以拖拽图片调整图片顺序；第一张图片为主图</p>
+                            <p class="shop-prompt">
+                                建议尺寸：700px*700px,您可以拖拽图片顺序,第一张图片为主图
+                            </p>
                         </el-radio-group>
                         </el-form-item>
                         <el-form-item label="商品标签 ：" prop="name">
                             <div class="item-inline">
-                                <el-input v-model="ruleForm.name"></el-input>
+                                <el-input v-model="form.pro.proLabel"></el-input>
                             </div>
-                            <p class="shop-prompt">商品标签最多输入2个字符串</p>
+                            <span class="shop-prompt">商品标签最多输入2个字符</span>
                         </el-form-item>
                         <el-form-item label="商品重量 ：" prop="name" >
                             <div class="item-inline">
-                                <el-input v-model="ruleForm.name"></el-input>
+                                <el-input v-model="form.pro.proWeight"></el-input>
                             </div>
-                            <div class="item-inline">
-                                g
-                            </div>
-                            <p class="shop-prompt">商品重量最多只能输入大于0的六位小数，如：30.00</p>
+                            <span>g</span>
+                            <span class="shop-prompt">
+                                商品重量最多只能输入大于0的六位小数，如：30.00
+                            </span>
                         </el-form-item>
                     </el-form>
                 </div>
@@ -134,7 +141,7 @@
                         <el-form-item label="运费设置 :" prop="name" :rules="rules.name">
                             <div style="margin-bottom:30px;">
                                 <div class="item-inline" style="width:auto">
-                                    <el-radio class="radio" v-model="radio" label="1">统一邮费</el-radio>
+                                    <el-radio class="radio" v-model="form.pro.proFreightSet" :label="1">统一邮费</el-radio>
                                 </div>
                                 <div class="item-inline">
                                     <el-input v-model="input3">
@@ -144,7 +151,7 @@
                             </div>
                             <div>
                                 <div class="item-inline" style="width:auto">
-                                <el-radio class="radio" v-model="radio" label="1">运费模板</el-radio>
+                                <el-radio class="radio" v-model="form.pro.proFreightSet" :label="2">运费模板</el-radio>
                                 </div>
                                 <div class="item-inline" style="width:220px">
                                     <el-select v-model="ruleForm.region" placeholder="请选择活动区域">
@@ -158,6 +165,9 @@
                                 </div>
                             </div>
                         </el-form-item>
+                        <el-form-item label="物流重量 :" v-if="form.specList !=''">
+                            <tableList :specList="form.specList" :invenList="form.invenList"></tableList>
+                        </el-form-item>
                     </el-form>
                 </div>
             </div>
@@ -169,7 +179,7 @@
                             <div  class="item-inline">
                                 <el-input v-model="formInline.user"></el-input>
                             </div>
-                             <p class="shop-prompt">0代表不限购</p>
+                             <span class="shop-prompt">0代表不限购</span>
                         </el-form-item>
                         <el-form-item label="会员折扣 :" prop="region" >
                             <el-checkbox v-model="checked3">参加会员折扣</el-checkbox>
