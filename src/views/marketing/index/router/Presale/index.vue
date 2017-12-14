@@ -1,4 +1,4 @@
-<template>
+  <template>
   <div class="integralmall-wrapper" >
      <div class="common-nav">
       <el-breadcrumb separator="/">
@@ -46,7 +46,8 @@
                         <el-button  type="primary">新建预售</el-button>
                     </router-link>
                 </div>
-                <el-table :data="presaleData.page.subList" style="width: 100%" v-if="presaleData.page.rowCount > 0">
+                <el-table  v-loading.body="loading" element-loading-text="拼命加载中" :data="presaleData.page.subList" style="width: 100%" 
+                  v-if="presaleData.page.rowCount > 0 || loading">
                     <el-table-column
                     prop="proName"
                     label="预售商品">
@@ -183,7 +184,7 @@
                         <div class="index-shopInfo">
                             <el-button type="primary" @click="addPresaleGift()">新建预售送礼</el-button>
                         </div>
-                        <table border="1" cellspacing="0" cellpadding="0" width="100%" class="order_tab">
+                        <table border="1" cellspacing="0" cellpadding="0" width="100%" class="order_tab" v-if="form.presaleGiftsData != null">
                             <tbody>
                                 <tr class="order_tab_header">
                                     <th width="15%">送礼名次</th>
@@ -246,7 +247,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <div class="shop-textr" v-if="presaleGiftsData.page.rowCount == 0">
+                        <div class="shop-textr" v-if="presaleGiftsData.page.rowCount > 1">
                             <el-pagination  @size-change="handleSizeChange2" @current-change="handleCurrentChange2"
                                 :current-page.sync="presaleGiftsData.page.curPage"
                                 :page-size="presaleGiftsData.page.pageSize"
@@ -375,7 +376,8 @@ export default {
           }
         ]
       },
-      webPath: ""
+      webPath: "",
+      loading: true
     };
   },
   watch: {
@@ -512,6 +514,7 @@ export default {
           type: _this.presaleType
         },
         success: function(data) {
+          _this.loading = false;
           if (data.data.isOpenPresale) {
             console.log(data, "data");
             _this.presaleData = data.data;
