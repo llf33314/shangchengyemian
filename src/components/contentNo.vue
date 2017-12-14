@@ -12,7 +12,7 @@
         <p v-else-if="show === 'commission'">您还没有发布佣金商品，<a :href="window +'/views/marketing/index.html#/addBond/0'">点击这里</a> 发布您的销售商品</p>
         <p v-else-if="show === 'JFgoods'">您还没有发布积分商品，<a :href="window +'/views/setUp/index.html#/setup'">点击这里</a> 发布您的佣金商品</p>
         <p v-else-if="show === 'ysgl'">您还没有发布预售商品，<a :href="window +'/views/setUp/index.html#/setup'">点击这里</a> 发布您的预售商品</p>
-        <p v-else-if="show === 'pifa'">您还没有发布批发商品，<a :href="window +'/views/setUp/index.html#/setup'">点击这里</a> 发布您的批发商品</p>
+        <p v-else-if="show === 'pifa'">您还没有发布批发商品，<a :href="window +'/views/marketing/index.html#/addpifa/0'">点击这里</a> 发布您的批发商品</p>
         <p v-else-if="show === 'baojia'">您还没有发布报价单，<a :href="window +'/views/setUp/index.html#/setup'">点击这里</a> 新增报价单</p>
         <p v-else-if="show === 'hetong'">您还没有发布合同，<a :href="window +'/views/setUp/index.html#/setup'">点击这里</a> 新增合同</p>
         <p v-else-if="show === 'GSmodule'">您还没有创建公司模板，<a :href="window +'/views/setUp/index.html#/setup'">点击这里</a> 新增合同</p>

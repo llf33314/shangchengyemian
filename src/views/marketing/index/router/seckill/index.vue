@@ -44,7 +44,7 @@
               {{scope.row.sstartTime}}至{{scope.row.sendTime}}
             </template>
           </el-table-column>
-          <el-table-column label="活动状态">
+          <el-table-column label="活动状态" width="190">
             <template scope="scope">
               <p v-if="scope.row.status == 0">未开始</p>
               <p v-else-if="scope.row.status == 1">进行中</p>
@@ -53,7 +53,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            prop="createTime"
+            prop="createTime" width="190"
             label="创建时间">
           </el-table-column>
           <el-table-column  label="操作">
