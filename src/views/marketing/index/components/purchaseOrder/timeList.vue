@@ -58,7 +58,7 @@
     </div>
 </template>
 <script>
-import Lib from 'assets/js/Lib';
+import Lib from "assets/js/Lib";
 export default {
   props: {
     rowList: {
@@ -68,9 +68,9 @@ export default {
   data: function() {
     return {
       ruleForm: {
-        rowList: [],
+        rowList: []
       },
-      rules: {},
+      rules: {}
     };
   },
   watch: {
@@ -78,34 +78,34 @@ export default {
       this.ruleForm.rowList = this.rowList;
     }
   },
-  mounted() {  
-    if(this.rowList.length ==0){
-        this.addTime();
-    }else{
-       this.ruleForm.rowList = this.rowList;
-    }   
+  mounted() {
+    if (this.rowList.length == 0) {
+      this.addTime();
+    } else {
+      this.ruleForm.rowList = this.rowList;
+    }
   },
   methods: {
-     /**添加期数 */
-    addTime(){
-        let _this = this;
-        _this.ruleForm.rowList.push({
-            "termIndex":_this.ruleForm.rowList.length,
-            "termTime":'',
-            "termMoney":'',
-            "termBuy":0,
-        });
+    /**添加期数 */
+    addTime() {
+      let _this = this;
+      _this.ruleForm.rowList.push({
+        termIndex: _this.ruleForm.rowList.length,
+        termTime: "",
+        termMoney: "",
+        termBuy: 0
+      });
     },
     /**删除 */
     del(index) {
-      if(this.ruleForm.rowList.length ==1){
+      if (this.ruleForm.rowList.length == 1) {
         this.$message({
           message: "分期数量不能少于1条",
           type: "error"
         });
         return false;
       }
-        this.ruleForm.rowList.splice(index, 1);
+      this.ruleForm.rowList.splice(index, 1);
     },
     /**改变值 */
     changeData() {
@@ -114,17 +114,17 @@ export default {
       let isTrue = true;
       for (let i = 0; i < list.length; i++) {
         let obj = list[i];
-          let reg = /^[0-9]{1,5}(\.\d{1,2})?$/;
-          let value = obj.termMoney;
-          let time=obj.termTime;
-          if (value === "" || !reg.test(value) || value == 0) {
-            isTrue = false;
-            break;
-          }
-          if(time != ""){
-            obj.termTime=Lib.M.format(obj.termTime);
-            _this.$set(this.ruleForm.rowList, i, obj);
-          }
+        let reg = /^[0-9]{1,5}(\.\d{1,2})?$/;
+        let value = obj.termMoney;
+        let time = obj.termTime;
+        if (value === "" || !reg.test(value) || value == 0) {
+          isTrue = false;
+          break;
+        }
+        if (time != "") {
+          obj.termTime = Lib.M.format(obj.termTime);
+          _this.$set(this.ruleForm.rowList, i, obj);
+        }
       }
       if (isTrue) {
         //更新值
@@ -148,9 +148,6 @@ export default {
 </script>
 <style lang="less">
 .newgroup {
-  .el-form-item__content {
-    padding: 10px 0;
-  }
   .el-form-item__error {
     position: relative;
     top: 0%;

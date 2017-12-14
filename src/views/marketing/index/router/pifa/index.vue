@@ -14,32 +14,31 @@
                     <div class="index-input-box">
                     <div class="p-box">
                         <div>
-                            <span v-if="goodsData.page.rowCount > 0">
+                            <span>
                                 选择状态 :
                                 <el-select v-model="type" placeholder="请选择" @change="searchPifa">
+                                    <el-option class="max-input" label="全部":value="0"></el-option>
                                     <el-option class="max-input" label="进行中":value="1"></el-option>
                                     <el-option class="max-input" label="未开始":value="-1"></el-option>
                                     <el-option class="max-input" label="已结束":value="2"></el-option>
                                     <el-option class="max-input" label="已失效":value="-2"></el-option>
                                 </el-select>
                             </span>
-                            <span v-if="goodsData.page.rowCount > 0">
+                            <span>
                                 选择店铺 :
                                 <el-select v-model="shopId" placeholder="请选择" @change="searchPifa">
-                                <el-option class="max-input" v-for="item in shopList"
-                                    :key="item.id" :label="item.sto_name" :value="item.id">
-                                </el-option>
+                                  <el-option class="max-input"  :value="''" label="全部"></el-option>
+                                  <el-option class="max-input" v-for="item in shopList"
+                                      :key="item.id" :label="item.sto_name" :value="item.id">
+                                  </el-option>
                                 </el-select>
                             </span>
                         </div>
-                    <!-- <span>
-                        <router-link to="/addBond">
-                            <el-button 
-                            type="warning"
-                            ><i class="iconfont icon-cplay1"></i>
-                            视频教程</el-button>
-                        </router-link>
-                    </span> -->
+                     <span v-if="videourl != null">
+                        <a :href="videourl">
+                          <el-button type="warning"><i class="iconfont icon-cplay1"></i>视频教程</el-button>
+                        </a>
+                    </span> 
                     </div>
                     </div>
                     <router-link to="/addpifa/0">
@@ -61,7 +60,7 @@
                             {{scope.row.pfStartTime}}至{{scope.row.pfEndTime}}
                         </template>
                     </el-table-column>
-                    <el-table-column
+                    <el-table-column width="190"
                     label="活动状态">
                     <template scope="scope">
                         <span v-if="scope.row.status === 1">进行中</span>
@@ -70,26 +69,25 @@
                         <span v-if="scope.row.status === -2">已失效</span>
                     </template>
                     </el-table-column>
-                    <el-table-column
+                    <el-table-column  width="190"
                     prop="createTime"
                     label="创建时间">
                     </el-table-column>
                     <el-table-column
-                    label="操作"
-                    min-width="120">
+                    label="操作">
                     <template scope="scope">
                         <el-button size="small" class="buttonBlue" @click="jumpRouter('/addpifa/'+scope.row.id)"
                             v-if="scope.row.status == 0 || scope.row.status == 1">编辑</el-button>
                         <el-button size="small" class="buttonBlue" 
                             v-if="scope.row.status == 0 || (scope.row.joinId == 0 && scope.row.status == 1)"
                             @click="invalidDelete(scope.row.id, -2)" >失效</el-button>
-                        <el-button size="small" class="buttonBlue" v-if="scope.row.status == 1" @click="preview()">预览</el-button>
+                        <el-button size="small" class="buttonBlue" v-if="scope.row.status == 1" @click="preview(scope.row)">预览</el-button>
                         <el-button size="small" v-if="scope.row.status == 0 || scope.row.status == -1 || scope.row.status == -2"
                             @click="handleDelete(scope.row.id, -1)">删除</el-button>
                     </template>
                     </el-table-column>
                 </el-table>
-                <div class="shop-textr" v-if="goodsData.page.rowCount > 0">
+                <div class="shop-textr" v-if="goodsData.page.pageCount > 1">
                     <el-pagination
                         @size-change="handleSizeChange"
                         @current-change="handleCurrentChange"
@@ -104,13 +102,13 @@
             </el-tab-pane>
             <el-tab-pane label="批发商管理" name="2">
                 <div class="common-content">
-                     <div class="index-shopInfo" v-if="pifaData.page.rowCount > 0">
+                     <div class="index-shopInfo" >
                         <div class="index-input-box">
                             <el-input placeholder="搜索关键词" icon="search" class="max-input" @keyup.enter.native="handleIconClick"
                                 v-model="keyword" :on-icon-click="handleIconClick" >
                             </el-input>
                         </div>
-                        <el-button type="primary" @click="synData">同步成交数/金额</el-button>
+                        <el-button type="primary" @click="synData" v-if="pifaData.page.rowCount > 0">同步成交数/金额</el-button>
                     </div>
                      <el-table ref="multipleTable" :data="pifaData.page.subList" v-if="pifaData.page.rowCount > 0"
                         tooltip-effect="dark" style="width: 100%"
@@ -146,24 +144,43 @@
                         <el-table-column
                             label="状态">
                             <template scope="scope">
-                                <!-- <el-tooltip :content="'Switch value: ' + scope.row.is_use" placement="top"> -->
-                                <el-switch v-model="scope.row.is_use" 
-                                    on-text="开启" off-text="禁用"  @change="openDisable(scope.row.id,scope.row.is_use)">
+                                <el-switch v-model="scope.row.is_use" on-text="开启" off-text="禁用" :on-value=1 :off-value=-1 v-if="scope.row.status == 1"
+                                  @change="openDisable(scope.row.id,scope.row.is_use)">
                                 </el-switch>
-                                </el-tooltip>
+                                <div v-if="scope.row.status < 1">
+                                  <el-button type="primary" icon="check" size="mini" @click="checkStatus(1,scope.row)">通过</el-button>
+                                  <el-button type="danger" icon="close" size="mini" @click="checkStatus(-1,scope.row)">不通过</el-button>
+                                </div>
                             </template>
                         </el-table-column>
-                        <el-table-column
-                            label="操作"
-                            min-width="120">
+                        <el-table-column   width="120" type="expand" > 
+                          <template scope="props">
+                              <div class="table-expand2">
+                                <p >
+                                  <span class="labelss">公司名称：</span>
+                                  <span>{{ props.row.company_name }}</span>
+                                </p>
+                                <p>
+                                  <span class="labelss">电话：</span>
+                                  <span>{{ props.row.telephone }}</span>
+                                </p>
+                                <p  >
+                                  <span class="labelss">备注：</span>
+                                  <span>{{ props.row.remark }}</span>
+                                </p>
+                              </div>
+                          </template>
+                        </el-table-column>
+                        <!-- <el-table-column
+                           >
                         <template scope="scope">
                             <el-button size="small" class="buttonBlue"
                             @click="viewDetails(scope.row.name,scope.row.company_name,scope.row.telephone,scope.row.remark)"
                             >查看详情</el-button>
                         </template>
-                        </el-table-column>
+                        </el-table-column> -->
                     </el-table>
-                    <div style="margin-top: 20px">
+                    <div style="margin-top: 20px" v-if="pifaData.page.rowCount > 0">
                         <el-button @click="toggleSelection(pifaData.page.subList)">全选</el-button>
                         <el-button @click="toggleSelection()">取消选择</el-button>
                         <el-button @click="checkExamine(1)">通过</el-button>
@@ -207,44 +224,48 @@
             </el-tab-pane>
             <el-tab-pane label="批发设置" name="3">
                 <div class="common-content">
-                    <el-form ref="form" :model="form" label-width="140px">
+                    <el-form ref="form" :rules="rules" :model="form" label-width="140px">
                         <el-form-item label="混批条件：">
-                                <p style="margin-bottom:20px;">
-                                    <el-checkbox name="type" v-model="form.pfSet.isHpMoney">
-                                        一次性购买商品金额达
-                                        <el-input v-model="form.pfSet.hpMoney" class="mix-input" @blur="hpCheck">
-                                        <template slot="prepend">¥</template>
-                                        </el-input>
-                                    </el-checkbox>
-                                </p>
-                                <p>
-                                    <el-checkbox name="type" v-model="form.pfSet.isHpNum">
-                                        一次性购买数量达
-                                        <el-input v-model="form.pfSet.hpNum" class="mix-input" @blur="hpNumCheck"></el-input> 件
-                                    </el-checkbox>
-                                </p>
+                          <p style="margin-bottom:20px;">
+                            <el-form-item prop="hpMoney" >
+                              <el-checkbox name="type" v-model="form.pfSet.isHpMoney">
+                                  一次性购买商品金额达
+                                  <el-input v-model.number="form.pfSet.hpMoney" class="mix-input"  >
+                                  <template slot="prepend">¥</template>
+                                  </el-input>
+                              </el-checkbox>
+                            </el-form-item>
+                          </p>
+                          <p>
+                            <el-form-item  prop="isHpNum" >
+                              <el-checkbox name="type" v-model="form.pfSet.isHpNum">
+                                  一次性购买数量达
+                                  <el-input v-model.number="form.pfSet.hpNum" class="mix-input"  ></el-input> 件
+                              </el-checkbox>
+                             </el-form-item>
+                          </p>
                         </el-form-item>
-                        <el-form-item label="手批条件：">
+                        <el-form-item label="手批条件：" prop="spHand">
                             <!-- <el-checkbox-group v-model="form.type"> -->
                                 <el-checkbox name="type" v-model="form.pfSet.isSpHand">
                                     一次性购买商品达
-                                      <el-input v-model="form.pfSet.spHand" class="mix-input" @blur="spHandCheck"></el-input> 手
+                                      <el-input v-model="form.pfSet.spHand" class="mix-input" ></el-input> 手
                                 </el-checkbox> 
                             <!-- </el-checkbox-group> -->
                             <p class="p-warn">混批条件和手批条件必须设置一种</p>
                             <p class="p-warn">如果没有选择混批条件，我们会为您默认购买混批商品必须达到一件才能批发</p>
                             <p class="p-warn">如果没有选择手批条件，我们会为您默认购买手批商品必须达到一手才能批发</p>
                         </el-form-item>
-                        <el-form-item label="批发商说明：">
+                        <el-form-item label="批发商说明：" prop="pfRemark">
                             <el-input v-model="form.paySet.pfRemark" type="textarea" :rows="2"
                                 placeholder="请输入内容" style="width:420px"></el-input>
                         </el-form-item>
-                        <el-form-item label="批发商申请说明：">
+                        <el-form-item label="批发商申请说明：" prop="pfApplyRemark">
                             <el-input v-model="form.paySet.pfApplyRemark" type="textarea" :rows="2"
                                 placeholder="请输入内容" style="width:420px"></el-input>
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="primary" @click="onSubmit">保存</el-button>
+                            <el-button type="primary" @click="onSubmit('form')">保存</el-button>
                             <el-button @click="returnPage()">取消</el-button>
                         </el-form-item>
                     </el-form>
@@ -255,127 +276,148 @@
   </div>
 </template>
  <script>
-import Lib from 'assets/js/Lib';
-import contentNo from 'components/contentNo';
-import defaultImg from 'components/defaultImg';
+import Lib from "assets/js/Lib";
+import contentNo from "components/contentNo";
+import defaultImg from "components/defaultImg";
 export default {
   components: {
-    contentNo,defaultImg
+    contentNo,
+    defaultImg
   },
-  data () {
+  data() {
+    var formHpNum = (rule, value, callback) => {
+      let pfSet = this.form.pfSet;
+      value = pfSet.hpNum;
+      let reg = /^[0-9]{1,6}$/;
+      if (pfSet.isHpNum == 1) {
+        if (value === "") {
+          return callback(new Error("请输入混批数量"));
+        } else if (!reg.test(value) || value == 0) {
+          return callback(new Error("混批数量最多只能是大于0的6位数"));
+        }
+      }
+      if (pfSet.isHpMoney == 0 && pfSet.isHpNum == 0) {
+        return callback(new Error("必须选择一种混批条件"));
+      }
+      callback();
+    };
+    var formHpMoney = (rule, value, callback) => {
+      let pfSet = this.form.pfSet;
+      value = pfSet.hpMoney;
+      let reg = /^[0-9]{1,5}(\.\d{1,2})?$/;
+      if (pfSet.isHpMoney == 1) {
+        if (value === "") {
+          return callback(new Error("请输入混批金额"));
+        } else if (!reg.test(value) || value == 0) {
+          return callback(new Error("混批金额最多只能输入大于0的6位小数"));
+        }
+      }
+      if (pfSet.isHpMoney == 0 && pfSet.isHpNum == 0) {
+        return callback(new Error("必须选择一种混批条件"));
+      }
+      callback();
+    };
+    var formSpHand = (rule, value, callback) => {
+      value = this.form.pfSet.spHand;
+      let reg = /^[0-9]{1,6}$/;
+      if (this.form.pfSet.isSpHand == 1) {
+        if (value === "") {
+          return callback(new Error("请输入手批条件"));
+        } else if (!reg.test(value) || value == 0) {
+          return callback(new Error("手批条件最多只能输入大于0的6位数"));
+        }
+      } else {
+        return callback(new Error("必须选择一种手批条件"));
+      }
+      callback();
+    };
+    var formPfRemark = (rule, value, callback) => {
+      value = this.form.paySet.pfRemark;
+      if (value != "" && value.length > 1000) {
+        return callback(new Error("批发商说明字数不能超过100字"));
+      }
+      callback();
+    };
+    var formPfApplyRemark = (rule, value, callback) => {
+      value = this.form.paySet.pfApplyRemark;
+      if (value != "" && value.length > 1000) {
+        return callback(new Error("批发商申请说明字数不能超过100字"));
+      }
+      callback();
+    };
     return {
-      contentNo:'pifa',
-      activeName:'1',
-      type:'',
-      shopId:'',
+      contentNo: "pifa",
+      activeName: "1",
+      type: "",
+      shopId: "",
       goodsData: {
-          page:{
-              //rowCount : 0,
-              subList:[],
-          }
+        page: {
+          //rowCount : 0,
+          subList: []
+        }
       },
       shopList: [],
       pifaData: {
-          page:{
-              //rowCount:'',
-              subList:[],
-          }
+        page: {
+          //rowCount:'',
+          subList: []
+        }
       },
       form: {
-        pfSet : {},
-        paySet:{},
+        pfSet: {},
+        paySet: {}
       },
-      dialogViewDetails:false,
-      keyword:'',
-      detailName:'',
-      detailCompanyName : '',
-      detailTelphone : '',
-      detailRemark : '',
-      path:'',
-      multipleSelection : [],
-    }
+      rules: {
+        isHpNum: [{ validator: formHpNum, trigger: "blur" }],
+        hpMoney: [{ validator: formHpMoney, trigger: "blur" }],
+        spHand: [{ validator: formSpHand, trigger: "blur" }],
+        pfRemark: [{ validator: formPfRemark, trigger: "blur" }],
+        pfApplyRemark: [{ validator: formPfApplyRemark, trigger: "blur" }]
+      },
+      dialogViewDetails: false,
+      keyword: "",
+      detailName: "",
+      detailCompanyName: "",
+      detailTelphone: "",
+      detailRemark: "",
+      path: "",
+      multipleSelection: [],
+      videourl: null,
+      webPath: null
+    };
   },
-  watch:{
-    activeName :function(t,f){
-      let _href= window.location.href;
-      sessionStorage.setItem('href', _href);
+  watch: {
+    activeName: function(t, f) {
+      let _href = window.location.href;
+      sessionStorage.setItem("href", _href);
     },
-    $route :function(t,f){
-      this.activeName= t.params.activeName;
+    $route: function(t, f) {
+      this.activeName = t.params.activeName;
     }
   },
   methods: {
-    hpCheck(){//验证一次性购买金额
-        let reg = /^[0-9]{1,6}$/;
-        let money = this.form.pfSet.hpMoney;
-        let msg = '';
-        let flag = true;
-        if(money <= 0 || money == ''){
-            msg = '请填写混批条件一次性购买商品金额需要达多少元且大于0';
-            flag = false;
-        }else if(!reg.test(money)){
-            console.log(reg.test(money),' ....',money)
-            msg = '请重新输入大于0的六位数字';
-            flag = false;
-        }
-        if(msg != ''){
-            this.$message.error(msg);
-        }
-        return flag;
+    searchPifa() {
+      //批发列表搜索
+      this.mallWholesaleList(1);
     },
-    hpNumCheck(){//验证一次性购买数量
-        let reg = /^[0-9]{1,6}$/;
-        let num = this.form.pfSet.hpNum;
-        let msg = '';
-        let flag = true;
-        if(num < 1 || num == ''){
-            msg = '请填写混批条件一次性购买数量需要多少件且大于0';
-            flag = false;
-        }else if(!reg.test(num)){
-            msg = '请重新输入大于0的六位数字';
-            flag = false;
-        }
-        if(msg != ''){
-            this.$message.error(msg);
-        }
-        return flag;
+    handleIconClick() {
+      //批发商列表输入搜索关键词事件
+      this.mallPifaShangList(1);
     },
-    spHandCheck(){//验证一次性购买商品
-        let reg = /^[0-9]{1,6}$/;
-        let shoupi = this.form.pfSet.spHand;
-        let msg = '';
-        let flag = true;
-        if(shoupi < 1 || shoupi == ''){
-            msg = '请填写手批条件一次性购买商品需要达多少手且大于0';
-            flag = false;
-        }else if(!reg.test(shoupi)){
-            msg = '请重新输入大于0的六位数字';
-            flag = false;
-        }
-        if(msg != ''){
-            this.$message.error(msg);
-        }
-        return flag;
-    },
-    searchPifa(){//批发列表搜索
-        this.mallWholesaleList(1);
-    },
-    handleIconClick(){//批发商列表输入搜索关键词事件
-        this.mallPifaShangList(1);
-    },
-    returnPage(){//取消返回上一页
-        window.history.go(-1);
+    returnPage() {
+      //取消返回上一页
+      window.history.go(-1);
     },
     handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
-        this.mallWholesaleList(val);
+      console.log(`每页 ${val} 条`);
+      this.mallWholesaleList(val);
     },
     handleCurrentChange(val) {
       this.mallWholesaleList(val);
     },
     handleSizeChange1(val) {
-        console.log(`每页 ${val} 条`);
-        this.mallPifaShangList(val);
+      console.log(`每页 ${val} 条`);
+      this.mallPifaShangList(val);
     },
     handleCurrentChange1(val) {
       this.mallPifaShangList(val);
@@ -384,248 +426,285 @@ export default {
       let _activeName = tab.name;
       this.$router.push(_activeName);
     },
-    handleDelete(id,type){//删除批发事件
-      let _this= this;
-      let msg ={
-        'dialogTitle':'您确定要删除此批发活动吗？',//文本标题
-        'dialogMsg': '',//文本内容
-        'callback': {
-          'btnOne': function(){
-              _this.mallWholesaleDelete(id,type);
-          }
-        }
-      }
-      _this.$root.$refs.dialog.showDialog(msg); 
-    },
-    invalidDelete(id,type){//使批发活动失效事件
-      let _this= this;
-      let msg ={
-        'dialogTitle':'您确定要将此批发活动失效吗？',//文本标题
-        'dialogMsg': '失效后不能再进行交易',//文本内容
-        'callback': {
-          'btnOne': function(){
-              _this.mallWholesaleDelete(id,type);
-          }
-        }
-      }
-      _this.$root.$refs.dialog.showDialog(msg); 
-    },
-    toggleSelection(rows) {//取消选择事件
-        if (rows) {
-          rows.forEach(row => {
-            this.$refs.multipleTable.toggleRowSelection(row);
-          });
-        } else {
-          this.$refs.multipleTable.clearSelection();
-        }
-    },
-    handleSelectionChange(val) {//全选事件
-        this.multipleSelection = val;
-    },
-    onSubmit() {//保存批发设置
-        let _this = this;
-        if(!_this.form.pfSet.isHpMoney && !_this.form.pfSet.isHpNum && !_this.form.pfSet.isSpHand){
-            _this.$message.error('混批和手批条件中至少选择一种');
-            return 
-        }else if(_this.form.pfSet.isHpMoney && !_this.hpCheck()){
-            return 
-        }else if(_this.form.pfSet.isHpNum &&!_this.hpNumCheck()){
-            return 
-        }else if(_this.form.pfSet.isSpHand && !_this.spHandCheck()){
-            return 
-        }else{
-            let formParam = _this.$refs['form'].model.pfSet;
-            let pfSet = {};
-            pfSet.isHpMoney = Number(formParam.isHpMoney);
-            pfSet.isHpNum = Number(formParam.isHpNum);
-            pfSet.isSpHand = Number(formParam.isSpHand);
-            if(pfSet.isHpMoney != 0){
-                pfSet.hpMoney = formParam.hpMoney;
-            }
-            if(pfSet.isHpNum != 0){
-                pfSet.hpNum = formParam.hpNum;
-            }
-            if(pfSet.isSpHand != 0){
-                pfSet.spHand = formParam.spHand;
-            }
-            let pfRemark = _this.$refs['form'].model.paySet.pfRemark;
-            let pfApplyRemark = _this.$refs['form'].model.paySet.pfApplyRemark;
-            _this.ajaxRequest({
-                'url': DFshop.activeAPI.mallWholesaleSaveSet_post,
-                'data':{
-                    pfSet : JSON.stringify(pfSet),
-                    pfRemark : pfRemark,
-                    pfApplyRemark : pfApplyRemark
-                },
-                'success':function (data){
-                    if(data.code == 1){
-                        _this.$message({
-                            message: '保存设置成功',
-                            type: 'success'
-                        });
-                    }
-                    _this.mallSetWholesale();
-                }
-            });
-        }
-    },
-    /*查看详情 */
-    viewDetails(name,company,tel,remark){
-        this.dialogViewDetails=true;
-        this.detailName = name;
-        this.detailCompanyName = company;
-        this.detailTelphone = tel;
-        this.detailRemark = remark;
-    },
-    openDisable(id,isUse){//批发商启用、禁用
-        let openOrDisable = -1;
-        if(isUse){
-            openOrDisable = 1;
-        }
-        this.mallWholesalersUpdateStatus(id,openOrDisable,'');
-    },
-    checkExamine(status){//审核通过、不通过事件
-        let _this = this;
-        let ids = '';
-        if(_this.multipleSelection.length > 0){
-            $.each(_this.multipleSelection,function(i){
-                if(_this.multipleSelection.length == 1){
-                    ids += _this.multipleSelection[i].id ;
-                }else{
-                    ids += _this.multipleSelection[i].id + ',';
-                }
-            });
-            _this.mallWholesalersUpdateStatus(ids,'',status);
-        }
-    },
-    synData(){//同步批发商成交数量/金额
-        let _this= this;
-        _this.ajaxRequest({
-            'url': DFshop.activeAPI.mallWholesaleSyncOrderPifa_post,
-            'success':function (data){
-                if(data.code == 1){
-                    _this.$message({
-                        message: '同步成功',
-                        type: 'success'
-                    });
-                    _this.mallPifaShangList(1);
-                }
-            }
-        });
-    },
-    mallWholesaleList(pageNum){//批发列表
-        let _this= this;
-        _this.ajaxRequest({
-            'url': DFshop.activeAPI.mallWholesaleList_post,
-            'data':{
-            curPage : pageNum,
-            type : _this.type,
-            shopId : _this.shopId  
-            },
-            'success':function (data){
-                _this.goodsData = data.data;
-                _this.path = data.path;
-                _this.imgUrl = data.imgUrl;
-                $.each(_this.goodsData.page.subList,function(i){
-                    let oldTime = this.createTime;
-                    this.createTime = Lib.M.format(oldTime);
-                });
-                //console.log(_this.goodsData,'_this.goodsData');
-            }
-        });
-    },
-    mallWholesaleDelete(id,type){//使批发失效、删除方法
-        let _this= this;
-        _this.ajaxRequest({
-            'url': DFshop.activeAPI.mallWholesaleDelete_post,
-            'data':{
-                id : id,
-                type : type 
-            },
-            'success':function (data){
-                if(data.code == 1){
-                    _this.mallWholesaleList(_this.goodsData.page.curPage);
-                }
-                //_this.goodsData = data.data;
-                //console.log(_this.goodsData,'_this.goodsData');
-            }
-        });
-    },
-    mallPifaShangList(pageNum){//批发商管理列表
-        let _this= this;
-        _this.ajaxRequest({
-            'url': DFshop.activeAPI.mallPifaShangList_post,
-            'data':{
-                curPage : pageNum,
-                keyword : _this.keyword 
-            },
-            'success':function (data){
-                if(data.code == 1){
-                    _this.pifaData = data.data;
-                }
-                //_this.goodsData = data.data;
-                //console.log(_this.goodsData,'_this.goodsData');
-            }
-        });
-    },
-    mallWholesalersUpdateStatus(id,isUse,status){//批发商审核通过、不通过、启用、禁用方法
-        let _this= this;
-        _this.ajaxRequest({
-            'url': DFshop.activeAPI.mallWholesalersUpdateStatus_post,
-            'data':{
-                ids : id,
-                isUse : isUse,
-                status : status 
-            },
-            'success':function (data){
-                if(data.code == 1){
-                    _this.mallPifaShangList(_this.pifaData.page.curPage);
-                }
-                //_this.goodsData = data.data;
-                //console.log(_this.goodsData,'_this.goodsData');
-            }
-        });
-    },
-    mallSetWholesale(){//批发设置
-        let _this= this;
-        _this.ajaxRequest({
-            'url': DFshop.activeAPI.mallSetWholesale_post,
-            'success':function (data){
-                if(data.code == 1){
-                    _this.form = data.data;
-                    _this.form.pfSet.isHpMoney = !!data.data.pfSet.isHpMoney;
-                    _this.form.pfSet.isHpNum = !!data.data.pfSet.isHpNum;
-                    _this.form.pfSet.isSpHand = !!data.data.pfSet.isSpHand;
-                    console.log(_this.form,'_this.form');
-                }
-            }
-        });
-    },
-    preview(){//预览
-        let _this = this;
-        let msg ={
-            'title':'',
-            'urlQR': DFshop.activeAPI.mallStoreGenerateQRCode_get,
-            'pageLink': _this.path+'/views/marketing/index.html#/'
-        }
-        _this.$root.$refs.dialogQR.showDialog(msg);//调用方法
-    }
-  },
-  mounted(){
+    handleDelete(id, type) {
+      //删除批发事件
       let _this = this;
-      _this.activeName = _this.$route.params.activeName;
-      DFshop.method.storeList({
-        'success'(data){
-            _this.shopList = data.data;
+      let msg = {
+        dialogTitle: "您确定要删除此批发活动吗？", //文本标题
+        dialogMsg: "", //文本内容
+        callback: {
+          btnOne: function() {
+            _this.mallWholesaleDelete(id, type);
+          }
+        }
+      };
+      _this.$root.$refs.dialog.showDialog(msg);
+    },
+    invalidDelete(id, type) {
+      //使批发活动失效事件
+      let _this = this;
+      let msg = {
+        dialogTitle: "您确定要将此批发活动失效吗？", //文本标题
+        dialogMsg: "失效后不能再进行交易", //文本内容
+        callback: {
+          btnOne: function() {
+            _this.mallWholesaleDelete(id, type);
+          }
+        }
+      };
+      _this.$root.$refs.dialog.showDialog(msg);
+    },
+    toggleSelection(rows) {
+      //取消选择事件
+      if (rows) {
+        rows.forEach(row => {
+          this.$refs.multipleTable.toggleRowSelection(row);
+        });
+      } else {
+        this.$refs.multipleTable.clearSelection();
+      }
+    },
+    handleSelectionChange(val) {
+      //全选事件
+      this.multipleSelection = val;
+    },
+    onSubmit(formName) {
+      //保存批发设置
+      let _this = this;
+      let formParam = _this.$refs[formName].model.pfSet;
+      _this.$refs[formName].validate(valid => {
+        if (valid) {
+          let pfSet = {
+            isHpMoney: Number(formParam.isHpMoney),
+            isHpNum: Number(formParam.isHpNum),
+            isSpHand: Number(formParam.isSpHand)
+          };
+          if (pfSet.isHpMoney == 1) {
+            pfSet.hpMoney = formParam.hpMoney;
+          }
+          if (pfSet.isHpNum == 1) {
+            pfSet.hpNum = formParam.hpNum;
+          }
+          if (pfSet.isSpHand == 1) {
+            pfSet.spHand = formParam.spHand;
+          }
+          let pfRemark = _this.form.paySet.pfRemark;
+          let pfApplyRemark = _this.form.paySet.pfApplyRemark;
+          _this.ajaxRequest({
+            url: DFshop.activeAPI.mallWholesaleSaveSet_post,
+            data: {
+              pfSet: JSON.stringify(pfSet),
+              pfRemark: pfRemark,
+              pfApplyRemark: pfApplyRemark
+            },
+            success: function(data) {
+              _this.$message({
+                message: "保存设置成功",
+                type: "success"
+              });
+              _this.mallSetWholesale();
+            }
+          });
         }
       });
-      _this.mallWholesaleList(1);
-      _this.mallPifaShangList(1);
-      _this.mallSetWholesale();
+    },
+    /*查看详情 */
+    viewDetails(name, company, tel, remark) {
+      this.dialogViewDetails = true;
+      this.detailName = name;
+      this.detailCompanyName = company;
+      this.detailTelphone = tel;
+      this.detailRemark = remark;
+    },
+    openDisable(id, isUse) {
+      //批发商启用、禁用
+      let openOrDisable = -1;
+      if (isUse == 1) {
+        openOrDisable = 1;
+      }
+      this.mallWholesalersUpdateStatus(id, openOrDisable, "");
+    },
+    checkExamine(status) {
+      //审核通过、不通过事件
+      let _this = this;
+      let ids = [];
+      if (_this.multipleSelection.length > 0) {
+        let pifaList = _this.pifaData.page.subList;
+        for (let i = 0; i < _this.multipleSelection.length; i++) {
+          let selectionObj = _this.multipleSelection[i];
+          for (let j = 0; j < pifaList.length; j++) {
+            let pifa = pifaList[j];
+            if (pifa == 0) {
+              ids.push(selectionObj.id);
+            }
+          }
+        }
+        if (ids == null || ids.length == 0) {
+          _this.$message.error("您还没有未审核的批发商");
+          return;
+        }
+        _this.mallWholesalersUpdateStatus(ids.toString(), "", status);
+      }
+    },
+    checkStatus(status, obj) {
+      let _this = this;
+      let msg = status == 1 ? "通过" : "不通过";
+      this.$confirm("确认要" + msg + "此批发商?", "审核批发商", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+        _this.mallWholesalersUpdateStatus(obj.id, "", status);
+      });
+    },
+    synData() {
+      //同步批发商成交数量/金额
+      let _this = this;
+      _this.ajaxRequest({
+        url: DFshop.activeAPI.mallWholesaleSyncOrderPifa_post,
+        success: function(data) {
+          _this.$message({
+            message: "同步成功",
+            type: "success"
+          });
+          _this.mallPifaShangList(1);
+        }
+      });
+    },
+    //批发列表
+    mallWholesaleList(pageNum) {
+      let _this = this;
+      _this.ajaxRequest({
+        url: DFshop.activeAPI.mallWholesaleList_post,
+        data: {
+          curPage: pageNum,
+          type: _this.type,
+          shopId: _this.shopId
+        },
+        success: function(data) {
+          _this.goodsData = data.data;
+          _this.path = data.path;
+          _this.imgUrl = data.imgUrl;
+          _this.webPath = data.webPath;
+          _this.videourl = data.videourl;
+          $.each(_this.goodsData.page.subList, function(i) {
+            let oldTime = this.createTime;
+            this.createTime = Lib.M.format(oldTime);
+          });
+          //console.log(_this.goodsData,'_this.goodsData');
+        }
+      });
+    },
+    //使批发失效、删除方法
+    mallWholesaleDelete(id, type) {
+      let _this = this;
+      _this.ajaxRequest({
+        url: DFshop.activeAPI.mallWholesaleDelete_post,
+        data: {
+          id: id,
+          type: type
+        },
+        success: function(data) {
+          _this.mallWholesaleList(_this.goodsData.page.curPage);
+          //_this.goodsData = data.data;
+          //console.log(_this.goodsData,'_this.goodsData');
+        }
+      });
+    },
+    //批发商管理列表
+    mallPifaShangList(pageNum) {
+      let _this = this;
+      _this.ajaxRequest({
+        url: DFshop.activeAPI.mallPifaShangList_post,
+        data: {
+          curPage: pageNum,
+          keyword: _this.keyword
+        },
+        success: function(data) {
+          _this.pifaData = data.data;
+          //_this.goodsData = data.data;
+          //console.log(_this.goodsData,'_this.goodsData');
+        }
+      });
+    },
+    //批发商审核通过、不通过、启用、禁用方法
+    mallWholesalersUpdateStatus(id, isUse, status) {
+      let _this = this;
+      _this.ajaxRequest({
+        url: DFshop.activeAPI.mallWholesalersUpdateStatus_post,
+        data: {
+          ids: id,
+          isUse: isUse,
+          status: status
+        },
+        success: function(data) {
+          _this.mallPifaShangList(_this.pifaData.page.curPage);
+          //_this.goodsData = data.data;
+          //console.log(_this.goodsData,'_this.goodsData');
+        }
+      });
+    },
+    //批发设置
+    mallSetWholesale() {
+      let _this = this;
+      _this.ajaxRequest({
+        url: DFshop.activeAPI.mallSetWholesale_post,
+        success: function(data) {
+          _this.form = data.data;
+          _this.form.pfSet.isHpMoney = !!data.data.pfSet.isHpMoney;
+          _this.form.pfSet.isHpNum = !!data.data.pfSet.isHpNum;
+          _this.form.pfSet.isSpHand = !!data.data.pfSet.isSpHand;
+          console.log(_this.form, "_this.form");
+        }
+      });
+    },
+    //预览
+    preview(obj) {
+      let _this = this;
+      // console.log(obj, "obj", _this.imgUrl + imgUrl);
+      let msg = {
+        title: "预览",
+        urlQR: "",
+        path: _this.webPath,
+        pageLink:
+          "/goods/details/" +
+          obj.shopId +
+          "/" +
+          obj.userId +
+          "/1/" +
+          obj.productId +
+          "/" +
+          obj.id
+      };
+      _this.$root.$refs.dialogQR.showDialog(msg);
+    }
+  },
+  mounted() {
+    let _this = this;
+    _this.activeName = _this.$route.params.activeName;
+    _this.storeList({
+      success(data) {
+        _this.shopList = data.data;
+      }
+    });
+    _this.mallWholesaleList(1);
+    _this.mallPifaShangList(1);
+    _this.mallSetWholesale();
   }
-}
+};
 </script>
 
-<style lang="less" scoped>
-@import '../../../less/style.less';
+<style lang="less" >
+@import "../../../less/style.less";
+.table-expand2 {
+  p {
+    padding: 10px 0;
+    .labelss {
+      display: inline-block;
+      width: 90px;
+      color: #99a9bf;
+      text-align: right;
+    }
+  }
+}
 </style>
