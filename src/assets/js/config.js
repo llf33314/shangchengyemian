@@ -310,6 +310,29 @@
     purchaseCompanyDelete_post:'/purchase/E9lM9uM4ct/company/delete',
     /**查询所有的公司模板 */
     purchaseCompanyModeList_post:'/purchase/E9lM9uM4ct/company/companyModeList',
+
+    /**
+     * 积分商城相关接口
+     */
+    /**积分列表 */
+    mallIntegralList_post:'/mallIntegral/E9lM9uM4ct/list',
+    /**获取积分商品信息 */
+    mallIntegralInfo_post:'/mallIntegral/E9lM9uM4ct/integralInfo',
+    /**保存积分商品 */
+    mallIntegralSave_post:'/mallIntegral/E9lM9uM4ct/save',
+    /**设置积分的状态（删除，失效 ，启用） */
+    mallIntegralSetStatus_post:'/mallIntegral/E9lM9uM4ct/setStatus',
+
+    /**积分商城图片列表 */
+    mallIntegralImageList_post:'/mallIntegral/E9lM9uM4ct/image/list',
+    /**获取积分商城图片信息 */
+    mallIntegralImageInfo_post:'/mallIntegral/E9lM9uM4ct/image/imageInfo',
+    /**保存积分商城图片 */
+    mallIntegralImageSave_post:'/mallIntegral/E9lM9uM4ct/image/save',
+    /**设置积分的状态（删除，失效 ，启用） */
+    mallIntegralImageSetStatus_post:'/mallIntegral/E9lM9uM4ct/image/setStatus',
+    
+
   };
 
 
