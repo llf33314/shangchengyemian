@@ -20,10 +20,15 @@
         <el-table-column property="stockTotal" label="库存" width="120"></el-table-column>
         <el-table-column label="操作">
           <template scope="scope">
-            <el-button type="primary" @click="selectedData(scope.row)"
-            v-if="scope.row.groupStatus == -1 && scope.row.presaleStatus == -1 && scope.row.pro_type_id == 0 && 
-            scope.row.auctionStatus == -1&& scope.row.seckillStatus == -1&& scope.row.pifaStatus == -1">选取</el-button>
-            <span v-else>该商品是虚拟商品、已加入其他活动，不能加入</span>
+            <span v-if="scope.row.pro_type_id > 0">该商品是虚拟商品，不能加入</span>
+            <span v-else-if="scope.row.groupStatus == 1">该商品已加入团购，不可选</span>
+            <span v-else-if="scope.row.presaleStatus == 1">该商品已加入预售，不可选</span>
+            <span v-else-if="scope.row.auctionStatus == 1">该商品已加入拍卖，不可选</span>
+            <span v-else-if="scope.row.seckillStatus == 1">该商品已加入秒杀，不可选</span>
+            <span v-else-if="scope.row.pifaStatus == 1">该商品已加入批发，不可选</span>
+            <span v-else-if="scope.row.sellerStatus == 1">该商品已加入销售，不可选</span>
+            <span v-else-if="scope.row.integralStatus == 1">该商品已加入积分商城，不可选</span>
+            <el-button type="primary" @click="selectedData(scope.row)" v-else>选取</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -60,7 +65,9 @@ export default {
       defaultProId: "",
       shopId: "",
       proName: "",
-      imgPath: ""
+      imgPath: "",
+      isCommission: false, //是否是销售商品
+      isIntegral: false //是否是积分商品
     };
   },
   watch: {
@@ -72,6 +79,8 @@ export default {
           shopId: _this.shopId,
           proName: _this.proName,
           curPage: _this.pageNum,
+          isCommission: _this.isCommission ? 1 : 0,
+          isIntegral: _this.isIntegral ? 1 : 0,
           success(data) {
             _this.gridData = data.data;
             _this.imgPath = data.imgUrl;

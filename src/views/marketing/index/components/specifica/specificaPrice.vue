@@ -8,7 +8,7 @@
                 <th width="15%">原价</th>
                 <th width="15%">{{tipMsg || "拼团"}}价</th>
                 <th width="18%">库存</th>
-                <th width="11%">参与{{tipMsg || "团购"}}</th>
+                <th width="11%" v-if="isShowJoin">参与{{tipMsg || "团购"}}</th>
             </tr>
             <tr v-for="(row , index) in ruleForm.rowList" :key="index">
                 <td class="text-overflow" v-for="(value,index2) in row.specList" :key="index2">{{value.specificaValue}}</td>
@@ -29,12 +29,12 @@
                     </el-form-item>
                 </td>
                 <td class="text-overflow" >{{row.invNum}}</td>
-                <td >
+                <td  v-if="isShowJoin">
                     <el-checkbox v-model="row.isJoin" @change="changeData(row,index)" :label="'设为'+(tipMsg || '参团')"></el-checkbox>
                 </td>
             </tr>
             <tr class="p-tr">
-              <td :colspan="specificesList.length+4">
+              <td :colspan="[isShowJoin ? specificesList.length+4 : specificesList.length+3]">
                 <el-form-item label="批量设置价格：" class="pl-set newgroup">
                   <el-input v-model.number="price"  style="width:220px;">
                     <template slot="prepend" >¥</template>
@@ -60,6 +60,10 @@ export default {
     },
     tipMsg: {
       type: String
+    },
+    isShowJoin: {
+      type: Boolean,
+      default: false
     }
   },
   data: function() {
@@ -137,9 +141,6 @@ export default {
 </script>
 <style lang="less">
 .newgroup {
-  .el-form-item__content {
-    padding: 10px 0;
-  }
   .el-form-item__error {
     position: relative;
     top: 0%;
@@ -164,41 +165,8 @@ export default {
 // .fs-button {
 //   float: left;
 // }
-.p-tr {
-  td {
-    padding: 10px 0;
-  }
-}
 </style>
 
 <style lang="less" scoped>
-.order_tab {
-  width: 100%;
-  border-color: #dfe6ec;
-  border: 1px solid #dfe6ec;
-  .order_tab_header {
-    width: 100%;
-    background: #eef1f6;
-  }
-  td,
-  th {
-    // padding: 10px;
-    height: 40px;
-    line-height: 40px;
-    text-align: center;
-    border-right: 0px;
-  }
-}
 
-.dialog-list {
-  width: 100%;
-  margin-top: 25px;
-  & > span {
-    margin-right: 28px;
-  }
-}
-tr:hover {
-  // transition: background-color .25s ease;
-  background: #eef1f6;
-}
 </style>

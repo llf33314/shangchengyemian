@@ -10,16 +10,16 @@
       <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
         <el-tab-pane label="基本规则设置" name="1">
           <div class="common-content" style="padding: 40px 0;">
-            <el-form ref="setupForm" :model="setupForm" label-width="90px">
-              <el-form-item label="积分奖励 :">
+            <el-form ref="setupForm" :model="setupForm"  :rules="rules"  label-width="90px">
+              <el-form-item label="积分奖励 :" prop="integralReward">
                 每推荐1人关注商城公众号，可奖励
-                <el-input v-model="setupForm.integralReward" class="mix-input" @blur="checkJinfen"></el-input>
+                <el-input v-model.number="setupForm.integralReward" class="mix-input"  style="width:85px"></el-input>
                 积分
                 <p class="p-warn">最多输入5位小数</p>
               </el-form-item>
-              <el-form-item label="成为销售员 :">
+              <el-form-item label="成为销售员 :" prop="consumeMoney">
                  当消费金额满
-                <el-input v-model="setupForm.consumeMoney" class="mix-input">
+                <el-input v-model.number="setupForm.consumeMoney" class="mix-input" style="width:115px">
                   <template slot="prepend">¥</template>
                 </el-input>
                 可申请成为超级销售员
@@ -28,18 +28,22 @@
               <el-form-item label="提现规则 :">
                 <el-radio-group v-model="setupForm.withdrawalType" @change="choiceWithdrawl">
                   <p style="margin-bottom: 20px;">
-                    <el-radio :label="1">最低可提现
-                      <el-input v-model="setupForm.withdrawalLowestMoney" class="mix-input">
-                        <template slot="prepend">¥</template>
-                      </el-input>
-                    </el-radio>
+                    <el-form-item prop="withdrawalLowestMoney">
+                      <el-radio :label="1">最低可提现
+                        <el-input v-model.number="setupForm.withdrawalLowestMoney" class="mix-input" style="width:88px">
+                          <template slot="prepend">¥</template>
+                        </el-input>
+                      </el-radio>
+                    </el-form-item>
                   </p>
                   <p>
-                  <el-radio :label="2">按
-                    <el-input v-model="setupForm.withdrawalMultiple" class="mix-input">
-                      <template slot="prepend">¥</template>
-                    </el-input>倍数提现
-                  </el-radio>
+                  <el-form-item prop="withdrawalMultiple" class="multiple-div">
+                    <el-radio :label="2">按
+                      <el-input v-model.number="setupForm.withdrawalMultiple" class="mix-input" style="width:88px">
+                        <template slot="prepend">¥</template>
+                      </el-input>倍数提现
+                    </el-radio>
+                  </el-form-item>
                   </p>
                 </el-radio-group>
                 <p class="p-warn">提现规则为最低1元，最高2000元</p>
@@ -56,11 +60,12 @@
         </el-tab-pane>
         <el-tab-pane label="商品佣金设置" name="2">
            <div class="common-content">
-             <div class="index-shopInfo" v-if="goodsData.page.rowCount > 0">
+             <div class="index-shopInfo">
               <div class="index-input-box">
                 <span>
                   选择店铺 :
-                  <el-select v-model="shopId" placeholder="请选择" @change="searchChose">
+                  <el-select v-model="shopId" placeholder="请选择" @change="searchChose" v-if="shopList != null">
+                     <el-option class="max-input" label="全部" :value="0"></el-option>
                     <el-option class="max-input" v-for="item in shopList"
                       :key="item.id" :label="item.sto_name" :value="item.id">
                     </el-option>
@@ -80,7 +85,8 @@
                 <el-button type="primary" @click="jumpRouter('/addBond/0')">新建商品佣金</el-button>
               <!-- </router-link> -->
              </div>
-              <el-table :data="goodsData.page.subList" style="width: 100%" v-if="goodsData.page.rowCount > 0">
+              <el-table v-loading.body="loading" element-loading-text="拼命加载中" 
+              :data="goodsData.page.subList" style="width: 100%" v-if="goodsData.page.rowCount > 0 || loading">
                 <el-table-column
                   prop="pro_name"
                   label="商品名称">
@@ -108,12 +114,12 @@
                         v-if="scope.row.is_use === 0">启用</el-button>
                     <el-button size="small" class="buttonBlue" @click="setCommissionStatus(scope.row.id,-1)"
                         v-if="scope.row.is_use === 1">禁用</el-button>
-                    <el-button size="small"class="buttonBlue" @click="preview(scope.row.two_code_path)">预览</el-button>
+                    <el-button size="small"class="buttonBlue" @click="preview(scope.row)">预览</el-button>
                     <el-button size="small" @click="setCommissionStatus(scope.row.id,-3)">删除</el-button>
                   </template>
                 </el-table-column>
               </el-table>
-              <div class="shop-textr" v-if="goodsData.page.rowCount > 0">
+              <div class="shop-textr" v-if="goodsData.page.rowCount > 1">
                   <el-pagination
                       @size-change="handleSizeChange"
                       @current-change="handleCurrentChange"
@@ -223,7 +229,7 @@
                 label="操作"
                 min-width="180">
                 <template scope="scope">
-                  <el-button size="small" class="buttonBlue" @click="jumpRouter('/marketing/3')">推荐列表</el-button>
+                  <el-button size="small" class="buttonBlue" @click="recomment(scope.row)">推荐列表</el-button>
                   <el-button size="small" class="buttonBlue" @click="jumpRouter('/marketing/5')">提现记录</el-button>
                   <el-button size="small" v-if="scope.row.is_start_use == 1" 
                     @click="setSellerStatus(scope.row.id,scope.row.user_name,-1)">暂停</el-button>
@@ -308,165 +314,172 @@
 </template>
 
 <script>
-
-import Lib from 'assets/js/Lib';
-import contentNo from 'components/contentNo';
+import Lib from "assets/js/Lib";
+import contentNo from "components/contentNo";
 export default {
-
   components: {
-    contentNo,
+    contentNo
   },
-  data () {
+  data() {
+    var formRule = (rule, value, callback) => {
+      let type = this.setupForm.withdrawalType;
+      if (type == 1) {
+        if (value < 1 || value > 2000) {
+          return callback(new Error("提现规则为最低1元，最高2000元"));
+        }
+      }
+      callback();
+    };
+    var formRule2 = (rule, value, callback) => {
+      let type = this.setupForm.withdrawalType;
+      if (type == 2) {
+        if (value < 1 || value > 2000) {
+          return callback(new Error("提现规则为最低1元，最高2000元"));
+        }
+      }
+      callback();
+    };
     return {
-      activeName: '1' ,
-      contentNo:'commission',
+      activeName: "1",
+      contentNo: "commission",
       cashDate: [],
-      cashShop:'',
-      keyWord_sellers:'',
-      keyWord_tixian:'',
-      keyWord:'',
+      cashShop: "",
+      keyWord_sellers: "",
+      keyWord_tixian: "",
+      keyWord: "",
       setupForm: {
-        integralReward: '',//积分
-        consumeMoney: '',//销售员
-        withdrawalType: 1,//提现
-        withdrawalLowestMoney:'',//最低提现
-        withdrawalMultiple:'',//按倍数提现
-        sellerRemark: '',//说明
+        integralReward: "", //积分
+        consumeMoney: "", //销售员
+        withdrawalType: 1, //提现
+        withdrawalLowestMoney: "", //最低提现
+        withdrawalMultiple: "", //按倍数提现
+        sellerRemark: "" //说明
+      },
+      rules: {
+        integralReward: [
+          {
+            min: 0,
+            max: 99999.99,
+            type: "number",
+            trigger: "blur",
+            message: "最多只能输入5位小数"
+          }
+        ],
+        consumeMoney: [
+          {
+            min: 0,
+            max: 99999.99,
+            type: "number",
+            trigger: "blur",
+            message: "最多只能输入5位小数"
+          }
+        ],
+        withdrawalLowestMoney: [
+          {
+            validator: formRule,
+            trigger: "blur",
+            message: "提现规则为最低1元，最高2000元"
+          }
+        ],
+        withdrawalMultiple: [
+          {
+            validator: formRule2,
+            trigger: "blur",
+            message: "提现规则为最低1元，最高2000元"
+          }
+        ]
       },
       goodsData: {
-        page:{
-          subList:[],
+        page: {
+          subList: []
         }
       },
       shopList: [],
       examineData: {
-        page:{
-          subList:[],
+        page: {
+          subList: []
         }
       },
-      saleData:{
-        page:{
-          subList:[],
+      saleData: {
+        page: {
+          subList: []
         }
       },
-      sellersList:{
-        page:{
-          subList:[],
+      sellersList: {
+        page: {
+          subList: []
         }
       },
-      shopId:'',
-      isUse:'',
+      shopId: "",
+      isUse: "",
       restaurants: [],
-      state4: '',
-      timeout:  null,
-      imgUrl : '',
-      path : '',
-    }
+      state4: "",
+      timeout: null,
+      imgUrl: "",
+      path: "",
+      webPath: "",//
+      loading: true,//是否开启loading
+      saleMemberId:0//销售员id
+    };
   },
-  watch:{
-    activeName :function(t,f){
-      let _href= window.location.href;
-      sessionStorage.setItem('href', _href);
+  watch: {
+    activeName: function(t, f) {
+      let _href = window.location.href;
+      sessionStorage.setItem("href", _href);
     },
-    $route :function(t,f){
-      this.activeName= t.params.activeName;
+    $route: function(t, f) {
+      this.activeName = t.params.activeName;
     }
   },
   methods: {
-    checkJinfen(){//验证积分
-      let reg = /^[0-9]\d*$/;
-      if(!reg.test(this.setupForm.integralReward) && this.setupForm.integralReward != ''){
-        this.setupForm.integralReward == ''
-        this.$message.error('积分奖励必须为数字');
-        return false;
-      }else if(this.setupForm.integralReward.length > 5){
-        this.$message.error('积分奖励最多输入5位');
-        return false;
-      }
-      return true;
-    },
-    choiceWithdrawl(){//提现规则改变事件
-        if(this.setupForm.withdrawalType == 1){
-          this.setupForm.withdrawalMultiple = '';
-        }else{
-          this.setupForm.withdrawalLowestMoney = '';
-        }
-    },
-    checkConsumeMoney(){//验证成为销售员消费金额
-      let reg = /^[0-9]\d*$/;
-      if(this.setupForm.consumeMoney != '' && !reg.test(this.setupForm.consumeMoney)){
-        this.setupForm.consumeMoney == '';
-        this.$message.error('消费金额必须为数字');
-        return false;
-      }else if(this.setupForm.consumeMoney.length > 5){
-        this.$message.error('消费金额最多输入5位');
-        return false;
-      }
-      return true;
-    },
-    checkWithdrawal(){//验证提现规则
-      let reg = /^[0-9]\d*$/;
-      if(this.setupForm.withdrawalType == 1){
-        if(this.setupForm.withdrawalLowestMoney != '' && !reg.test(this.setupForm.withdrawalLowestMoney)){
-          this.setupForm.withdrawalLowestMoney == '';
-          this.$message.error('最低可提现金额必须为数字');
-          return false;
-        }else if(this.setupForm.withdrawalLowestMoney > 2000 || this.setupForm.withdrawalLowestMoney < 1){
-          this.$message.error('提现规则为最低1元，最高2000元');
-          return false;
-        }
-        return true;
-      }else{
-        if(this.setupForm.withdrawalMultiple != '' && !reg.test(this.setupForm.withdrawalMultiple)){
-          this.setupForm.withdrawalMultiple == '';
-          this.$message.error('按倍数提现金额必须为数字');
-          return false;
-        }else if(this.setupForm.withdrawalMultiple > 2000 || this.setupForm.withdrawalMultiple < 1){
-          this.$message.error('提现规则为最低1元，最高2000元');
-          return false;
-        }
-        return true;
+    choiceWithdrawl() {
+      //提现规则改变事件
+      if (this.setupForm.withdrawalType == 1) {
+        this.setupForm.withdrawalMultiple = "";
+      } else {
+        this.setupForm.withdrawalLowestMoney = "";
       }
     },
-    searchExamine(){//推荐审核搜索框
+    searchExamine() {
+      //推荐审核搜索框
       this.mallSellersCheckList(this.examineData.page.curPage);
     },
-    searchSeller(){//销售员搜索框
+    searchSeller() {
+      //销售员搜索框
       this.mallSellersList(this.sellersList.page.curPage);
     },
-    searchSale(){//提现搜索框
+    searchSale() {
+      //提现搜索框
       this.mallSellersWithDrawList(this.saleData.page.curPage);
     },
-    onSubmit(formName) {//保存基本设置事件
+    onSubmit(formName) {
+      //保存基本设置事件
       //onsole.log('submit!');
-      let _this = this;
-      let jinfen = _this.checkJinfen();
-      let money = _this.checkConsumeMoney();
-      let withdrawal = _this.checkWithdrawal();
-      if(jinfen && money && withdrawal){
-        let param = {};
-        param = JSON.parse(JSON.stringify(_this.$refs[formName].model));
-        if(param.withdrawalType == 1){
-          param.withdrawalMultiple = '';
-        }else{
-          param.withdrawalLowestMoney = '';
-        }
-        param.sellerRemark = _this.$refs[formName].model.sellerRemark;
-        _this.ajaxRequest({
-          'url': DFshop.activeAPI.mallSellersSaveSellerSet_post,
-          'data': {sellerSet:param},
-          'success':function (data){
-            if(data.code == 1){
-              _this.$message({
-                  message: '保存成功',
-                  type: 'success'
-              });
-              _this.mallSellersGetSellerSet();
-            }
-            //window.location.reload();
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          let _this = this;
+          let param = {};
+          param = JSON.parse(JSON.stringify(_this.$refs[formName].model));
+          if (param.withdrawalType == 1) {
+            param.withdrawalMultiple = "";
+          } else {
+            param.withdrawalLowestMoney = "";
           }
-        });
-      }
+          param.sellerRemark = _this.$refs[formName].model.sellerRemark;
+          _this.ajaxRequest({
+            url: DFshop.activeAPI.mallSellersSaveSellerSet_post,
+            data: { sellerSet: param },
+            success: function(data) {
+              _this.$message({
+                message: "保存成功",
+                type: "success"
+              });
+              // _this.mallSellersGetSellerSet();
+              //window.location.reload();
+            }
+          });
+        }
+      });
     },
     handleSizeChange(val) {
       this.mallSellersJoinProduct(val);
@@ -493,276 +506,299 @@ export default {
       this.mallSellersWithDrawList(val);
     },
     handleClick(tab, event) {
-     let _activeName = tab.name;
-     this.$router.push(_activeName);
+      let _activeName = tab.name;
+      this.$router.push(_activeName);
     },
-    refuseExamine(sellerId,checkStatus){//推荐审核拒绝弹出框
-      let _this= this;
-      let msg ={
-        'dialogTitle':'确定拒绝该审核吗？',//文本标题
-        'dialogMsg': '',//文本内容
-        'callback': {
-          'btnOne': function(){
-            _this.mallSellersCheckSeller(sellerId,checkStatus);
+    refuseExamine(sellerId, checkStatus) {
+      //推荐审核拒绝弹出框
+      let _this = this;
+      let msg = {
+        dialogTitle: "确定拒绝该审核吗？", //文本标题
+        dialogMsg: "", //文本内容
+        callback: {
+          btnOne: function() {
+            _this.mallSellersCheckSeller(sellerId, checkStatus);
           }
         }
-      }
-      _this.$root.$refs.dialog.showDialog(msg);   
-    },
-    passExamine(sellerId,checkStatus){//推荐审核通过弹出框
-      let _this= this;
-      let msg ={
-        'dialogTitle':'确定通过该审核吗？',//文本标题
-        'dialogMsg': '',//文本内容
-        'callback': {
-          'btnOne': function(){
-            _this.mallSellersCheckSeller(sellerId,checkStatus);
-          }
-        }
-      }
-      _this.$root.$refs.dialog.showDialog(msg);   
-    },
-    setSellerStatus(id,name,type){//设置销售员暂停、启用事件
-      let _this= this;
-      msg = '确认将销售员'+name;
-      if(type === 1){
-        msg += '启用吗？';
-      }else{
-        msg += '暂停吗？';
-      }
-      let msg ={
-        'dialogTitle':msg,//文本标题
-        'dialogMsg': '',//文本内容
-        'callback': {
-          'btnOne': function(){
-            _this.mallSellerStartUseSeller(id,type);
-          }
-        }
-      }
+      };
       _this.$root.$refs.dialog.showDialog(msg);
     },
-    /*搜索 */ 
+    passExamine(sellerId, checkStatus) {
+      //推荐审核通过弹出框
+      let _this = this;
+      let msg = {
+        dialogTitle: "确定通过该审核吗？", //文本标题
+        dialogMsg: "", //文本内容
+        callback: {
+          btnOne: function() {
+            _this.mallSellersCheckSeller(sellerId, checkStatus);
+          }
+        }
+      };
+      _this.$root.$refs.dialog.showDialog(msg);
+    },
+    setSellerStatus(id, name, type) {
+      //设置销售员暂停、启用事件
+      let _this = this;
+      msg = "确认将销售员" + name;
+      if (type === 1) {
+        msg += "启用吗？";
+      } else {
+        msg += "暂停吗？";
+      }
+      let msg = {
+        dialogTitle: msg, //文本标题
+        dialogMsg: "", //文本内容
+        callback: {
+          btnOne: function() {
+            _this.mallSellerStartUseSeller(id, type);
+          }
+        }
+      };
+      _this.$root.$refs.dialog.showDialog(msg);
+    },
+    /*搜索 */
+
     loadAll() {
       return [
-        { "value": "三全鲜食（北新泾店）", "address": "长宁区新渔路144号" },
-        { "value": "Hot honey 首尔炸鸡（仙霞路）", "address": "上海市长宁区淞虹路661号" },
-        { "value": "新旺角茶餐厅", "address": "上海市普陀区真北路988号创邑金沙谷6号楼113" },
+        { value: "三全鲜食（北新泾店）", address: "长宁区新渔路144号" },
+        { value: "Hot honey 首尔炸鸡（仙霞路）", address: "上海市长宁区淞虹路661号" },
+        { value: "新旺角茶餐厅", address: "上海市普陀区真北路988号创邑金沙谷6号楼113" }
       ];
     },
-    // querySearchAsync(queryString, cb) {
-    //   var restaurants = this.restaurants;
-    //   var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
-
-    //   clearTimeout(this.timeout);
-    //   this.timeout = setTimeout(() => {
-    //     cb(results);
-    //   }, 3000 * Math.random());
-    // },
-    // createStateFilter(queryString) {
-    //   return (state) => {
-    //     return (state.value.indexOf(queryString.toLowerCase()) === 0);
-    //   };
-    // },
     handleSelect(item) {
       console.log(item);
     },
-    searchChose(){
+    searchChose() {
+      this.loading = true;
       this.mallSellersJoinProduct(1);
     },
-    mallSellersGetSellerSet(){//超级销售员基础设置
-      let _this= this;
+    mallSellersGetSellerSet() {
+      //超级销售员基础设置
+      let _this = this;
       _this.ajaxRequest({
-        'url': DFshop.activeAPI.mallSellersGetSellerSet_post,
-        'success':function (data){
-           _this.setupForm = data.data.sellerSet;
-           //console.log(_this.setupForm,'setupForm')
+        url: DFshop.activeAPI.mallSellersGetSellerSet_post,
+        success: function(data) {
+          _this.setupForm = data.data.sellerSet;
+          //console.log(_this.setupForm,'setupForm')
         }
       });
     },
-    mallSellersJoinProduct(pageNum){//商品佣金设置列表
-      let _this= this;
+    mallSellersJoinProduct(pageNum) {
+      //商品佣金设置列表
+      let _this = this;
       _this.ajaxRequest({
-        'url': DFshop.activeAPI.mallSellersJoinProduct_post,
-        'data':{
-            curPage : pageNum,
-            shopId : _this.shopId,
-            isUse : _this.isUse
+        url: DFshop.activeAPI.mallSellersJoinProduct_post,
+        data: {
+          curPage: pageNum,
+          shopId: _this.shopId,
+          isUse: _this.isUse
         },
-        'success':function (data){
-           _this.goodsData = data.data;
-           _this.imgUrl = data.imgUrl;
-           _this.path = data.path;
-           $.each(_this.goodsData.page.subList,function(i){
-             let oldTime = this.create_time;
-             this.create_time = Lib.M.format(oldTime);
-           });
-           //console.log(_this.goodsData,'goodsData')
+        success: function(data) {
+          _this.goodsData = data.data;
+          _this.imgUrl = data.imgUrl;
+          _this.path = data.path;
+          _this.webPath = data.webPath;
+          _this.loading = false;
+          $.each(_this.goodsData.page.subList, function(i) {
+            let oldTime = this.create_time;
+            this.create_time = Lib.M.format(oldTime);
+          });
+          //console.log(_this.goodsData,'goodsData')
         }
       });
     },
-    mallSellersCheckList(pageNum){//推荐审核列表
-      let _this= this;
+    mallSellersCheckList(pageNum) {
+      //推荐审核列表
+      let _this = this;
       _this.ajaxRequest({
-        'url': DFshop.activeAPI.mallSellersCheckList_post,
-        'data':{
-            curPage : pageNum,
-            keyWord : _this.keyWord
+        url: DFshop.activeAPI.mallSellersCheckList_post,
+        data: {
+          curPage: pageNum,
+          keyWord: _this.keyWord
         },
-        'success':function (data){
-           _this.examineData = data.data;
-           $.each(_this.examineData.page.subList,function(i){
-             let oldTime = this.apply_time;
-             this.apply_time = Lib.M.formatNot(oldTime);
-           });
-           //console.log(_this.examineData,'examineData')
+        success: function(data) {
+          _this.examineData = data.data;
+          $.each(_this.examineData.page.subList, function(i) {
+            let oldTime = this.apply_time;
+            this.apply_time = Lib.M.formatNot(oldTime);
+          });
+          //console.log(_this.examineData,'examineData')
         }
       });
     },
-    mallSellersCheckSeller(sellerId,checkStatus){//推荐审核通过、拒绝方法
-      let _this= this;
-      let msg = '';
-      if(checkStatus === 1){
-        msg = '审核通过';
-      }else{
-        msg = '审核不通过'
+    mallSellersCheckSeller(sellerId, checkStatus) {
+      //推荐审核通过、拒绝方法
+      let _this = this;
+      let msg = "";
+      if (checkStatus === 1) {
+        msg = "审核通过";
+      } else {
+        msg = "审核不通过";
       }
       _this.ajaxRequest({
-        'url': DFshop.activeAPI.mallSellersCheckSeller_post,
-        'data':{
-            id : sellerId,
-            checkStatus : checkStatus
+        url: DFshop.activeAPI.mallSellersCheckSeller_post,
+        data: {
+          id: sellerId,
+          checkStatus: checkStatus
         },
-        'success':function (data){
-           _this.$message({
-              message: msg,
-              type: 'success'
-           });
-           _this.mallSellersCheckList(_this.examineData.page.curPage);
-           console.log(data,'data')
+        success: function(data) {
+          _this.$message({
+            message: msg,
+            type: "success"
+          });
+          _this.mallSellersCheckList(_this.examineData.page.curPage);
+          console.log(data, "data");
         }
       });
     },
-    mallSellersList(pageNum){//销售员列表
-      let _this= this;
+    mallSellersList(pageNum) {
+      //销售员列表
+      let _this = this;
+      let _data = {
+        curPage: pageNum,
+        keyWord: _this.keyWord_sellers
+      };
+      if(_this.saleMemberId > 0){
+        _data.saleMemId = _this.saleMemberId;
+      }
       _this.ajaxRequest({
-        'url': DFshop.activeAPI.mallSellersList_post,
-        'data':{
-            curPage : pageNum,
-            keyWord : _this.keyWord_sellers
-        },
-        'success':function (data){
-           _this.sellersList = data.data;
-           $.each(_this.sellersList.page.subList,function(i){
-             if(this.add_time != undefined && this.add_time != ''){
+        url: DFshop.activeAPI.mallSellersList_post,
+        data: _data,
+        success: function(data) {
+          _this.sellersList = data.data;
+          $.each(_this.sellersList.page.subList, function(i) {
+            if (this.add_time != undefined && this.add_time != "") {
               let oldTime = this.add_time;
               this.add_time = Lib.M.format(oldTime);
-             }
-           });
-           console.log(_this.sellersList,'sellersList')
+            }
+          });
+          console.log(_this.sellersList, "sellersList");
         }
       });
     },
-    mallSellersWithDrawList(pageNum){//提现列表
-      let _this= this;
-      let startTime = '';
-      let endTime = '';
+    recomment(obj) {
+      //推荐列表
+      // console.log(obj)
+      this.saleMemberId = obj.member_id;
+      this.mallSellersList(1);
+    },
+    mallSellersWithDrawList(pageNum) {
+      //提现列表
+      let _this = this;
+      let startTime = "";
+      let endTime = "";
       let cashTime = _this.cashDate;
-      if(cashTime != ''){
+      if (cashTime != "") {
         startTime = Lib.M.format(new Date(cashTime[0]));
         endTime = Lib.M.format(new Date(cashTime[1]));
       }
       _this.ajaxRequest({
-        'url': DFshop.activeAPI.mallSellersWithDrawList_post,
-        'data':{
-            curPage : pageNum,
-            keyWord : _this.keyWord_tixian,
-            startTime : startTime,
-            endTime : endTime
+        url: DFshop.activeAPI.mallSellersWithDrawList_post,
+        data: {
+          curPage: pageNum,
+          keyWord: _this.keyWord_tixian,
+          startTime: startTime,
+          endTime: endTime
         },
-        'success':function (data){
+        success: function(data) {
           //console.log(data,'data')
-           _this.saleData = data.data;
-           $.each(_this.saleData.page.subList,function(i){
-             let oldTime = this.applay_time;
-             this.applay_time = Lib.M.format(oldTime);
-           });
-           console.log(_this.saleData,'saleData')
+          _this.saleData = data.data;
+          $.each(_this.saleData.page.subList, function(i) {
+            let oldTime = this.applay_time;
+            this.applay_time = Lib.M.format(oldTime);
+          });
+          console.log(_this.saleData, "saleData");
         }
       });
     },
-    preview(imgUrl){//商品佣金列表预览方法
+    preview(obj) {
+      console.log(obj, "obj");
+      //商品佣金列表预览方法
       let _this = this;
-      let msg ={
-        'title':'',
-        'imgUrl':_this.imgUrl+imgUrl,
-        'urlQR': '',
-        'pageLink': _this.path+'/views/marketing/index.html#/'
-      }
+      let msg = {
+        title: "预览",
+        urlQR: "",
+        path: _this.webPath,
+        pageLink:
+          "/goods/details/" +
+          obj.shop_id +
+          "/" +
+          obj.user_id +
+          "/8/" +
+          obj.product_id +
+          "/" +
+          obj.id +
+          "/0/view"
+      };
       _this.$root.$refs.dialogQR.showDialog(msg);
     },
-    setCommissionStatus(id,type){//商品拥金列表已禁用、已启用、已删除方法
-      let _this= this;
-      let msg = '';
-      if(type === -1){
-        msg = '已禁用';
-      }else if(type === -2){
-        msg = '已启用';
-      }else{
-        msg = '已删除';
+    setCommissionStatus(id, type) {
+      //商品拥金列表已禁用、已启用、已删除方法
+      let _this = this;
+      let msg = "";
+      if (type === -1) {
+        msg = "已禁用";
+      } else if (type === -2) {
+        msg = "已启用";
+      } else {
+        msg = "已删除";
       }
       _this.ajaxRequest({
-        'url': DFshop.activeAPI.mallSellerSetJoinProductStatus_post,
-        'data':{
-            id : id,
-            type : type
+        url: DFshop.activeAPI.mallSellerSetJoinProductStatus_post,
+        data: {
+          id: id,
+          type: type
         },
-        'success':function (data){
-           _this.$message({
-              message: msg,
-              type: 'success'
-           });
-           _this.mallSellersJoinProduct(_this.goodsData.page.curPage);
-           //console.log(_this.saleData,'saleData')
+        success: function(data) {
+          _this.$message({
+            message: msg,
+            type: "success"
+          });
+          _this.mallSellersJoinProduct(_this.goodsData.page.curPage);
+          //console.log(_this.saleData,'saleData')
         }
       });
     },
-    mallSellerStartUseSeller(id,type){//销售员暂停、启用方法
-      let _this= this;
-      let msg = '';
-      if(type === -1){
-        msg = '已暂停';
-      }else{
-        msg = '已启用';
+    mallSellerStartUseSeller(id, type) {
+      //销售员暂停、启用方法
+      let _this = this;
+      let msg = "";
+      if (type === -1) {
+        msg = "已暂停";
+      } else {
+        msg = "已启用";
       }
       _this.ajaxRequest({
-        'url': DFshop.activeAPI.mallSellerStartUseSeller_post,
-        'data':{
-            id : id,
-            isStartUse : type
+        url: DFshop.activeAPI.mallSellerStartUseSeller_post,
+        data: {
+          id: id,
+          isStartUse: type
         },
-        'success':function (data){
-           _this.$message({
-              message: msg,
-              type: 'success'
-           });
-           _this.mallSellersList(_this.sellersList.page.curPage);
-           //console.log(_this.saleData,'saleData')
+        success: function(data) {
+          _this.$message({
+            message: msg,
+            type: "success"
+          });
+          _this.mallSellersList(_this.sellersList.page.curPage);
+          //console.log(_this.saleData,'saleData')
         }
       });
     },
-    cashSearch(){//提现时间选择改变事件
+    cashSearch() {
+      //提现时间选择改变事件
       this.mallSellersWithDrawList(1);
     }
   },
-  mounted(){
+  mounted() {
     let _this = this;
     _this.activeName = _this.$route.params.activeName;
     //_this.restaurants = _this.loadAll();
 
-    DFshop.method.storeList({
-      'success'(data){
+    _this.storeList({
+      success(data) {
         _this.shopList = data.data;
-        console.log(_this.shopList,'shopList')
+        console.log(_this.shopList, "shopList");
       }
     });
     _this.mallSellersGetSellerSet();
@@ -770,14 +806,21 @@ export default {
     _this.mallSellersCheckList(1);
     _this.mallSellersList(1);
     _this.mallSellersWithDrawList(1);
-  },
+  }
   // destroyed () {
   //   console.log(1,'11*************');
   //   sessionStorage.removeItem('href');
   // }
-}
+};
 </script>
 
+<style lang="less">
+.multiple-div {
+  .el-form-item__error {
+    position: relative !important;
+  }
+}
+</style>
 <style lang="less" scoped>
-@import '../../../less/style.less';
+@import "../../../less/style.less";
 </style>

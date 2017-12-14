@@ -9,7 +9,7 @@
     <div class="group-main">
       <div class="index-shopInfo">
         <el-row>
-          <el-col :span="12" >
+          <el-col :span="12"  >
             活动状态：
             <el-select v-model="type" placeholder="请选择" @change="search()">
               <el-option label="全部" :value="null"></el-option>
@@ -40,7 +40,7 @@
               {{scope.row.gstartTime}}至{{scope.row.gendTime}}
             </template>
           </el-table-column>
-          <el-table-column label="活动状态">
+          <el-table-column label="活动状态" width="190">
             <template scope="scope">
               <p v-if="scope.row.status == 0">未开始</p>
               <p v-else-if="scope.row.status == 1">进行中</p>
@@ -48,7 +48,7 @@
               <p v-if="scope.row.status == -2">已失效</p>
             </template>
           </el-table-column>
-          <el-table-column
+          <el-table-column width="190"
             prop="createTime"
             label="创建时间">
           </el-table-column>
@@ -178,7 +178,7 @@ export default {
     },
     preview(imgUrl, obj) {
       let _this = this;
-      console.log(obj, "obj", _this.imgUrl + imgUrl);
+      // console.log(obj, "obj", _this.imgUrl + imgUrl);
       let msg = {
         title: "预览",
         urlQR: "",
