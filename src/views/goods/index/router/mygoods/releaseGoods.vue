@@ -108,8 +108,11 @@
                             <span class="shop-prompt">该原价价格只作展示作用</span>
                         </el-form-item>
                         <el-form-item label="商品图片 :" :rules="rules.region" prop="region">
-                            <div class="item-img">
-                                <gtMaterial :imgList="form.imageList"></gtMaterial>
+                            <div class="imgboxUP">
+                                <gt-material :path="imgUrl" 
+                                             :imgLists="form.imageList" 
+                                             :Draggable="true" 
+                                             :selecType="true"></gt-material>
                             </div>
                             <p class="shop-prompt">
                                 建议尺寸：700px*700px,您可以拖拽图片顺序,第一张图片为主图
@@ -256,7 +259,7 @@ export default {
         shopList:[],//店铺列表
         form:{},//保存填充数据
         paramList:[],//参数列表
-
+        imgUrl:'',//图片域名
 
         options: [{
           value: 'zhinan',
@@ -439,6 +442,7 @@ export default {
             'success':function (data){
                 console.log(data,'编辑请求数据');
                 _this.form = data.data;
+                _this.imgUrl = data.imgUrl
             }
         });
     },

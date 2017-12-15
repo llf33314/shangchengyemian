@@ -1,8 +1,8 @@
 <template>
   <section >
     <!--单个上传-->
-    <div @click.self="material()" v-if="!isImg"
-        :style="{backgroundImage: 'url(' +newImg + ')'}"
+    <div @click.self="material()" v-if="img != '0'"
+        :style="{backgroundImage: 'url(' +newImg + ')',width:Width,height:Height}"
         :class="[newImg?'avatar-uploader':'avatar-uploaderNo']">
         <i  class="el-icon-plus" 
             @click.self="material()" 
@@ -13,22 +13,25 @@
         </div>
     </div>
     <!--多个上传-->
-    <div class="avatar-box" v-else>
-         <div v-for=" (item,index) in newimgList.imgList"
-              :style="{backgroundImage: 'url(' +newimgList.path+item + ')',
-                      width:newimgList.width,
-                      height:newimgList.height}"
+    <div class="avatar-box" v-if="imgLists != '0'"  @drop='drop($event)'>
+         <div v-for=" (item,index) in imgdata"
+              :style="{backgroundImage: 'url(' +item.path+item.imageUrl + ')',
+                      width:Width,
+                      height:Height}"
               :key="index"
-              class="avatar-uploader">
+              :draggable="Draggable"
+              class="avatar-uploader"
+              @dragstart='drag($event)'
+              @dragover='allowDrop($event)'>
               <div class="avatar-layer">
-                <i class="el-icon-search" @click.self="largeImg(newimgList.path+item)"></i>
+                <i class="el-icon-search" @click.self="largeImg(item.path+item.imageUrl)"></i>
                 <i class="el-icon-delete" @click.self="deleteImg(index)"></i>
               </div>
         </div>
         <div @click ="material()"
-          :style="{'width':newimgList.width,'height':newimgList.height,'line-height':newimgList.height}"
+          :style="{'width':Width,'height':Height,'line-height':Height}"
           class="avatar-uploaderNo"
-          :class="{'shop-box-center':isImg}">
+          :class="{'shop-box-center':imgLists != '0'}">
           <i  class="el-icon-plus" >
           </i>
       </div>
@@ -45,41 +48,82 @@
 <script>
 // <gt-material @change="newImgData" :img ="addImg" ></gt-material>
   export default {
-    props:['img','imgList'],
+    props:{
+      path:{
+        type: String
+      },
+      img:{
+        type: String,
+        default: '0'
+      },
+      imgLists:{
+        type: [Array,String],
+        default:'0'
+      },
+      width:{
+        type: [String, Number],
+        default: '75px'
+      },
+      height:{
+        type: [String, Number],
+        default: '75px'
+      },
+      Draggable:{
+        type: Boolean
+      },
+      max:{
+        type: Number
+      },
+      selecType:{
+        type: Boolean,
+        default: false
+      }
+    },
     data(){
       return{
-        imgdata:'',
-        newImg:'',
-        newimgList:{
-          width:'75px',//图片大小 
-          height:'75px',//图片大小
-          path:'',//域名
-          max: 0,//上传限制张数
-          imgList:[],//数据对象
-        },
-        style:'',
-        isImg: false,//单个false， 多个true
+        imgdata:[],//多个图片
+        newImg:'',//单个图片
+
+        Width: this.width,
+        Height:  this.height,
+        
+        imgUrl: this.path || '',//域名
+        Maxlength: this.max || false,//上传限制张数
+        Drag: this.Draggable || false,//是否拖动
+
         materialLargeSrcVisible: false,
-        largeSrc:''
+        largeSrc:'',
+        dom:'',
       }
     },
     watch:{
       'img'(a,b){
         //单个上传数据
           this.newImg = a;
-          this.isImg = false;
          
       },
-      'imgList'(a,b){
+      'imgLists'(a,b){
         //多个上传数据
-          this.newimgList.imgList = a;
-          this.isImg = true;
+          this.imgdata = a;
       },
-      'imgdata'(a,b){
-        this.stopDelete();
-      }
+      // 'imgdata'(a,b){
+      //   this.stopDelete();
+      // }
     },
-    mounted: function () {
+    mounted () {
+      console.log(this.imgLists,'this.imgLists')
+      //单图上传--初始
+      if(this.img != '0'){
+          this.newImg = this.img;
+      }//多图上传--初始
+      
+      if(this.imgLists != '0' ){
+        console.log(this.imgLists,'this.imgLists')
+          this.imgdata = this.imgLists;
+          this.imgdata.forEach((item,i)=>{
+            item.path = this.path;
+          })
+      }
     },
     methods: {
       /** 
@@ -90,7 +134,7 @@
         _this.$material({
           imageboxUrl: DFshop.activeAPI.materialUrl,   //地址
           modal: true,       //遮罩
-          selecType: true,   //是否多选
+          selecType: this.selecType,   //是否多选
           width: 820, //宽度
           height: 500, //高度
           lockScroll: false, //弹出框后是否锁定滚动轴
@@ -98,12 +142,21 @@
           closeOnPressEscape: false
         }).then(function (val) {
           //确认
-            if(_this.isImg){
+            if(_this.imgLists != '0'){
               //多个 tudo
-
-            }else{
+              val.forEach((item,i) => {
+                let data = {
+                  path: item.url.split("/image")[0],
+                  imageUrl:'/image'+ item.url.split("/image")[1]
+                }
+                _this.imgdata.push(data);
+              });
+              return
+            }
+            if(this.img != '0'){
               //单个
               _this.newImg = val[0].url;
+              return
             }
           }).catch(function (error) {
           //取消
@@ -115,13 +168,15 @@
        * index  多个上传时删除索引
        * */
       deleteImg(index) {
-        let _this = this;
-        if(_this.isImg){
-          //多个
-              
-          }else{
+        if(this.img != '0'){
           //单个
-            _this.newImg = '';
+          this.newImg = '';
+          return 
+        }
+        if(this.imgLists != '0'){
+          //多个
+          this.imgdata.splice(index, 1);
+          return 
         }
         
       },
@@ -134,8 +189,23 @@
         this.largeSrc = img;
         this.materialLargeSrcVisible = true;
       },
+      /** 
+       * 父级数据传送
+       */
       stopDelete() {
         this.$emit('change',this.imgdata)
+      },
+      drag(e){
+        this.dom = event.currentTarget;
+      },
+      drop(e){
+        console.log(event.target,'event.currentTarget',this.dom)
+        event.preventDefault();
+        event.target.appendChild(this.dom);
+        
+      },
+      allowDrop(e){
+        event.preventDefault();
       }
     }
   }
@@ -171,7 +241,7 @@ section{
   line-height: 0;
   text-align: center;
   i{
-      display: block;
+      display: inline-block;
       color: #c0ccda;
   }
   
@@ -194,6 +264,7 @@ section{
   background: #f9f8f8;
   background-size: cover; 
   line-height: 0;
+  background-position: center;
   &>i{
       display: block;
       color: #c0ccda;

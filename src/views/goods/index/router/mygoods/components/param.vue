@@ -52,7 +52,7 @@ export default {
     },
     watch:{
         'paramList'(a,b){
-            console.log(a,'paramList变化',b)
+            //console.log(a,'paramList变化',b)
         },
     },
     methods:{

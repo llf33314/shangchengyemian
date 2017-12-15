@@ -49,7 +49,7 @@
         </el-form-item>
         <el-form-item label="分类图片 :" >
             <div class="shop-edit-Upload">
-                <gt-material @change="newImgData" :img ="addImg" ></gt-material>
+                <gt-material @change="newImgData" :img="addImg" ></gt-material>
             </div>
             <span class="shop-prompt">
                 图片建议尺寸：190*190px

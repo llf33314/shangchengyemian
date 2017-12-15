@@ -39,7 +39,9 @@
            <el-form-item label="店铺头像 :">
             <div class="addshop-IDImg">
               <div class="shop-IDUpload" >
-               <gt-material @change="newImgData" ></gt-material>
+               <gt-material @change="newImgData" 
+                            :img="addImg">
+              </gt-material>
               </div>
               <span class="p-warn">图片比例：1:1(必填)</span>
             </div>
