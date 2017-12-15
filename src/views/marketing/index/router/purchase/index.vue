@@ -92,14 +92,14 @@
                         </el-table-column>
                         <el-table-column
                             label="操作"
-                            min-width="160">
+                            min-width="200">
                         <template scope="scope">
                             <el-button v-if="scope.row.order_status == 1" size="small" @click="jumpRouter('/order/update/'+scope.row.id)" class="buttonBlue">修改</el-button>
-                            <el-button size="small" class="buttonBlue">详情</el-button>
-                            <el-button v-if="scope.row.member_id" size="small" class="buttonBlue">收款信息</el-button>
-                            <el-button size="small" class="buttonBlue" >留言管理</el-button>
-                            <el-button  size="small" class="buttonBlue">二维码</el-button>
-                            <el-button size="small" class="buttonBlue" >统计</el-button>
+                            <el-button size="small" class="buttonBlue" @click="jumpRouter('/details/'+scope.row.id)">详情</el-button>
+                            <el-button v-if="scope.row.member_id" size="small" class="buttonBlue" @click="jumpRouter('/receivablesDetails/'+scope.row.id+'/'+scope.row.member_id)">收款信息</el-button>
+                            <el-button size="small" class="buttonBlue" @click="jumpRouter('/languageList/'+scope.row.id)">留言管理</el-button>
+                            <el-button  size="small" class="buttonBlue"  @click="preview(scope.row)">二维码</el-button>
+                            <el-button size="small" class="buttonBlue"  @click="jumpRouter('/statisticsList/'+scope.row.id)">统计</el-button>
                         </template>
                         </el-table-column>
                     </el-table>
@@ -299,7 +299,25 @@ export default {
         }
       });
     },
-
+    /**预览 */
+    preview(obj) {
+      let _this = this;
+      // console.log(obj, "obj");
+      // /integral/product/:busId/:productId/:shopId
+      let msg = {
+        title: "预览",
+        urlQR: "",
+        path: _this.webPath,
+        pageLink:
+          "/integral/product/" +
+          obj.user_id +
+          "/" +
+          obj.productId +
+          "/" +
+          obj.shop_id
+      };
+      _this.$root.$refs.dialogQR.showDialog(msg);
+    },
     /**
      * 合同列表多页请求
      * @param curPage     请求页数

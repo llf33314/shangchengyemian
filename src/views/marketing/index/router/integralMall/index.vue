@@ -36,7 +36,8 @@
                 <router-link to="/mallIntegral/goods/0">
                   <el-button type="primary" >新建积分商品</el-button>
                 </router-link>   
-                <el-button  type="primary" v-if="searchData.shopId !='' ">积分商城链接</el-button>
+                <el-button  id="gtLongUrlCopy"  data-clipboard-target=".copy-text" type="primary" v-if="searchData.shopId !='' " @click="copyIntegralUrl">复制积分商城链接</el-button>
+                <span class="copy-text">{{copyUrl}}</span>
               </div>
               <el-table v-if="isData" :data="goodsData" style="width: 100%">
                 <el-table-column
@@ -208,6 +209,7 @@ export default {
       imagePath:'',  //图片前缀
       videourl:'',   //视频地址
       webPath: "", //手机端域名
+      copyUrl:'',
     }
   },
   watch:{
@@ -271,6 +273,8 @@ export default {
             }
           _this.goodsData = data.data.page.subList;
           _this.webPath = data.webPath;
+          var link =  _this.webPath+"/integral/index/"+data.data.userId;
+          _this.copyUrl=link;
           _this.page = {
             curPage:  data.data.page.curPage,
             pageCount: data.data.page.pageCount,
@@ -355,23 +359,33 @@ export default {
     preview(obj) {
       let _this = this;
       // console.log(obj, "obj");
+      // /integral/product/:busId/:productId/:shopId
       let msg = {
         title: "预览",
         urlQR: "",
         path: _this.webPath,
         pageLink:
-          "/goods/details/" +
-          obj.shop_id +
-          "/" +
+          "/integral/product/" +
           obj.user_id +
-          "/1/" +
+          "/" +
           obj.productId +
           "/" +
-          obj.id
+          obj.shop_id
       };
       _this.$root.$refs.dialogQR.showDialog(msg);
     },
-
+    /**复制积分商城链接 */
+    copyIntegralUrl(obj){
+      let _this = this;
+      var clipboard = new Lib.Clipboard("#gtLongUrlCopy");
+      clipboard.on('success', function(e) {
+        _this.$message({
+          message: '复制成功',
+          type: 'success'
+        });
+        clipboard.destroy();
+      });
+    },
     /**
      * 积分商城图片
      */
@@ -499,4 +513,10 @@ export default {
 
 <style lang="less" scoped>
 @import '../../../less/style.less';
+.copy-text{
+  opacity:0;
+    display: inline-block;
+    width: 1px;
+    overflow: hidden;
+}
 </style>

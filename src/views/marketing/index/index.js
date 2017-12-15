@@ -29,6 +29,17 @@ import addPifa from './router/pifa/addpifa'
 import purchase from './router/purchase/index'
 //对外报价--新建
 import addPurchase from './router/purchase/addBj.vue'
+/**对外报价-详情 */
+import details from './router/purchase/details.vue'
+/**对外报价-收款详情 */
+import receivablesDetails from './router/purchase/receivablesDetails.vue'
+/**对外报价-统计列表 */
+import statisticsList from './router/purchase/statisticsList.vue'
+/**对外报价-留言管理 */
+import languageList from './router/purchase/languageList.vue'
+/**对外报价-留言详情 */
+import languageDetails from './router/purchase/languageDetails.vue'
+
 //对外报价--新建合同
 import addContract from './router/purchase/addContract'
 //对外报价--新建公司模板
@@ -49,6 +60,11 @@ import modular from './router/modular/index'
 import seckill from './router/seckill/index'
 //秒杀管理--新建秒杀
 import addSeckill from './router/seckill/addSeckill'
+//小程序图片设置
+import applet from './router/applet/index'
+//小程序图片设置-新增
+import addApplet from './router/applet/addApplet'
+
 import quillEditor from 'vue-quill-editor'; //调用编辑器
 const routes = [
   { path: '/', component: Index},
@@ -68,6 +84,11 @@ const routes = [
   { path: '/purchase/:activeName', component: purchase},
   { path: '/order/add', component: addPurchase},
   { path: '/order/update/:id', component: addPurchase},
+  { path: '/receivablesDetails/:id/:memberId', component: receivablesDetails},
+  { path: '/statisticsList/:id', component: statisticsList},
+  { path: '/languageList/:id', component: languageList},
+  { path: '/languageDetails/:id/:memberId', component: languageDetails},
+  { path: '/details/:id', component: details},
   { path: '/contract/add', component: addContract},
   { path: '/contract/update/:id', component: addContract},
   { path: '/company/add', component: addCompany},
@@ -81,6 +102,10 @@ const routes = [
   { path: '/modular', component: modular},
   { path: '/seckill', component: seckill},
   { path: '/addSeckill/:id', component: addSeckill},
+
+  { path: '/applet', component: applet},
+  { path: '/applet/add', component: addApplet},
+  { path: '/applet/update/:id', component: addApplet},
 ]
 
 Vue.use(VueRouter)
