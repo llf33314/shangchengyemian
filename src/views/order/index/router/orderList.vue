@@ -227,7 +227,7 @@
           </div>
             <contentNo :show="contentNo" v-if="page.rowCount == 0 " ></contentNo>
         </div>
-        <div class="block shop-textr" v-if="page.pageCount > 0">
+        <div class="block shop-textr" v-if="page.pageCount > 1">
           <el-pagination
             @current-change="handleCurrentChange"
             :current-page='page.curPage'
@@ -236,7 +236,7 @@
             :total="page.rowCount">
           </el-pagination>
         </div>
-        <el-dialog :title="dialogTitle" :visible.sync="dialogVisible"  size="small">
+        <el-dialog :title="dialogTitle" :visible.sync="dialogVisible"  size="small"  :class="dialogType == 1 ? 'minDialog':''">
           <cancel-order :id="orderId" @code="dialogResult" v-if="dialogType ==1"> </cancel-order>
           <update-money :data= "orderData" @code="dialogResult" v-if="dialogType ==2"> </update-money>
           <deliver-goods :row= "orderData" @code="dialogResult" v-if="dialogType ==3"> </deliver-goods>
@@ -483,6 +483,10 @@ export default {
 </script>
 
 <style lang="less">
- 
+.minDialog{
+ .el-dialog--small{
+   width:18%
+ }
+}
 </style>
 
