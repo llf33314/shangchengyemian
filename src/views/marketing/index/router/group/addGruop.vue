@@ -111,7 +111,7 @@ export default {
       if (value === "") {
         return callback(new Error("团购价不能为空"));
       } else if (!reg.test(value) || value <= 0) {
-        return callback(new Error("团购价最多只能是大于0的5位数"));
+        return callback(new Error("团购价最多只能输入大于0的5位数"));
       } else {
         callback();
       }
@@ -240,7 +240,7 @@ export default {
   },
   methods: {
     //改变店铺，清空选择的商品
-    changeShop(val) {
+    changeShop(val){
       //重新选择店铺清空选择的商品和规格
       if (this.selectShopId > 0 && this.ruleForm.productId > 0) {
         this.isChoicePro = true;
@@ -256,7 +256,7 @@ export default {
     },
     /**
      * 选中商品事件
-     */
+     */ 
     selectDialogData(data) {
       //选取商品传出的数据
       if (data.id == this.ruleForm.productId) {

@@ -12,35 +12,33 @@
 </div>
 </template>
  <script>
-import Lib from 'assets/js/Lib';
+import Lib from "assets/js/Lib";
 
 export default {
-  components: {
-     
-  },
-  data () {
+  components: {},
+  data() {
     return {
-        activeName: 'danbao',//默认首页显示
-    }
+      activeName: "danbao" //默认首页显示
+    };
   },
   methods: {
     handleClick(tab) {
-      
-      this.$router.push({path:'/'+tab.name});
+      this.$router.push({ path: "/" + tab.name });
     }
   },
-  mounted(){
-    const _this = this;
-    let _href = window.location.hash.split('/')[1];
-    _this.activeName = _href;
+  mounted() {
+    this.activeName = window.location.hash.split("/")[1];
+    if (this.activeName == "logistics") {
+      this.activeName = "logistics/logistics";
+    }
   }
-}
+};
 </script>
 
 <style lang="less">
-.index-wrapper{
+.index-wrapper {
   width: 100%;
-  .index-main{
+  .index-main {
     width: 100%;
   }
 }

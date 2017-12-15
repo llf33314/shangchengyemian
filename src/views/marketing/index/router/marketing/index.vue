@@ -154,7 +154,7 @@
                 label="推荐人">
               </el-table-column>
               <el-table-column
-                prop="apply_time"
+                prop="apply_time | formatNot"
                 label="推荐时间">
               </el-table-column>
               <el-table-column
@@ -619,11 +619,6 @@ export default {
         },
         success: function(data) {
           _this.examineData = data.data;
-          $.each(_this.examineData.page.subList, function(i) {
-            let oldTime = this.apply_time;
-            this.apply_time = Lib.M.formatNot(oldTime);
-          });
-          //console.log(_this.examineData,'examineData')
         }
       });
     },

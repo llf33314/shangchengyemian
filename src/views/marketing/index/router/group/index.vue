@@ -93,7 +93,11 @@ export default {
       contentNo: "gruop",
       // isShow: false,
       value: "",
-      tableData: [],
+      tableData: {
+        page: {
+          subList: []
+        }
+      },
       pageNum: 1,
       type: "",
       path: "",
@@ -178,7 +182,6 @@ export default {
     },
     preview(imgUrl, obj) {
       let _this = this;
-      // console.log(obj, "obj", _this.imgUrl + imgUrl);
       let msg = {
         title: "预览",
         urlQR: "",

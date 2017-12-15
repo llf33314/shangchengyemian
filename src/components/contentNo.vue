@@ -6,9 +6,11 @@
         <p v-else-if="show === 'page'">您还没有创建分组，<a :href="window +'/views/setUp/index.html#/setup'">点击这里</a> 建立分组吧</p>
         <p v-else-if="show === 'module'">您还没有创建模板，<a :href="window +'/views/setUp/index.html#/setup'">点击这里</a> 设置模板吧</p>
         <p v-else-if="show === 'since'">您还没有创建自提点，<a :href="window +'/views/setUp/index.html#/setup'">点击这里</a> 新建自提点</p>
-        <p v-else-if="show === 'logistics'">您还没有创建物流模板，<a :href="window +'/views/setUp/index.html#/setup'">点击这里</a> 创建模板</p>
+        <p v-else-if="show === 'logistics/since'">您还没有创建上门自提，<a :href="window +'/views/setUp/index.html#/logistics/since'">点击这里</a> 创建上门自提</p>
+        <p v-else-if="show === 'logistics'">您还没有创建物流模板，<a :href="window +'/views/setUp/index.html#/addlogistics/0'">点击这里</a> 创建模板</p>
         <p v-else-if="show === 'gruop'">您还没有发布团购商品，<a :href="window +'/views/marketing/index.html#/addgroup/0'">点击这里</a> 发布您的团购商品</p>
         <p v-else-if="show === 'seckill'">您还没有发布秒杀商品，<a :href="window +'/views/marketing/index.html#/addSeckill/0'">点击这里</a> 发布您的秒杀商品</p>
+        <p v-else-if="show === 'auction'">您还没有发布拍卖商品，<a :href="window +'/views/marketing/index.html#/auction/addauction/0'">点击这里</a> 发布您的拍卖商品</p>
         <p v-else-if="show === 'commission'">您还没有发布佣金商品，<a :href="window +'/views/marketing/index.html#/addBond/0'">点击这里</a> 发布您的销售商品</p>
         <p v-else-if="show === 'JFgoods'">您还没有发布积分商品，<a :href="window +'/views/setUp/index.html#/setup'">点击这里</a> 发布您的佣金商品</p>
         <p v-else-if="show === 'ysgl'">您还没有发布预售商品，<a :href="window +'/views/setUp/index.html#/setup'">点击这里</a> 发布您的预售商品</p>

@@ -145,13 +145,11 @@
               'url': DFshop.activeAPI.mallPaySetSave_post,
               'data':param,
               'success':function (data){
-                if(data.code == 1){
-                  _this.$message({
-                    message: '设置成功',
-                    type: 'success'
-                  });
-                  _this.mallPaySetPaySetInfo();
-                }
+                _this.$message({
+                  message: '设置成功',
+                  type: 'success'
+                });
+                _this.mallPaySetPaySetInfo();
               }
             });
       },
