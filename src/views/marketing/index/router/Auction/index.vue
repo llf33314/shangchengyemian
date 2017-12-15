@@ -14,25 +14,27 @@
                     <div class="index-input-box">
                         <div class="p-box" style="margin-bottom: 20px;">
                             <div>
-                                <span v-if="goodsData.page.rowCount > 0">
+                                <span >
                                     选择活动状态 :
                                     <el-select v-model="type" placeholder="请选择" @change="searchAuction">
+                                        <el-option class="max-input" label="全部" :value="0"></el-option>
                                         <el-option class="max-input" label="进行中" :value="1"></el-option>
                                         <el-option class="max-input" label="未开始" :value="-1"></el-option>
                                         <el-option class="max-input" label="已结束" :value="2"></el-option>
                                     </el-select>
                                 </span>
-                                <span v-if="goodsData.page.rowCount > 0">
+                                <span>
                                     选择店铺 :
                                     <el-select v-model="shopId" placeholder="请选择" @change="searchAuction">
-                                    <el-option class="max-input" v-for="item in shopList"
-                                        :key="item.id" :label="item.sto_name" :value="item.id">
-                                    </el-option>
+                                        <el-option class="max-input" label="全部" value=""></el-option>
+                                        <el-option class="max-input" v-for="item in shopList"
+                                            :key="item.id" :label="item.sto_name" :value="item.id">
+                                        </el-option>
                                     </el-select>
                                 </span>
                             </div>
-                        <span>
-                            <a :href="goodsData.videourl">
+                        <span v-if="goodsData.videourl != null">
+                            <a :href="goodsData.videourl" target="_blank">
                                 <el-button type="warning"><i class="iconfont icon-cplay1"></i>视频教程</el-button>
                             </a>
                         </span>
@@ -82,7 +84,7 @@
                              @click="jumpRouter('/auction/addauction/'+scope.row.id)">编辑</el-button>
                             <el-button size="small" class="buttonBlue" v-if="scope.row.status == 0 || (scope.row.joinId == 0 && scope.row.status == 1)"
                                 @click="invalidAuction(scope.row.id,-2)">失效</el-button>
-                            <el-button size="small" class="buttonBlue" @click="preview(scope.row.twoCodePath)"
+                            <el-button size="small" class="buttonBlue" @click="preview(scope.row)"
                                 v-if="scope.row.status == 1">预览</el-button>
                             <el-button size="small" @click="handleDelete(scope.row.id,-1)"
                                 v-if="scope.row.status != 1">删除</el-button>
@@ -182,68 +184,71 @@
   </div>
 </template>
  <script>
-import Lib from 'assets/js/Lib';
-import contentNo from 'components/contentNo';
-import defaultImg from 'components/defaultImg';
+import Lib from "assets/js/Lib";
+import contentNo from "components/contentNo";
+import defaultImg from "components/defaultImg";
 export default {
   components: {
-    contentNo,defaultImg
+    contentNo,
+    defaultImg
   },
-  data () {
+  data() {
     return {
-      contentNo:'GSmodule',
-      activeName:'1',
-      type:'',
-      shopId:'',
+      contentNo: "auction",
+      activeName: "1",
+      type: "",
+      shopId: "",
       goodsData: {
-          page:{
-              subList:[],
-          }
+        page: {
+          subList: []
+        }
       },
       shopList: [],
       baozhengjinData: {
-          page:{
-              subList:[],
-          }
+        page: {
+          subList: []
+        }
       },
       restaurants: [],
-      timeout:  null,
-      dialogViewDetails:false,
-      auctionMoney:'',
-      auctionId:'',
-      auctionPayWay:'',
-      auctionOrderNo:'',
-      alipayUrl : ''
-    }
+      timeout: null,
+      dialogViewDetails: false,
+      auctionMoney: "",
+      auctionId: "",
+      auctionPayWay: "",
+      auctionOrderNo: "",
+      alipayUrl: "",
+      webPath: ""
+    };
   },
-  watch:{
-    activeName :function(t,f){
-      let _href= window.location.href;
-      sessionStorage.setItem('href', _href);
+  watch: {
+    activeName: function(t, f) {
+      let _href = window.location.href;
+      sessionStorage.setItem("href", _href);
     },
-    $route :function(t,f){
-      this.activeName= t.params.activeName;
+    $route: function(t, f) {
+      this.activeName = t.params.activeName;
     }
   },
   methods: {
-    searchAuction(){//拍卖搜索
-        this.mallAuctionList(1);
+    searchAuction() {
+      //拍卖搜索
+      this.mallAuctionList(1);
     },
     handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
-        this.mallAuctionList(val);
+      console.log(`每页 ${val} 条`);
+      this.mallAuctionList(val);
     },
     handleCurrentChange(val) {
-    //   this.pageNum = val;
+      //   this.pageNum = val;
       console.log(`当前页: ${val}`);
       this.mallAuctionList(val);
     },
     handleSizeChange1(val) {
-        console.log(`每页 ${val} 条`);
-        this.mallAuctionMarginList(val);
+      console.log(`每页 ${val} 条`);
+      this.mallAuctionMarginList(val);
     },
     handleCurrentChange1(val) {
-    //   this.pageNum = val;
+      //   this.pageNum = val;
       console.log(`当前页: ${val}`);
       this.mallAuctionMarginList(val);
     },
@@ -252,205 +257,228 @@ export default {
       this.$router.push(_activeName);
       console.log(_activeName);
     },
-    handleDelete(id,type){//删除拍卖事件
-      let _this= this;
-      let msg ={
-        'dialogTitle':'确定要删除此拍卖商品？',//文本标题
-        'dialogMsg': '',//文本内容
-        'callback': {
-          'btnOne': function(){
-              _this.mallAuctionDelete(id,type);
+    handleDelete(id, type) {
+      //删除拍卖事件
+      let _this = this;
+      let msg = {
+        dialogTitle: "确定要删除此拍卖商品？", //文本标题
+        dialogMsg: "", //文本内容
+        callback: {
+          btnOne: function() {
+            _this.mallAuctionDelete(id, type);
           }
         }
-      }
-      _this.$root.$refs.dialog.showDialog(msg); 
+      };
+      _this.$root.$refs.dialog.showDialog(msg);
     },
-    invalidAuction(id,type){//使拍卖活动失效事件
-      let _this= this;
-      let msg ={
-        'dialogTitle':'您确定要将此拍卖活动失效吗？',//文本标题
-        'dialogMsg': '失效后不能再进行交易',//文本内容
-        'callback': {
-          'btnOne': function(){
-              _this.mallAuctionDelete(id,type);
+    invalidAuction(id, type) {
+      //使拍卖活动失效事件
+      let _this = this;
+      let msg = {
+        dialogTitle: "您确定要将此拍卖活动失效吗？", //文本标题
+        dialogMsg: "失效后不能再进行交易", //文本内容
+        callback: {
+          btnOne: function() {
+            _this.mallAuctionDelete(id, type);
           }
         }
-      }
-      _this.$root.$refs.dialog.showDialog(msg); 
+      };
+      _this.$root.$refs.dialog.showDialog(msg);
     },
-    mallAuctionDelete(id,type){//删除、使拍卖失效方法
-        let _this = this;
-        let msg = '';
-        if(type == -1){
-            msg = '删除成功';
-        }else{
-            msg = '已失效';
-        }
-          _this.ajaxRequest({
-            'url': DFshop.activeAPI.mallAuctionDelete_post,
-            'data':{
-                id : id,
-                type : type
-            },
-            'success':function (data){
-                if(data.code == 1){
-                    _this.$message({
-                        message: msg,
-                        type: 'success'
-                    });
-                    _this.mallAuctionList(_this.goodsData.page.curPage);
-                }
-            }
+    mallAuctionDelete(id, type) {
+      //删除、使拍卖失效方法
+      let _this = this;
+      let msg = "";
+      if (type == -1) {
+        msg = "删除成功";
+      } else {
+        msg = "已失效";
+      }
+      _this.ajaxRequest({
+        url: DFshop.activeAPI.mallAuctionDelete_post,
+        data: {
+          id: id,
+          type: type
+        },
+        success: function(data) {
+          _this.$message({
+            message: msg,
+            type: "success"
           });
+          _this.mallAuctionList(_this.goodsData.page.curPage);
+        }
+      });
     },
     toggleSelection(rows) {
-        if (rows) {
-          rows.forEach(row => {
-            this.$refs.multipleTable.toggleRowSelection(row);
-          });
-        } else {
-          this.$refs.multipleTable.clearSelection();
-        }
+      if (rows) {
+        rows.forEach(row => {
+          this.$refs.multipleTable.toggleRowSelection(row);
+        });
+      } else {
+        this.$refs.multipleTable.clearSelection();
+      }
     },
     handleSelectionChange(val) {
-    this.multipleSelection = val;
+      this.multipleSelection = val;
     },
     onSubmit() {
-    console.log('submit!');
+      console.log("submit!");
     },
-    viewDetails(id,orderNo,payWay,money){//退保证金弹出框
-        this.dialogViewDetails=true;
-        this.auctionId = id;
-        this.auctionOrderNo = orderNo;
-        this.auctionPayWay = payWay;
-        this.auctionMoney = money;
-        this.alipayUrl = this.alipayUrl+'?out_trade_no='+this.auctionOrderNo+'&busId='+this.busId+'&desc=退保证金';
+    viewDetails(id, orderNo, payWay, money) {
+      //退保证金弹出框
+      this.dialogViewDetails = true;
+      this.auctionId = id;
+      this.auctionOrderNo = orderNo;
+      this.auctionPayWay = payWay;
+      this.auctionMoney = money;
+      this.alipayUrl =
+        this.alipayUrl +
+        "?out_trade_no=" +
+        this.auctionOrderNo +
+        "&busId=" +
+        this.busId +
+        "&desc=退保证金";
     },
-    comeDown(){//退保证金方法
-        let _this = this;
-          _this.ajaxRequest({
-            'url': DFshop.activeAPI.mallAuctionAgreedReturnMargin_post,
-            'data':{
-                id : _this.auctionId
-            },
-            'success':function (data){
-
-            }
-          });
+    comeDown() {
+      //退保证金方法
+      let _this = this;
+      _this.ajaxRequest({
+        url: DFshop.activeAPI.mallAuctionAgreedReturnMargin_post,
+        data: {
+          id: _this.auctionId
+        },
+        success: function(data) {}
+      });
     },
-    copyLink(){//复制退定金链接
-        var self = this;
-        var clipboard = new Lib.Clipboard("#gtLongUrlCopy");
-        clipboard.on('success', function(e) {
+    copyLink() {
+      //复制退定金链接
+      var self = this;
+      var clipboard = new Lib.Clipboard("#gtLongUrlCopy");
+      clipboard.on("success", function(e) {
         self.$message({
-            message: '复制成功',
-            type: 'success'
+          message: "复制成功",
+          type: "success"
         });
         clipboard.destroy();
-        });
-      },
-     loadAll() {
-        return [
-          { "value": "三全鲜食（北新泾店）", "address": "长宁区新渔路144号" },
-          { "value": "Hot honey 首尔炸鸡（仙霞路）", "address": "上海市长宁区淞虹路661号" },
-          { "value": "新旺角茶餐厅", "address": "上海市普陀区真北路988号创邑金沙谷6号楼113" },
-          { "value": "泷千家(天山西路店)", "address": "天山西路438号" },
-          { "value": "胖仙女纸杯蛋糕（上海凌空店）", "address": "上海市长宁区金钟路968号1幢18号楼一层商铺18-101" }
-        ]
-      },
-      querySearchAsync(queryString, cb) {
-        var restaurants = this.restaurants;
-        var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
+      });
+    },
+    loadAll() {
+      return [
+        { value: "三全鲜食（北新泾店）", address: "长宁区新渔路144号" },
+        { value: "Hot honey 首尔炸鸡（仙霞路）", address: "上海市长宁区淞虹路661号" },
+        { value: "新旺角茶餐厅", address: "上海市普陀区真北路988号创邑金沙谷6号楼113" },
+        { value: "泷千家(天山西路店)", address: "天山西路438号" },
+        { value: "胖仙女纸杯蛋糕（上海凌空店）", address: "上海市长宁区金钟路968号1幢18号楼一层商铺18-101" }
+      ];
+    },
+    querySearchAsync(queryString, cb) {
+      var restaurants = this.restaurants;
+      var results = queryString
+        ? restaurants.filter(this.createStateFilter(queryString))
+        : restaurants;
 
-        clearTimeout(this.timeout);
-        this.timeout = setTimeout(() => {
-          cb(results);
-        }, 3000 * Math.random());
-      },
-      createStateFilter(queryString) {
-        return (state) => {
-          return (state.value.indexOf(queryString.toLowerCase()) === 0);
-        };
-      },
-      handleSelect(item) {
-        console.log(item);
-      },
-      mallAuctionList(pageNum){//拍卖列表
-          let _this = this;
-          _this.ajaxRequest({
-            'url': DFshop.activeAPI.mallAuctionList_post,
-            'data':{
-                curPage : pageNum,
-                type : _this.type,
-                shopId : _this.shopId
-            },
-            'success':function (data){
-                _this.goodsData = data.data;
-                $.each(_this.goodsData.page.subList,function(i){
-                    let oldTime = this.createTime;
-                    this.createTime = Lib.M.format(oldTime);
-                });
-                console.log(goodsData,"goodsData")
-            }
+      clearTimeout(this.timeout);
+      this.timeout = setTimeout(() => {
+        cb(results);
+      }, 3000 * Math.random());
+    },
+    createStateFilter(queryString) {
+      return state => {
+        return state.value.indexOf(queryString.toLowerCase()) === 0;
+      };
+    },
+    handleSelect(item) {
+      console.log(item);
+    },
+    mallAuctionList(pageNum) {
+      //拍卖列表
+      let _this = this;
+      _this.ajaxRequest({
+        url: DFshop.activeAPI.mallAuctionList_post,
+        data: {
+          curPage: pageNum,
+          type: _this.type,
+          shopId: _this.shopId
+        },
+        success: function(data) {
+          _this.goodsData = data.data;
+          _this.webPath = data.webPath;
+          $.each(_this.goodsData.page.subList, function(i) {
+            let oldTime = this.createTime;
+            this.createTime = Lib.M.format(oldTime);
           });
-      },
-      mallAuctionMarginList(pageNum){//保证金列表
-          let _this = this;
-          _this.ajaxRequest({
-            'url': DFshop.activeAPI.mallAuctionMarginList_post,
-            'data':{
-                curPage : pageNum
-            },
-            'success':function (data){
-                _this.baozhengjinData = data.data;
-                $.each(_this.baozhengjinData.page.subList,function(i){
-                    let oldTime = this.payTime;
-                    this.payTime = Lib.M.format(oldTime);
-                });
-                console.log(_this.baozhengjinData,'_this.baozhengjinData ');
-            }
+          console.log(goodsData, "goodsData");
+        }
+      });
+    },
+    mallAuctionMarginList(pageNum) {
+      //保证金列表
+      let _this = this;
+      _this.ajaxRequest({
+        url: DFshop.activeAPI.mallAuctionMarginList_post,
+        data: {
+          curPage: pageNum
+        },
+        success: function(data) {
+          _this.baozhengjinData = data.data;
+          $.each(_this.baozhengjinData.page.subList, function(i) {
+            let oldTime = this.payTime;
+            this.payTime = Lib.M.format(oldTime);
           });
-      },
-      preview(){//预览
-          let _this = this;
-          let msg ={
-            'title':'',
-            'urlQR': DFshop.activeAPI.mallStoreGenerateQRCode_get,
-            'pageLink': _this.path+'/views/marketing/index.html#/'
-          }
-            _this.$root.$refs.dialogQR.showDialog(msg);//调用方法
-      }
+          console.log(_this.baozhengjinData, "_this.baozhengjinData ");
+        }
+      });
+    },
+    //预览
+    preview(obj) {
+      let _this = this;
+      let msg = {
+        title: "预览",
+        urlQR: "",
+        path: _this.webPath,
+        pageLink:
+          "/goods/details/" +
+          obj.shopId +
+          "/" +
+          obj.userId +
+          "/4/" +
+          obj.productId +
+          "/" +
+          obj.id
+      };
+      _this.$root.$refs.dialogQR.showDialog(msg);
+    }
   },
   mounted() {
     let _this = this;
+    _this.storeList({
+      success(data) {
+        _this.shopList = data.data;
+      }
+    });
     _this.activeName = _this.$route.params.activeName;
     _this.restaurants = this.loadAll();
     _this.mallAuctionList(1);
     _this.mallAuctionMarginList(1);
-    DFshop.method.storeList({
-      'success'(data){
-        _this.shopList = data.data;
-      }
-    });
-  }   
-}
+  }
+};
 </script>
 
 <style lang="less" scoped>
-@import '../../../less/style.less';
-.pifa-dialog-ul{
-    width: 100%;
-    padding: 35px;
-    .pifa-li{
-        margin-bottom: 35px;
-        span{
-            display: inline-block;
-        }
-        span:first-child{
-            width: 70px;
-            text-align: right;
-            margin-right: 20px;
-        }
+@import "../../../less/style.less";
+.pifa-dialog-ul {
+  width: 100%;
+  padding: 35px;
+  .pifa-li {
+    margin-bottom: 35px;
+    span {
+      display: inline-block;
     }
+    span:first-child {
+      width: 70px;
+      text-align: right;
+      margin-right: 20px;
+    }
+  }
 }
 </style>

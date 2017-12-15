@@ -143,7 +143,6 @@ export default {
       _this.ajaxRequest({
         'url':DFshop.activeAPI.mallPaySetGetTemplate_post,
         'success':function (data){
-          if(data.code == 1){
             _this.template = data.data;
             $.each(_this.template.busMsgArr,function(i){
               var num = _this.template.busMsgArr[i].id;
@@ -157,7 +156,6 @@ export default {
                 _this.selected4 = '1';
               }
             });
-          }
         }
       });
     },
@@ -175,15 +173,13 @@ export default {
           operation : Number(selected)
         },
         'success':function (data){
-          if(data.code == 1){
-            _this.template = data.data;
-            console.log(_this.template);
-            _this.$message({
-              message: '设置成功',
-              type: 'success'
-            });
-            _this.mallPaySetGetTemplate();
-          }
+          _this.template = data.data;
+          console.log(_this.template);
+          _this.$message({
+            message: '设置成功',
+            type: 'success'
+          });
+          _this.mallPaySetGetTemplate();
         }
       });
     },

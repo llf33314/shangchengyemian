@@ -98,7 +98,7 @@
             </div>
              <content-no :show="contentNo" v-if="page.rowCount == 0 " ></content-no>
           </div>
-          <div class="block shop-textr" v-if="page.pageCount > 0">
+          <div class="block shop-textr" v-if="page.pageCount > 1">
             <el-pagination
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange"

@@ -287,7 +287,16 @@
     purchaseOrderSave_post:'/purchase/E9lM9uM4ct/order/save',
     /**获取报价单信息 */
     purchaseOrderInfo_post:'/purchase/E9lM9uM4ct/order/orderInfo',
-
+    /**获取收款详情列表 */
+    purchaseReceivablesDetails_post:'/purchase/E9lM9uM4ct/order/receivablesDetails',
+    /**获取收款详情列表 */
+    purchaseStatisticsList_post:'/purchase/E9lM9uM4ct/order/statisticsList',
+    /**获取留言列表 */
+    purchaseLanguageList_post:'/purchase/E9lM9uM4ct/order/languageList',
+    /**获取留言详情列表 */
+    purchaseLanguageDetails_post:'/purchase/E9lM9uM4ct/order/languageDetails',
+    /**商家回复买家的留言 */
+    purchaseReplyLanguage_post:'/purchase/E9lM9uM4ct/order/replyLanguage',
 
     /**合同列表 */
     purchaseContractList_post:'/purchase/E9lM9uM4ct/contract/list',
@@ -332,7 +341,14 @@
     /**设置积分的状态（删除，失效 ，启用） */
     mallIntegralImageSetStatus_post:'/mallIntegral/E9lM9uM4ct/image/setStatus',
     
-
+    /**小程序图片管理列表 */
+    mallAppletList_post:'/mallApplet/E9lM9uM4ct/list',
+    /**小程序图片 删除，显示，不显示 */
+    mallAppletDelete_post:'/mallApplet/E9lM9uM4ct/delete',
+    /**保存小程序图片 */
+    mallAppletSave_post:'/mallApplet/E9lM9uM4ct/save',
+    /**获取小程序图片信息 */
+    mallAppletInfo_post:'/mallApplet/E9lM9uM4ct/appletInfo',
   };
 
 
