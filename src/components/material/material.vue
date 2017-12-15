@@ -72,7 +72,7 @@
       },
       'imgList'(a,b){
         //多个上传数据
-          this.newimgList = a;
+          this.newimgList.imgList = a;
           this.isImg = true;
       },
       'imgdata'(a,b){
