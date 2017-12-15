@@ -77,7 +77,7 @@
           </p>
           <div class="fs12">
               到期日期：2017-12-01，<a class="fontBlue">立即续费</a>
-              <router-link to="/IntegralMall">
+              <router-link to="/mallIntegral/1">
                 <el-button class="buttonBlue" size="small">立即购买</el-button>
               </router-link>
           </div>
@@ -146,6 +146,23 @@
           <div class="fs12">
               到期日期：2017-12-01，<a class="fontBlue">立即续费</a>
               <router-link to="/auction/1">
+              <el-button class="buttonBlue" size="small">立即购买</el-button>
+              </router-link>
+          </div>
+        </div>
+      </div>
+      <div class="index-item clearfix">
+        <div class="item-icon" 
+              style="background: #5c8dff;">
+          <i class="iconfont icon-paimai"></i>
+        </div>
+        <div class="item-text">
+          <p class="item-title">小程序图片设置</p>
+          <p class="item-txt text-overflow">商家灵活设置小程序横幅图
+          </p>
+          <div class="fs12">
+              到期日期：2017-12-01，<a class="fontBlue">立即续费</a>
+              <router-link to="/applet">
               <el-button class="buttonBlue" size="small">立即购买</el-button>
               </router-link>
           </div>

@@ -163,6 +163,7 @@ export default {
     }
     td,th{
         padding: 10px;
+        border: 1px solid #dfe6ec;
     }
 }
 </style>

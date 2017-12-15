@@ -216,9 +216,18 @@ export default {
     }
 }
 </script>
-<style>
+<style lang="less" scoped>
 .dialog-footer{
     margin-top:20px;
 }
+.dialog-list{
+    width: 100%;
+    margin-top:25px; 
+    &>span{
+        margin-right: 28px;
+    }
+
+}
+    
 </style>
 

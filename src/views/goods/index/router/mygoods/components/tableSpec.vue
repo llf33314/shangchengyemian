@@ -196,8 +196,8 @@ export default {
                             message: '请不要重复添加',
                             type: 'warning'
                         });
-                        //拿到规格改变对应的值
                         
+                        //拿到规格改变对应的值
                         let changeData = _this.specList[index];
                         for(let j in _this.listData){
                             //遍历总规格列表里的属性值和改变值相等，赋值原来的改变值;
@@ -234,7 +234,7 @@ export default {
                     //新增自定义规格
                     /*
                     *新增名称
-                    * @param  type: 1 规格 2参数
+                    * @param  type: 1 规格 2分组规格
                     * @param  specName:名称
                     * @param  shopId: 店铺ID
                     * */
@@ -287,7 +287,7 @@ export default {
                 if(!_this.specList[index].all_specList.hasOwnProperty(item) && flag && val.length>0){
                     /*
                     *新增名称
-                    * @param  type: 1 规格 2参数
+                    * @param  type: 1 规格 2分组规格
                     * @param specValue  值
                     * @param specId: 名称ID
                     * */
@@ -313,18 +313,16 @@ export default {
          * 新增自定义规格
          * @param  type  1新增名称，2新增值
          * 新增名称
-         * @param  type: 1 规格 2参数
          * @param  specName:名称
          * @param  shopId: 店铺ID
          *  新增值
-         * @param  type: 1 规格 2参数
          * @param specValue  值
          * @param specId: 名称ID
 
          */
         addSpecifica(type,opt,index){
             let _this = this;
-            debugger
+
             _this.ajaxRequest({
                 'url': DFshop.activeAPI.mallProductSpecaddSpecifica_post,
                 'data':opt,

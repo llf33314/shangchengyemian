@@ -1,6 +1,6 @@
 <template>
  <div class="order_tab_main">
-   <el-select v-model="cancelData.sellerReason" placeholder="请选择取消订单的理由">	
+   <el-select v-model="cancelData.sellerReason" placeholder="请选择取消订单的理由" style="width:95%">	
         <el-option class="max-input" v-for="item in cancelReasonList"		
         :key="item.item_key" :label="item.item_value" :value="item.item_key">		
     </el-option>	

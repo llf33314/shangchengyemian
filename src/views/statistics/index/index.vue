@@ -43,7 +43,7 @@
         </div>
         <div class="index-item line-main">
           <p class="item-title">选择时间 :
-            <el-date-picker v-model="value6" type="daterange" placeholder="选择日期范围" @change="searchDate()" ></el-date-picker>
+            <el-date-picker v-model="value6" type="daterange" value-format="yyyy-MM-dd" placeholder="选择日期范围" @change="searchDate" ></el-date-picker>
           </p>
           <div class="line-content ">
             <span class="line-unit">
@@ -84,12 +84,14 @@ export default {
         },
       shopSelect:'',//搜索店铺选中店铺ID
       shopList: [],
-      startDate:new Date(new Date().setTime(new Date().getTime() - 3600 * 1000 * 24 * 30)),
-      endDate:new Date(),
+      // startDate:new Date(new Date().setTime(new Date().getTime() - 3600 * 1000 * 24 * 30)),
+      // endDate:new Date(),
       value6: [new Date(new Date().setTime(new Date().getTime() - 3600 * 1000 * 24 * 30)),new Date()],
       chart: null,
       isTotal: true,
-      chartDate:[]
+      chartDate:[],
+      date1:'',
+      date2:''
     }
   },
   methods: {
@@ -116,41 +118,39 @@ export default {
     },
     /**切换店铺 */
      searchCount(){
+       let that=this;
          if(this.shopSelect != ''){
              this.isTotal=false;
          }else{
             this.isTotal=true;
          }
-      
-      if(this.value6!=null){
-        this.getCountList(this.shopSelect,this.value6[0],this.value6[1]);
-      }else{
-        this.getCountList(this.shopSelect);
-      }
+        //  console.log( that.date1, that.date2,"date2");
+        this.getCountList(this.shopSelect,that.date1, that.date2);
+   
    },
    /**查询日期 */
-   searchDate(){
+   searchDate(value){
      let that=this;
-     if(that.value6 ==","||that.value6==undefined){
-        that.defaultDate();
-        this.getCountList(this.shopSelect);
-     }else{
-      let start = new Date(this.value6[0]);
-      let startDate = new Date(start.getFullYear() + '-' + (start.getMonth() + 1) + '-' + start.getDate());
-      let end = new Date(this.value6[1]);
-      let endDate = new Date(end.getFullYear() + '-' + (end.getMonth() + 1) + '-' + end.getDate());
-      this.loopGenerateDate(startDate,endDate);
-
-      this.getCountList(this.shopSelect,this.value6[0],this.value6[1]);
-    } 
-     
+      //  console.log(value);
+      if(value != "" && value !=undefined ){
+          let date=value.split(" - ");
+          this.loopGenerateDate(new Date(date[0]), new Date(date[1]));
+          that.date1=new Date(date[0]);
+          that.date2=new Date(date[1]);
+            // console.log( that.date1, that.date2,"date");
+          that.getCountList(this.shopSelect,date[0],date[1]);
+          
+      }else{
+       that.defaultDate();
+        that.getCountList(this.shopSelect);
+      }     
    },
    /**生成默认日期 */
    defaultDate(){
       let that=this;
-      var start = that.startDate;
+      var start = new Date(new Date().setTime(new Date().getTime() - 3600 * 1000 * 24 * 30));
       let startDate = new Date(start.getFullYear() + '-' + (start.getMonth() + 1) + '-'+ start.getDate());
-      let end = that.endDate;
+      let end =new Date();
       let endDate = new Date(end.getFullYear() + '-' + (end.getMonth() + 1) + '-' + end.getDate());
     
       this.loopGenerateDate(startDate,endDate);
@@ -158,17 +158,15 @@ export default {
    /**遍历生成日期列表 */
    loopGenerateDate(startTime,endTime){
        this.chartDate=[];
-      //  console.log(startTime);
-      //  console.log(endTime);
         let i=0;
         while((endTime.getTime()-startTime.getTime())>=0){
           // let year = startTime.getFullYear();
           // let month = startTime.getMonth().toString().length==1?"0"+startTime.getMonth().toString():startTime.getMonth();
           let day = startTime.getDate().toString().length==1? startTime.getDate():startTime.getDate();
-          // console.log(year+"-"+month+"-"+day);
-          // console.log(day);
+ 
           this.chartDate[i]=day;
           i++;
+          //  console.log( this.date1, this.date2,"date221");
           startTime.setDate(startTime.getDate()+1);
         }
    },
@@ -242,7 +240,6 @@ export default {
   },
   mounted(){
     let _this = this;
-    console.log(_this.startDate);
     _this.defaultDate();
       /**请求数据 */
     this.getCountList(this.shopSelect,this.value6[0],this.value6[1]);
