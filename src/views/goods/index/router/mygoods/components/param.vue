@@ -23,7 +23,6 @@
                     :key="i"
                     :label="test" 
                     :value="Number(i)">
-                    <p>{{test}}--{{item.paramsValueId}}--{{i}}</p>
             </el-option>
         </el-select>
         <a class="fontBlue" v-if="index == 0" @click="add(item)">新增</a>
@@ -224,14 +223,15 @@ export default {
     },
     mounted() {
         let _this = this;
-        this.paramList= this.row;
-        this.paramListAjax();
+
+        _this.paramListAjax();
+        
         if(this.paramList.length>0){
             _this.paramList.forEach((item,i)=>{
                 this.paramListAjax(item.paramsNameId,i);
             })
         }
-        console.log(this.row,'paramRow')
+        //console.log(this.row,'paramRow')
     }
 }
 </script>

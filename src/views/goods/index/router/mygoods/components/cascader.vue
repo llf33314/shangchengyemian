@@ -1,17 +1,26 @@
 <template>
   <div class="group-box" :style="{width:Width}">
-    <div class="group-selected"
-        @click.stop=" isShow = !isShow">
-        <em class="down" :class="{'is-reverse':isShow}"></em>
-        <span class="item" v-for=" (item,i) in selectedData":key="i">
-            <em>{{item.groupName}}</em>
-            <i class="el-icon-circle-close"  @click.self="deleteData(item.groupId)"></i>
-        </span>
-    </div>
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" >
+        <div class="group-selected"
+            @click.stop=" isShow = !isShow">
+            <p v-if="selectedData.length == 0" 
+                class="group-placeholder">请选择商品分组</p>
+            <em class="down" :class="{'is-reverse':isShow}"></em>
+            <span class="item" v-for=" (item,i) in selectedData" :key="i">
+                <em>{{item.groupName}}</em>
+                <i class="el-icon-circle-close"  @click.self="deleteData(item.groupId)"></i>
+            </span>
+        </div>
+        <el-form-item prop="group" >
+            <el-checkbox-group v-model="ruleForm.group" style="display:none">
+                <el-checkbox label="备选项" name="group"></el-checkbox>
+            </el-checkbox-group>
+        </el-form-item>
+    </el-form>
     <div class="grouping-option" v-show="isShow">
         <ul class="option1">
             <li v-for="(item,index) in oneData"
-                :key="item.index" 
+                :key="index" 
                 class="shop-box-justify"
                 @click="selectedItem(item)"
                 @mouseenter="listHover(item)">
@@ -37,10 +46,16 @@ export default {
             type: String
         },
         value:{
-            type: Array
+            type: [Array,String],
+            default:'0'
         }
     },
     data() {
+        var isGroup = (rule, value, callback) => {
+            if (!value) {
+            return callback(new Error('请至少选择一个商品分组'));
+            }
+        };
         return {
             oneData:[],//第一级
             towData:[],//第二级
@@ -48,6 +63,15 @@ export default {
             isShow: false,
             isSelect: false,
             selectedData:[],//选中选项
+
+            ruleForm:{
+                group: false//id集合
+            },//验证对象
+            rules:{
+                group: [
+                    { validator: isGroup, trigger: 'change' }
+                ],
+            },//验证
         }
     },
     watch:{
@@ -55,13 +79,24 @@ export default {
             this.Width = a;
         },
         'selectedData'(a,b){
-            this.selectedData.forEach((item,i)=>{
+            let _this = this;
+
+            if(a.length == 0){
+                _this.ruleForm.group = false;
+            }
+
+            _this.selectedData.forEach((item,i)=>{
                 item.sort = i;
+                _this.ruleForm.group = true;
             })
-            this.$emit('change',this.selectedData);
+            
+            _this.$emit('change',_this.selectedData);
         },
     },
     methods:{
+        aaa(a){
+            console.log(a,'-------')
+        },
         /** 
          * 一级选择
          */
@@ -152,11 +187,26 @@ export default {
                     arr.push(newData);
                 })
             this.selectedData = arr;
-         }
+        },
+        /** 
+         * 验证
+         */
+        submitForm() {
+            this.$refs.ruleForm.validate((valid) => {
+                if (valid) {
+                    alert('submit!');
+                } else {
+                    console.log('error submit!!');
+                    return false;
+                }
+            });
+        },
     },
     mounted() {
         let _this = this;
-        _this.initialValue(_this.value);
+        if(_this.value != '0'){
+            _this.initialValue(_this.value);
+        }
         _this.groupListAjax({
             'success'(data) {
                 _this.oneData = data.data.groupList;
@@ -193,6 +243,10 @@ export default {
             }
         }
         
+    }
+    .group-placeholder{
+        color:#bfcbd9;
+        padding-left: 10px; 
     }
     .down{
         position: absolute;
