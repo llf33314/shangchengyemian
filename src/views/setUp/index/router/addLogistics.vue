@@ -13,12 +13,12 @@
       <span class="addLogistics-warn">物流名称限制20字数，1个汉字等于2个数字</span>
     </el-form-item>
     <el-form-item label="默认快递公司 :" prop="express" class="icon-warn" required>
-      <el-select v-model="ruleForm.express" placeholder="请选择活动区域" class="add-input" @change="aaa()">
+      <el-select v-model="ruleForm.express" placeholder="请选择活动区域" class="add-input" >
         <el-option :label="option.item_value" :value="option.item_key" :key="option.item_key" v-for="(option,index) in options" ></el-option>
       </el-select>
     </el-form-item>
     <el-form-item label="所属店铺：" prop="shopId" class="icon-warn" required>
-       <el-select v-model="ruleForm.shopId" placeholder="请输入所属店铺" class="add-input" @click="aaa(ruleForm.shopId)">
+       <el-select v-model="ruleForm.shopId" placeholder="请输入所属店铺" class="add-input" >
         <el-option :label="option.sto_name" :value="option.id" :key="option.id" :aa='option.sto_name' v-for="(option,index) in shopList"></el-option>
       </el-select>
     </el-form-item>
@@ -84,14 +84,19 @@
               <th width="15%">包邮价格</th>
           </tr>
           <tr v-for="(row,index) in ruleForm.tableData" :key="index">
-            <td  style="border-right:1px solid #dfe6ec;padding-right:10px;">
-              <div class="tabal-region">
-                <p >{{ row.dels }}</p>
-                <p>
-                  <a @click="addRegion(row.dels)">编辑</a>
-                  <a @click="delDistributionArea(row)">删除</a>
-                </p>
-              </div>  
+            <td  style="border-right:1px solid #dfe6ec;padding:10px;">
+              <el-form-item :prop="'tableData.'+index+'.provinceStr'"  
+                  :rules="[
+                  { required: true, message: '请选择省份'},
+                  ]">
+                <div class="tabal-region">
+                    <p >{{ row.provinceStr }}</p>
+                    <p>
+                      <a @click="addRegion(index)">编辑</a>
+                      <a @click="delDistributionArea(index)">删除</a>
+                    </p>
+                </div>  
+              </el-form-item>
             </td>
             <td v-if="ruleForm.priceType > 0">
               <el-form-item  
@@ -174,15 +179,16 @@
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
-      <el-button @click="resetForm('ruleForm')">取消</el-button>
+      <el-button @click="resetForm()">取消</el-button>
     </el-form-item>
   </el-form>
   </div>
   <el-dialog 
-  :visible="true" 
+  :visible="dialogVisible" 
   title="选择可配送区域"
   size="small">
-    <gt-transger :list="provinceList" :selectList="selectList" ></gt-transger>
+    <gt-transger :list="provinceList" :selectList="selectList" :allSelectList="allSelectList" :dialogVisible.sync="dialogVisible" :editIndex="editIndex" 
+    @changes="dialogChange"></gt-transger>
   </el-dialog>
   <!-- <el-dialog v-if="dialogVisible"
   title="选择可配送区域"
@@ -210,7 +216,7 @@
 
 <script>
 import Lib from "assets/js/Lib";
-import gtTransger from "components/gtTransfer";
+import gtTransger from "./../components/gtTransfer";
 export default {
   data() {
     //验证模板名称
@@ -225,7 +231,7 @@ export default {
     };
     //验证公司名称
     var formExpress = (rule, value, callback) => {
-      if (this.ruleForm.express.item_key == null) {
+      if (this.ruleForm.express == null) {
         return callback(new Error("请选快递公司"));
       } else {
         callback();
@@ -285,10 +291,11 @@ export default {
         addMoney: "",
         noMoneyNum: "",
         noMoney: "",
-        tableData: [{}]
+        tableData: []
       },
       provinceList: [], //省份集合
-      selectList: [], //已选的省份集合
+      selectList: [], //已选的省份集合(单个运费选中的省份集合)
+      allSelectList:[],//所有选中的省份集合(每个省份只能设置一次运费)
       value2: [],
       filterMethod(h, option) {
         return "<span>" + option.key + " -" + option.label + "</span>";
@@ -323,11 +330,14 @@ export default {
         1: { first: "首件", jion: "续件", unit: "个" },
         2: { first: "首重", jion: "续重", unit: "Kg" },
         3: { first: "首公里", jion: "续公里", unit: "km" }
-      }
+      },
+      editIndex:-1
     };
   },
   components: {
     gtTransger
+  },
+  watch: {
   },
   methods: {
     confirmArea() {
@@ -340,34 +350,92 @@ export default {
       let _this = this;
       this.$refs[formName].validate(valid => {
         if (valid) {
-          let pfName = _this.$refs[formName].model;
-          let freight = {};
-          freight["name"] = pfName.name;
-          freight["shopId"] = pfName.shopId;
-          freight["isNoMoney"] = pfName.isNoMoney;
-          freight["noMoneyNum"] = pfName.noMoneyNum;
-          freight["noMoney"] = pfName.noMoney;
-          freight["isResultMoney"] = pfName.isResultMoney;
-          freight["expressId"] = pfName.expressId;
-          freight["express"] = pfName.express;
-          if (pfName.id != null && pfName.id != "") {
-            freight.id = pfName.id;
+          let formData = _this.$refs[formName].model;
+          let express = formData.express;
+          let freight = {
+            name: formData.name,
+            shopId: formData.shopId,
+            isNoMoney: formData.isNoMoney || 1,
+            noMoneyNum: formData.noMoneyNum,
+            noMoney: formData.noMoney,
+            isResultMoney: formData.isResultMoney ? 1 : 0,
+            expressId:  formData.express,
+            express: formData.express.item_value,
+            id: formData.id || null,
+            money: formData.money,
+            priceType:formData.priceType,
+            firstNums:formData.firstNums || 0,
+            addNums: formData.addNums || 0,
+            addMoney: formData.addMoney || 0
+          };
+          //循环快递公司
+          for(let i = 0; i < _this.options.length; i++){
+            let expressObj = _this.options[i];
+            if(expressObj.item_key == formData.express){
+              freight.express = expressObj.item_value;
+              break;
+            }
           }
-          var params = {};
-          params["freight"] = JSON.stringify(freight);
-          // if(dDetailObj != null){
-          //   params["delDetail"] = JSON.stringify(dDetailObj);
-          // }
-          // if(dProvinceObj != null){
-          //   params["delPro"] = JSON.stringify(dProvinceObj);
-          // }
+          let detail = [];
+          //设置了配送区域和运费
+          if(formData.isResultMoney == 1){
+            let list = formData.tableData;
+            if(list == null || list.length  == 0){
+               _this.$message.error("请填写基本信息");
+               return;
+            }
+            list.forEach((item,i)=>{
+              let selectList = item.selectList;
+              let obj = {
+                id : item.id || null,
+                freightId: formData.id || null,
+                expressId:  formData.express.item_key ,
+                express: freight.express,
+                money: item.money || 0,
+                noMoneyNum: item.noMoneyNum || 0,
+                isDelete: item.isDelete || 0,
+                noMoney: item.noMoney || 0,
+                firstNums: item.firstNums || 0,
+                addNums: item.addNums || 0,
+                addMoney: item.addMoney || 0
+              };
+              let proId = [];
+              let proStr = [];
+              let provinceList = [];
+              selectList.forEach((sitems,i)=>{
+                if(sitems.select){
+                  proId.push(sitems.provinceId);
+                  proStr.push(sitems.provinceName);
+                  provinceList.push({
+                    id : sitems.id || null,
+                    freightId:  formData.id || null,
+                    freightDetailId: item.id || null,
+                    provinceId: sitems.provinceId,
+                    provinceName: sitems.provinceName
+                  });
+                }
+              });
+              obj.provincesId = proId.toString();
+              obj.provinces  = proStr.toString();
+              obj.provinceList = provinceList;
+              detail.push(obj);
+            });
+          }
+          console.log(freight,"freight");
+          console.log(detail,"detail");
+          // return;
           _this.ajaxRequest({
             url: DFshop.activeAPI.mallFreightSave_post,
             data: {
-              params: params
+              freight : JSON.stringify(freight),
+              detail: JSON.stringify(detail)
             },
             success: function(data) {
-              //console.log(_this.ruleForm);
+              _this.$message({
+                message: "保存成功",
+                type: "success"
+              });
+              _this.jumpRouter("/logistics/logistics");
             }
           });
         } else {
@@ -376,30 +444,63 @@ export default {
         }
       });
     },
+    //取消按钮（返回上一页）
     resetForm(formName) {
-      this.$refs[formName].resetFields();
+      //this.$refs[formName].resetFields();
+      window.history.go(-1);
     },
     addTable() {
       var newTab = {
-        dels: "",
         name: "",
         num: "",
-        money: ""
+        money: "",
+        provinceStr : "",
+        firstNums: "",
+        addMoney: "",
+        noMoneyNum: "",
+        noMoney: "",
+        selectList: [],
+        id: null
       };
       this.ruleForm.tableData.push(newTab);
     },
-    addRegion(dels) {
+    //弹出框返回
+     dialogChange(changeData){
+      console.log("返回：",changeData);
+      let index = changeData[0];
+      let selectList = changeData[1];
+      let dataList = this.ruleForm.tableData;
+      let data = dataList[index];
+      let provinceStr = [];
+      let allSelectList = this.allSelectList;
+      selectList.forEach((item,index)=>{
+        if(item.select){
+          provinceStr.push(item.provinceName);
+          allSelectList.push(item.id);
+        }
+      });
+      data.provinceStr = provinceStr.toString();
+      data.selectList = selectList;
+      this.$set(dataList,index,data);
+      console.log(dataList,"dataList")
+      this.validateForm();
+    },
+    addRegion(index) {
       this.provinceList = this.area;
       this.dialogVisible = true;
-      console.log( this.provinceList," this.provinceList")
+      this.editIndex = index;
+      this.selectList = this.ruleForm.tableData[index].selectList || [];
+      console.log( this.provinceList," this.provinceList",this.editIndex)
     },
-    delDistributionArea(row) {
+    delDistributionArea(index) {
       let _this = this;
       let msg = {
         dialogTitle: "确认删除吗？",
-        // 'dialogMsg': '删除后，数据将无法恢复哦~',
+        dialogMsg: '删除后，数据将无法恢复哦~',
         callback: {
-          btnOne: function() {}
+          btnOne: function() {
+            _this.ruleForm.tableData.splice(row,1);
+          }
         }
       };
       _this.$root.$refs.dialog.showDialog(msg);
@@ -413,11 +514,6 @@ export default {
       }
       console.log(dels, "所选地址");
     },
-    aaa(e, index) {
-      // let _aa = this.options[e].aa
-      // console.log(e, e);
-      //console.log(this.ruleForm.express);
-    },
     //根据运费id获取运费信息
     mallFreightInfo(id) {
       let _this = this;
@@ -427,8 +523,38 @@ export default {
           id: id
         },
         success: function(data) {
-          _this.ruleForm = data.data;
+          let myData = data.data;
+          _this.ruleForm = myData;
+          let detailList = myData.detailList || [];
+          if(detailList != null && detailList.length > 0){
+            let list = [];
+            //循环运费详情
+            detailList.forEach((item,i)=>{
+              let provinceList = item.provinceList;
+              //循环省份集合
+              provinceList.forEach((pitem,k)=>{
+                pitem.select = true;
+                _this.$set(provinceList,k,pitem);
+                _this.allSelectList.push(pitem.provinceId);
+              });
+              list.push({
+                provinceStr : item.provinces,
+                firstNums: item.firstNums,
+                money: item.money,
+                addNums: item.addNums,
+                addMoney: item.addMoney,
+                noMoneyNum: item.noMoneyNum,
+                noMoney: item.noMoney,
+                selectList: provinceList,
+                id: item.id
+              });
+            });
+            _this.$set(_this.ruleForm,'tableData',list)
+            //_this.ruleForm.tableData = list;
+            _this.ruleForm.express = myData.expressId;
+          }
           console.log(_this.ruleForm, "_this.ruleForm1111111111");
+          console.log(detailList , "detailList")
         }
       });
     },
@@ -442,7 +568,7 @@ export default {
           _this.options = data.data;
           let express = _this.ruleForm.express;
           if (express == "") {
-            _this.ruleForm.express = _this.options[0];
+            _this.ruleForm.express = _this.options[0].item_key;
           }
         }
       });
@@ -473,25 +599,10 @@ export default {
           _this.area = data.data;
           //注释
           _this.provinceList = _this.area;
-          console.log(_this.area);
+          // console.log(_this.area);
         }
       });
     }
-    // generateData2() {
-    //   const data = [];
-    //   const cities = this.area;
-    //   cities.forEach((city, index) => {
-    //     data.push({
-    //       label: city.city_name,
-    //       key: city.city_parent
-    //     });
-    //   });
-    //   return data;
-    // }
-    // filterMethod(query, item) {
-    //   console.log(this.provinceList)
-    //   return item.cities.indexOf(query) > -1;
-    // },
   },
   mounted() {
     let id = this.$route.params.id;
