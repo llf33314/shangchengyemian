@@ -354,7 +354,7 @@ export default {
     },
     resetForm(formName) {
       //重置表单
-      this.$refs[formName].resetFields();
+      // this.$refs[formName].resetFields();
     },
     returnPage() {
       //取消按钮（返回上一页）

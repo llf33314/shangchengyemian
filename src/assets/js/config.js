@@ -11,7 +11,7 @@
    * 开发启用代理api
    * 打包注释DFshop.api（不需要）
    */
-  // h5App.api ="";
+  // DFshop.api ="";
   DFshop.api = "/api";
   //get请求   接口前加上 DFshop.api
 
