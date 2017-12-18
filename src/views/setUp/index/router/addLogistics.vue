@@ -597,7 +597,6 @@ export default {
         url: DFshop.activeAPI.mallGetArea_post,
         success: function(data) {
           _this.area = data.data;
-          //注释
           _this.provinceList = _this.area;
           // console.log(_this.area);
         }

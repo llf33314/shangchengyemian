@@ -164,6 +164,13 @@ export default {
     td,th{
         padding: 10px;
         border: 1px solid #dfe6ec;
+        
+    }
+    tr:hover,td:hover{
+        background:none;
+    }
+    td:hover{
+        color: #3892c5;
     }
 }
 </style>

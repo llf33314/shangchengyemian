@@ -32,7 +32,9 @@
                         <i @click="remove(index,i)" class="el-icon-circle-close"></i>
                     </div>
                     <div class="table-img" v-if="isAddImg && index === 0" >
-                        <gt-material v-if="isAddImg":img="imgUrl+test.specImage"></gt-material>
+                        <gt-material v-if="isAddImg" :img="test.specImage==null? '': imgUrl+test.specImage" 
+                            @change="changeImg(val,i)">
+                        </gt-material>
                         <gt-material v-else></gt-material>
                     </div>
                 </div>
@@ -111,10 +113,10 @@ export default {
             this.specList = a;
         },
         'nameList'(a,b){
-            console.log(a,b,'-----nameList-----');
+            //console.log(a,b,'-----nameList-----');
         },
         'listData'(a,b){
-            console.log(a,b,'有新增規格');
+            // /console.log(a,b,'有新增規格');
             //this.flag = false;
         }
     },
@@ -153,11 +155,11 @@ export default {
                         //总列表
                         _this.listData = data.data;
                         _this.imgUrl = data.imgUrl;
-                        console.log(data,'总规格列表');
+                        //console.log(data,'总规格列表');
 
                     }else{
                         //分类表
-                        console.log(data,'分组规格列表',id);
+                        //console.log(data,'分组规格列表',id);
                         _this.specList.forEach((item,i)=>{
                             //对应规格列表 添加 分组下的所有规格（all_specList）方便后期添加排重对比
                             if(item.specNameId == id){
@@ -399,6 +401,12 @@ export default {
             }
             _this.selectedSpec ="";//新增后清空
         },
+        /** 
+         *修改图片
+         */
+        changeImg(val,index){
+
+        }
     }
 }
 </script>
