@@ -3,16 +3,16 @@
   <div class="common-nav">
     <el-breadcrumb separator="/">
       <el-breadcrumb-item :to="{ path: '/logistics/since' }">上门自提</el-breadcrumb-item>
-      <el-breadcrumb-item>新增自提点</el-breadcrumb-item>
+      <el-breadcrumb-item v-if="ruleForm.id ==''">新增自提点</el-breadcrumb-item>
+      <el-breadcrumb-item v-else>修改自提点</el-breadcrumb-item>
     </el-breadcrumb>
   </div>
   <div class="addLogistics-main">
   <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="135px" class="demo-ruleForm">
-    <el-form-item label="自提点名称 :" prop="name">
+    <el-form-item label="自提点名称 :" prop="visitName">
       <el-input v-model="ruleForm.visitName" placeholder="请输入自提点名称" class="add-input"></el-input>
-      <p class="addLogistics-warn">物流名称限制20字数，1个汉字等于2个数字，符号。</p>
     </el-form-item>
-    <el-form-item label="自提点地址 :" class="icon-warn">
+    <el-form-item label="自提点地址 :" class="icon-warn" prop="visit">
       <el-select v-model="ruleForm.visitProvinceId" placeholder="省份"  style="width:100px" @change="getCityOrArea('city')">
         <el-option :label="option.city_name" :value="option.id" :key="option.id" v-for="option in provinces"></el-option>
       </el-select>
@@ -21,58 +21,40 @@
       </el-select>
       <el-select v-model="ruleForm.visitAreaId" placeholder="区县" style="width:100px">
         <el-option :label="option.city_name" :value="option.id" :key="option.id" v-for="option in areas" ></el-option>
-      </el-select>
-      <el-input v-model="ruleForm.visitAddressDetail" placeholder="请点击选择自提地址" class="add-input block"></el-input>
+      </el-select> 
+      <el-input v-model="ruleForm.visitAddress" placeholder="请点击选择自提地址" class="add-input block"></el-input>
     </el-form-item>
-    <el-form-item label="联系电话 ：" >
+    <el-form-item label="联系电话 ：" prop="visitContactNumber">
         <el-input v-model="ruleForm.visitContactNumber" placeholder="请输入联系电话"   class="add-input"></el-input>
     </el-form-item>
-    <el-form-item label="接待时间 :" prop="resource">
-      <!-- <el-checkbox-group v-model="ruleForm.checkboxGroup"> -->
-        <!-- <el-checkbox-button v-for="city in cities" :label="city" :key="city">{{city}}</el-checkbox-button> -->
-        <el-checkbox-button :label="1" :key="1">周一</el-checkbox-button>
-        <el-checkbox-button :label="2" :key="2">周二</el-checkbox-button>
-        <el-checkbox-button :label="3" :key="3">周三</el-checkbox-button>
-        <el-checkbox-button :label="4" :key="4">周四</el-checkbox-button>
-        <el-checkbox-button :label="5" :key="5">周五</el-checkbox-button>
-        <el-checkbox-button :label="6" :key="6">周六</el-checkbox-button>
-        <el-checkbox-button :label="7" :key="7">周日</el-checkbox-button>
-      <!-- </el-checkbox-group> -->
-        <div class="block">
-            <el-time-select
-            placeholder="起始时间"
-            v-model="startTime"
-            :picker-options="{
-            start: '08:30',
-            step: '00:15',
-            end: '18:30'
-            }">
-        </el-time-select>
-        -
-        <el-time-select
-            placeholder="结束时间"
-            v-model="endTime"
-            :picker-options="{
-            start: '08:30',
-            step: '00:15',
-            end: '18:30',
-            minTime: startTime
-            }">
-        </el-time-select>
-        </div>
+    <el-form-item label="接待时间 :" prop="timeList">
+       <time-list :timeList.sync="ruleForm.timeList" ref="timeComp"></time-list>
     </el-form-item>
-    <el-form-item label=" 自提点图片 :" prop="imagesUrl">
-        <div class="since-img">
-            <img-upload></img-upload>
+    <el-form-item label="自提点图片 :" prop="imageList">
+      <div class="shop-IDImg">
+        <div  class="shop-IDUpload" v-if="ruleForm.imageList.length >0 "
+              style="margin-bottom:10px;"
+              v-for=" (img,index) in ruleForm.imageList"
+              :key="index">
+          <div class="material-square">
+            <img class="img" :src="img.imageUrl" />
+            <div class="delete"  @click.stop="stopDelete">
+              <i class="el-icon-view" @click.stop="showBigImg(img)"></i>
+              <i class="el-icon-delete2" @click.stop="deleteImg(index)"></i>
+            </div>
+          </div>
         </div>
+        <div class="shop-IDUpload" v-if="ruleForm.imageList.length < 5 ">
+          <div class="material-square border" @click="materiallayer()" >
+            <i class="el-icon-plus"></i>
+          </div>
+        </div>
+      </div>
+
     </el-form-item>
     <el-form-item label="自提点备注 :">
-        <el-input
-            class="add-input"
-            type="textarea"
-            :rows="2"
-            placeholder="请输入内容"
-            v-model="ruleForm.visitRemark">
+        <el-input class="add-input" type="textarea" :rows="2"
+            placeholder="请输入内容"  v-model="ruleForm.visitRemark">
         </el-input>
     </el-form-item>
     <el-form-item label="是否同时作为线下门店接待 :" >
@@ -93,169 +75,392 @@
       <el-button @click="resetForm('ruleForm')">取消</el-button>
     </el-form-item>
   </el-form>
+    <el-dialog v-model="materialLargeSrcVisible" size="small">
+        <img width="100%" :src="largeSrc" alt="" class="img">
+    </el-dialog>
   </div>
 </div>
 </template>
 
 <script>
  import imgUpload from 'components/imgUpload.vue';
+ import timeList from "../../components/timeList";
  import Lib from 'assets/js/Lib';
-  export default {
-    components:{
-        imgUpload
-    },
-    data() {
-      // var checkRegion = (rule, value, callback) => {
-      //   if (value === '') {
-      //     callback(new Error('请选择快递公司'));
-      //   }
-      // };
-      const cityOptions = ['周一', '周二', '周三', '周四','周五', '周六','周日'];
-      return {
-        ruleForm: {
-          isStorePay:'',
-          isStoreReception:'',
-          visitRemark:'',
-          imagesUrlList:'',
-          visitContactNumber:'',
-          visitAddressDetail:'',
-          visitAreaId:'',
-          visitCityId:'',
-          visitProvinceId:'',
-          visitName:'',
-        },
-        cities: cityOptions,
-        startTime: '',
-        endTime: '',
-        value2: [],
-        rules: {
-          visitName: [
-            { required: true, message: '自提名称不能为空', trigger: 'blur' }
-          ],
-          // region: [
-          //   { validator: checkRegion, trigger: 'blur' }   
-          // ],
-          resource: [
-            { required: true, message: '接待时间不能为空', trigger: 'change' }
-          ]
-        },
-        provinces:"",
-        citys:"",
-        areas:"",
-        dialogVisible : false,
-        cityId:''
+export default {
+  components:{
+      imgUpload,timeList
+  },
+  data() {
+    var formVisit = (rule, value, callback) => {
+      if (this.ruleForm.visitProvinceId  == '' || this.ruleForm.visitCityId  == ''||
+        this.ruleForm.visitAreaId  == ''|| this.ruleForm.visitAddress  == '') {
+        return callback(new Error('请输入自提点地址'));
+      } else{
+        callback();
       }
-    },
-    methods: {
-      submitForm(formName) {
-        let _this = this;
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            alert('submit!');
-            let paramsForm = this.$refs[formName].model;
-            let imageList = {};
-            let timeList = {};
+    };
+    const cityOptions = [
+         {name:'周一',checked:true,id:1}
+        ,{name:'周二',checked:true,id:2}
+        ,{name:'周三',checked:true,id:3}
+        ,{name:'周四',checked:true,id:4}
+        ,{name:'周五',checked:true,id:5}
+        ,{name:'周六',checked:true,id:6}
+        ,{name:'周日',checked:true,id:7}
+      ];
+    return {
+      ruleForm: {
+        id:'',
+        isStorePay:1,
+        isStoreReception:0,
+        visitRemark:'',
+        imageList:[],
+        timeList:[],
+        visitContactNumber:'',
+        visitAddress:'',
+        visitAddressDetail:'',
+        visitAreaId:'',
+        visitCityId:'',
+        visitProvinceId:'',
+        visitName:'',
+        startTime:'',
+        endTime:'',
+      },
+      cities: cityOptions,
+      rules: {
+        visitName: [
+          { required: true, message: '自提名称不能为空', trigger: 'blur' }
+        ],
+        visit:[
+          { validator: formVisit, trigger: 'blur,change'},
+        ],
+        visitContactNumber: [
+          { required: true, message: '联系电话不能为空', trigger: 'blur' }
+        ],
+        imageList: [
+          { type: 'array', required: true, message: '请上传自提点图片', trigger: 'change' }
+        ],
+        timeList: [
+          { type: 'array', required: true, message: '请编辑接待时间', trigger: 'change,blur' }
+        ],
+      },
+      provinces:"",//省份列表
+      citys:"", //城市列表
+      areas:"",//区县列表
+      editCityId:'', //修改时 存放选中城市id
+      editAreaId:'',//修改时 存放选中区县ID
+      materialLargeSrcVisible: false,//查看大图
+      largeSrc: '',//查看大图的图片
 
-            let param = {};
-            param.take = paramsForm;
-            param.imageList = imageList;
-            param.timeList = timeList;
-            _this.ajaxRequest({
-              'url': DFshop.activeAPI.mallFreightTakeSave_post,
-              'data':param,
-              'success':function (data){
-                _this.$message({
-                  message: '保存成功',
-                  type: 'success'
+    }
+  },
+  watch: {
+    "ruleForm.timeList"(a, b) {
+      this.$refs.ruleForm.validate(valid => {});
+    }
+  },
+  methods: {
+     /**调用素材库 */
+    materiallayer(){
+      let _this = this;
+      _this.$material({
+        imageboxUrl: DFshop.activeAPI.materialUrl,   //地址
+        modal: true,       //遮罩
+        selecType: true,   //是否多选
+        width: 820, //宽度
+        height: 500, //高度
+        lockScroll: false, //弹出框后是否锁定滚动轴
+        closeOnClickModal: false, //点击遮罩是否关闭
+        closeOnPressEscape: false
+      }).then(function (val) {
+          let _add = true;//重复排除条件
+          _this.ruleForm.imageList.forEach((item,i) => {
+            val.forEach((test,j)=>{
+              //重复添加提示
+              if(_add && test.url == item.imageUrl) {
+                  _this.$message({
+                  message: '请不要重复添加',
+                  type: 'warning'
                 });
-                _this.jumpRouter('/logistics/logistics');
+                return _add = false;
               }
             });
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        });
-      },
-      resetForm(formName) {
-        this.$refs[formName].resetFields();
-      },
-      addTable(){
-        var newTab = {
-            dels: '',
-            name: '',
-            num: '',
-            money:''
+          });
+          if(!_add)return;//重复不添加
+          let oLength = _this.ruleForm.imageList.length;
+          val.forEach((test,j)=>{
+              let image={
+                assType:3,
+                imageUrl:test.url,
+                assSort:_this.ruleForm.imageList.length
+              }
+              if((oLength+j)<5){
+                  _this.ruleForm.imageList.push(image);
+              }else{
+                _this.$message({
+                  message: '已选择图片超过5张,系统默认筛选您所选的前五张',
+                  type: 'warning'
+                });
+              }
+          }); 
+          _this.$refs['ruleForm'].validate();
+      }).catch(function (error) {
+          //取消
+      })
+    },
+    /*
+    * 删除图片
+    * */
+    deleteImg(num) {
+      let  _this = this;
+      _this.ruleForm.imageList.pop([num]);
+      _this.$refs['ruleForm'].validate();
+    },
+    /** 
+     * 查看大图
+    */
+    showBigImg(img){
+      this.materialLargeSrcVisible = true;
+      this.largeSrc = img;
+    },
+ 
+    submitForm(formName) {
+      let _this = this;
+      let timeValid = this.$refs.timeComp.validateData();
+
+      this.$refs[formName].validate((valid) => {
+        if (valid&& timeValid) {
+          let paramsForm = this.$refs[formName].model;
+          let imageList =_this.ruleForm.imageList;
+          let timeList = _this.ruleForm.timeList;
+          //将接待天数数组转成字符串
+          timeList.forEach((time,j)=>{
+            let days="";
+            time.visitDays.forEach((day,m)=>{
+              if(days != ""){ days+=',';}
+                days+=day;
+            });
+           time.visitDays=days;
+          });
+          //去除域名
+          imageList.forEach((image,m)=>{
+              var img = image.imageUrl.split("/upload/")[1];
+              image.imageUrl=img;
+          });
+          let param = {};
+          param.take = paramsForm;
+          param.take.imagesUrl=imageList[0].imageUrl;
+          param.imageList =JSON.stringify(imageList);
+          param.timeList = JSON.stringify(timeList);
+          // console.log(param)
+ 
+          _this.ajaxRequest({
+            'url': DFshop.activeAPI.mallFreightTakeSave_post,
+            'data':param,
+            'success':function (data){
+              _this.$message({
+                message: '保存成功',
+                type: 'success'
+              });
+              _this.jumpRouter('/logistics/since');
+            }
+          });
+        } else {
+          // console.log('error submit!!');
+          return false;
         }
-        this.tableData.push(newTab);
-      },
-      addRegion(dels){
-        console.log(dels);
-        this.dialogVisible = true;
-      },
-      handleChange(value, direction, movedKeys) {
-        //todo
-        console.log(value, direction, movedKeys);
-        let dels=[];
-        for(let i=0; i<value.length;i++){
-          dels.push(this.data2[i]);
-        }
-        console.log(dels,'所选地址');
-      },
-      aaa(e,index){
-        console.log(e,e);
-      },
-      mallFreightTakeInfo(id){
-        let _this = this;
-        _this.ruleForm = '';
-        _this.ajaxRequest({
+      });
+    },
+    resetForm(formName) {
+      // this.$refs[formName].resetFields();
+      this.jumpRouter('/logistics/since');
+    },
+    /**获取自提点信息 */
+    mallTakeInfo(id){
+      let _this = this;
+      _this.ajaxRequest({
           'url': DFshop.activeAPI.mallFreightTakeInfo_post,
           'data':{
             id :id 
           },
           'success':function (data){
+            _this.editCityId= data.data.visitCityId;
+            _this.editAreaId= data.data.visitAreaId;
             _this.ruleForm = data.data;
-            console.log(_this.ruleForm);
+            //添加域名
+            _this.ruleForm.imageList.forEach((image,m)=>{
+              image.imageUrl=data.imgUrl+image.imageUrl;
+            });
           }
       });
-      },
-      getCityOrArea(name){
-        let _this =this;
-        if(name === 'city'){
-          _this.cityId = _this.ruleForm.visitProvinceId;
-        }else{
-          _this.cityId = _this.ruleForm.visitCityId;
-        }
-        DFshop.method.getAreaList({
-          'cityId':_this.cityId,
-          'success':function(data){
-            let options = data.data;
-            if(name === 'city'){
-              _this.citys = options;
-            }else{
-              _this.areas = options;
+    },
+    /**城市数据级联 */
+    getCityOrArea(name){
+      let _this =this;
+      let  id="";
+      if(name === 'city'){
+        id = _this.ruleForm.visitProvinceId;
+        _this.ruleForm.visitCityId='';
+        _this.ruleForm.visitAreaId='';
+          _this.citys=[];
+          _this.areas=[];
+      }else{
+        id = _this.ruleForm.visitCityId;
+          _this.ruleForm.visitAreaId='';
+          _this.areas=[];
+      }
+      this.$refs.ruleForm.validate(valid => {});
+      _this.getAreaList({
+        'cityId':id,
+        'success':function(data){
+          let options = data.data;
+          if(name === 'city'){
+            _this.citys = options;
+             if(_this.editCityId != ""){
+              _this.ruleForm.visitCityId = _this.editCityId;
+             }
+          }else{
+            _this.areas = options;
+            if(_this.editAreaId !=""){
+              _this.ruleForm.visitAreaId = _this.editAreaId;
             }
           }
-        })
-      }
-    },
-    mounted(){
-      if(this.$route.params.id != '' && this.$route.params.id !='undefined'){
-        this.mallFreightTakeInfo(this.$route.params.id);
-      }
-      let _this =this;
-      DFshop.method.getAreaList({
-        'cityId':_this.cityId,
-        'success':function(data){
-        let options = data.data;
-        _this.provinces=options;
-        //console.log(_this.provinces)
         }
       })
-    }, 
-  }
+    }
+  },
+  mounted(){
+    if(this.$route.params.id != 0 && this.$route.params.id !='undefined'){
+      this.mallTakeInfo(this.$route.params.id);
+    }
+    let _this =this;
+    //获取省级数据列表
+    _this.getAreaList({
+      'cityId':"",
+      'success':function(data){
+        let options = data.data;
+        _this.provinces=options;
+        _this.citys=[];
+        _this.areas=[];
+      }
+    })
+  }, 
+}
 </script>
 
 <style lang="less" scoped>
 @import '../../less/addLogistics.less';
+.el-checkbox-button__inner,.el-checkbox-button__inner{
+ border-left: 1px solid #bfcbd9;
+}
+ .shop-IDUpload,.shop-img {
+    vertical-align: top;
+    width: 50px;
+    height: 50px;
+    background: #fbfdff;
+    display: inline-block;
+    margin-right: 15px;
+}
+
+.addLogistics-wrapper{
+    width: 100%;
+    .addBanner-img{
+        width: 54px;
+        height: 54px;
+        display: inline-block;
+    }
+    a{
+        color: #20a0ff;
+        cursor: pointer;
+    }
+}
+ 
+section{
+    display: inline-block;
+    vertical-align: bottom;
+    width: 100%;
+    height: 100%;
+  }
+  .material {
+    width: 100%;
+    height: 450px;
+    border: 0;
+  }
+  .border{
+    .border-radius(3px);
+    border: 2px dashed #c0ccda;
+    
+  }
+  .material-square {
+    .ik-box;
+    .ik-box-pack(center);
+    .ik-box-align(center);
+    background-color: #fbfdff;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    height: 50px;
+    width: 50px;
+    .el-icon-plus {
+      color: #c0ccda;
+    }
+    .img {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+    }
+    &:hover .delete {
+      .ik-box;
+      .ik-box-pack(center);
+      .ik-box-align(center);
+    }
+    .delete {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      border: 2px solid rgba(0, 0, 0, 0);
+      left: 0;
+      background-color: rgba(0, 0, 0, .3);
+      z-index: 1;
+      color: #fff;
+      font-size: 18px;
+      display: none;
+    }
+  }
+
+  .rectangle {
+    width: 220px;
+    border-radius: 3px;
+  }
+
+  .material-dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, .3);
+    z-index: 9999;
+    text-align: center;
+    .content {
+      background-color: #fff;
+      padding: 0 10px 10px;
+      overflow: hidden;
+      border-radius: 5px;
+      min-width: 700px;
+      max-width:1000px;
+      display: inline-block;
+      margin-top:10%;
+      .title {
+        line-height: 50px;
+        height: 50px;
+        font-weight: 700;
+        text-align: left;
+      }
+    }
+  }
+
 </style>
