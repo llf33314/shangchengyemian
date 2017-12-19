@@ -24,8 +24,10 @@
     </div>
     <div class="dialog-list">
         <span>发货方式  :</span>
-        <el-radio class="radio" v-model="expressData.expressWay" label="1">需要物流</el-radio>
-        <el-radio class="radio" v-model="expressData.expressWay" label="0">无需物流</el-radio>
+         <el-radio-group v-model="expressData.expressWay"  @change="expressWayValidate">
+            <el-radio class="radio" label="1">需要物流</el-radio>
+            <el-radio class="radio" label="0">无需物流</el-radio>
+         </el-radio-group>
     </div>
     <div class="dialog-list">
     <el-form :inline="true" class="demo-form-inline" :model="expressData" :rules="rules" ref="expressData" label-width="88px" label-position="left">
@@ -58,6 +60,13 @@ export default {
         } 
     },
     data: function () {
+         var validateExpressDelivery = (rule, value, callback) => {
+            if (this.expressData.expressWay==1 && value === '') {
+             callback(new Error('请输入快递单号'));
+            } else {
+                callback();
+            }
+        };
         return {
             orderData:{},
             expressData:{//发货参数
@@ -76,7 +85,7 @@ export default {
                     { required: true, message: '请输入物流名称', trigger: 'blur' },
                 ],
                 expressDelivery: [
-                    { required: true, message: '请输入快递单号', trigger: 'blur' },
+                     { validator: validateExpressDelivery, trigger: 'blur' } 
                 ]
             },
             expressList:[],//快递公司列表
@@ -97,6 +106,10 @@ export default {
         }
     },
     methods:{
+        /**改变快递单号的 验证与否 */
+        expressWayValidate(){
+            this.$refs.expressData.validateField('expressDelivery');
+        },
         /**获取快递公司信息 */
         mallExpressList(){
             let _this = this;

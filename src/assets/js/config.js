@@ -81,6 +81,8 @@
     mallFreightTakeInfo_post: '/mallFreight/E9lM9uM4ct/take/takeInfo',
     /*保存上门自提信息  */
     mallFreightTakeSave_post: '/mallFreight/E9lM9uM4ct/take/save',
+    /*上门自提功能开启/关闭  */
+    mallTakeSetTakeTheir_post: '/mallFreight/E9lM9uM4ct/take/setTakeTheir',
 
     /*获取商城设置信息 */
     mallPaySetPaySetInfo_post: '/mallPaySet/E9lM9uM4ct/paySetInfo',

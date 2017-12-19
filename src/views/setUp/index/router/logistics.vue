@@ -32,8 +32,10 @@
               label="所属店铺">
             </el-table-column>
             <el-table-column
-              prop="createTime | formatNot"
               label="创建时间">
+              <template  scope="scope">
+                  {{scope.row.createTime|format}}
+              </template>
             </el-table-column>
             <el-table-column label="操作">
               <template scope="scope">
@@ -52,25 +54,24 @@
         <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
+          :current-page='logisticsData.page.curPage'
           :page-size="logisticsData.page.pageSize"
           layout="prev, pager, next, jumper"
-          :total="logisticsData.page.pageCount">
+          :total="logisticsData.page.rowCount">
         </el-pagination>
       </div>
       <content-no :show="'logistics'" v-if="logisticsData.page.pageCount == 0" ></content-no>
     </el-tab-pane>
     <el-tab-pane label="上门自提" name="since" >
-      <div class="logistics-main" v-if="tableData.page.pageCount > 0">
+      <div class="logistics-main">
         <div class="index-shopInfo">上门自提功能
-          <el-switch style="margin-left:30px;"
-            v-model="tableData.isTakeTheir"
-            on-text="开启"
-            off-text="关闭">
+          <el-switch style="margin-left:30px;"  v-model="isTakeTheir"
+            on-text="开启" off-text="关闭" @change="switchChange">
           </el-switch>
           <p>启用上门自提功能后，买家可以就近选择你预设的自提点，下单后你需要尽快将商品配送至指定自提点。</p>
         </div>
-        <div class="logistics-content">
-          <el-button type="primary" @click="jumpRouter('/addSince/'+id)">新增自提点</el-button>
+        <div class="logistics-content" v-if="isTakeTheir">
+          <el-button type="primary" @click="jumpRouter('/addSince/0')">新增自提点</el-button>
           <div v-if="tableData != null">
             <el-table
               :data="tableData.page.subList"
@@ -108,12 +109,13 @@
         <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
+          :current-page='tableData.page.curPage'
           :page-size="tableData.page.pageSize"
           layout="prev, pager, next, jumper"
-          :total="tableData.page.pageCount">
+          :total="tableData.page.rowCount">
         </el-pagination>
       </div>
-      <content-no :show="'logistics/since'" v-if="tableData.page.pageCount == 0" ></content-no>
+      <content-no :show="'logistics/since'" v-if="tableData.page.pageCount == 0 && isTakeTheir" ></content-no>
     </el-tab-pane>
   </el-tabs>
 </div>
@@ -128,14 +130,14 @@ export default {
   },
   data() {
     return {
+      isTakeTheir:true,
       activeName: "logistics",
-      logisticsData: {
+      logisticsData: { //物流数据列表
         page: {
           pageCount: 0
         }
       },
-      curPage: 1,
-      tableData: {
+      tableData: { //自提数据列表
         page: {
           pageCount: 0
         }
@@ -143,9 +145,16 @@ export default {
     };
   },
   methods: {
+    /**选项卡 */
     handleClick(tab, event) {
       this.jumpRouter("/logistics/" + tab.name);
+      if(this.activeName =="logistics"){
+        this.mallFreightList(1);
+      }else{
+        this.mallFreightTakeList(1);
+      } 
     },
+    /**删除提示  */
     handleDelete(index, id, type) {
       let _this = this;
       let msg = {
@@ -166,11 +175,16 @@ export default {
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
     },
+    /**下一页 */
     handleCurrentChange(val) {
       // console.log(`当前页: ${val}`);
-      this.curPage = val;
-      // console.log(val);
+      if(this.activeName =="logistics"){
+        this.mallFreightList(val);
+      }else{
+        this.mallFreightTakeList(val);
+      } 
     },
+    /**物流管理列表 */
     mallFreightList(pageNum) {
       // console.log("Lib.M.formatNot", Lib.M.formatNot);
       let _this = this;
@@ -196,6 +210,7 @@ export default {
         }
       });
     },
+    /**删除物流 */
     mallFreightDelete(id) {
       let _this = this;
       _this.ajaxRequest({
@@ -208,10 +223,11 @@ export default {
             message: "删除成功",
             type: "success"
           });
-          _this.mallFreightList(this.curPage);
+          _this.mallFreightList(_this.logisticsData.page.curPage);
         }
       });
     },
+    /**上门自提列表 */
     mallFreightTakeList(pageNum) {
       let _this = this;
       _this.ajaxRequest({
@@ -220,24 +236,34 @@ export default {
           curPage: pageNum
         },
         success: function(data) {
-          // _this.tableData = data.data;
-
-          let myData = data.data;
-          let page = myData.page;
-          _this.tableData = {
-            page: {
-              curPage: page.curPage,
-              pageCount: page.pageCount || 0,
-              pageSize: page.pageSize,
-              rowCount: page.rowCount,
-              subList: page.subList
-            }
-            // videourl:myData.videourl
-          };
-          _this.tableData.isTakeTheir = !!data.data.isTakeTheir;
+          _this.isTakeTheir = !!data.data.isTakeTheir; 
+          if(_this.isTakeTheir){
+            let myData = data.data;
+            let page = myData.page;
+            _this.tableData = {
+              page: {
+                curPage: page.curPage,
+                pageCount: page.pageCount || 0,
+                pageSize: page.pageSize,
+                rowCount: page.rowCount,
+                subList: page.subList
+              }
+            };
+          }else{
+             _this.tableData = {
+              page: {
+                curPage: 0,
+                pageCount:  0,
+                pageSize:0,
+                rowCount: 0,
+                subList: []
+              }
+            };
+          }
         }
       });
     },
+    /**删除上门自提 */
     mallFreightTakeDelete(id) {
       let _this = this;
       _this.ajaxRequest({
@@ -250,19 +276,37 @@ export default {
             message: "删除成功",
             type: "success"
           });
-          _this.mallFreightTakeList(this.curPage);
+          _this.mallFreightTakeList(_this.tableData.page.curPage);
         }
       });
     },
+    //上门自提功能开启/关闭
+    switchChange(){
+      let _this = this;
+      _this.ajaxRequest({
+        url: DFshop.activeAPI.mallTakeSetTakeTheir_post,
+        data: {
+          status:Number(_this.isTakeTheir)
+        },
+        success: function(data) {
+          _this.mallFreightTakeList(1);
+        }
+      });
+    },
+    /**得到当前页面 */
     getTabName() {
       let _href = window.location.hash.split("/")[2];
       this.activeName = _href;
     }
   },
   mounted() {
-    this.mallFreightList(1);
-    this.mallFreightTakeList(1);
+     
     this.getTabName();
+    if(this.activeName =="logistics"){
+        this.mallFreightList(1);
+    }else{
+        this.mallFreightTakeList(1);
+    }     
   }
 };
 </script>
