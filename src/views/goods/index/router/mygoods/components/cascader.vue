@@ -89,14 +89,10 @@ export default {
                 item.sort = i;
                 _this.ruleForm.group = true;
             })
-            
             _this.$emit('change',_this.selectedData);
         },
     },
     methods:{
-        aaa(a){
-            console.log(a,'-------')
-        },
         /** 
          * 一级选择
          */

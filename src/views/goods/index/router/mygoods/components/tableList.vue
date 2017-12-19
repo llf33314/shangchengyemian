@@ -104,10 +104,14 @@ export default {
         'isDefault'(a,b){
             this.invenData.forEach((item,i)=>{
                 if(i === a){
-                    item.isDefault = 1;
-                    }
-                })
-            }
+                        item.isDefault = 1;
+                }
+            })
+        } ,
+        'specList'(a){
+            this.listData = a;
+            console.log(a,'---改动')
+        }
     },
     methods:{
         /** 
@@ -117,20 +121,7 @@ export default {
             let _this = this;
             //规格遍历
             _this.invenData.forEach((item,i) => {
-                //specificaIds转换数组 进行匹配
                 item.specificaIds = item.specificaIds.split(",");
-                //库存列表 遍历
-                // _this.listData.forEach((test,j) => {
-                //     //每个规格集合下的specValues
-                //     test.specValues.forEach((n,c)=>{
-                //         item.specificaIds.forEach((e,h)=>{
-                //             if(e==n.id){
-                //                 console.log(n.specValue,e);
-                //                 item.valueName = n.specValue;
-                //             }
-                //         })
-                //     })
-                // })
             });
         },
     },

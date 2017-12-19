@@ -154,7 +154,7 @@
             if(_this.img != '0'){
               //单个
               _this.newImg = val[0].url;
-              _this.$emit('change',_this.newImg)
+              _this.$emit('change',val[0].url)
               return
             }
           }).catch(function (error) {
