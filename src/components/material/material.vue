@@ -111,14 +111,12 @@
       // }
     },
     mounted () {
-      console.log(this.imgLists,'this.imgLists')
       //单图上传--初始
       if(this.img != '0'){
           this.newImg = this.img;
       }//多图上传--初始
       
       if(this.imgLists != '0' ){
-        console.log(this.imgLists,'this.imgLists')
           this.imgdata = this.imgLists;
           this.imgdata.forEach((item,i)=>{
             item.path = this.path;
@@ -153,9 +151,10 @@
               });
               return
             }
-            if(this.img != '0'){
+            if(_this.img != '0'){
               //单个
               _this.newImg = val[0].url;
+              _this.$emit('change',_this.newImg)
               return
             }
           }).catch(function (error) {
@@ -184,22 +183,21 @@
        * 放大
        * */
       largeImg(img) {
-        console.log(img,'img')
-        
         this.largeSrc = img;
         this.materialLargeSrcVisible = true;
       },
       /** 
        * 父级数据传送
        */
-      stopDelete() {
-        this.$emit('change',this.imgdata)
+      stopDelete(val) {
+        console.log(val,'tu')
+        this.$emit('change',val)
       },
       drag(e){
         this.dom = event.currentTarget;
       },
       drop(e){
-        console.log(event.target,'event.currentTarget',this.dom)
+        //console.log(event.target,'event.currentTarget',this.dom)
         event.preventDefault();
         event.target.appendChild(this.dom);
         

@@ -64,7 +64,7 @@
                 </el-button>
                 <el-button  size="small"
                             class="buttonBlue"
-                            @click="shopLink(scope.row.pageId)">
+                            @click="shopLink(scope.row)">
                             链接
                 </el-button>
                 <el-button  size="small"
@@ -112,12 +112,12 @@
                             class="buttonBlue"
                             @click="jumpRouter('/shop/addPage/'+scope.row.id)"
                   >修改</el-button>
-                <el-button  size="small"
+                <!-- <el-button  size="small"
                             class="buttonBlue"
-                  >预览</el-button>
+                  >预览</el-button> -->
                   <el-button  size="small"
                               class="buttonBlue"
-                              @click="shopLink(scope.row.pageId)"
+                              @click="pageLink(scope.row)"
                   >链接</el-button>
                   <el-button  size="small"
                   @click="handleDelete(scope.row,'page')">删除</el-button>
@@ -241,58 +241,61 @@
 </div>
 </template>
  <script>
-import Lib from 'assets/js/Lib';
-import defaultImg from 'components/defaultImg';
-import contentNo from 'components/contentNo';
+import Lib from "assets/js/Lib";
+import defaultImg from "components/defaultImg";
+import contentNo from "components/contentNo";
 
-import bgimg1 from '../img/style1.png';
-import bgimg2 from '../img/style2.png';
-import bgimg3 from '../img/style3.png';
+import bgimg1 from "../img/style1.png";
+import bgimg2 from "../img/style2.png";
+import bgimg3 from "../img/style3.png";
 export default {
   components: {
-    defaultImg,contentNo 
+    defaultImg,
+    contentNo
   },
-  data () {
+  data() {
     return {
-      activeName: 'shop',//默认打开tab
-      tabelData:{//列表数据
-        page:{
-          subList:[],
-          pageCount:''
+      activeName: "shop", //默认打开tab
+      tabelData: {
+        //列表数据
+        page: {
+          subList: [],
+          pageCount: -1
         }
       },
-      imgUrl:'',
-      path:'',
-      styleSelect:false,
-      shopSelect:'',//搜索店铺选中店铺
-      isPass1:false,//个人认证通过
-      isPass2:false,//担保交易通过
-      isPass3:false,//线下店铺通过
-      isPass4:false,//旗舰店通过
-      currentPage: 1,//默认打开第一页
-      isPage:false,//潘墩列表页数多页
-      isShopList:true,//判断是否有商铺list数
-      isPageList:true,//判断是否有页面list数
+      imgUrl: "",
+      path: "",
+      styleSelect: false,
+      shopSelect: "", //搜索店铺选中店铺
+      isPass1: false, //个人认证通过
+      isPass2: false, //担保交易通过
+      isPass3: false, //线下店铺通过
+      isPass4: false, //旗舰店通过
+      currentPage: 1, //默认打开第一页
+      isPage: false, //潘墩列表页数多页
+      isShopList: true, //判断是否有商铺list数
+      isPageList: true, //判断是否有页面list数
       shopOptions: {},
-      value: '',
-      styles:'',
+      value: "",
+      styles: "",
       style_key: false,
       isColor: [],
-      dialogVisible: false,//二维码弹出框
-      contentNo: 'shop',//没有数据显示
-      isSecuritytrade:'',// 是否加入担保交易   0未加入 1已加入
-      bgimg1:bgimg1,//全站风格背景图
-      bgimg2:bgimg2,
-      bgimg3:bgimg3
-    }
+      dialogVisible: false, //二维码弹出框
+      contentNo: "shop", //没有数据显示
+      isSecuritytrade: "", // 是否加入担保交易   0未加入 1已加入
+      bgimg1: bgimg1, //全站风格背景图
+      bgimg2: bgimg2,
+      bgimg3: bgimg3,
+      webPath: ""
+    };
   },
   watch: {
-   '$route' (to, from) {
+    $route(to, from) {
       //console.log(to.path,from,'aaaaa')
-      this.activeName = to.path.split('/')[1];;
+      this.activeName = to.path.split("/")[1];
       //console.log(this.activeName,'$$$$$$$')
       this.switchAjax(this.activeName);
-   }
+    }
   },
   methods: {
     /**
@@ -300,19 +303,19 @@ export default {
      */
     handleClick(tab, event) {
       let _this = this;
-      _this.$router.push({path:tab.name});
+      _this.$router.push({ path: tab.name });
       this.switchAjax(tab.name);
       //_this.contentNo = tab.name;
     },
     /**
      * 请求判断
      */
-    switchAjax(name){
-      if(name === 'shop'){
+    switchAjax(name) {
+      if (name === "shop") {
         this.shopAjax(1);
-      }else if(name === 'page'){
+      } else if (name === "page") {
         this.pageAjax(1);
-      }else if(name === 'style'){
+      } else if (name === "style") {
         this.styleAjax();
       }
     },
@@ -320,22 +323,30 @@ export default {
      * 店铺多页请求
      * @param page     请求页数
      */
-    shopAjax(Page){
+    shopAjax(Page) {
       let _this = this;
-      this.tabelData = '';
+      //清空店铺数据
+      this.tabelData = {
+        page: {
+          subList: [],
+          pageCount: -1
+        }
+      };
+      //请求店铺接口
       _this.ajaxRequest({
-        'url': DFshop.activeAPI.mallStoreList_post,
-        'data':{
-          curPage :Page 
+        url: DFshop.activeAPI.mallStoreList_post,
+        data: {
+          curPage: Page
         },
-        'success':function (data){
-          console.log(data.data,'data.data');
+        success: function(data) {
+          console.log(data.data, "data.data");
           _this.tabelData = data.data;
           _this.imgUrl = data.imgUrl;
           _this.path = data.path;
+          _this.webPath = data.webPath;
           _this.isSecuritytrade = data.data.isSecuritytrade;
 
-          console.log(_this.tabelData,'_this.tabelData');
+          console.log(_this.tabelData, "_this.tabelData");
         }
       });
     },
@@ -344,70 +355,86 @@ export default {
      * @param data      店铺信息
      * @param certId    判断不为空为已认证
      */
-    authentication(certId,data){
+    authentication(certId, data) {
       let _this = this;
-      console.log(certId,'cert',data)
-      if(!certId) return _this.jumpRouter('shop/authentication/',data);
+      console.log(certId, "cert", data);
+      if (!certId) return _this.jumpRouter("shop/authentication/", data);
       let msg = {
-        'dialogType': 'warn',
-        'dialogTitle': '',
-        'dialogMsg': '您的店铺已经通过认证，如果重新发起认证，您提交的店铺认证信息将失效！',
-        'callback': {
-        'btnOne': function () {
-            _this.jumpRouter('shop/authentication/',data);
+        dialogType: "warn",
+        dialogTitle: "",
+        dialogMsg: "您的店铺已经通过认证，如果重新发起认证，您提交的店铺认证信息将失效！",
+        callback: {
+          btnOne: function() {
+            _this.jumpRouter("shop/authentication/", data);
           }
         }
-      }
+      };
       _this.$root.$refs.dialogWarn.showDialog(msg);
     },
     /**
      *链接--二维码
      @param data 店铺id
      */
-    shopLink(data){
+    shopLink(data) {
       let _this = this;
-      let msg ={
-        'title':'店铺链接',
-        'pageLink': _this.path+'/views/goods/index.html#/'
-      }
-      _this.$root.$refs.dialogQR.showDialog(msg);//调用方法
+      let msg = {
+        title: "店铺链接",
+        path: _this.webPath,
+        pageLink: "/classify/" + data.id + "/" + data.stoUserId + "/0/k=k" //商城首页的链接(只是代替)
+      };
+      _this.$root.$refs.dialogQR.showDialog(msg);
+    },
+    /**
+     *链接--二维码
+     @param data 店铺id
+     */
+    pageLink(data) {
+      let _this = this;
+      let msg = {
+        title: "店铺链接",
+        urlQR: "",
+        path: _this.webPath,
+        pageLink:
+          "/classify/" + data.pag_sto_id + "/" + data.pag_user_id + "/0/k=k" //商城首页的链接(只是代替
+      };
+      _this.$root.$refs.dialogQR.showDialog(msg);
     },
     /**
      * 删除店铺请求
      * @param ids 店铺id
      */
-    shopDelete(ids){
-      let _this = this; 
+    shopDelete(ids) {
+      let _this = this;
       _this.ajaxRequest({
-        'url': DFshop.activeAPI.mallStoreDelete_post,
-        'data':{
-          ids : ids
+        url: DFshop.activeAPI.mallStoreDelete_post,
+        data: {
+          ids: ids
         },
-        contentType: 'application/json',
-        'success':function (data){
+        contentType: "application/json",
+        success: function(data) {
           _this.$message({
-            message: '删除成功',
-            type: 'success'
+            message: "删除成功",
+            type: "success"
           });
           _this.shopAjax(1);
         }
       });
     },
-     /**
+    /**
      * 删除页面请求
      * @param ids 店铺id
      */
-    pageDelete(ids){
-      let _this = this; 
+    pageDelete(ids) {
+      let _this = this;
       _this.ajaxRequest({
-        'url': DFshop.activeAPI.mallPageNewDelete_post,
-        'data':{
-          ids : ids.id
+        url: DFshop.activeAPI.mallPageNewDelete_post,
+        data: {
+          ids: ids.id
         },
-        'success':function (data){
+        success: function(data) {
           _this.$message({
-            message: '删除成功',
-            type: 'success'
+            message: "删除成功",
+            type: "success"
           });
           _this.pageAjax(1);
         }
@@ -418,58 +445,66 @@ export default {
      *@param ids  请求参数
      *@param type 删除页面/店铺
      */
-    handleDelete(ids,type){
-        let _this = this;
-        let msg;
-        if(type ==='shop'){
-          msg = {
-            'dialogTitle': '您确定要删除该店铺吗？',
-            'dialogMsg': '该店铺下还有相关联的商品、活动等信息，删除店铺后，这些信息都不可以恢复！',
-            'callback': {
-            'btnOne': function () {
-                _this.shopDelete(ids)
-              }
+    handleDelete(ids, type) {
+      let _this = this;
+      let msg;
+      if (type === "shop") {
+        msg = {
+          dialogTitle: "您确定要删除该店铺吗？",
+          dialogMsg: "该店铺下还有相关联的商品、活动等信息，删除店铺后，这些信息都不可以恢复！",
+          callback: {
+            btnOne: function() {
+              _this.shopDelete(ids);
             }
           }
-        }if(type ==='page'){
-          msg = {
-            'dialogTitle': '您确定要删除该页面信息吗？',
-            'dialogMsg': '点击确定后，删除信息不可以恢复！ ',
-            'callback': {
-            'btnOne': function () {
-                _this.pageDelete(ids)
-              }
+        };
+      }
+      if (type === "page") {
+        msg = {
+          dialogTitle: "您确定要删除该页面信息吗？",
+          dialogMsg: "点击确定后，删除信息不可以恢复！ ",
+          callback: {
+            btnOne: function() {
+              _this.pageDelete(ids);
             }
           }
-        }
-        _this.$root.$refs.dialogWarn.showDialog(msg);
+        };
+      }
+      _this.$root.$refs.dialogWarn.showDialog(msg);
     },
     /**
      * 页面管理页请求
      * @param page     请求页数
      */
-    pageAjax(Page,shopId){
+    pageAjax(Page, shopId) {
       let _this = this;
-      this.tabelData = '';
+      //列表数据
+      this.tabelData = {
+        page: {
+          subList: [],
+          pageCount: -1
+        }
+      };
 
       //初次请求店铺列表
-      if(!shopId){
-         _this.storeList({
-          'success'(data){
+      if (!shopId) {
+        _this.storeList({
+          success(data) {
+            _this.webPath = data.webPath;
             _this.shopOptions = data.data;
           }
-        })
+        });
       }
 
       _this.ajaxRequest({
-        'url': DFshop.activeAPI.mallPageNewlist_post,
-        'data':{
-          curPage :Page ,
-          shopId :shopId
+        url: DFshop.activeAPI.mallPageNewlist_post,
+        data: {
+          curPage: Page,
+          shopId: shopId
         },
-        'success':function (data){
+        success: function(data) {
           _this.tabelData = data.data;
-          $.each(_this.tabelData.page.subList, function(i){
+          $.each(_this.tabelData.page.subList, function(i) {
             let oldTime = _this.pag_create_time;
             _this.pag_create_time = Lib.M.format(oldTime);
           });
@@ -479,18 +514,18 @@ export default {
     /**
      * 店铺选择
      */
-    shop_Select(){
-      this.pageAjax(1,this.shopSelect);
+    shop_Select() {
+      this.pageAjax(1, this.shopSelect);
     },
     /**
      * 全站风格数据请求
      */
-    styleAjax(){
+    styleAjax() {
       let _this = this;
-        _this.ajaxRequest({
-        'url': DFshop.activeAPI.mallStoreGetStyleList_post,
-        'success':function (data){
-          _this.styleSelect = data.data.styleKey-1;
+      _this.ajaxRequest({
+        url: DFshop.activeAPI.mallStoreGetStyleList_post,
+        success: function(data) {
+          _this.styleSelect = data.data.styleKey - 1;
           _this.styles = data.data.styleList;
           _this.isColor = data.data.styleList[_this.styleSelect].style;
         }
@@ -500,9 +535,11 @@ export default {
      * 选择配色风格
      * @param colors     颜色组
      */
-    styleSelected(colors,styleKey,index){
-      index === this.styleSelect?this.styleSelect = false:this.styleSelect = index;
-      let _this=this;
+    styleSelected(colors, styleKey, index) {
+      index === this.styleSelect
+        ? (this.styleSelect = false)
+        : (this.styleSelect = index);
+      let _this = this;
       _this.styleSelect = index;
       _this.isColor = colors;
       _this.style_key = styleKey;
@@ -510,18 +547,18 @@ export default {
     /**
      *保存店铺风格 
      */
-    saveStyle(){
+    saveStyle() {
       let _this = this;
       _this.ajaxRequest({
-        'url': DFshop.activeAPI.mallStoreSaveStyle_post,
-        'data':{
-          styleKey : _this.style_key
+        url: DFshop.activeAPI.mallStoreSaveStyle_post,
+        data: {
+          styleKey: _this.style_key
         },
-        'success':function (data){
+        success: function(data) {
           console.log(data.data);
           _this.$message({
-            message: '保存成功',
-            type: 'success'
+            message: "保存成功",
+            type: "success"
           });
         }
       });
@@ -530,23 +567,23 @@ export default {
       this.shopAjax(val);
     }
   },
-  mounted(){
+  mounted() {
     let _this = this;
-    let _href = window.location.hash.split('/')[1];
+    let _href = window.location.hash.split("/")[1];
     _this.activeName = _href;
     _this.isAdminUser({
-      'success':function (data){
-        if(data.code == -1)return;
+      success: function(data) {
+        if (data.code == -1) return;
         _this.switchAjax(_this.activeName);
       }
     });
   }
-}
+};
 </script>
 
 <style lang="less" scoped>
-@import '../less/index.less';
-.shop-textr{
+@import "../less/index.less";
+.shop-textr {
   padding: 0 4%;
 }
 </style>

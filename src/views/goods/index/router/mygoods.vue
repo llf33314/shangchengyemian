@@ -3,7 +3,7 @@
     <div class="index-shopInfo clearfix">
       <div class="shopInfo-content">
         <div class="shopInfo-selectbox" v-if="count.status_total>0">
-           <el-select v-model="screenData.proType" placeholder="请选择" class="shopInfo-select"@change="search_type(1)">
+           <el-select v-model="screenData.proType" placeholder="请选择" class="shopInfo-select" @change="search_type(1)">
             <el-option label="全部商品" :value="0"></el-option>
             <el-option label="已上架" :value="1"></el-option>
             <el-option label="未上架" :value="2"></el-option>
@@ -229,7 +229,7 @@ export default {
      * @param type  判断触发条件
     */
     search_type(type){
-      let _this = this;
+      let _this = this;          
       if(_this.activeName == _this.screenData.proType) return;
       if(type==1){
         _this.activeName = _this.screenData.proType.toString();
@@ -382,9 +382,13 @@ export default {
         title = '到店购买'
         //todo 到店购买 链接目前没有
       }
-      let _pageLink = _this.webPath+'goods/details/'+data.shopId+'/'+data.busId+'/0/'+data.id+'/0';
+      let _pageLink = 'goods/details/'+data.shopId+'/'+data.userId+'/0/'+data.id+'/0';
+      if(type == 2){//到店购买链接
+        _pageLink += "/0/1";
+      }
       let msg ={
         title: title,
+        path: _this.webPath,
         pageLink: _pageLink//页面链接
       };
       _this.$root.$refs.dialogQR.showDialog(msg);//调用方法
@@ -392,6 +396,7 @@ export default {
   },
   mounted(){
     let _this = this;
+    console.log(_this.screenData,'this.screenData');
     _this.mallProductList(_this.screenData);
     this.storeList({
       'success'(data){

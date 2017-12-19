@@ -33,7 +33,7 @@
                     </div>
                     <div class="table-img" v-if="isAddImg && index === 0" >
                         <gt-material v-if="isAddImg" :img="test.specImage==null? '': imgUrl+test.specImage" 
-                            @change="changeImg(val,i)">
+                            @change="changeImg(val)">
                         </gt-material>
                         <gt-material v-else></gt-material>
                     </div>
@@ -74,10 +74,12 @@ import gtMaterial from 'components/material/material'
 export default {
     props:{
         shopId:{
-            type: Number
+            type: Number,
+            default:0
         },
         row:{
-            type: Array
+            type: Array,
+            default:'0'
         }
     },
     components: {
@@ -122,15 +124,18 @@ export default {
     },
     mounted() {
         let _this = this;
-        this.specList = this.row;
-        this.specList[0].specValues.forEach((item,i) => {
-            if(item.specImage != null){
-                _this.isAddImg = true;
-            }
-        });
-        this.specList.forEach((item,i)=>{
-            _this.$set(_this.nameList,_this.nameList.length,item.specNameId);
-        });
+        if(this.row != '0'){
+            this.specList = this.row;
+            this.specList[0].specValues.forEach((item,i) => {
+                if(item.specImage != null){
+                    _this.isAddImg = true;
+                }
+            });
+            this.specList.forEach((item,i)=>{
+                _this.$set(_this.nameList,_this.nameList.length,item.specNameId);
+            });
+        }
+       
         _this.specificaList();
     },
     methods: {
@@ -268,7 +273,7 @@ export default {
          */
         selectedSpec2(val,index){
             let _this = this;
-            console.log(_this.specList[index])
+            //console.log(_this.specList[index])
             let flag = true;
             val.forEach((item,i)=>{
                 //排重
@@ -374,6 +379,7 @@ export default {
         remove(index,i){
             let _this = this;
             this.specList[index].specValues.splice(i, 1);
+            
         },
         /** 
          * 选择分组下规格
@@ -404,8 +410,8 @@ export default {
         /** 
          *修改图片
          */
-        changeImg(val,index){
-
+        changeImg(val){
+            console.log(newImg,'修改图片')
         }
     }
 }

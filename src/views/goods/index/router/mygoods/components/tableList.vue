@@ -70,7 +70,7 @@
                     <el-radio v-model="isDefault" 
                             :label="index"
                             @change="changeDefault(index)">
-                            &nbsp
+                            &:nbsp
                     </el-radio>
                  </td>
             </tr>
