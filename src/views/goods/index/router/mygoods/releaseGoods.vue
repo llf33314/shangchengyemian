@@ -32,7 +32,7 @@
                     </el-form-item>
                     <el-form-item label="商品分组 :"  required >
                         <gt-cascader    :width="'200px'"
-                                        @change="groupselected(index)"
+                                        @change="groupselected"
                                         :value="form.proGroupList"
                                         ref="cascader">
                         </gt-cascader>
@@ -53,29 +53,28 @@
                 </div>
             </div>
             <div class="mygoods-item">
-                <div class="item-title">库存/规格</div>
+                <div class="item-title">库存/规格{{form.invenList == null}}</div>
                 <div class="item-content">
                    <el-form :model="ruleForm" ref="ruleForm" label-width="105px" class="demo-ruleForm">
-                        <el-form-item label="商品规格 :" prop="name">
-                            <tableSpec :row="form.specList" :shopId="form.pro.shopId"></tableSpec>
+                        <el-form-item label="商品规格 :" prop="name" v-if="form.pro.shopId">
+                            <tableSpec :row="form.specList" :shopId="form.pro.shopId" @change="changeSpac"></tableSpec>
                         </el-form-item>
                         <el-form-item label="商品库存 :" v-if=" form.specList !='' && form.specList !=null">
                             <tableList :specList="form.specList" :invenList="form.invenList"></tableList>
                         </el-form-item>
-                        <el-form-item label="商品参数 :" prop="region" >
+                        <el-form-item label="商品参数 :"  v-if="form.pro.shopId">
                             <gt-param :row="form.paramList" :shopId="form.pro.shopId"  @change="paramSelected"></gt-param>
                         </el-form-item>
-                        <el-form-item label="总库存 :" :rules="rules.region" prop="region">
+                        <el-form-item label="总库存 :" :rules="rules.region" prop="region" required>
                             <div class="item-inline">
-                                <el-input v-model="form.pro.proStockTotal" :disabled="true" placeholder="0"></el-input>
+                                <el-input v-model="form.pro.proStockTotal" :disabled=" form.invenList != null " placeholder="0"></el-input>
                             </div>
                             <span>
                                 <el-checkbox v-model="form.pro.isShowStock">页面不显示商品库存</el-checkbox>
                             </span>
                             <p class="shop-prompt">总库存为 0 时，会上架到【已售罄的商品】列表里</p>
-                        </el-radio-group>
                         </el-form-item>
-                        <el-form-item label="商品编码 ：" prop="name">
+                        <el-form-item label="商品编码 ：">
                             <div style="width:220px">
                                 <el-input v-model="form.pro.proCode"></el-input>
                             </div>
@@ -86,14 +85,13 @@
             <div class="mygoods-item">
                 <div class="item-title">商品信息</div>
                 <div class="item-content">
-                   <el-form :model="ruleForm" ref="ruleForm" label-width="105px" class="demo-ruleForm">
-                        <el-form-item label="商品名称 :" prop="name" :rules="rules.name">
+                   <el-form ref="ruleForm" :rules="rules" :model="form" label-width="105px" class="demo-ruleForm">
+                        <el-form-item label="商品名称 :" :rules="rules.name" required>
                             <div style="width:460px;" class="item-inline">
                                 <el-input v-model="form.pro.proName"></el-input>
-                                
                             </div>
                             <span class="shop-prompt">
-                                商品标签最多输入200个字符
+                                商品名称最多可输入200个字符
                             </span>
                         </el-form-item>
                         <el-form-item label="价格 :" prop="region" :inline="true" :rules="rules.name">
@@ -294,8 +292,8 @@ export default {
         },
         rules: {
             //分组
-            date1: [
-            { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+            name: [
+            { required: true, message: '请输入商品名称', trigger: 'blur' }
             ],
             date2: [
             { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
@@ -357,6 +355,7 @@ export default {
      */
     groupselected(data){
         this.form.proGroupList = data;
+        console.log(data,'选中分组')
     },
     /** 
      * 选择参数
@@ -364,7 +363,53 @@ export default {
      */
     paramSelected(data){
         this.form.paramList = data;
+        console.log(data,'商品参数')
     },
+    /** 
+     * 商品规格
+     */
+    changeSpac(data){
+        console.log(data,'商品规格');
+        //显示列表需要
+        let _data1={
+            id: null,
+            productId: null,
+            specificaIds: null,     //规格ID
+            invPrice: null,          //库存价格
+            invNum: null,            //库存数量
+            invCode: null,         //产品编码
+            invSaleNum: null,       //销量
+            isDefault: 0,             //是否默认  0没有 1是
+            specificaImgId: 0,        // 有图片的规格ID
+            logisticsWeight: null,    //物流重量
+            specList: null
+        }
+        
+
+        //请求数据需要
+         let _data2={
+            specificas:[ {
+                specificaNameId: null,        //规格名称ID
+                specificaName: null,            //规格名称
+                specificaValueId: null,         //规格值ID
+                specificaValue: null,          //规格值
+            }] ,
+            invPrice: null,          // 价格
+            invNum: null,           //数量
+            invCode: null,          //商家编码
+            isDefault: 0,          //是否默认
+            logisticsWeight: null   //重量
+        }
+        //数据重组 --传值
+        let arr = [];
+        data.forEach((item,i) => {
+            item.specValues.forEach((test,j)=>{
+                arr.push(_data1)
+            })
+        });
+        this.$set(this.form,'specList',data);
+        
+    }
   },
   mounted(){
     if(this.$route.params.id === 'add'){

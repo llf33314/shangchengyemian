@@ -36,7 +36,8 @@ import Lib from 'assets/js/Lib';
 export default {
     props:{
         row:{
-            type: Array
+            type: [Array,String],
+            default:'0'
         },
         shopId:{
             type: Number
@@ -223,15 +224,24 @@ export default {
     },
     mounted() {
         let _this = this;
-
+        _this.paramList = _this.row;
         _this.paramListAjax();
-        
-        if(this.paramList.length>0){
+        if(  _this.row != '0' && this.paramList.length>0){
             _this.paramList.forEach((item,i)=>{
                 this.paramListAjax(item.paramsNameId,i);
             })
+        }else{
+            _this.paramList = [{
+                id: null,
+                productId: null,     //商品ID
+                paramsNameId: null,    //参数名称ID
+                paramsValueId: null,   //参数值ID
+                paramsName: null,      //参数名称
+                paramsValue: null,     //参数值 
+                sort: 0 ,              //序号
+            }]
         }
-        //console.log(this.row,'paramRow')
+        console.log(this.row,'paramRow')
     }
 }
 </script>

@@ -14,7 +14,6 @@
                             :key="i"
                             :label="test"
                             :value="Number(i)">
-                            <div>{{test}}---{{i}}--{{item.specNameId}}</div>
                         </el-option>
                     </el-select>
                     <i class="el-icon-circle-close"
@@ -25,15 +24,15 @@
                     <el-checkbox v-model="isAddImg" >添加规格图片</el-checkbox>
                 </div>
             </div>
-            <div class="table-spec-option" >
+            <div class="table-spec-option" v-if="item.specNameId != ''">
                 <div class="table-inline" v-for=" (test,i) in item.specValues" :key="i" >
                     <div class="item-selected">
                         {{test.specValue}}
                         <i @click="remove(index,i)" class="el-icon-circle-close"></i>
                     </div>
-                    <div class="table-img" v-if="isAddImg && index === 0" >
+                    <div class="table-img" v-if="isAddImg && index === 0" @click="changeData(index,i)">
                         <gt-material v-if="isAddImg" :img="test.specImage==null? '': imgUrl+test.specImage" 
-                            @change="changeImg(val)">
+                            @change="changeImg">
                         </gt-material>
                         <gt-material v-else></gt-material>
                     </div>
@@ -78,7 +77,7 @@ export default {
             default:0
         },
         row:{
-            type: Array,
+            type: [Array,String],
             default:'0'
         }
     },
@@ -96,7 +95,8 @@ export default {
             deleteFlag: true,//删除触发change判断条件
             ajaxFlag: true,//新增触发change判断条件
             nameList:[],
-
+            itemIndex:[],//图片上传改变的索引
+            flag:false,//需要触发事件的监听
 
             fromSelected:{//选中的内容
                 shop: '',//店铺
@@ -114,12 +114,8 @@ export default {
         'row'(a){
             this.specList = a;
         },
-        'nameList'(a,b){
-            //console.log(a,b,'-----nameList-----');
-        },
-        'listData'(a,b){
-            // /console.log(a,b,'有新增規格');
-            //this.flag = false;
+        'flag'(a){
+            this.$emit('change',this.specList)
         }
     },
     mounted() {
@@ -182,15 +178,15 @@ export default {
          */
         selectedSpec1(val,index,i){
             let _this = this;
-
+            let isAdd = true;
+            this.flag = !this.flag;
             if(!this.deleteFlag){
                 if(_this.nameList.length == index+1){
                     this.deleteFlag = true;
                 }
                 return;
             }
-            
-            let isAdd = true;
+           
             //排重
             if(_this.nameList != null && _this.nameList.length > 0){
                 for(let k = 0; k < _this.nameList.length ;k++){
@@ -223,17 +219,21 @@ export default {
                 let newName = '';//新增id
                 let index2  = 0;
                 let _isAdd = true;
+                
                 //总规格中有对应新增
                 for(let k in _this.listData){
                     if(k == val && _isAdd){
                         newId = k;
                         newName = _this.listData[k];
+                        console.log(newName,newId)
                         _isAdd = false;
                     }
                     index2 = k;
                 }
+
+                //if(typeof val === 'number') return _isAdd = false;
                 //无对应新增
-                if(_isAdd){
+                if(_isAdd && typeof val != 'number'){
                     newId = index2 + 1;
                     newName = val
                     _this.$set(_this.listData,newId,val);
@@ -273,7 +273,6 @@ export default {
          */
         selectedSpec2(val,index){
             let _this = this;
-            //console.log(_this.specList[index])
             let flag = true;
             val.forEach((item,i)=>{
                 //排重
@@ -351,9 +350,10 @@ export default {
          * 添加项目规格
         */
         addspec(){
+            let pId = Number(this.$route.params.id);
             let data={
                 erpNameId:  '',
-                productId:  Number(this.$route.params.id),
+                productId:  isNaN(pId)?null:pId,
                 specName: '',
                 specNameId:'',
                 specValues:[]
@@ -364,6 +364,7 @@ export default {
          * 删除规格行列
          */
         removeList(index) {
+            this.flag = !this.flag;
             if(index == 0){
                 this.isAddImg = false;
             }
@@ -378,6 +379,7 @@ export default {
          */
         remove(index,i){
             let _this = this;
+            this.flag = !this.flag;
             this.specList[index].specValues.splice(i, 1);
             
         },
@@ -406,12 +408,22 @@ export default {
                 })
             }
             _this.selectedSpec ="";//新增后清空
+            this.flag = !this.flag;
         },
         /** 
          *修改图片
          */
         changeImg(val){
-            console.log(newImg,'修改图片')
+            let _index = this.itemIndex[0];
+            let _i = this.itemIndex[1];
+            this.specList[_index].specValues[_i].newSpecImage = val;
+            //促使监听
+            this.flag = !this.flag;
+        },
+        changeData(index,i){
+            this.itemIndex = [];
+            this.itemIndex.push(index);
+            this.itemIndex.push(i);
         }
     }
 }
