@@ -30,7 +30,6 @@
                       <el-option class="max-input" label="已结束" value="2"></el-option>
                       <el-option class="max-input" label="已失效" value="-2"></el-option>
                     </el-select>
-                  </el-col>
                   </span>
                 </div>
                 <router-link to="/mallIntegral/goods/0">
@@ -107,7 +106,6 @@
                       <el-option class="max-input" v-for="item in shopList"
                           :key="item.id" :label="item.sto_name" :value="item.id">
                       </el-option>
-                    </el-select>
                     </el-select>
                   </span>
                   <span v-if="videourl !=''">

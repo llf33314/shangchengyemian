@@ -351,6 +351,29 @@
     mallAppletSave_post:'/mallApplet/E9lM9uM4ct/save',
     /**获取小程序图片信息 */
     mallAppletInfo_post:'/mallApplet/E9lM9uM4ct/appletInfo',
+
+    /**H5商城列表 */
+    mallHtmlList_post:'/mallHtml/E9lM9uM4ct/list',
+    /**获取h5商城信息 */
+    mallHtmlInfo_post:'/mallHtml/E9lM9uM4ct/htmlInfo',
+    /**获取模板列表 */
+    mallHtmlModelList_post:'/mallHtml/E9lM9uM4ct/modelList',
+    /**添加h5商城选中的模板 */
+    mallHtmlSetMallHtml_post:'/mallHtml/E9lM9uM4ct/setMallHtml',
+    /**保存修改信息（修改页面名称、介绍） */
+    mallHtmlUpdate_post:'/mallHtml/E9lM9uM4ct/update',
+    /**保存背景图 */
+    mallHtmlUpdateImage_post:'/mallHtml/E9lM9uM4ct/updateImage',
+    /**获取h5商城表单列表 */
+    mallHtmlFromList_post:'/mallHtml/E9lM9uM4ct/htmlFromList',
+    /**查看h5表单详情 */
+    mallHtmlFromView_post:'/mallHtml/E9lM9uM4ct/htmlFromView',
+    /**删除h5商城 */
+    mallHtmlDelete_post:'/mallHtml/E9lM9uM4ct/delete',
+    /**获取播放器样式列表 */
+    mallHtmlPlayList_post:'/mallHtml/E9lM9uM4ct/playList',
+    /**表单页面设计保存 */
+    mallHtmlHtmlSave_post:'/mallHtml/E9lM9uM4ct/htmlSave',
   };
 
 
