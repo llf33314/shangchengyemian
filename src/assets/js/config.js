@@ -24,6 +24,8 @@
     isAdminUser_post: '/mall/E9lM9uM4ct/isAdminUser',
     /*商城概况*/
     mallCount_post: '/mall/E9lM9uM4ct/count',
+    /*获取商城营销地址*/
+    getMarketingUrl_post: '/mall/E9lM9uM4ct/getMarketingUrl',
     /**
      * 店铺管理相关接口
      */

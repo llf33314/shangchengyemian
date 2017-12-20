@@ -2,7 +2,7 @@
   <div class="integralmall-wrapper" >
     <div class="common-nav">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/' }">商城营销</el-breadcrumb-item>
+        <el-breadcrumb-item ><a :href="marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
         <el-breadcrumb-item>对外报价</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -461,6 +461,7 @@ export default {
     }
   },
   mounted() {
+    this.isMarketingUrl();
     this.activeName = this.$route.params.activeName;
     this.refreshData(1); 
   }   

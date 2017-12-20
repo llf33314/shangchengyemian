@@ -2,7 +2,7 @@
   <div class="addbanner-wrapper">
       <div class="common-nav">
           <el-breadcrumb separator="/">
-              <el-breadcrumb-item :to="{ path: '/' }">商城营销</el-breadcrumb-item>
+              <el-breadcrumb-item ><a :href="marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
               <el-breadcrumb-item :to="{ path: '/applet' }">小程序图片设置</el-breadcrumb-item>
               <el-breadcrumb-item v-if="ruleForm.id == ''">新建小程序图片</el-breadcrumb-item>
               <el-breadcrumb-item v-else>修改小程序图片</el-breadcrumb-item>
@@ -204,6 +204,7 @@ export default {
   },
    mounted(){
     let _this = this;
+    this.isMarketingUrl();
     // console.log(_this.$route.params.id );
     if(_this.$route.params.id != undefined){
       _this.mallAppletInfo(_this.$route.params.id);

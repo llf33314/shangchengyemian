@@ -2,7 +2,7 @@
 <div class="addGruop-wrapper">
     <div class="common-nav">
         <el-breadcrumb separator="/">
-            <el-breadcrumb-item :to="{ path: '/' }">商城营销</el-breadcrumb-item>
+            <el-breadcrumb-item ><a :href="marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
             <el-breadcrumb-item :to="{ path: '/mallIntegral/1' }">积分商品</el-breadcrumb-item>
             <el-breadcrumb-item v-if="ruleForm.id ==''">新建积分商品</el-breadcrumb-item>
             <el-breadcrumb-item v-else>修改积分商品</el-breadcrumb-item>
@@ -221,6 +221,7 @@ export default {
   },
   mounted(){
     let _this = this;
+    this.isMarketingUrl();
     if(_this.$route.params.id != 0){
       _this.mallIntegralInfo(_this.$route.params.id);
       _this.disabledShop = true;

@@ -2,7 +2,7 @@
 <div class="addGruop-wrapper">
     <div class="common-nav">
         <el-breadcrumb separator="/">
-            <el-breadcrumb-item :to="{ path: '/' }">商城营销</el-breadcrumb-item>
+            <el-breadcrumb-item ><a :href="marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
             <el-breadcrumb-item :to="{ path: '/seckill' }">秒杀管理</el-breadcrumb-item>
             <el-breadcrumb-item >新建秒杀</el-breadcrumb-item>
         </el-breadcrumb>
@@ -426,7 +426,7 @@ export default {
   },
   mounted() {
     let _this = this;
-
+    this.isMarketingUrl();
     _this.storeList({
       success(data) {
         // _this.shopList = data.data;

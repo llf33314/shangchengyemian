@@ -2,7 +2,7 @@
   <div class="integralmall-wrapper" >
      <div class="common-nav">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/' }">商城营销</el-breadcrumb-item>
+        <el-breadcrumb-item ><a :href="marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
         <el-breadcrumb-item>批发管理</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -17,11 +17,11 @@
                             <span>
                                 选择状态 :
                                 <el-select v-model="type" placeholder="请选择" @change="searchPifa">
-                                    <el-option class="max-input" label="全部":value="0"></el-option>
-                                    <el-option class="max-input" label="进行中":value="1"></el-option>
-                                    <el-option class="max-input" label="未开始":value="-1"></el-option>
-                                    <el-option class="max-input" label="已结束":value="2"></el-option>
-                                    <el-option class="max-input" label="已失效":value="-2"></el-option>
+                                    <el-option class="max-input" label="全部" :value="0"></el-option>
+                                    <el-option class="max-input" label="进行中" :value="1"></el-option>
+                                    <el-option class="max-input" label="未开始" :value="-1"></el-option>
+                                    <el-option class="max-input" label="已结束" :value="2"></el-option>
+                                    <el-option class="max-input" label="已失效" :value="-2"></el-option>
                                 </el-select>
                             </span>
                             <span>
@@ -681,6 +681,7 @@ export default {
   },
   mounted() {
     let _this = this;
+    this.isMarketingUrl();
     _this.activeName = _this.$route.params.activeName;
     _this.storeList({
       success(data) {

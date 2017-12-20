@@ -2,7 +2,7 @@
   <div class="h5-wrapper" >
      <div class="common-nav">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/' }">商城营销</el-breadcrumb-item>
+        <el-breadcrumb-item ><a :href="marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
         <el-breadcrumb-item :to="{ path: '/H5' }">H5商城</el-breadcrumb-item>
         <el-breadcrumb-item>新增</el-breadcrumb-item>
       </el-breadcrumb>
@@ -120,6 +120,7 @@ export default {
     }
   },
   mounted(){
+    this.isMarketingUrl();
     this.mallHtmlModelList(1);
   }
 }

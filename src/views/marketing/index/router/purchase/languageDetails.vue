@@ -2,7 +2,7 @@
   <div class="addBond-wrapper">
       <div class="common-nav">
           <el-breadcrumb separator="/">
-              <el-breadcrumb-item :to="{ path: '/' }">商城营销</el-breadcrumb-item>
+              <el-breadcrumb-item ><a :href="marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
               <el-breadcrumb-item :to="{ path: '/purchase/1' }">对外报价</el-breadcrumb-item>
             <el-breadcrumb-item>留言管理</el-breadcrumb-item>
           </el-breadcrumb>
@@ -157,6 +157,7 @@ export default {
   },
   mounted() {
     let _this = this;
+    this.isMarketingUrl();
     if(_this.$route.params.id != undefined && _this.$route.params.id != ''){
         _this.orderId=this.$route.params.id;
         _this.memberId=this.$route.params.memberId;

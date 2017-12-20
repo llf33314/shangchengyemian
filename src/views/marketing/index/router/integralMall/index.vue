@@ -2,7 +2,7 @@
   <div class="integralmall-wrapper" >
      <div class="common-nav">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/' }">商城营销</el-breadcrumb-item>
+        <el-breadcrumb-item ><a :href="marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
         <el-breadcrumb-item>积分商城</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -493,12 +493,12 @@ export default {
   },
   mounted(){
     let _this = this;
+    this.isMarketingUrl();
     this.storeList({
       'success'(data){
         _this.shopList = data.data;
       }
     }); 
-      
     this.activeName = this.$route.params.activeName;
     if(this.activeName ==1){
       this.mallIntegralList(1);
