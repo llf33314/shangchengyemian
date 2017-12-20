@@ -1,6 +1,6 @@
 <template>
   <div class="setup-wrapper">
-   <el-form ref="form" :model="form" label-width="175px">
+   <el-form ref="form" :model="form" label-width="175px" v-if="form!=''">
       <el-form-item label="商品评价 :">
        <el-radio-group v-model="form.set.isComment">
           <el-radio :label="1">开启评价</el-radio>
@@ -105,7 +105,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">保存</el-button>
-        <el-button>取消</el-button>
+        <!-- <el-button>取消</el-button> -->
       </el-form-item>
     </el-form>
   </div>

@@ -44,8 +44,9 @@
             要求没有自有微信支付平台账户的商家必须参加担保交易，否则多粉平台不予提供支持
          </el-row>
       </div>
-      <el-button type="primary" v-if="isColor == '#cacaca'" @click="mallSecuritytradeAdd()">立即加入担保交易</el-button>
-      <el-button @click="exitGuarantee()"  v-else>退出担保交易</el-button>
+      <el-button type="primary" v-if="!isSecuritytrade" @click="mallSecuritytradeAdd()">立即加入担保交易</el-button>
+      <el-button  v-else-if="isSecuritytrade && securitytradeQuit !=null" disabled>退出担保审核中</el-button>
+      <el-button @click="exitGuarantee()"  v-else-if="isSecuritytrade">退出担保交易</el-button>
     </div>
 
     <el-dialog title="退出担保交易" :visible.sync="dialogFormVisible">
@@ -53,11 +54,10 @@
         <p>申请退出多粉微商城担保交易</p>
         <p>为改进并提升我们的服务，请告知您的退出理由</p>
       </div>
-      <el-form >
-        <el-form-item label="退出理由 :" :label-width="formLabelWidth">
-          <el-select v-model="itemKey" placeholder="请选择活动区域">
-            <el-option :label="op.item_value" :value="op.item_key" v-for="(op,index) in form" :key="op.item_key"></el-option>
-            <!-- <el-option label="区域二" value="beijing"></el-option> -->
+      <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
+        <el-form-item label="退出理由 :" :label-width="formLabelWidth" prop="quitReasonId">
+          <el-select v-model="ruleForm.quitReasonId" placeholder="请选择活动区域">
+            <el-option :label="op.item_value" :value="op.item_key" v-for="op in reasonList" :key="op.item_key"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="补充意见 :" :label-width="formLabelWidth">
@@ -65,7 +65,7 @@
             type="textarea"
             :rows="2"
             placeholder="请输入内容"
-            v-model="textarea">
+            v-model="ruleForm.remark">
           </el-input>
         </el-form-item>
         <el-form-item label="生效时间 :" :label-width="formLabelWidth" class="fontRed">
@@ -73,7 +73,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitExit()">确 定</el-button>
+        <el-button type="primary" @click="submitForm('ruleForm')">确 定</el-button>
         <el-button  @click="dialogFormVisible = false">取 消</el-button>
       </div>
     </el-dialog>
@@ -90,13 +90,39 @@ export default {
     return {
         isColor:'',//待加入状态--颜色
         dialogFormVisible:false,
-        form: {},
-        itemKey:'',
-        textarea:'',
-        formLabelWidth: '120px'
+        reasonList: [],//退出理由列表
+        formLabelWidth: '120px',
+        isSecuritytrade:'', //是否加入担保交易 true 已加入 false未加入
+        securitytradeQuit:{}, //退出担保交易信息
+        ruleForm:{
+          quitReasonId:'',
+          remark:'',
+        },
+        rules: {
+          quitReasonId:[
+            { type: 'number',required: true, message: '退出理由不能为空', trigger: 'blur,change' }
+          ],
+        },
     }
   },
   methods: {
+    /**是否加入担保交易 */
+    mallIsSecuritytrade(){
+      let _this= this;
+      _this.ajaxRequest({
+        'url': DFshop.activeAPI.mallIsSecuritytrade_post,
+        'success':function (data){
+          _this.isSecuritytrade=data.data.isSecuritytrade;
+          _this.securitytradeQuit=data.data.securitytradeQuit;
+          if(data.data.isSecuritytrade){
+            _this.isColor = '#34d063';//已加入状态--颜色
+          }else{
+            _this.isColor = '#cacaca';//待加入状态--颜色
+          }
+        }
+      });
+    },
+     /**加入担保交易 */
     mallSecuritytradeAdd(){
       let _this= this;
       _this.ajaxRequest({
@@ -111,57 +137,63 @@ export default {
         }
       });
     },
-    mallIsSecuritytrade(){
+    /**打开退出担保交易对话框 */
+    exitGuarantee(){
       let _this= this;
+      /**判断商家是否有微信支付平台 */
       _this.ajaxRequest({
-        'url': DFshop.activeAPI.mallIsSecuritytrade_post,
+        'url': DFshop.activeAPI.mallIsWxPayUser_post,
         'success':function (data){
-          console.log(data);
-          if(data.data.isSecuritytrade){
-            _this.isColor = '#34d063';//已加入状态--颜色
+           if(data.data){
+            _this.dialogFormVisible = true;
+            _this.mallQuitDanbaoReasonList();
           }else{
-            _this.isColor = '#cacaca';//待加入状态--颜色
+            _this.$message({
+              message: '商家没有商户支付平台,无法退出担保交易!',
+              type: 'error'
+            });
           }
         }
       });
     },
+    /**保存退出担保交易信息 */
+    submitForm(formName) {
+      let _this = this;
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+         _this.ajaxRequest({
+            'url': DFshop.activeAPI.mallSecuritytradeSave_post,
+            'data':{
+              quitReasonId:_this.ruleForm.quitReasonId,
+              remark:_this.ruleForm.remark
+            },
+            'success':function (data){
+              _this.$message({
+                message: '退出成功',
+                type: 'success'
+              });
+              _this.dialogFormVisible = false;
+              _this.mallIsSecuritytrade();
+            }
+          });
+        } else {
+          // console.log('error submit!!');
+          return false;
+        }
+      });
+    },
+    /**获取退出理由列表 */
     mallQuitDanbaoReasonList(){
       let _this= this;
-      _this.form = '';
+      _this.reasonList = '';
       _this.ajaxRequest({
         'url': DFshop.activeAPI.mallQuitDanbaoReasonList_post,
         'success':function (data){
           console.log(data.data);
-          _this.form = data.data;
+          _this.reasonList = data.data;
         }
       });
     },
-    exitGuarantee(){
-      this.dialogFormVisible = true;
-      this.mallQuitDanbaoReasonList();
-    },
-    mallSecuritytradeSave(){
-      let _this= this;
-      _this.ajaxRequest({
-        'url': DFshop.activeAPI.mallSecuritytradeSave_post,
-        'data':{
-          quitReasonId:_this.itemKey,
-          remark:_this.textarea
-        },
-        'success':function (data){
-          console.log(data);
-          _this.$message({
-            message: '退出成功',
-            type: 'success'
-          });
-          _this.dialogFormVisible = false;
-          _this.mallIsSecuritytrade();
-        }
-      });
-    },
-    submitExit(){
-      this.mallSecuritytradeSave();
-    }
   },
   mounted(){
      this.mallIsSecuritytrade();
