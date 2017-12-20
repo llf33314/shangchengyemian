@@ -149,6 +149,7 @@
                 }
                 _this.imgdata.push(data);
               });
+              _this.$emit('change',_this.imgdata)
               return
             }
             if(_this.img != '0'){

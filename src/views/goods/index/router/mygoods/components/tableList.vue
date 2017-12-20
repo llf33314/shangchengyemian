@@ -6,11 +6,12 @@
                 <th width="13%" 
                     v-for="(item,index) in listData"
                     :key="index">{{item.specName}}</th>
-                <th width="16%">价格(元)</th>
-                <th width="16%">库存</th>
-                <th width="16%">商家编码</th>
-                <th width="8%">销量</th>
-                <th width="5%">是否默认</th>
+                <th width="16%" v-if="isSpec">价格(元)</th>
+                <th width="16%" v-if="isSpec">库存</th>
+                <th width="16%" v-if="isSpec">商家编码</th>
+                <th width="8%"  v-if="isSpec">销量</th>
+                <th width="5%"  v-if="isSpec">是否默认</th>
+                <th v-if="!isSpec">重量(g)</th>
             </tr>
             <!--规格总列数-->
             <tr v-for="(item,index) in invenData"
@@ -54,25 +55,30 @@
                     </p>
                     
                 </td>
-                <td>
+                <td v-if="isSpec">
                     <el-input v-model="item.invPrice" placeholder="请输入内容"></el-input>
                 </td>
-                <td>
+                <td v-if="isSpec">
                     <el-input v-model="item.invNum" placeholder="请输入内容"></el-input>
-                </td>
-                <td>
+                </td >
+                <td v-if="isSpec">
                     <el-input v-model="item.invCode" ></el-input>
                 </td>
-                <td>
+                <td v-if="isSpec">
                     {{item.invSaleNum==null?'0':item.invSaleNum}}
                 </td>
-                <td>
+                <td v-if="isSpec">
                     <el-radio v-model="isDefault" 
                             :label="index"
                             @change="changeDefault(index)">
-                            &:nbsp
+                            &nbsp
                     </el-radio>
                  </td>
+                 <td v-if="!isSpec">
+                    <div style="width:120px">
+                        <el-input v-model="item.logisticsWeight" placeholder="请输入商品重量"></el-input>
+                    </div>
+                </td>
             </tr>
         </tbody>
     </table>
@@ -87,6 +93,10 @@ export default {
         },
         invenList:{
             type: Array
+        },
+        type:{
+            type:String,
+            default:'0'
         }
     },
     data() {
@@ -95,6 +105,7 @@ export default {
             invenData:'',//库存
             isDefault:1,//是否默认
             listData:[],//列表数据
+            isSpec:true,//物流和规格判断
         }
     },
     watch:{
@@ -128,7 +139,9 @@ export default {
     mounted() {
         this.listData = this.specList;
         this.invenData = this.invenList;
-        this.isDefault;
+        if(this.type !='0'){
+            this.isSpec = false;
+        }
         this.invenData.forEach((item,i)=>{
             if(item.isDefault == 1){
                 this.isDefault = i;

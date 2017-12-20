@@ -156,7 +156,6 @@ export default {
                  * specValue  值
                  * specId:   名称ID
                  */
-                debugger
                 _this.addparamAjax(2,{
                     type:2,
                     specValue:data.paramsValueId,
@@ -206,7 +205,6 @@ export default {
                 'success':function (data){
                     if(type == 1){
                         //名称 
-                        debugger
                         _this.paramListAjax();
                         _this.paramListAjax(data.data,index);
                         let newId = data.data
@@ -241,7 +239,6 @@ export default {
                 sort: 0 ,              //序号
             }]
         }
-        console.log(this.row,'paramRow')
     }
 }
 </script>
