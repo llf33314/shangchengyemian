@@ -2,14 +2,14 @@
 <div class="addBond-wrapper">
     <div class="common-nav">
         <el-breadcrumb separator="/">
-            <el-breadcrumb-item :to="{ path: '/' }">商城营销</el-breadcrumb-item>
+            <el-breadcrumb-item ><a :href="marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
             <el-breadcrumb-item :to="{ path: '/presale/1' }">预售管理</el-breadcrumb-item>
             <el-breadcrumb-item >新建预售</el-breadcrumb-item>
         </el-breadcrumb>
     </div>
     <div class="addBond-main">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-            <el-form-item label="所属店铺 :" prop="shop_id" required required class="msg-right-item">
+            <el-form-item label="所属店铺 :" prop="shop_id" required class="msg-right-item">
                 <el-select v-model="ruleForm.shop_id" v-bind:disabled="disabledShop" placeholder="请选择店铺" class="addBond-input">
                     <el-option :label="option.sto_name" :value="option.id"
                       :key="option.id" v-for="option in shopList">
@@ -613,6 +613,7 @@ export default {
   },
   mounted() {
     let _this = this;
+    this.isMarketingUrl();
     _this.storeList({
       success(data) {
         _this.shopList = data.data;

@@ -97,7 +97,7 @@ const routes = [
   { path: '/auction/:activeName', component: Auction},
   { path: '/auction/addauction/:id', component: addAuction},
   { path: '/h5', component: h5},
-  { path: '/h5/table', component: h5Table},
+  { path: '/h5/fromList/:id', component: h5Table},
   { path: '/h5/addH5', component: addH5},
   { path: '/modular', component: modular},
   { path: '/seckill', component: seckill},

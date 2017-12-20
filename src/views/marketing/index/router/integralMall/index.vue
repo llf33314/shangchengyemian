@@ -2,7 +2,7 @@
   <div class="integralmall-wrapper" >
      <div class="common-nav">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/' }">商城营销</el-breadcrumb-item>
+        <el-breadcrumb-item ><a :href="marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
         <el-breadcrumb-item>积分商城</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -30,7 +30,6 @@
                       <el-option class="max-input" label="已结束" value="2"></el-option>
                       <el-option class="max-input" label="已失效" value="-2"></el-option>
                     </el-select>
-                  </el-col>
                   </span>
                 </div>
                 <router-link to="/mallIntegral/goods/0">
@@ -107,7 +106,6 @@
                       <el-option class="max-input" v-for="item in shopList"
                           :key="item.id" :label="item.sto_name" :value="item.id">
                       </el-option>
-                    </el-select>
                     </el-select>
                   </span>
                   <span v-if="videourl !=''">
@@ -495,12 +493,12 @@ export default {
   },
   mounted(){
     let _this = this;
+    this.isMarketingUrl();
     this.storeList({
       'success'(data){
         _this.shopList = data.data;
       }
     }); 
-      
     this.activeName = this.$route.params.activeName;
     if(this.activeName ==1){
       this.mallIntegralList(1);

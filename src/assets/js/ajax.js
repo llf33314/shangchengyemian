@@ -1,9 +1,35 @@
 import axios from 'axios';
-import Vue from 'vue'
+import Vue from 'vue';
+import C from './conf';
 
 Vue.mixin({
+    data() {
+        return {
+            marketingUrl:'',//营销地址
+        };
+    },
     methods:{
 
+    /**
+     * 判断营销地址是否存在
+     */    
+    isMarketingUrl(){
+        if(this.marketingUrl == ''){
+            this.getMarketingUrl();
+        }
+    },   
+    /**
+     * 获取商城营销地址
+     */
+    getMarketingUrl(){
+        let _this=this;
+        this.ajaxRequest({
+            'url': DFshop.activeAPI.getMarketingUrl_post,
+            'success':function (data){
+                _this.marketingUrl=data.data;
+            }
+        });
+    }, 
     /**
      * isAdminUser
      * @param success  //强求后执行方法

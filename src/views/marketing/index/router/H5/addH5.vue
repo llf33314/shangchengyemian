@@ -2,7 +2,7 @@
   <div class="h5-wrapper" >
      <div class="common-nav">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/' }">商城营销</el-breadcrumb-item>
+        <el-breadcrumb-item ><a :href="marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
         <el-breadcrumb-item :to="{ path: '/H5' }">H5商城</el-breadcrumb-item>
         <el-breadcrumb-item>新增</el-breadcrumb-item>
       </el-breadcrumb>
@@ -10,29 +10,39 @@
     <div class="common-main">
         <p class="addh5-title">请选择你需要的模板进行编辑 </p>
         <div class="addh5-module-box clearfix">
-          <div class="addh5-module" 
-                v-for=" (item,index) in datas "
-                :class="{'selected':selected == index}"
-                :key ="index"
-                @click="selectedModule(index)">
-            <img class="module-img" :src="item.img">
+          <div class="addh5-module" v-for=" (item,index) in modelData " :class="{'selected':selected == index}"
+                :key ="index"  @click="selectedModule(item,index)">
+            <img class="module-img" :src="imgUrl+item.bakurl">
             <p class="module-name text-overflow"
-                v-text="item.name">
+                v-text="item.htmlname">
             </p>
             <i class="iconfont icon-selected"></i>
           </div>
         </div>
-        <div class="shop-textr">
-          <el-pagination
+        <div class="block shop-textr" v-if="page.pageCount > 1" style="margin-top:20px;">
+            <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
-            :current-page.sync="currentPage"
-            :page-size="100"
+            :current-page='page.curPage'
+            :page-size="page.pageSize"
             layout="prev, pager, next, jumper"
-            :total="1000">
-          </el-pagination>
+            :total="page.rowCount">
+            </el-pagination>
         </div>
     </div>
+    <el-dialog title="H5商城预览" :visible.sync="dialogVisible" >
+     <el-form label-width="120px">
+        <el-form-item label="预览二维码:" style="text-align:center;">
+          <img class="erwema" :src="selectedModel.codeUrl" />
+        </el-form-item>
+      </el-form>
+      <p style="font-size:12px;color:#999;text-align: center;    margin: auto;width: 50%;">
+        提示：低版本浏览器不兼容h5商城效果，建议使用谷歌，火狐，百度等浏览器</p>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="selection(selectedModel.id)">选 取</el-button>
+        <el-button @click="dialogVisible = false">取 消</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
  <script>
@@ -45,43 +55,86 @@ export default {
   data () {
     return {
       selected:'-1',
-      datas: [{
-        img: '/static/img/module.jpg',
-        name: '手机',
-      }, {
-        img: '/static/img/module.jpg',
-        name: '黑色毛衣',
-      }, {
-        img: '/static/img/module.jpg',
-        name: '帽子',
-      }, {
-        img: '/static/img/module.jpg',
-        name: '多粉平台H5商城模板H5商城模板模板多粉平台H5商城模板H5商城模板模板',
-      }, {
-        img: '/static/img/module.jpg',
-        name: '多粉平台H5商城模板H5商城模板模板多粉平台H5商城模板H5商城模板模板',
-      }],
+      modelData:[],
+      page:{},//页面翻页数据
+      imgUrl:'',
       currentPage: 1,
+      dialogVisible:false,
+      selectedModel:{},
+      codeUrl:''
     }
   },
   methods: {
-    selectedModule(index){
+    selectedModule(item,index){
       this.selected == index ? this.selected ='-1': this.selected =index;
+      // console.log(this.selected);
+      this.dialogVisible=true;
+      this.selectedModel=item;
+ 
     },
+    /**选取 */
+    selection(id){
+      let _this = this;
+      _this.ajaxRequest({
+        'url': DFshop.activeAPI.mallHtmlSetMallHtml_post,
+        'data':{
+            "id" :id  
+        },
+        'success':function (data){
+            if(data.code == 0){
+              _this.jumpRouter('/H5');
+            }
+        }
+      });
+    },
+    /**
+     * 获取模板列表
+     * @param curPage    
+     */
+    mallHtmlModelList(curPage){
+      let _this = this;
+      _this.ajaxRequest({
+        'url': DFshop.activeAPI.mallHtmlModelList_post,
+        'data':{
+            "curPage":curPage
+        },
+        'success':function (data){
+          _this.modelData = data.data.page.subList;
+          _this.imgUrl= data.imgUrl;
+          _this.page = {
+            curPage:  data.data.page.curPage,
+            pageCount: data.data.page.pageCount,
+            pageSize: data.data.page.pageSize,
+            rowCount: data.data.page.rowCount
+          }
+        }
+      });
+    },
+
     handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
+      this.mallHtmlModelList(val);
     }
   },
   mounted(){
+    this.isMarketingUrl();
+    this.mallHtmlModelList(1);
   }
 }
 </script>
 
 <style lang="less" scoped>
 @import '../../../less/style.less';
+ 
+.erwema,.erwema-no {
+    width: 160px;
+    height: 160px;
+    margin-right: 25%;
+ 
+}
 .addh5-title{
   width: 100%;
   font-size: 15px;
