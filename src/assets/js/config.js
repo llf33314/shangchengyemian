@@ -147,6 +147,8 @@
     mallProductSpecificaList_post:'/mallProduct/E9lM9uM4ct/spec/getSpecificaList',
     /*获取规格名称和值*/
     mallProductSpecaddSpecifica_post: '/mallProduct/E9lM9uM4ct/spec/addSpecifica',
+    /*根据店铺ID获取物流信息*/
+    mallFreightGetFreightByShopId_post: '/mallFreight/E9lM9uM4ct/getFreightByShopId',
 
 
     /*团购列表 */

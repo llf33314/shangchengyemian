@@ -188,14 +188,16 @@ export default {
          * 验证
          */
         submitForm() {
+            let flag = true;
             this.$refs.ruleForm.validate((valid) => {
                 if (valid) {
-                    alert('submit!');
+                    return flag ;
                 } else {
                     console.log('error submit!!');
-                    return false;
+                    return flag = false;
                 }
             });
+            return flag;
         },
     },
     mounted() {
