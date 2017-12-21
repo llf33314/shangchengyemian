@@ -23,7 +23,7 @@
             </el-form-item>
             <el-form-item label="活动名称 :" prop="gName" required>
                 <el-input v-model="ruleForm.gName" class="addGruop-input"></el-input>
-                <p class="p-warn">最多可输入50位汉字或100位字符</p>
+                <span class="p-warn">最多可输入50位汉字或100位字符</span>
             </el-form-item>
             <el-form-item label="团购价 :" prop="gPrice" required v-if="ruleForm.isSpecifica == 0">
                 <el-input v-model="ruleForm.gPrice" class="addGruop-input" >

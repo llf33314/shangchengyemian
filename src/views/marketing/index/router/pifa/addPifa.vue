@@ -4,7 +4,8 @@
         <el-breadcrumb separator="/">
             <el-breadcrumb-item ><a :href="marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
             <el-breadcrumb-item :to="{ path: '/pifa/1' }">批发管理</el-breadcrumb-item>
-            <el-breadcrumb-item >新建批发</el-breadcrumb-item>
+            <el-breadcrumb-item v-if="ruleForm.id== null ">新建批发</el-breadcrumb-item>
+            <el-breadcrumb-item v-else>修改批发</el-breadcrumb-item>
         </el-breadcrumb>
     </div>
     <div class="addBond-main">
@@ -23,7 +24,7 @@
                 <p class="p-warn" v-if="isReplacePro">如需修改商品信息，请在商品管理中更新</p>
             </el-form-item>
             <el-form-item label="批发类型 :" required>
-               <el-radio-group v-model="ruleForm.pf_type">
+               <el-radio-group v-model="ruleForm.pf_type" :disabled="ruleForm.id !=null">
                     <el-radio :label="1">手批</el-radio>
                     <el-radio :label="2">混批</el-radio>
                 </el-radio-group>

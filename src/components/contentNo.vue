@@ -15,6 +15,7 @@
         <p v-else-if="show === 'GSmodule'">您还没有创建公司模板，<a :href="window +'/views/marketing/index.html#/company/add'">点击这里</a> 新增公司模板</p>
         <p v-else-if="show === 'commission'">您还没有发布佣金商品，<a :href="window +'/views/marketing/index.html#/addBond/0'">点击这里</a> 发布您的销售商品</p>
         <p v-else-if="show === 'ysgl'">您还没有发布预售商品，<a :href="window +'/views/setUp/index.html#/setup'">点击这里</a> 发布您的预售商品</p>
+        <p v-else-if="show === 'openPresale'">您还没有开启商品预售功能，<a :href="window +'/views/setUp/index.html#/setup'">点击这里</a> 开启吧</p>
         <p v-else-if="show === 'pifa'">您还没有发布批发商品，<a :href="window +'/views/marketing/index.html#/addpifa/0'">点击这里</a> 发布您的批发商品</p>
         <p v-else-if="show === 'baojia'">您还没有发布报价单，<a :href="window +'/views/marketing/index.html#/order/add'">点击这里</a> 新增报价单</p>
         <p v-else-if="show === 'H5'">您还没有创建H5商城，<a :href="window +'/views/marketing/index.html#/h5/addH5'">点击这里</a> 新增H5页面</p>

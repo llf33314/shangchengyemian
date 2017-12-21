@@ -5,7 +5,7 @@
         :key="item.item_key" :label="item.item_value" :value="item.item_key">		
     </el-option>	
     </el-select>
-    <div slot="footer" class="dialog-footer dialog-list shop-textr">
+    <div slot="footer" class="dialog-footer dialog-list shop-textr" style="margin-top:20px;">
         <el-button type="primary" @click="submitCancelOrder()">确 定</el-button>
         <el-button @click="resetCancelOrder()">取 消</el-button>
     </div>

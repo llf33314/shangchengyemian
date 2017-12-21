@@ -34,7 +34,7 @@
                  <el-input v-model="ruleForm.commission_rate" class="addBond-input" v-if="ruleForm.commission_type ==2">
                      <template slot="prepend">¥</template>
                  </el-input>
-                 <p class="p-warn" v-if="disabledCommission">商品佣金按百分比的计算公式：商品价*（佣金商品佣金/100）</p>
+                 <span class="p-warn" v-if="disabledCommission">商品佣金按百分比的计算公式：商品价*（佣金商品佣金/100）</span>
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
