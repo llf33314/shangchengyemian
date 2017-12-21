@@ -85,7 +85,7 @@
                         </template>
                     </el-table-column>
                 </el-table>
-                <div class="shop-textr" v-if="!presaleData.isOpenPresale && presaleData.page.rowCount > 0">
+                <div class="shop-textr" v-if="presaleData.isOpenPresale && presaleData.page.rowCount > 0">
                     <el-pagination
                         @size-change="handleSizeChange"
                         @current-change="handleCurrentChange"
@@ -95,7 +95,7 @@
                         :total="presaleData.page.rowCount">
                     </el-pagination>
                 </div>
-                <content-no :show="contentNo" v-if="!presaleData.isOpenPresale"></content-no>
+                <content-no :show="contentNo" v-if=" presaleData.page.rowCount == 0"></content-no>
                 </div>
             </el-tab-pane>
             <el-tab-pane label="定金管理" name="2">
@@ -247,7 +247,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <div class="shop-textr" v-if="presaleGiftsData.page.rowCount > 1">
+                        <div class="shop-textr" v-if="presaleGiftsData.page.pageCount > 1">
                             <el-pagination  @size-change="handleSizeChange2" @current-change="handleCurrentChange2"
                                 :current-page.sync="presaleGiftsData.page.curPage"
                                 :page-size="presaleGiftsData.page.pageSize"
@@ -516,6 +516,7 @@ export default {
         success: function(data) {
           _this.loading = false;
           if (data.data.isOpenPresale) {
+            _this.contentNo="ysgl";
             console.log(data, "data");
             _this.presaleData = data.data;
             _this.imgUrl = data.imgUrl;
@@ -528,6 +529,8 @@ export default {
               this.createTime = Lib.M.format(oldTime);
             });
             console.log(_this.presaleData, "presaleData");
+          }else{
+            _this.contentNo="openPresale";
           }
         }
       });
@@ -735,4 +738,11 @@ export default {
 
 <style lang="less" scoped>
 @import "../../../less/style.less";
+.order_tab td, .order_tab th {
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    border-right: 0px;
+    font-size: 14px;
+}
 </style>

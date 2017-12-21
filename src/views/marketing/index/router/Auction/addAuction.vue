@@ -4,7 +4,8 @@
         <el-breadcrumb separator="/">
             <el-breadcrumb-item ><a :href="marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
             <el-breadcrumb-item :to="{ path: '/auction/1' }">拍卖管理</el-breadcrumb-item>
-            <el-breadcrumb-item >新建拍卖活动</el-breadcrumb-item>
+            <el-breadcrumb-item v-if="ruleForm.id == ''">新建拍卖活动</el-breadcrumb-item>
+             <el-breadcrumb-item v-else>修改拍卖活动</el-breadcrumb-item>
         </el-breadcrumb>
     </div>
     <div class="auction-main">
@@ -110,8 +111,8 @@ export default {
       callback();
     };
     var formProductId = (rule, value, callback) => {
-      console.log(value, "values");
-      if (this.ruleForm.productId > 0) {
+      console.log(value, "values",this.boxData,"boxData");
+     if (this.boxData != null) {
         return callback();
       }
       callback(new Error("请选择活动商品"));
@@ -384,6 +385,13 @@ export default {
         success: function(data) {
           _this.ruleForm = data.data;
           _this.ruleForm.isMargin = !!data.data.isMargin;
+          _this.boxData = {
+            id: data.data.productId,
+            pro_price: data.data.proPrice,
+            pro_name: data.data.proName,
+            image_url: data.imgUrl + data.data.imageUrl,
+            stockTotal: data.data.proStockTotal
+          };
           if (data.data.aucType == 2) {
             //升价拍
             _this.ruleForm.aucTime = [
@@ -395,17 +403,12 @@ export default {
             //降价拍
             _this.endTime = data.data.aucEndTime;
             _this.disabledTime = true;
+            _this.$nextTick(()=>{
+              _this.calculationTime();
+            })
+             
           }
-          _this.boxData = {
-            id: data.data.productId,
-            pro_price: data.data.proPrice,
-            pro_name: data.data.proName,
-            image_url: data.imgUrl + data.data.imageUrl,
-            stockTotal: data.data.proStockTotal
-          };
-          if (data.data.aucType == 1) {
-            _this.calculationTime();
-          }
+  
           console.log(_this.ruleForm, "_this.ruleForm ");
         }
       });

@@ -178,6 +178,9 @@ export default {
         activeName: 'index',//默认首页显示
         activeName2: '0',
         pickerOptions2: {
+          disabledDate(time) {
+            return time.getTime() > Date.now();
+          },
           shortcuts: [{
             text: '近7天',
             onClick(picker) {
@@ -221,6 +224,7 @@ export default {
     search(){
       let _this = this;
       _this.searchData.curPage = 1;
+      _this.activeName2=_this.searchData.status;
       _this.tradeList(_this.searchData);
     },
      changePicker(value){

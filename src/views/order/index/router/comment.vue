@@ -143,6 +143,9 @@ export default {
         input5:'',
         showText:false,
         pickerOptions2: {
+          disabledDate(time) {
+            return time.getTime() > Date.now();
+          },
           shortcuts: [{
             text: '近7天',
             onClick(picker) {

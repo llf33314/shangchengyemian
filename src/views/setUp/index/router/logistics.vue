@@ -23,7 +23,7 @@
               <template scope="scope">
                 <p v-if="scope.row.isNoMoney === 2">卖家承担运费</p>
                 <p v-if="scope.row.isNoMoney === 1 && scope.row.noMoneyNum > 0">商品满{{scope.row.noMoneyNum}}件免邮</p>
-                <p v-if="scope.row.isNoMoney === 1 && scope.row.noMoney > 0">商品满{{scope.row.noMoney}}件免邮</p>
+                <p v-if="scope.row.isNoMoney === 1 && scope.row.noMoney > 0">商品满{{scope.row.noMoney}}元免邮</p>
                 <p v-if="scope.row.isNoMoney === 1 && scope.row.noMoneyNum <= 0 && scope.row.noMoney <= 0">无免邮规则</p>
               </template>
             </el-table-column>

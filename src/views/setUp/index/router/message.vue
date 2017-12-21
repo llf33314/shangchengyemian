@@ -1,12 +1,13 @@
 <template>
   <div class="message-wrapper"> 
-    <div class="message-no" v-if="!isShow">
+    <div class="message-no" v-if="isShow == -1">
        <div class="message-header">
           <i class="el-icon-warning"></i> 
         亲，您还没有认证服务号哦~ 
       </div>
       <div class="message-warn">
-        消息推送功能可以让您通过微信公众号，接收交易和物流相关的提醒消息，包括订单付款成功通知、<br/>确认收货通知、维权等，以提升商家的开店体验，获得更高的订单转化率和复购率。
+        消息推送功能可以让您通过微信公众号，接收交易和物流相关的提醒消息，包括订单付款成功通知、
+        <br/>确认收货通知、维权等，以提升商家的开店体验，获得更高的订单转化率和复购率。
       </div>
       <p class="fs14">您可以关注多粉微信公众号，收到相关推送，请扫一扫下方二维码关注多粉微信公众号吧~</p>
       <div class="message-QRcode">
@@ -15,13 +16,22 @@
       </div>
       <div class="fs14">您也可以： <el-button type="primary">去注册认证服务号</el-button></div>
     </div>
-    <div class="message-main" v-if=" isShow">
+    <div class="message-main" v-if=" isShow != -1">
       <div class="message-text">
         <p class="message-title">商家消息模板<p>
-          <p class="p-warn">
-            商家消息推送功能可以让您通过短信和已有的公众号，接收交易和物流相关的提醒消息，包括订单付款成功通知、确认收货通知、维权等，以提升商家的开店体验，更有效地管理交易和订单。短信计费：0.08元/条起，<a>点击详情</a>查看。
-          </p>
-          <el-button class="buttonBlue" size="small">获取关注链接</el-button>
+          <div v-if="isShow == 1">
+            <p class="p-warn">
+              商家消息推送功能可以让您通过短信和已有的公众号，接收交易和物流相关的提醒消息，包括订单付款成功通知、确认收货通知、维权等，以提升商家的开店体验，
+              更有效地管理交易和订单。短信计费：0.08元/条起，<a>点击详情</a>查看。
+            </p>
+          </div>
+          <div v-if="isShow == 0">
+            <p class="p-warn">
+              商家消息推送功能可以让您通过短信和多粉微信公众号，接收交易和物流相关的提醒消息，包括订单付款成功通知、确认收货通知、维权等，以提升商家的开店体验，
+              更有效地管理交易和订单。短信计费：0.08元/条起，<a>点击详情</a>查看。
+            </p>
+            <el-button class="buttonBlue" size="small">获取多粉链接</el-button>
+          </div>
       </div>
       <div class="message-item-box" >
         <!-- v-for="msg in template.busMsgArr" :key="msg.id" -->
@@ -80,12 +90,21 @@
       </div>
       <div class="message-text">
         <p class="message-title">粉丝消息模板<p>
-          <p class="p-warn">
-            粉丝消息推送功能可以让您通过短信和已有的公众号，给买家推送交易和物流相关的提醒消息，
-            包括积分、购物、充值、奖品等，以提升买家的购物体验，获得更高的订单转化率和复购率。短信计费：0.08元/条起，<a>点击详情</a>查看。
-            <br/>注意：粉丝首先必须关注您的公众号，否则不能收到相关推送。
-          </p> 
-          <el-button class="buttonBlue" size="small">获取关注链接</el-button>
+          <div v-if="isShow == 1">
+            <p class="p-warn">
+              粉丝消息推送功能可以让您通过短信和已有的公众号，给买家推送交易和物流相关的提醒消息，
+              包括积分、购物、充值、奖品等，以提升买家的购物体验，获得更高的订单转化率和复购率。短信计费：0.08元/条起，<a>点击详情</a>查看。
+              <br/>注意：粉丝首先必须关注您的公众号，否则不能收到相关推送。
+            </p> 
+            <el-button class="buttonBlue" size="small">获取关注链接</el-button>
+          </div>
+          <div v-if="isShow == 0">
+            <p class="p-warn">
+              粉丝消息推送功能可以让您通过短信和多粉公众号，给买家推送交易和物流相关的提醒消息，
+              包括积分、购物、充值、奖品等，以提升买家的购物体验，获得更高的订单转化率和复购率。短信计费：0.08元/条起，<a>点击详情</a>查看。
+            </p> 
+            <el-button class="buttonBlue" size="small">获取多粉链接</el-button>
+          </div>
       </div>
       <div class="message-item-box">
         <div class="message-item" v-for="temp in template.messageList" :key="temp.id">
@@ -104,13 +123,8 @@
 </template>
 
 <script>
-
 import Lib from 'assets/js/Lib';
-
 export default {
-  components: {
-    
-  },
   data () {
     return {
       selected:false,
@@ -118,13 +132,12 @@ export default {
       selected2:'',
       selected3:'',
       selected4:'',
-      // value:true,
-      // value1:true,
-      isShow: -1,
+      isShow:'', //-1无认证 0无服务号 1有服务号
       template:[],
     }
   },
   methods: {
+    /**判断有无认证服务号 */
     mallPaySetIsAuthService(){
       let _this = this;
       _this.isShow = -1;
@@ -136,6 +149,7 @@ export default {
         }
       });
     },
+    /**获取消息模板 */
     mallPaySetGetTemplate(){
       let _this = this;
       var selected = 'selected';
@@ -159,6 +173,7 @@ export default {
         }
       });
     },
+    /**设置消息模板 */
     mallPaySetSmsTemplate(id,title,selected,type){
       let _this = this;
       let templateJson = {};
