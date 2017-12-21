@@ -115,6 +115,7 @@ export default {
             this.specList = a;
         },
         'flag'(a){
+            console.log(this.specList,"this.specList")
             this.$emit('change',this.specList)
         }
     },

@@ -40,7 +40,7 @@
             <div class="addshop-IDImg">
               <div class="shop-IDUpload" >
                <gt-material @change="newImgData" 
-                            :img="addImg">
+                            :img="addshopImg">
               </gt-material>
               </div>
               <span class="p-warn">图片比例：1:1(必填)</span>
