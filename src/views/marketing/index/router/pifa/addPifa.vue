@@ -2,7 +2,7 @@
 <div class="addBond-wrapper">
     <div class="common-nav">
         <el-breadcrumb separator="/">
-            <el-breadcrumb-item ><a :href="marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
+             <el-breadcrumb-item ><a :href="$store.state.marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
             <el-breadcrumb-item :to="{ path: '/pifa/1' }">批发管理</el-breadcrumb-item>
             <el-breadcrumb-item v-if="ruleForm.id== null ">新建批发</el-breadcrumb-item>
             <el-breadcrumb-item v-else>修改批发</el-breadcrumb-item>
@@ -11,7 +11,7 @@
     <div class="addBond-main">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
             <el-form-item label="所属店铺 :" prop="shop_id" required>
-                <el-select v-model="ruleForm.shop_id" placeholder="请选择店铺" v-bind:disabled="disabledShop" class="addBond-input">
+                <el-select v-model="ruleForm.shop_id" placeholder="请选择店铺" v-bind:disabled="disabledShop" class="addBond-input"  @change="changeShop">
                     <el-option :label="item.sto_name" :value="item.id"
                       :key="item.id" v-for="item in shopList">
                     </el-option>
@@ -159,10 +159,26 @@ export default {
       isChoicePro: "",
       isReplacePro: "",
       boxData: [],
-      disabledShop: ""
+      disabledShop: "",
+      selectShopId:0
     };
   },
   methods: {
+     //改变店铺，清空选择的商品
+    changeShop(val){
+      //重新选择店铺清空选择的商品和规格
+      if (this.selectShopId > 0 && this.ruleForm.productId > 0) {
+          this.isChoicePro = true;
+          this.isReplacePro = false;
+          this.specificesList = [];
+          this.priceList = [];
+          this.boxData = null;
+          this.ruleForm.isSpecifica = 0;
+          this.ruleForm.productId = null;
+          this.$refs.ruleForm.validate(valid => {});
+          this.selectShopId = this.ruleForm.shop_id;
+      }
+    },
     submitForm(formName) {
       let _this = this;
       if (this.ruleForm.isSpecifica == 1) {
@@ -233,6 +249,7 @@ export default {
       this.boxData.image_url = data.imgPath + data.image_url;
       this.specificesList = [];
       this.priceList = [];
+      this.selectShopId=this.ruleForm.shop_id;
       //重新验证表单
       this.$refs.ruleForm.validate(valid => {});
       if (this.ruleForm.isSpecifica == 1) {

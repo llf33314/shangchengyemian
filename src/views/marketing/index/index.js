@@ -1,6 +1,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
+import store from 'store';
+import Vuex from 'vuex' ;
+
+
 //首页
 import Index from './index.vue'
 //团购管理
@@ -118,12 +122,29 @@ const routes = [
 
 Vue.use(VueRouter)
 Vue.use(quillEditor)
+Vue.use(Vuex)
+
+
 
 const router = new VueRouter({
   routes:routes
 })
 
+const _state = {
+  marketingUrl :''
+}
+const _mutations = {
+  marketingData:(state,URL) => {
+      state.marketingUrl =  URL ||state.marketingUrl
+  }
+}
+const VStore = new Vuex.Store({
+  state:_state,
+  mutations:_mutations
+})
 
 new Vue({
-  router: router
+  router: router,
+  store: VStore,
 }).$mount('#app')
+

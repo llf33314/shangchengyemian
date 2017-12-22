@@ -3,18 +3,12 @@ import Vue from 'vue';
 import C from './conf';
 
 Vue.mixin({
-    data() {
-        return {
-            marketingUrl:'',//营销地址
-        };
-    },
     methods:{
-
     /**
      * 判断营销地址是否存在
      */    
     isMarketingUrl(){
-        if(this.marketingUrl == ''){
+        if(this.$store.state.marketingUrl == ''){
             this.getMarketingUrl();
         }
     },   
@@ -26,7 +20,7 @@ Vue.mixin({
         this.ajaxRequest({
             'url': DFshop.activeAPI.getMarketingUrl_post,
             'success':function (data){
-                _this.marketingUrl=data.data;
+                _this.$store.commit('marketingData',data.data);
             }
         });
     }, 

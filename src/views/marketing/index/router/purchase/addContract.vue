@@ -2,7 +2,7 @@
   <div class="addBond-wrapper">
       <div class="common-nav">
           <el-breadcrumb separator="/">
-              <el-breadcrumb-item ><a :href="marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
+               <el-breadcrumb-item ><a :href="$store.state.marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
               <el-breadcrumb-item :to="{ path: '/purchase/2' }">对外报价</el-breadcrumb-item>
               <el-breadcrumb-item v-if="ruleForm.id ==''">新增合同</el-breadcrumb-item>
                <el-breadcrumb-item v-else>修改合同</el-breadcrumb-item>

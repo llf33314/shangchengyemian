@@ -422,7 +422,8 @@ export default {
     /**批量导出 */
     exportTrade(){
       let _this = this;
-      console.log("导出");
+      _this.mallOrderList( _this.searchData);
+      // console.log("导出");
       let str = "?1=1";
       if(_this.searchData.orderType != ""){
           str += "&orderType="+_this.searchData.orderType;

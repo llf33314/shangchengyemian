@@ -98,7 +98,7 @@
     mallPaySetSmsTemplate_post: '/mallPaySet/E9lM9uM4ct/setSmsTemplate',
     /*判断是否加入担保 */
     mallIsSecuritytrade_post: '/mallSecuritytrade/E9lM9uM4ct/isSecuritytrade',
-    /*判断商家是否有微信支付平台 */
+    /*判断商家是否有商户支付平台 */
     mallIsWxPayUser_post: '/mall/E9lM9uM4ct/isWxPayUser',
     /*获取退出担保理由列表 */
     mallQuitDanbaoReasonList_post: '/mallSecuritytrade/E9lM9uM4ct/quitReasonMap',

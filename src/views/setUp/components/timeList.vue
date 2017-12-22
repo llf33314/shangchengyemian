@@ -58,7 +58,7 @@ export default {
   data: function() {
     var formStartTime = (rule, value, callback) => {
       if (this.ruleForm.startTime  == '' || this.ruleForm.endTime  == '') {
-         return callback(new Error('请选择开始结束时间'));
+         return callback(new Error('请选择起始结束时间'));
       } else{
         callback();
       }
@@ -83,14 +83,11 @@ export default {
         isTimeEdit:1,// 1 显示编辑框 2显示新增按钮 3都不显示
         rules: {
           visitDays: [
-            { type: 'array', required: true, message: '请上传自提点图片', trigger: 'change' }
+            { type: 'array', required: true, message: '请选择接待天数', trigger: 'change' }
           ],
           startTime: [
               { validator: formStartTime, trigger: 'blur,change' },
-          ],
-          endTime: [
-            { required: true, message: '结束时间不能为空', trigger: 'blur' }
-          ],
+          ]
         },
     };
   },

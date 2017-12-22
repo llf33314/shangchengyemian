@@ -2,7 +2,7 @@
 <div class="addBond-wrapper">
     <div class="common-nav">
         <el-breadcrumb separator="/">
-            <el-breadcrumb-item ><a :href="marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
+             <el-breadcrumb-item ><a :href="$store.state.marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
             <el-breadcrumb-item :to="{ path: '/presale/1' }">预售管理</el-breadcrumb-item>
             <el-breadcrumb-item >新建预售</el-breadcrumb-item>
         </el-breadcrumb>
@@ -10,7 +10,7 @@
     <div class="addBond-main">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
             <el-form-item label="所属店铺 :" prop="shop_id" required class="msg-right-item">
-                <el-select v-model="ruleForm.shop_id" v-bind:disabled="disabledShop" placeholder="请选择店铺" class="addBond-input">
+                <el-select v-model="ruleForm.shop_id" v-bind:disabled="disabledShop" placeholder="请选择店铺" class="addBond-input" @change="changeShop">
                     <el-option :label="option.sto_name" :value="option.id"
                       :key="option.id" v-for="option in shopList">
                     </el-option>
@@ -245,6 +245,20 @@ export default {
     };
   },
   methods: {
+    //改变店铺，清空选择的商品
+    changeShop(val){
+      //重新选择店铺清空选择的商品和规格
+      if (this.selectShopId > 0 && this.ruleForm.product_id > 0) {
+        this.isChoicePro = true;
+        this.isReplacePro = false;
+        this.specArrList = [];
+        this.boxData = null;
+        this.ruleForm.isSpecifica = 0;
+        this.ruleForm.product_id = null;
+        this.$refs.ruleForm.validate(valid => {});
+        this.selectShopId = this.ruleForm.shop_id;
+      }
+    },
     priceDel(index) {
       //删除价格调整
       this.ruleForm.timeList.splice(index, 1);
@@ -296,6 +310,7 @@ export default {
       this.ruleForm.proPrice = data.pro_price;
       this.boxData = data;
       this.boxData.image_url = data.imgPath + data.image_url;
+      this.selectShopId = this.ruleForm.shop_id;
       this.$refs.ruleForm.validate(valid => {});
       if (this.ruleForm.isSpecifica == 1) {
         this.getSpecificaByProId(data.id);

@@ -2,7 +2,7 @@
   <div class="integralmall-wrapper" >
      <div class="common-nav">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item ><a :href="marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
+         <el-breadcrumb-item ><a :href="$store.state.marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
         <el-breadcrumb-item>预售管理</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -256,23 +256,23 @@
                         </div>
                         <content-no v-if="presaleGiftsData.page.rowCount == 0"></content-no>
                         <el-dialog title="新建预售送礼" :visible.sync="dialogVisibleGift" size="tiny">
-                            <el-form-item label="送礼名次" prop="giveRanking" required >
+                            <el-form-item label="送礼名次" prop="giveRanking" >
                                 <el-input v-model.number="form.giveRanking" class="mix-input" style="width:200px;">
                                 <template slot="prepend">前</template>  
                                 <template slot="append">名</template>    
                                 </el-input>
                             </el-form-item>
-                            <el-form-item label="礼品类型" prop="giveType" required>
+                            <el-form-item label="礼品类型" prop="giveType" >
                                 <el-select v-model="form.giveType" placeholder="请选择" >
                                     <el-option class="max-input" v-for="item in giftDictList"
                                         :key="item.item_key" :label="item.item_value" :value="item.item_key">
                                     </el-option>
                                 </el-select>
                             </el-form-item>
-                            <el-form-item label="礼品名称" prop="giveName" required>
+                            <el-form-item label="礼品名称" prop="giveName">
                                 <el-input v-model="form.giveName" class="mix-input" style="width:200px;"></el-input>
                             </el-form-item>
-                            <el-form-item label="礼品数量" prop="giveNum" required>
+                            <el-form-item label="礼品数量" prop="giveNum">
                                 <el-input v-model.number="form.giveNum" class="mix-input" style="width:200px;"></el-input>
                             </el-form-item>
                             <el-form-item min-width="120">
@@ -646,7 +646,12 @@ export default {
     },
     //添加预售送礼
     addPresaleGift() {
-      this.dialogVisibleGift = true;
+      let _this = this;
+      _this.dialogVisibleGift = true;
+      _this.form.giveRanking="";
+      _this.form.giveType=1;
+      _this.form.giveName="";
+      _this.form.giveNum="";
     },
     //保存预售送礼设置
     mallPresaleGiveSave(param) {
@@ -680,8 +685,7 @@ export default {
           return;
         }
       }
-      _this.$refs["form"].validate(valid => {
-        if (valid) {
+      if(obj.giveRanking != "" && obj.giveType != "" && obj.giveName != "" && obj.giveNum != "" ){
           let param = {
             giveRanking: obj.giveRanking,
             giveType: obj.giveType,
@@ -689,9 +693,11 @@ export default {
             giveNum: obj.giveNum,
             id: obj.id || null
           };
+          // console.log(param,"param");
           _this.mallPresaleGiveSave(param);
-        }
-      });
+      }
+        
+       
     },
     //新建预售送礼保存按钮事件
     saveAddPresale(formName) {
