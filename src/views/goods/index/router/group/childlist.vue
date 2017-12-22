@@ -3,7 +3,7 @@
     <div class="common-nav">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: '/grouping' }">分组管理</el-breadcrumb-item>
-        <el-breadcrumb-item>新增子类分组</el-breadcrumb-item>
+        <el-breadcrumb-item>子类列表</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
      <div class="index-shopInfo clearfix">
@@ -52,7 +52,7 @@
         </el-table-column>
         <el-table-column
           label="操作"
-          width="300">
+          width="400">
           <template scope="scope">
             <el-button  
               size="small"
@@ -62,16 +62,20 @@
             </el-button>
             <el-button  
               size="small"
-              class="buttonBlue">
-              取消推荐
-            </el-button>
-            <el-button  
-              size="small"
+              v-if="scope.row.lDelete==null || scope.row.lDelete"
+              @click="recommend(scope.row)"
               class="buttonBlue">
               搜索推荐
             </el-button>
             <el-button  
-              size="small">
+              size="small"
+              class="buttonBlue"
+              @click="recommend(scope.row)"
+              v-else>
+              取消推荐
+            </el-button>
+            <el-button  
+              size="small" @click="handleDelete(scope.row.id)">
               删除
             </el-button>
           </template>
@@ -117,6 +121,53 @@ export default {
   },
   methods: {
     /** 
+     * 推介分组
+     * @param data 推介分组数据 lDelete 1未推荐（存在）   0已推荐（不存在）
+     */
+    recommend(data){
+      let _this = this;
+      let _data = {
+          groupId: data.id,//分组ID
+      }
+      if(data.lDelete == null || data.lDelete == 1 ){
+        //未推荐 去推荐
+        _data.status = 1 ;// 0推荐
+       _this.recommendAjax(_data);
+      }else{
+        //已推荐 取消推荐
+        let msg ={
+          dialogTitle:'取消推荐提醒',//文本标题
+          dialogMsg:'确定要取消选中分组的推荐吗？',
+          callback: {
+              btnOne:()=>{
+                _data.status = 2;
+                _this.recommendAjax(_data);
+              }
+          },
+        }
+        _this.$root.$refs.dialogWarn.showDialog(msg);
+      }
+        
+    },
+    /** 
+     * 推介分组请求
+     * @param data 请求数据
+     */
+    recommendAjax(data){
+      let _this = this;
+      _this.ajaxRequest({
+          'url': DFshop.activeAPI.mallProductGroupRecommend_post,
+          'data': data,
+          'success':function (data){
+            _this.$message({
+              message: '操作成功',
+              type: 'success'
+            });
+            _this.groupListAjax( _this.page.curPage);
+          }
+        });
+    },
+    /** 
      * 全选
      */
     toggleSelection(rows) {
@@ -137,8 +188,24 @@ export default {
     /**
      * 删除
      */
-    handleDelete(index, data){
-      console.log(index,data);
+    handleDelete(id){
+    let _this = this;
+      let msg ={
+        dialogTitle:'删除提醒',//文本标题
+        callback: {
+            btnOne:()=>{
+              _this.deleteAjax(id);
+            }
+        },
+      }
+      if(id == null){
+        //批量删除
+        msg.dialogMsg='确定要删除选中的所有分组吗？';
+      }else{
+        //单个删除
+        msg.dialogMsg='确定要删除该分组吗？';
+      }
+      _this.$root.$refs.dialogWarn.showDialog(msg);
     },
     /**
      * 分页跳转
@@ -171,6 +238,26 @@ export default {
               _this.subList = 2 ;
             }
             _this.subList = data.data.page.subList;
+          }
+      });
+    },
+     /** 
+     *删除分组
+     *@param ids 分组ID集合,用逗号隔开
+     */
+    deleteAjax(ids){
+      let _this = this;
+      _this.ajaxRequest({
+          'url': DFshop.activeAPI.mallProductGroupDelete_post,
+          'data': {
+            ids:ids
+          },
+          'success':function (data){
+            _this.$message({
+              message: '删除成功',
+              type: 'success'
+            });
+            _this.groupListAjax(_this.page.curPage);
           }
       });
     },

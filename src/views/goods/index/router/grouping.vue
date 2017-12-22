@@ -47,12 +47,12 @@
         </el-table-column>
         <el-table-column
           label="操作"
-          width="300">
+          width="400">
           <template scope="scope">
             <el-button  
               size="small"
               class="buttonBlue"
-              v-if="scope.row.lDelete"
+              v-if="scope.row.lDelete==null ||scope.row.lDelete"
               @click="recommend(scope.row)">
               搜索推荐
             </el-button>
@@ -236,7 +236,7 @@ export default {
       let _data = {
           groupId: data.id,//分组ID
       }
-      if(data.lDelete == 1 ){
+      if(data.lDelete == null || data.lDelete == 1 ){
         //未推荐 去推荐
         _data.status = 1 ;// 0推荐
        _this.recommendAjax(_data);

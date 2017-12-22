@@ -2,9 +2,10 @@
 <div class="addGruop-wrapper">
     <div class="common-nav">
         <el-breadcrumb separator="/">
-            <el-breadcrumb-item ><a :href="marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
+             <el-breadcrumb-item ><a :href="$store.state.marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
             <el-breadcrumb-item :to="{ path: '/group' }">团购管理</el-breadcrumb-item>
-            <el-breadcrumb-item >新建团购</el-breadcrumb-item>
+            <el-breadcrumb-item v-if="ruleForm.id == null">新建团购</el-breadcrumb-item>
+            <el-breadcrumb-item v-else>修改团购</el-breadcrumb-item>
         </el-breadcrumb>
     </div>
     <div class="addGruop-main">
@@ -251,8 +252,8 @@ export default {
         this.ruleForm.isSpecifica = 0;
         this.ruleForm.productId = null;
         this.$refs.ruleForm.validate(valid => {});
+        this.selectShopId = this.ruleForm.shopId;
       }
-      this.selectShopId = this.ruleForm.shopId;
     },
     /**
      * 选中商品事件
@@ -270,6 +271,7 @@ export default {
       this.boxData.image_url = data.imgPath + data.image_url;
       this.specificesList = [];
       this.priceList = [];
+      this.selectShopId=this.ruleForm.shopId;
       //重新验证表单
       this.$refs.ruleForm.validate(valid => {});
       if (this.ruleForm.isSpecifica == 1) {
@@ -303,6 +305,8 @@ export default {
           }
           if (!_this.off) {
             groupBuy.gMaxBuyNum = 0;
+          }else{
+            groupBuy.gMaxBuyNum = formData.gMaxBuyNum;
           }
           let _speciList = [];
           let isJoin = false;
@@ -398,6 +402,7 @@ export default {
             image_url: data.imgUrl + myData.imageUrl,
             stockTotal: myData.proStockTotal
           };
+          // console.log(_this.boxData,"boxData");
           if (myData.isSpecifica == 1) {
             _this.getSpecificaByProId(myData.productId);
           }
@@ -465,7 +470,6 @@ export default {
         }
       }
     });
-
     if (_this.$route.params.id != 0) {
       _this.disabledShop = true;
       _this.mallGroupBuyInfo(_this.$route.params.id);
@@ -473,6 +477,7 @@ export default {
     } else {
       _this.disabledShop = false;
       _this.isChoicePro = true;
+      
     }
   }
 };

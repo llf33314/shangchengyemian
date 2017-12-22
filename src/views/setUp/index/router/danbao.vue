@@ -142,7 +142,7 @@ export default {
     /**打开退出担保交易对话框 */
     exitGuarantee(){
       let _this= this;
-      /**判断商家是否有微信支付平台 */
+      /**判断商家是否有商户支付平台 */
       _this.ajaxRequest({
         'url': DFshop.activeAPI.mallIsWxPayUser_post,
         'success':function (data){

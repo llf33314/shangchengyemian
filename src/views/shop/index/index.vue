@@ -37,7 +37,7 @@
                         <i class="iconfont icon-renzheng"></i> 担保交易
                       </div>
                       <div class="pass">
-                          <i class="iconfont icon-renzheng "></i >线下店铺{{scope.row.certStoCategoryName}}
+                          <i class="iconfont icon-renzheng "></i >线下店铺
                       </div>
                       <div :class="{'pass':scope.row.certStoCategoryName}">
                           <i class="iconfont icon-renzheng"></i>
@@ -100,11 +100,17 @@
           <el-table :data="tabelData.page.subList"  style="width: 100%" v-if="tabelData.page.pageCount>0">
             <el-table-column label="标题"  prop="pag_name">
             </el-table-column>
-            <el-table-column label="创建时间" prop="pag_create_time">
+            <el-table-column label="创建时间">
+               <template  scope="scope">
+                  {{scope.row.pag_create_time|format}} 
+              </template>
             </el-table-column>
             <el-table-column label="所属店铺" prop="business_name">
             </el-table-column>
             <el-table-column label="访客数/浏览量" prop="flow">
+              <template  scope="scope">
+                  {{scope.row.visitor_num}}/{{scope.row.views_num}}
+              </template>
             </el-table-column>
             <el-table-column label="操作" min-width="150">
               <template scope="scope">

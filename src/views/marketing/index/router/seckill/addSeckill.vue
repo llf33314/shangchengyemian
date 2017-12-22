@@ -2,9 +2,10 @@
 <div class="addGruop-wrapper">
     <div class="common-nav">
         <el-breadcrumb separator="/">
-            <el-breadcrumb-item ><a :href="marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
+             <el-breadcrumb-item ><a :href="$store.state.marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
             <el-breadcrumb-item :to="{ path: '/seckill' }">秒杀管理</el-breadcrumb-item>
-            <el-breadcrumb-item >新建秒杀</el-breadcrumb-item>
+            <el-breadcrumb-item v-if="ruleForm.id == null">新建秒杀</el-breadcrumb-item>
+            <el-breadcrumb-item v-else>修改秒杀</el-breadcrumb-item>
         </el-breadcrumb>
     </div>
     <div class="addGruop-main">
@@ -127,6 +128,9 @@ export default {
       setJoinSeckill: [],
       table: [],
       pickerOptions1: {
+        disabledDate(time) {
+          return time.getTime() < Date.now() - 8.64e7;
+        },
         shortcuts: [
           {
             text: "今天",
@@ -200,7 +204,7 @@ export default {
         ],
         sPrice: [{ validator: formPrice, trigger: "blur", message: "请输入秒杀价" }],
         sMaxBuyNum: [
-          { validator: formMaxBuyNum, trigger: "blur", message: "请输入限购人数" }
+          { validator: formMaxBuyNum, trigger: "blur", message: "请输入限购数量" }
         ]
       },
       shopList: [],
@@ -284,6 +288,8 @@ export default {
           }
           if (!_this.off) {
             seckill.sMaxBuyNum = 0;
+          }else{
+            seckill.sMaxBuyNum =formData.sMaxBuyNum;
           }
           let isJoin = false;
           let _speciList = [];
@@ -314,12 +320,13 @@ export default {
               return;
             }
           }
-          console.log(seckill, "111");
-          console.log(_speciList, "2223333");
+          // console.log(seckill, "111");
+          // console.log(_speciList, "2223333");
           let param = {};
           param["seckill"] = seckill;
           param["specArr"] = JSON.stringify(_speciList);
           console.log(param, "speac");
+ 
           _this.ajaxRequest({
             url: DFshop.activeAPI.mallSeckillSave_post,
             data: param,

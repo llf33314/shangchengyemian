@@ -64,7 +64,7 @@
               </el-form-item >
               <div></div>
                 <el-button type="primary" @click="search()">筛选</el-button>
-                <el-button type="primary" @click="exportTrade()">批量导出</el-button>
+                <el-button type="primary" :disabled="subList==null" @click="exportTrade()">批量导出</el-button>
             </el-form>
           </div>
           <div class="index-content">
@@ -241,7 +241,8 @@ export default {
     /**批量导出 */
     exportTrade(){
         let _this = this;
-        console.log("导出");
+        _this.tradeList(_this.searchData);
+        // console.log("导出");
         let str = "?1=1";
         if(_this.searchData.orderNo != ""){
             str += "&orderNo="+_this.searchData.orderNo;

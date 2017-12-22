@@ -2,13 +2,13 @@
   <div class="group-wrapper">
     <div class="common-nav">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item ><a :href="marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
+         <el-breadcrumb-item ><a :href="$store.state.marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
         <el-breadcrumb-item>秒杀管理</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="group-main">
       <div class="index-shopInfo">
-        <el-row>
+        <el-row>``
           <el-col :span="12" >
             活动状态：
             <el-select v-model="type" placeholder="请选择" @change="search()">
@@ -25,9 +25,7 @@
             </a>
           </el-col>
         </el-row>
-        <!-- <router-link to="/addgroup"> -->
         <el-button type="primary" style="margin-top: 20px;" @click="jumpRouter('/addSeckill/0')">新建秒杀</el-button>
-        <!-- </router-link> -->
       </div>
       <div class="group-content" v-if="(tableData.page != null && tableData.page.subList != null) || loading" >
         <el-table v-loading.body="loading" element-loading-text="拼命加载中" :data="tableData.page.subList" style="width: 100%" >
@@ -122,8 +120,8 @@ export default {
       //使失效事件
       let _this = this;
       let msg = {
-        dialogTitle: "您确定要将此团购活动失效吗？", //文本标题
-        dialogMsg: "失效后不能再进行团购", //文本内容
+        dialogTitle: "您确定要将此秒杀活动失效吗？", //文本标题
+        dialogMsg: "失效后不能再进行秒杀", //文本内容
         callback: {
           btnOne: function() {
             _this.mallSeckillDelete(id, -2);
@@ -136,7 +134,7 @@ export default {
       //删除事件
       let _this = this;
       let msg = {
-        dialogTitle: "您确定要删除此团购活动吗？", //文本标题
+        dialogTitle: "您确定要删除此秒杀活动吗？", //文本标题
         dialogMsg: "", //文本内容
         callback: {
           btnOne: function() {
