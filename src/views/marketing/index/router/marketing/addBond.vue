@@ -2,7 +2,7 @@
 <div class="addBond-wrapper">
     <div class="common-nav">
         <el-breadcrumb separator="/">
-            <el-breadcrumb-item ><a :href="marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
+             <el-breadcrumb-item ><a :href="$store.state.marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
             <el-breadcrumb-item :to="{ path: '/marketing/2' }">超级销售员</el-breadcrumb-item>
             <el-breadcrumb-item >新建商品佣金</el-breadcrumb-item>
         </el-breadcrumb>
@@ -10,7 +10,7 @@
     <div class="addBond-main">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
             <el-form-item label="所属店铺 :" prop="shop_id" required>
-                <el-select v-model="ruleForm.shop_id" placeholder="请选择店铺" class="addBond-input" v-bind:disabled="disabledShop">
+                <el-select v-model="ruleForm.shop_id" placeholder="请选择店铺" class="addBond-input" v-bind:disabled="disabledShop" @change="changeShop">
                     <el-option :label="item.sto_name" :value="item.id" :key="item.id"  v-for="item in shopList">
                     </el-option>
                 </el-select>
@@ -34,7 +34,7 @@
                  <el-input v-model="ruleForm.commission_rate" class="addBond-input" v-if="ruleForm.commission_type ==2">
                      <template slot="prepend">¥</template>
                  </el-input>
-                 <p class="p-warn" v-if="disabledCommission">商品佣金按百分比的计算公式：商品价*（佣金商品佣金/100）</p>
+                 <span class="p-warn" v-if="disabledCommission">商品佣金按百分比的计算公式：商品价*（佣金商品佣金/100）</span>
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
@@ -127,10 +127,23 @@ export default {
       isChoicePro: "",
       isReplacePro: "",
       disabledShop: "",
-      disabledCommission: true
+      disabledCommission: true,
+      selectShopId:0
     };
   },
   methods: {
+    //改变店铺，清空选择的商品
+    changeShop(val){
+      //重新选择店铺清空选择的商品和规格
+      if (this.selectShopId > 0 && this.ruleForm.product_id > 0) {
+          this.isChoicePro = true;
+          this.isReplacePro = false;
+          this.boxData = null;
+          this.ruleForm.product_id = null;
+          this.$refs.ruleForm.validate(valid => {});
+          this.selectShopId = this.ruleForm.shop_id;
+      }
+    },
     selectDialogData(data) {
       if (data.id == this.ruleForm.product_id) {
         return false;
@@ -141,6 +154,7 @@ export default {
       this.ruleForm.product_id = data.id;
       this.boxData = data;
       this.boxData.image_url = data.imgPath + data.image_url;
+      this.selectShopId=this.ruleForm.shop_id;
       //重新验证表单
       this.$refs.ruleForm.validate(valid => {});
     },

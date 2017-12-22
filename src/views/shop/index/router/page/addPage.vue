@@ -20,11 +20,8 @@
         <el-form ref="form" :model="form" label-width="90px">
            <el-form-item label="所属店铺 :">
             <el-select v-model="form.shopSelect" placeholder="请选择店铺" >
-              <el-option
-                v-for="item in shopOptions"
-                :key="item.value"
-                :label="item.sto_name"
-                :value="item.id">
+               <el-option class="max-input" v-for="item in shopOptions"
+                  :key="item.id" :label="item.sto_name" :value="item.id">
               </el-option>
             </el-select>
           </el-form-item>
@@ -69,10 +66,10 @@
     </div>
     <el-button style="margin-top: 12px;" @click="next" v-if="isOnePage">下一步</el-button>
     <el-button type="primary" v-if="isTowPage">保存</el-button>
-    <el-button style="margin-top: 12px;"v-if="!isThreePage">返回</el-button>
+    <el-button style="margin-top: 12px;" v-if="!isThreePage"  @click="jumpRouter('/page')">返回</el-button>
     <div class="shop-textc" v-if="isThreePage" >
       <el-button type="primary">继续添加</el-button>
-      <el-button style="margin-top: 12px;" >返回</el-button>
+      <el-button style="margin-top: 12px;" @click="jumpRouter('/page')">返回</el-button>
     </div>
   </div>
 </div>
@@ -91,9 +88,11 @@ export default {
       isThreePage:false,
       imgUrl: '',
       path: '',
-      form:{},
+      form:{
+        pagIsMain:0
+      },
       shopOptions:{},
-      pageOptions:{}
+      pageOptions:{},
     }
   },
   methods: {
@@ -124,21 +123,22 @@ export default {
               _this.form = data.data;
           }
       });
-      DFshop.method.storeList({
-        'success'(data){
-          _this.shopOptions = data.data;
-        }
-      })
-      _this.ajaxRequest({//页面类型下来框
-          'url': DFshop.activeAPI.mallPageNewTypeMap_post,
-          'success':function (data){
-              console.log(data,'page');
-              _this.pageOptions = data.data;
-          }
-      });
     }
   },
   mounted() {
+    let _this = this;
+    _this.storeList({
+      'success'(data){
+        _this.shopOptions = data.data;
+      }
+    })
+    _this.ajaxRequest({//页面类型下来框
+        'url': DFshop.activeAPI.mallPageNewTypeMap_post,
+        'success':function (data){
+            console.log(data,'page');
+            _this.pageOptions = data.data;
+        }
+    });
     if(this.$route.params.pageId ==='0'){
       this.title = "新增微页面";
     }else{

@@ -2,7 +2,7 @@
   <div class="common-wrapper">
     <div class="common-nav">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item ><a :href="marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
+         <el-breadcrumb-item ><a :href="$store.state.marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
         <el-breadcrumb-item>超级营销员</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -78,12 +78,9 @@
                     <el-option class="max-input" label="已禁用" :value="0"></el-option>
                     <el-option class="max-input" label="已启用" :value="1"></el-option>
                   </el-select>
-                </el-col>
                 </span>
               </div>
-              <!-- <router-link to="/addBond"> -->
-                <el-button type="primary" @click="jumpRouter('/addBond/0')">新建商品佣金</el-button>
-              <!-- </router-link> -->
+              <el-button type="primary" @click="jumpRouter('/addBond/0')">新建商品佣金</el-button>
              </div>
               <el-table v-loading.body="loading" element-loading-text="拼命加载中" 
               :data="goodsData.page.subList" style="width: 100%" v-if="goodsData.page.rowCount > 0 || loading">
@@ -114,7 +111,7 @@
                         v-if="scope.row.is_use === 0">启用</el-button>
                     <el-button size="small" class="buttonBlue" @click="setCommissionStatus(scope.row.id,-1)"
                         v-if="scope.row.is_use === 1">禁用</el-button>
-                    <el-button size="small"class="buttonBlue" @click="preview(scope.row)">预览</el-button>
+                    <el-button size="small" class="buttonBlue" @click="preview(scope.row)">预览</el-button>
                     <el-button size="small" @click="setCommissionStatus(scope.row.id,-3)">删除</el-button>
                   </template>
                 </el-table-column>
@@ -134,7 +131,7 @@
         </el-tab-pane>
         <el-tab-pane label="推荐审核" name="3">
           <div class="common-content">
-            <div class="index-shopInfo" v-if="examineData.page.rowCount > 0">
+            <div class="index-shopInfo">
               <!-- <el-autocomplete v-model="state4" :fetch-suggestions="querySearchAsync"
                 placeholder="销售员名字/手机" @select="handleSelect" icon="search" ></el-autocomplete> -->
                 <el-input v-model="keyWord" placeholder="销售员名字/手机" icon="search" class="max-input"
@@ -172,8 +169,7 @@
                   <el-button size="small" class="buttonBlue" @click="passExamine(scope.row.id,1)">通过</el-button>
                   <el-button size="small" @click="refuseExamine(scope.row.id,-1)">拒绝</el-button>
                 </template>
-              </el-table-column>
-              </el-table-column>
+              </el-table-column> 
             </el-table>
             <div class="shop-textr" v-if="examineData.page.rowCount > 0">
                 <el-pagination
@@ -190,9 +186,7 @@
         </el-tab-pane>
         <el-tab-pane label="销售员管理" name="4">
           <div class="common-content">
-            <div class="index-shopInfo" v-if="sellersList.page.rowCount > 0">
-              <!-- <el-autocomplete v-model="state4" :fetch-suggestions="querySearchAsync"
-                placeholder="销售员名字/手机" @select="handleSelect" icon="search"></el-autocomplete> -->
+            <div class="index-shopInfo">
               <el-input v-model="keyWord_sellers" placeholder="销售员名字/手机" icon="search" class="max-input" 
                  @keyup.enter.native="searchSeller" :on-icon-click="searchSeller"></el-input>
             </div>
@@ -229,17 +223,16 @@
                 label="操作"
                 min-width="180">
                 <template scope="scope">
-                  <el-button size="small" class="buttonBlue" @click="recomment(scope.row)">推荐列表</el-button>
-                  <el-button size="small" class="buttonBlue" @click="jumpRouter('/marketing/5')">提现记录</el-button>
+                  <el-button size="small" class="buttonBlue" @click="jumpRouter('/recommendList/'+scope.row.member_id)">推荐列表</el-button>
+                  <el-button size="small" class="buttonBlue" @click="jumpRouter('/withDrawList/'+scope.row.member_id)">提现记录</el-button>
                   <el-button size="small" v-if="scope.row.is_start_use == 1" 
                     @click="setSellerStatus(scope.row.id,scope.row.user_name,-1)">暂停</el-button>
                   <el-button size="small" v-if="scope.row.is_start_use == -1"
                     @click="setSellerStatus(scope.row.id,scope.row.user_name,1)">启动</el-button>
                 </template>
               </el-table-column>
-              </el-table-column>
             </el-table>
-            <div class="shop-textr" v-if="sellersList.page.rowCount > 0">
+            <div class="shop-textr" v-if="sellersList.page.rowCount > 0"> 
                 <el-pagination
                     @size-change="handleSizeChange3"
                     @current-change="handleCurrentChange3"
@@ -254,7 +247,7 @@
         </el-tab-pane>
         <el-tab-pane label="提现列表" name="5">
            <div class="common-content">
-            <div class="index-shopInfo" v-if="saleData.page.rowCount > 0">
+            <div class="index-shopInfo">
               <div class="index-input-box">
                 <span>
                   <el-input v-model="keyWord_tixian" placeholder="销售员名字/手机" icon="search" class="max-input" 
@@ -295,7 +288,7 @@
                 </template>
               </el-table-column>
             </el-table>
-            <div class="shop-textr" v-if="saleData.page.rowCount > 0">
+            <div class="shop-textr" v-if="saleData.page.pageCount >1">
                 <el-pagination
                     @size-change="handleSizeChange4"
                     @current-change="handleCurrentChange4"
@@ -418,7 +411,7 @@ export default {
       imgUrl: "",
       path: "",
       webPath: "",//
-      loading: true,//是否开启loading
+      loading: false,//是否开启loading
       saleMemberId:0//销售员id
     };
   },
@@ -428,28 +421,40 @@ export default {
       sessionStorage.setItem("href", _href);
     },
     $route: function(t, f) {
+      let _this = this;
       this.activeName = t.params.activeName;
+      if(_this.activeName ==1){
+        _this.mallSellersGetSellerSet();
+      }else if(_this.activeName == 2){
+        _this.mallSellersJoinProduct(1);
+      }else if(_this.activeName == 3){
+        _this.mallSellersCheckList(1);
+      }else if(_this.activeName == 4){
+        _this.mallSellersList(1);
+      }else if (_this.activeName == 5){
+        _this.mallSellersWithDrawList(1);
+      }
     }
   },
   methods: {
+    /**提现规则改变事件 */
     choiceWithdrawl() {
-      //提现规则改变事件
       if (this.setupForm.withdrawalType == 1) {
         this.setupForm.withdrawalMultiple = "";
       } else {
         this.setupForm.withdrawalLowestMoney = "";
       }
     },
+    /**推荐审核搜索框 */
     searchExamine() {
-      //推荐审核搜索框
       this.mallSellersCheckList(this.examineData.page.curPage);
     },
+    /**销售员搜索框 */
     searchSeller() {
-      //销售员搜索框
       this.mallSellersList(this.sellersList.page.curPage);
     },
+    /**提现搜索框 */
     searchSale() {
-      //提现搜索框
       this.mallSellersWithDrawList(this.saleData.page.curPage);
     },
     onSubmit(formName) {
@@ -557,15 +562,7 @@ export default {
       };
       _this.$root.$refs.dialog.showDialog(msg);
     },
-    /*搜索 */
-
-    loadAll() {
-      return [
-        { value: "三全鲜食（北新泾店）", address: "长宁区新渔路144号" },
-        { value: "Hot honey 首尔炸鸡（仙霞路）", address: "上海市长宁区淞虹路661号" },
-        { value: "新旺角茶餐厅", address: "上海市普陀区真北路988号创邑金沙谷6号楼113" }
-      ];
-    },
+   
     handleSelect(item) {
       console.log(item);
     },
@@ -643,7 +640,7 @@ export default {
             type: "success"
           });
           _this.mallSellersCheckList(_this.examineData.page.curPage);
-          console.log(data, "data");
+          // console.log(data, "data");
         }
       });
     },
@@ -668,16 +665,11 @@ export default {
               this.add_time = Lib.M.format(oldTime);
             }
           });
-          console.log(_this.sellersList, "sellersList");
+          // console.log(_this.sellersList, "sellersList");
         }
       });
     },
-    recomment(obj) {
-      //推荐列表
-      // console.log(obj)
-      this.saleMemberId = obj.member_id;
-      this.mallSellersList(1);
-    },
+ 
     mallSellersWithDrawList(pageNum) {
       //提现列表
       let _this = this;
@@ -687,6 +679,9 @@ export default {
       if (cashTime != "") {
         startTime = Lib.M.format(new Date(cashTime[0]));
         endTime = Lib.M.format(new Date(cashTime[1]));
+      }else{
+        startTime ='';
+        endTime = '';
       }
       _this.ajaxRequest({
         url: DFshop.activeAPI.mallSellersWithDrawList_post,
@@ -703,7 +698,7 @@ export default {
             let oldTime = this.applay_time;
             this.applay_time = Lib.M.format(oldTime);
           });
-          console.log(_this.saleData, "saleData");
+          // console.log(_this.saleData, "saleData");
         }
       });
     },
@@ -780,7 +775,10 @@ export default {
         }
       });
     },
-    cashSearch() {
+    cashSearch(value) {
+      if(value == ''){
+        this.cashDate='';
+      }
       //提现时间选择改变事件
       this.mallSellersWithDrawList(1);
     }
@@ -789,19 +787,25 @@ export default {
     let _this = this;
     this.isMarketingUrl();
     _this.activeName = _this.$route.params.activeName;
-    //_this.restaurants = _this.loadAll();
-
+  
     _this.storeList({
       success(data) {
-        _this.shopList = data.data;
-        console.log(_this.shopList, "shopList");
+        _this.shopList = data.data; 
       }
     });
-    _this.mallSellersGetSellerSet();
-    _this.mallSellersJoinProduct(1);
-    _this.mallSellersCheckList(1);
-    _this.mallSellersList(1);
-    _this.mallSellersWithDrawList(1);
+
+    if(_this.activeName ==1){
+       _this.mallSellersGetSellerSet();
+    }else if(_this.activeName == 2){
+      _this.mallSellersJoinProduct(1);
+    }else if(_this.activeName == 3){
+      _this.mallSellersCheckList(1);
+    }else if(_this.activeName == 4){
+      _this.mallSellersList(1);
+    }else if (_this.activeName == 5){
+      _this.mallSellersWithDrawList(1);
+    }
+   
   }
   // destroyed () {
   //   console.log(1,'11*************');
@@ -811,6 +815,9 @@ export default {
 </script>
 
 <style lang="less">
+.shop-textr{
+  margin-top:20px;  
+}
 .multiple-div {
   .el-form-item__error {
     position: relative !important;

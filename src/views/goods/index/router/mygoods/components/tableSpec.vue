@@ -179,7 +179,6 @@ export default {
         selectedSpec1(val,index,i){
             let _this = this;
             let isAdd = true;
-            this.flag = !this.flag;
             if(!this.deleteFlag){
                 if(_this.nameList.length == index+1){
                     this.deleteFlag = true;
@@ -230,7 +229,7 @@ export default {
                     }
                     index2 = k;
                 }
-
+                //this.flag = !this.flag;
                 //if(typeof val === 'number') return _isAdd = false;
                 //无对应新增
                 if(_isAdd && typeof val != 'number'){
@@ -399,12 +398,13 @@ export default {
                             erpValueId: null,        //进销存ID
                             specValue:  _data.all_specList[i],     //规格值名称
                             specValueId: i,      //规格值ID
-                            id: null,             //规格ID
+                            id:i,             //规格ID
                             specImage: null
                        }
                         newData.push(item);
                         _this.isShowAdd = false;
                     }
+                    
                 })
             }
             _this.selectedSpec ="";//新增后清空

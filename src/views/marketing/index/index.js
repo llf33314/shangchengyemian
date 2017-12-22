@@ -1,6 +1,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
+import store from 'store';
+import Vuex from 'vuex' ;
+
+
 //首页
 import Index from './index.vue'
 //团购管理
@@ -11,6 +15,11 @@ import addGruop from './router/group/addGruop.vue'
 import Marketing from './router/Marketing/index'
 //超级营销员--新建商品佣金
 import AddBond from './router/Marketing/addBond'
+//超级营销员--销售员管理--推荐列表
+import recommendList from './router/Marketing/recommendList'
+//超级营销员--销售员管理--提现列表
+import withDrawList from './router/Marketing/withDrawList'
+
 //积分商城
 import IntegralMall from './router/IntegralMall/index'
 //积分商城--新建积分商品
@@ -71,6 +80,9 @@ const routes = [
   { path: '/group', component: Group},
   { path: '/addgroup/:id', component: addGruop},
   { path: '/marketing/:activeName', component: Marketing},
+  { path: '/recommendList/:id', component: recommendList},
+  { path: '/withDrawList/:id', component: withDrawList},
+  
   // { path: '/marketing/:activeName/:pageNO', component: Marketing},
   { path: '/addBond/:id', component: AddBond},
   { path: '/mallIntegral/:activeName', component: IntegralMall},
@@ -110,12 +122,29 @@ const routes = [
 
 Vue.use(VueRouter)
 Vue.use(quillEditor)
+Vue.use(Vuex)
+
+
 
 const router = new VueRouter({
   routes:routes
 })
 
+const _state = {
+  marketingUrl :''
+}
+const _mutations = {
+  marketingData:(state,URL) => {
+      state.marketingUrl =  URL ||state.marketingUrl
+  }
+}
+const VStore = new Vuex.Store({
+  state:_state,
+  mutations:_mutations
+})
 
 new Vue({
-  router: router
+  router: router,
+  store: VStore,
 }).$mount('#app')
+

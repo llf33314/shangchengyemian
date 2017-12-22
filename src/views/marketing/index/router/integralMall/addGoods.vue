@@ -2,7 +2,7 @@
 <div class="addGruop-wrapper">
     <div class="common-nav">
         <el-breadcrumb separator="/">
-            <el-breadcrumb-item ><a :href="marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
+            <el-breadcrumb-item ><a :href="$store.state.marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
             <el-breadcrumb-item :to="{ path: '/mallIntegral/1' }">积分商品</el-breadcrumb-item>
             <el-breadcrumb-item v-if="ruleForm.id ==''">新建积分商品</el-breadcrumb-item>
             <el-breadcrumb-item v-else>修改积分商品</el-breadcrumb-item>
@@ -27,7 +27,7 @@
                 <!-- <p class="p-warn">0/8</p> -->
             </el-form-item>
             <el-form-item label="活动时间 :" prop="startTime" required>
-                 <el-date-picker v-model="ruleForm.startTime" type="datetimerange" align="right" :editable="false"
+                 <el-date-picker v-model="ruleForm.startTime" type="datetimerange" :picker-options="pickerOptions" align="right" :editable="false"
                   placeholder="请选择活动时间"  >
                 </el-date-picker>
             </el-form-item>
@@ -81,6 +81,11 @@ export default {
       }
     };
     return {
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() < Date.now() - 8.64e7;
+        },
+      },
       ruleForm: {
         id:'',
         productId: '',

@@ -263,7 +263,7 @@
       </div>
     </div>
   </div>
-   <el-dialog :title="dialogTitle" :visible.sync="dialogVisible"  size="small">
+   <el-dialog :title="dialogTitle" :visible.sync="dialogVisible"  size="small" :class="dialogType == 1 ? 'minDialog':''">
     <cancel-order :id="orderId" @code="dialogResultRet" v-if="dialogType ==1"> </cancel-order>
     <update-money :data= "orderData" @code="dialogResultRet" v-if="dialogType ==2"> </update-money>
     <deliver-goods :row= "orderData" @code="dialogResultRet" v-if="dialogType ==3"> </deliver-goods>
@@ -423,4 +423,9 @@ export default {
 <style lang="less">
   @import '../../less/index.less';
   @import '../../less/order.less';
+  .minDialog{
+    .el-dialog--small{
+      width:18%
+    }
+  }
 </style>

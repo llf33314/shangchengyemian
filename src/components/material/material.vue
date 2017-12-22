@@ -21,8 +21,8 @@
               :key="index"
               :draggable="Draggable"
               class="avatar-uploader"
-              @dragstart='drag($event)'
-              @dragover='allowDrop($event)'>
+              @dragstart='drag($event,index)'
+              @dragover='allowDrop($event,index)'>
               <div class="avatar-layer">
                 <i class="el-icon-search" @click.self="largeImg(item.path+item.imageUrl)"></i>
                 <i class="el-icon-delete" @click.self="deleteImg(index)"></i>
@@ -94,6 +94,7 @@
         materialLargeSrcVisible: false,
         largeSrc:'',
         dom:'',
+        oldX:'',//拖动开始值
       }
     },
     watch:{
@@ -106,9 +107,6 @@
         //多个上传数据
           this.imgdata = a;
       },
-      // 'imgdata'(a,b){
-      //   this.stopDelete();
-      // }
     },
     mounted () {
       //单图上传--初始
@@ -145,7 +143,8 @@
               val.forEach((item,i) => {
                 let data = {
                   path: item.url.split("/image")[0],
-                  imageUrl:'/image'+ item.url.split("/image")[1]
+                  imageUrl:'/image'+ item.url.split("/image")[1],
+                  sort: i+1
                 }
                 _this.imgdata.push(data);
               });
@@ -188,23 +187,35 @@
         this.materialLargeSrcVisible = true;
       },
       /** 
-       * 父级数据传送
+       * 滑动的父级
        */
-      stopDelete(val) {
-        console.log(val,'tu')
-        this.$emit('change',val)
+      drop(e){
+        //通过event.preventDefault()来设置允许拖放 
+        event.preventDefault();
       },
-      drag(e){
+      /** 
+       * 滑动元素开始
+       */
+      drag(e,index){
+        this.dom = '';
+        this.oldX = index;
         this.dom = event.currentTarget;
       },
-      drop(e){
-        //console.log(event.target,'event.currentTarget',this.dom)
+      /** 
+       * 滑动结束
+       */
+      allowDrop(e,index){
         event.preventDefault();
-        event.target.appendChild(this.dom);
-        
-      },
-      allowDrop(e){
-        event.preventDefault();
+        let _this = this;
+        if(index != this.oldX){
+          //改变的数据
+          let sort = this.imgdata[index].sort;
+          let oldData = this.imgdata[this.oldX];
+          //改变sort的值，方便需要排序；
+          this.$set(this.imgdata[this.oldX],'sort',sort-0.01)                        
+          $(e.target).before(this.dom); 
+        }
+        _this.$emit('change',_this.imgdata);
       }
     }
   }

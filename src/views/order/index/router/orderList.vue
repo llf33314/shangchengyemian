@@ -271,6 +271,9 @@ export default {
         isTable: true,//是否有数据
         isPage: true,//列表页数多页
         pickerOptions2: {
+          disabledDate(time) {
+            return time.getTime() > Date.now();
+          },
           shortcuts: [{
             text: '近7天',
             onClick(picker) {
@@ -419,7 +422,8 @@ export default {
     /**批量导出 */
     exportTrade(){
       let _this = this;
-      console.log("导出");
+      _this.mallOrderList( _this.searchData);
+      // console.log("导出");
       let str = "?1=1";
       if(_this.searchData.orderType != ""){
           str += "&orderType="+_this.searchData.orderType;

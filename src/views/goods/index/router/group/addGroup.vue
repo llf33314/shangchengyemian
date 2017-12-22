@@ -57,10 +57,7 @@
         </el-form-item>
          <el-form-item>
           <el-button type="primary" @click="submitForm('form')">保存</el-button>
-          <el-button  @click="jumpRouter('/grouping')"
-                      v-if="$route.params.Id == null">取消</el-button>
-          <el-button  @click="jumpRouter('/childlist')"
-                      v-else>取消</el-button>
+          <el-button  @click="historyGo">取消</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -119,6 +116,10 @@ export default {
     }
   },
   methods: {
+    /**返回上一页 */
+    historyGo() {
+      window.history.go(-1);
+    },
     /** 
      * 表单验证
      */

@@ -44,9 +44,11 @@
             要求没有自有微信支付平台账户的商家必须参加担保交易，否则多粉平台不予提供支持
          </el-row>
       </div>
-      <el-button type="primary" v-if="!isSecuritytrade" @click="mallSecuritytradeAdd()">立即加入担保交易</el-button>
-      <el-button  v-else-if="isSecuritytrade && securitytradeQuit !=null" disabled>退出担保审核中</el-button>
-      <el-button @click="exitGuarantee()"  v-else-if="isSecuritytrade">退出担保交易</el-button>
+      <div v-if="isSecuritytrade != ''">
+        <el-button type="primary" v-if="!isSecuritytrade" @click="mallSecuritytradeAdd()">立即加入担保交易</el-button>
+        <el-button  v-else-if="isSecuritytrade && securitytradeQuit !=null" disabled>退出担保审核中</el-button>
+        <el-button @click="exitGuarantee()"  v-else-if="isSecuritytrade">退出担保交易</el-button>
+      </div>
     </div>
 
     <el-dialog title="退出担保交易" :visible.sync="dialogFormVisible">
@@ -140,7 +142,7 @@ export default {
     /**打开退出担保交易对话框 */
     exitGuarantee(){
       let _this= this;
-      /**判断商家是否有微信支付平台 */
+      /**判断商家是否有商户支付平台 */
       _this.ajaxRequest({
         'url': DFshop.activeAPI.mallIsWxPayUser_post,
         'success':function (data){

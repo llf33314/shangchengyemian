@@ -52,13 +52,13 @@
                     </div>
                 </div>
                 <div class="mygoods-item">
-                    <div class="item-title">库存/规格{{form.invenList == null}}</div>
+                    <div class="item-title">库存/规格</div>
                     <div class="item-content">
                             <el-form-item label="商品规格 :"  v-if="form.pro.shopId">
                                 <tableSpec :row="form.specList" :shopId="form.pro.shopId" @change="changeSpac"></tableSpec>
                             </el-form-item>
-                            <el-form-item label="商品库存 :" v-if=" form.specList !='' && form.specList !=null">
-                                <tableList :specList="form.specList" :invenList="form.invenList"></tableList>
+                            <el-form-item label="商品库存 :" v-if=" form.specList !='' && form.specList != null">
+                                <tableList :specList="form.specList" :invenList="form.invenList" ></tableList>
                             </el-form-item>
                             <el-form-item label="商品参数 :"  v-if="form.pro.shopId">
                                 <gt-param :row="form.paramList" :shopId="form.pro.shopId"  @change="paramSelected"></gt-param>
@@ -112,7 +112,7 @@
                             </div>
                             <span style="color:#ff4949;font-size:12px" v-if="isImgno">请上传至少一张商品图片</span>
                             <p class="shop-prompt">
-                                建议尺寸：700px*700px,您可以拖拽图片顺序,第一张图片为主图{{form.imageList}}
+                                建议尺寸：700px*700px,您可以拖拽图片顺序,第一张图片为主图
                             </p>
                         </el-form-item>
                         <el-form-item label="商品标签 ：" >
@@ -335,7 +335,8 @@ export default {
         this.$refs.cascader.submitForm();
         this.changeIMG();
         if(this.changeIMG()&& this.$refs.cascader.submitForm() && this.submitForm('ruleForm')){
-            this.active == 2;
+            // this.active == 2;
+            console.log(this.form,'this.form')
         }
         return
       }
@@ -370,7 +371,7 @@ export default {
                 id:_this.goodsId
             },
             'success':function (data){
-                console.log(data,'编辑请求数据');
+                //console.log(data,'编辑请求数据');
                 _this.form = data.data;
             }
         });
@@ -401,7 +402,7 @@ export default {
      */
     groupselected(data){
         this.form.proGroupList = data;
-        console.log(data,'选中分组')
+        //console.log(data,'选中分组')
     },
     /** 
      * 选择参数
@@ -409,29 +410,15 @@ export default {
      */
     paramSelected(data){
         this.form.paramList = data;
-        console.log(data,'商品参数')
+        //console.log(data,'商品参数')
     },
     /** 
      * 商品规格
      */
     changeSpac(data){
-        console.log(data,'商品规格');
-        //显示列表需要
-        let _data1={
-            id: null,
-            productId: null,
-            specificaIds: null,     //规格ID
-            invPrice: null,          //库存价格
-            invNum: null,            //库存数量
-            invCode: null,         //产品编码
-            invSaleNum: null,       //销量
-            isDefault: 0,             //是否默认  0没有 1是
-            specificaImgId: 0,        // 有图片的规格ID
-            logisticsWeight: null,    //物流重量
-            specList: null
-        }
+        console.log(data,'商品规格specList');
         
-
+        this.form.specList = data;
         //请求数据需要
          let _data2={
             specificas:[ {
@@ -445,32 +432,50 @@ export default {
             invCode: null,          //商家编码
             isDefault: 0,          //是否默认
             logisticsWeight: null   //重量
-        }
-        //数据重组 --传值
+        } 
+        //数据重组 --传值--specificaIds组合(笛卡尔乘积)
         let _this = this;
 
-        var arr = [];
-        // for(var i = 0; i < obj[0].sss.length; i++){
-        //     var str = obj[0].sss[i];
-        //     for(var k = 0; k < obj[1].sss.length;k++){
-        //         str += obj[1].sss[k];
-        //         for(var l = 0; l < obj[2].sss.length; l++){
-        //         str += obj[2].sss[l];
-        //         arr.push(str)
-        //         }
-        //     }
-        // }
-        data.forEach((item,i) => {
-            let newSpecValues = [];
-            item.specValues.forEach((test,j)=>{
-                newSpecValues.push(test.specValueId);
+        var result=[];//结果保存到这个数组
+        function toResult(arrIndex,aresult){
+            if(arrIndex >= data.length) {
+                result.push(aresult);
+                return;
+            }
+            var aArr = data[arrIndex].specValues;
+            if(!aresult) aresult = [];
+            for(var i=0; i<aArr.length; i++){
+                var theResult = aresult.slice(0,aresult.length);
+                theResult.push(aArr[i].specValueId);
+                toResult(arrIndex+1,theResult);
+            }
+        }
+        toResult(0);
+        // 显示数据
+        let arr=[]
+        //显示列表需要 -- 新增时
+        if(_this.$route.params.id === 'add'){
+            result.forEach((item,i)=>{
+            let data1={
+                    id: null,
+                    productId: null,
+                    specificaIds: null,     //规格ID
+                    invPrice: null,          //库存价格
+                    invNum: null,            //库存数量
+                    invCode: null,         //产品编码
+                    invSaleNum: null,       //销量
+                    isDefault: 0,             //是否默认  0没有 1是
+                    specificaImgId: 0,        // 有图片的规格ID
+                    logisticsWeight: null,    //物流重量
+                    specList: null
+                }
+                data1.specificaIds = item.toString();
+                arr.push(data1);
             })
-            //arr.push(_data1);
-            console.log(newSpecValues,'newspecValues')
-        });
-        //console.log(arr,'arr')
-        //this.$set(this.form,'specList',data);
-        
+            
+            _this.$set(_this.form,'invenList',arr) 
+        }
+        console.log(_this.form.invenList,'商品规格invenList');
     },
     /** 
      * 物流id
@@ -518,8 +523,8 @@ export default {
             },
             'success':function (data){
                 _this.logisticsList = data.data;
-                if(this.form.pro.proFreightSet == 1) {
-                    this.form.pro.proFreightTempId = null;
+                if(_this.form.pro.proFreightSet == 1) {
+                   _this.form.pro.proFreightTempId = null;
                     return
                 }
             }
@@ -541,11 +546,11 @@ export default {
             _this.imgUrl = data.imgUrl;
             if(_this.$route.params.id === 'add'){
                 _this.form.pro.shopId = _this.shopList[0].id; 
-                _this.freightAjax(this.form.pro.shopId);
+                //_this.freightAjax(_this.form.pro.shopId);
             }
         }
     })
-    console.log(_this.form,'form')
+    //console.log(_this.form,'form')
   }
 }
 </script>

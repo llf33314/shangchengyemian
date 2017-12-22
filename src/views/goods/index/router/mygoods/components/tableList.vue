@@ -25,7 +25,6 @@
                     :key="i">
                     <!--每个规格对应库存ids-->
                     <p v-for="(c,d) in item.specificaIds" :key="d">
-                        <!--规格 和 库存下的分类id 对应显示 -->
                         <span v-for="(a,b) in test.specValues" v-if=" c == a.id" :key="b">
                             {{a.specValue}}
                         </span>
@@ -34,8 +33,8 @@
                 </td>
                 <!--第二个-->
                 <td v-for="(test,i) in listData" lass="text-overflow"
-                    v-if="listData.length-i == 2 && index%(listData[2].specValues.length)==0"
-                    :rowspan="[listData[2].specValues.length]"
+                    v-if="listData.length-i == 2 && index%( listData[2] != null?listData[2].specValues.length:listData[1].specValues.length )==0 "
+                    :rowspan="[listData[2] != null?listData[2].specValues.length:listData[1].specValues.length]"
                     :key="i">
                     <p v-for="(c,d) in item.specificaIds" :key="d">
                         <span v-for="(a,b) in test.specValues" v-if=" c == a.id" :key="b">
@@ -56,7 +55,8 @@
                     
                 </td>
                 <td v-if="isSpec">
-                    <el-input v-model="item.invPrice" placeholder="请输入内容"></el-input>
+                    <el-input v-model="item.invPrice" placeholder="请输入内容" @blur="itemRules(item.invPrice,$event)"></el-input>
+                    <span class="p-warning"></span>
                 </td>
                 <td v-if="isSpec">
                     <el-input v-model="item.invNum" placeholder="请输入内容"></el-input>
@@ -121,7 +121,10 @@ export default {
         } ,
         'specList'(a){
             this.listData = a;
-            console.log(a,'---改动')
+        },
+        'invenList'(a){
+            this.invenData = a;
+            this.newlistData();
         }
     },
     methods:{
@@ -135,6 +138,33 @@ export default {
                 item.specificaIds = item.specificaIds.split(",");
             });
         },
+        /** 
+         * 单个数据验证
+         * @param text 输入内容
+         * @param 当前数据
+         */
+        itemRules(text,e){
+            let reg =/^[0-9]{1}\d{0,5}(\.\d{1,2})?$/;
+            let _flag = false;
+            //错误文本
+            let ErrorMsg ='';
+            
+            if(!text){
+                ErrorMsg = '请输入统一邮费价';
+                _flag = true;
+            }
+            if(!reg.test(text)){
+                ErrorMsg = '价格最多只能输入六位整数+两位小数,如：300000.00';
+                _flag = true;
+            }
+            if(_flag){
+                
+                let dom = '<span class="p-warning">'+ErrorMsg+'</span>';
+                
+                console.log($(e.target).parent(),'e')
+            }
+            
+        }
     },
     mounted() {
         this.listData = this.specList;
@@ -175,6 +205,10 @@ export default {
     }
     td:hover{
         color: #3892c5;
+    }
+    .p-warning{
+        color:rgb(255, 73, 73);
+        font-size: 12px;
     }
 }
 </style>

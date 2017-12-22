@@ -40,7 +40,7 @@
             <div class="addshop-IDImg">
               <div class="shop-IDUpload" >
                <gt-material @change="newImgData" 
-                            :img="addImg">
+                            :img="addshopImg">
               </gt-material>
               </div>
               <span class="p-warn">图片比例：1:1(必填)</span>
@@ -86,7 +86,7 @@
     </div>
     <el-button style="margin-top: 12px;" @click="next" v-if=" active == 1">下一步</el-button>
     <el-button type="primary" v-if="active == 2" @click="Submit()">保存</el-button>
-    <el-button style="margin-top: 12px;"v-if="active !== 3" @click="Back">返回</el-button>
+    <el-button style="margin-top: 12px;" v-if="active !== 3" @click="Back">返回</el-button>
     <div class="shop-textc" v-if="active == 3" >
       <el-button type="primary"@click="next">继续添加</el-button>
       <el-button style="margin-top: 12px;" @click="jumpRouter('/shop')">返回</el-button>
@@ -128,7 +128,7 @@ export default {
      * 上一页跳转
      */
     Back(){
-      this.active == 2? this.active --:_this.jumpRouter('/shop');
+      this.active == 2? this.active --:this.jumpRouter('/shop');
     },
     /**
       下一页跳转

@@ -43,7 +43,7 @@
         </div>
         <div class="index-item line-main">
           <p class="item-title">选择时间 :
-            <el-date-picker v-model="value6" type="daterange" value-format="yyyy-MM-dd" placeholder="选择日期范围" @change="searchDate" ></el-date-picker>
+            <el-date-picker v-model="value6" type="daterange"  :picker-options="pickerOptions" value-format="yyyy-MM-dd" placeholder="选择日期范围" @change="searchDate" ></el-date-picker>
           </p>
           <div class="line-content ">
             <span class="line-unit">
@@ -74,6 +74,11 @@ export default {
   },
   data () {
     return {
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > Date.now() - 8.64e7;
+        }
+      },
       dataCount:{
           todayPayOrderNum:'',
           waitDeliveryOrderNum:'',
@@ -86,7 +91,9 @@ export default {
       shopList: [],
       // startDate:new Date(new Date().setTime(new Date().getTime() - 3600 * 1000 * 24 * 30)),
       // endDate:new Date(),
-      value6: [new Date(new Date().setTime(new Date().getTime() - 3600 * 1000 * 24 * 30)),new Date()],
+      value6: [new Date(new Date().setTime(new Date().getTime() - 3600 * 1000 * 24 * 30)),
+              new Date(new Date().setTime(new Date().setDate(new Date().getDate()-1)))
+              ],
       chart: null,
       isTotal: true,
       chartDate:[],
@@ -150,7 +157,7 @@ export default {
       let that=this;
       var start = new Date(new Date().setTime(new Date().getTime() - 3600 * 1000 * 24 * 30));
       let startDate = new Date(start.getFullYear() + '-' + (start.getMonth() + 1) + '-'+ start.getDate());
-      let end =new Date();
+      var end =new Date(new Date().setTime(new Date().setDate(new Date().getDate()-1)));
       let endDate = new Date(end.getFullYear() + '-' + (end.getMonth() + 1) + '-' + end.getDate());
     
       this.loopGenerateDate(startDate,endDate);
