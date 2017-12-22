@@ -151,6 +151,7 @@ Vue.mixin({
                     
                     //需要登陆（需要跳转）todo
                     if(res.data.code == 1001){
+                        location.href = res.data.url;
                         return
                     }
                     
