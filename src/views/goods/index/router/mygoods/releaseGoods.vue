@@ -52,7 +52,7 @@
                     </div>
                 </div>
                 <div class="mygoods-item">
-                    <div class="item-title">库存/规格{{form.specList}}</div>
+                    <div class="item-title">库存/规格</div>
                     <div class="item-content">
                             <el-form-item label="商品规格 :"  v-if="form.pro.shopId">
                                 <tableSpec :row="form.specList" :shopId="form.pro.shopId" @change="changeSpac"></tableSpec>
@@ -371,7 +371,7 @@ export default {
                 id:_this.goodsId
             },
             'success':function (data){
-                console.log(data,'编辑请求数据');
+                //console.log(data,'编辑请求数据');
                 _this.form = data.data;
             }
         });
@@ -402,7 +402,7 @@ export default {
      */
     groupselected(data){
         this.form.proGroupList = data;
-        console.log(data,'选中分组')
+        //console.log(data,'选中分组')
     },
     /** 
      * 选择参数
@@ -410,29 +410,15 @@ export default {
      */
     paramSelected(data){
         this.form.paramList = data;
-        console.log(data,'商品参数')
+        //console.log(data,'商品参数')
     },
     /** 
      * 商品规格
      */
     changeSpac(data){
-        console.log(data,'商品规格');
-        //显示列表需要
-        var _data1={
-            id: null,
-            productId: null,
-            specificaIds: null,     //规格ID
-            invPrice: null,          //库存价格
-            invNum: null,            //库存数量
-            invCode: null,         //产品编码
-            invSaleNum: null,       //销量
-            isDefault: 0,             //是否默认  0没有 1是
-            specificaImgId: 0,        // 有图片的规格ID
-            logisticsWeight: null,    //物流重量
-            specList: null
-        }
+        console.log(data,'商品规格specList');
         
-
+        this.form.specList = data;
         //请求数据需要
          let _data2={
             specificas:[ {
@@ -447,45 +433,49 @@ export default {
             isDefault: 0,          //是否默认
             logisticsWeight: null   //重量
         } 
-        //数据重组 --传值--specificaIds组合
+        //数据重组 --传值--specificaIds组合(笛卡尔乘积)
         let _this = this;
-        var arr = [];
-        function arrl(data,k,str,arr){
-            // console.log(k,'k-b')
-            let i= data.length;
-            //长度判断
-            if(k>=i){
-                return false;
-            }else{
-                let a=data[k].specValues;
-                //结束
-                if(k == i-1){
-                    for(let l=0;l<a.length;l++){
-                        console.log(a[l].specValues)
-                        let newData = _data1;
-                        newData.specificaIds = str+a[l].specValueId;
-                        arr.push(_data1);
-            // console.log("newData.specificaIds",newData.specificaIds);
-            // console.log(newData,"newData");
-                        // console.log(str+a[l].specValueId,_data1);
-                    }
-                }else{
-                    //循环拼接
-                    for(let j=0; j<a.length; j++){
-                        if(k==0){str=""};
-                        console.log(a[j].specValues)
-                        // debugger
-                        str+=a[j].specValueId+",";
-                        let b=k+1;
-                        arrl(data,b,str,arr);
-                    }
-                }
+
+        var result=[];//结果保存到这个数组
+        function toResult(arrIndex,aresult){
+            if(arrIndex >= data.length) {
+                result.push(aresult);
+                return;
+            }
+            var aArr = data[arrIndex].specValues;
+            if(!aresult) aresult = [];
+            for(var i=0; i<aArr.length; i++){
+                var theResult = aresult.slice(0,aresult.length);
+                theResult.push(aArr[i].specValueId);
+                toResult(arrIndex+1,theResult);
             }
         }
-        arrl(data,0,"",arr)
-        console.log(arr,'arr')
-
-       
+        toResult(0);
+        // 显示数据
+        let arr=[]
+        //显示列表需要 -- 新增时
+        if(_this.$route.params.id === 'add'){
+            result.forEach((item,i)=>{
+            let data1={
+                    id: null,
+                    productId: null,
+                    specificaIds: null,     //规格ID
+                    invPrice: null,          //库存价格
+                    invNum: null,            //库存数量
+                    invCode: null,         //产品编码
+                    invSaleNum: null,       //销量
+                    isDefault: 0,             //是否默认  0没有 1是
+                    specificaImgId: 0,        // 有图片的规格ID
+                    logisticsWeight: null,    //物流重量
+                    specList: null
+                }
+                data1.specificaIds = item.toString();
+                arr.push(data1);
+            })
+            
+            _this.$set(_this.form,'invenList',arr) 
+        }
+        console.log(_this.form.invenList,'商品规格invenList');
     },
     /** 
      * 物流id
@@ -526,7 +516,6 @@ export default {
      */
     freightAjax(id){
         let _this = this;
-        console.log(id,'ididididid')
         _this.ajaxRequest({
             'url': DFshop.activeAPI.mallFreightGetFreightByShopId_post,
             'data':{
@@ -561,7 +550,7 @@ export default {
             }
         }
     })
-    console.log(_this.form,'form')
+    //console.log(_this.form,'form')
   }
 }
 </script>
