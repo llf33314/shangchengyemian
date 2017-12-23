@@ -473,8 +473,9 @@ export default {
                 arr.push(data1);
             })
             
-            _this.$set(_this.form,'invenList',arr) 
         }
+        console.log(this.form.specList,'this.form.specList');
+        _this.$set(_this.form,'invenList',arr) 
         console.log(_this.form.invenList,'商品规格invenList');
     },
     /** 
