@@ -146,10 +146,11 @@ Vue.mixin({
                     //需要登陆（需要跳转）todo
                     if(res.data.code == 1001){
                         // location.href = res.data.url;
-                        vm.$message({
-                            message: "登陆失效，请前往重新登陆！",
-                            type: "error"
-                          });
+                        parent.window.postMessage("outLogin()", "http://yifriend.net/");
+                        // vm.$message({
+                        //     message: "登陆失效，请前往重新登陆！",
+                        //     type: "error"
+                        //   });
                         return
                     }
                     
