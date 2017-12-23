@@ -295,6 +295,8 @@
     purchaseOrderSave_post:'/purchase/E9lM9uM4ct/order/save',
     /**获取报价单信息 */
     purchaseOrderInfo_post:'/purchase/E9lM9uM4ct/order/orderInfo',
+    /**修改报价单状态 */
+    purchaseOrderUpdateStatus_post:'/purchase/E9lM9uM4ct/order/updateStatus',
     /**获取收款详情列表 */
     purchaseReceivablesDetails_post:'/purchase/E9lM9uM4ct/order/receivablesDetails',
     /**获取收款详情列表 */

@@ -144,7 +144,7 @@
             <div class="table-th col-1">买家</div>
             <div class="table-th col-2">下单时间</div>
             <div class="table-th col-1">订单状态</div>
-            <div class="table-th col-2">实付金额</div>
+            <div class="table-th col-1">实付金额</div>
             <div class="table-th col-1">订单来源</div>
           </div>
           <div class="table-content-box" v-for="order in subList" :key="order.id">
@@ -212,7 +212,7 @@
                   <el-button type="primary" size="small" v-if="order.isShowDeliveryButton == 1" @click="openDialog(3,order)">发货</el-button>
                   <el-button type="primary" size="small" v-if="order.isShowPickUpGoodsButton == 1" @click="pickUpGoods(order.id,1)">确认已提货</el-button>
                 </div>
-                <div class="table-td border-r col-2">&#65509;{{order.orderMoney}}
+                <div class="table-td border-r col-1">&#65509;{{order.orderMoney}}
                     <p v-if="order.orderFreightMoney >0" style="font-size:11px;color:#999">(含运费 &#65509;{{order.orderFreightMoney}})</p>
                     <p>
                       <el-button type="primary" size="small" v-if="order.isShowUpdatePriceButton == 1" @click="openDialog(2,order)">修改价格</el-button>
