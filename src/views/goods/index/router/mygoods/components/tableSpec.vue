@@ -116,7 +116,8 @@ export default {
             this.specList = a;
         },
         'flag'(a){
-            this.$emit('change',this.newSpecList)
+            this.$emit('change',this.specList)
+            
         }
     },
     mounted() {
@@ -358,6 +359,7 @@ export default {
                 specNameId:'',
                 specValues:[]
             }
+            this.flag = !this.flag;
             this.specList.push(data);
         },
         /** 
