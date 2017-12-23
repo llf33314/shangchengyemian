@@ -165,7 +165,7 @@
                 <span :style="{border:'1px solid'+isColor[0],color:isColor[0]}">收藏商品</span>
                 <span :style="{border:'1px solid'+isColor[0],color:isColor[0]}">进店逛逛</span>
               </div>
-              <div class="module4":style="{'border-bottom':'2px solid'+isColor[0],color:isColor[0]}">
+              <div class="module4" :style="{'border-bottom':'2px solid'+isColor[0],color:isColor[0]}">
                 商品详情
               </div>
               <div class="module5 clearfix">
@@ -207,16 +207,10 @@
             </div>
             <div class="preview-item style-change3"
             :style="{backgroundImage: 'url(' + bgimg3 + ')'}">
-              <div class="module1">
-                <i class="iconfont icon-dui" :style="{color:isColor[0]}"></i>
-                <i class="iconfont icon-dui" :style="{color:isColor[0]}"></i>
-                <i class="iconfont icon-dui" :style="{color:isColor[0]}"></i>
+              <div class="module1" :style="{color:isColor[0]}">
+                ￥<span>7,199.</span>00
               </div>
-              <div class="module2">
-                <i class="iconfont icon-dui" :style="{color:isColor[0]}"></i>
-                <i class="iconfont icon-dui" :style="{color:isColor[0]}"></i>
-                <i class="iconfont icon-dui" :style="{color:isColor[0]}"></i>
-                <i class="iconfont icon-dui" ></i>
+              <div class="module2" :style="{color:isColor[0]}">￥<span>7,199.</span>00
               </div>
               <div class="module3" :style="{color:isColor[0]}">
                 ￥<span>14,398.</span>00

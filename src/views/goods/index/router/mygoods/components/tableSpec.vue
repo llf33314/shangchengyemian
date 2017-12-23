@@ -97,6 +97,7 @@ export default {
             nameList:[],
             itemIndex:[],//图片上传改变的索引
             flag:false,//需要触发事件的监听
+            newSpecList:[],//传递数据
 
             fromSelected:{//选中的内容
                 shop: '',//店铺
@@ -115,7 +116,7 @@ export default {
             this.specList = a;
         },
         'flag'(a){
-            this.$emit('change',this.specList)
+            this.$emit('change',this.newSpecList)
         }
     },
     mounted() {
