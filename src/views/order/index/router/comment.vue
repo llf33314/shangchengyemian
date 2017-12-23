@@ -213,13 +213,7 @@ export default {
         'url': DFshop.activeAPI.mallCommentList_post,
         'data':data,
         'success':function (data){
-          _this.subList = data.data.page.subList;
-          _this.page = {
-            curPage:  data.data.page.curPage,
-            pageCount: data.data.page.pageCount,
-            pageSize: data.data.page.pageSize,
-            rowCount: data.data.page.rowCount
-          }
+          
 
            _this.isComment=data.data.isComment;
           _this.count=data.data.count;
@@ -227,6 +221,14 @@ export default {
              _this.contentShow="openComment";
           }else if( _this.isComment == 2){//关闭评论及买家评价
              _this.contentShow="colseBuyerComment";
+          }else{
+            _this.subList = data.data.page.subList;
+          _this.page = {
+            curPage:  data.data.page.curPage,
+            pageCount: data.data.page.pageCount,
+            pageSize: data.data.page.pageSize,
+            rowCount: data.data.page.rowCount
+          }
           }
  
         }

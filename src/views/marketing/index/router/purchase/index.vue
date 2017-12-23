@@ -28,7 +28,7 @@
                             <el-form-item>
                                 <span class="demonstration"  style="font-size:13px;">创建时间 :</span>
                                 <el-date-picker  v-model="value7"  type="daterange" @change="search_date"
-                                    align="right" placeholder="选择日期范围" value-format="yyyy-MM-dd" >
+                                   :picker-options="pickerOptions" align="right" placeholder="选择日期范围" value-format="yyyy-MM-dd" >
                                 </el-date-picker>
                             </el-form-item >
                             <div></div>
@@ -208,6 +208,11 @@ export default {
   },
   data () {
     return {
+      pickerOptions: {
+        disabledDate(time) {
+        return time.getTime() > Date.now();
+        },
+      },
       contentNo:'',//无数据提示页面
       isData:'',//是否有数据
       activeName:'1', //选项卡编号
