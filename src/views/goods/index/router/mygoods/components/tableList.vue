@@ -5,7 +5,7 @@
             <tr class="order_tab_header">
                 <th width="13%" 
                     v-for="(item,index) in listData"
-                    :key="index">{{item.specName}}</th>
+                    :key="index" v-if="item.specName!=''">{{item.specName}}</th>
                 <th width="16%" v-if="isSpec">价格(元)</th>
                 <th width="16%" v-if="isSpec">库存</th>
                 <th width="16%" v-if="isSpec">商家编码</th>
@@ -22,10 +22,10 @@
                 <td v-for="(test,i) in listData" lass="text-overflow"
                     v-if=" listData.length-i == 3 && index%(listData[2].specValues.length*listData[1].specValues.length)==0"
                     :rowspan="[listData[2].specValues.length*listData[1].specValues.length]"
-                    :key="i">
+                    :key="i"> 
                     <!--每个规格对应库存ids-->
                     <p v-for="(c,d) in item.specificaIds" :key="d">
-                        <span v-for="(a,b) in test.specValues" v-if=" c == a.id" :key="b">
+                        <span v-for="(a,b) in test.specValues" v-if=" c == a.id && a.specValue!=''" :key="b"> 
                             {{a.specValue}}
                         </span>
                     </p>
@@ -35,9 +35,9 @@
                 <td v-for="(test,i) in listData" lass="text-overflow"
                     v-if="listData.length-i == 2 && index%( listData[2] != null?listData[2].specValues.length:listData[1].specValues.length )==0 "
                     :rowspan="[listData[2] != null?listData[2].specValues.length:listData[1].specValues.length]"
-                    :key="i">
+                    :key="i"> 
                     <p v-for="(c,d) in item.specificaIds" :key="d">
-                        <span v-for="(a,b) in test.specValues" v-if=" c == a.id" :key="b">
+                        <span v-for="(a,b) in test.specValues" v-if=" c == a.id && c.specValue!=''" :key="b"> 
                             {{a.specValue}}
                         </span>
                     </p>
@@ -46,9 +46,9 @@
                 <!--第三个-->
                 <td v-for="(test,i) in listData" lass="text-overflow"
                     v-if="listData.length-i == 1"
-                    :key="i">
-                    <p v-for="(c,d) in item.specificaIds" :key="d">
-                        <span v-for="(a,b) in test.specValues" v-if=" c == a.id" :key="b">
+                    :key="i"> 
+                    <p v-for="(c,d) in item.specificaIds" :key="d"> 
+                        <span v-for="(a,b) in test.specValues" v-if=" c == a.id && c.specValue!=''" :key="b">
                             {{a.specValue}}
                         </span>
                     </p>
@@ -113,7 +113,8 @@ export default {
             listData:[],//列表数据
             isSpec:true,//物流和规格判断
 
-            isRules:''//全部验证条件
+            isRules:'',//全部验证条件
+            LSlist:[],//临时暂存数据
         }
     },
     watch:{
@@ -123,16 +124,24 @@ export default {
         'isDefault'(a,b){
             this.invenData.forEach((item,i)=>{
                 if(i === a){
-                        item.isDefault = 1;
+                    item.isDefault = 1;
                 }
             })
         } ,
-        'specList'(a){
-            this.listData = a;
+        'specList'(a,b){
+            this.listAdd(a);
         },
-        'invenList'(a){
-            this.invenData = a;
-            this.newlistData();
+        'invenList'(a,b){
+            if(a.length == 0){
+                this.invenData = b;
+            }else{
+                this.invenData = a;
+                this.newlistData();
+            }
+            
+        },
+        'form'(a,b){
+            console.log(a,b,"form")
         }
     },
     methods:{
@@ -142,6 +151,7 @@ export default {
         newlistData(){
             let _this = this;
             //规格遍历
+
             _this.invenData.forEach((item,i) => {
                 item.specificaIds = item.specificaIds.split(",");
                 item.errorMsg = {
@@ -184,6 +194,12 @@ export default {
                     rules = true;
                     ErrorText.invNum= null;
                 }
+                //总库存合计
+                let proStockTotal = null;
+                this.invenData.forEach((item,i)=>{
+                    proStockTotal += Number(item.invNum);
+                })
+                this.$emit('stockTotal',proStockTotal);
             }else if(type === 3){
                 //重量
                 let reglogisti =/^[0-9]{1}\d{0,5}(\.\d{1,2})?$/;
@@ -201,7 +217,7 @@ export default {
             this.$set(this.invenData[index],'errorMsg',ErrorText)
             this.invenData.push([]);
             this.invenData.pop([]);
-            
+
             return rules;
         },
         /** 
@@ -218,32 +234,33 @@ export default {
                 if(this.isSpec){
                     let a = _this.itemRules(item,i,1);
                     let b = _this.itemRules(item,i,2);
-                    //a或b有一个是false为就不通过验证,
-                    //rules为false变不进入赋值 防止 结果被覆盖
-                    if(rules && (!a || !b)){
-                        rules = false;
-                        //rules为false，补全验证不通过
-                        if(!rules){
-                            isRules = false;
-                        }
+                    if(isRules && (!a || !b)){
+                        isRules = false;
                     }
                 }else{
                     let c = _this.itemRules(item,i,3);
-                    if(rules && !c){
-                        rules = false;
-                        if(!rules){
-                            isRules = false;
-                        }
+                    if(isRules && !c){
+                        isRules = false;
                     }
                 }
               
            })
-           console.log(isRules,'isRules2')
            return isRules;
         },
+        listAdd(data){
+            let _this =this;
+            this.listData=[] ;
+            
+            data.forEach((item,i)=>{
+                if(item.specValues.length >0){
+                    debugger
+                    _this.listData.push(item);
+                }
+            })
+        }
     },
     mounted() {
-        this.listData = this.specList;
+        this.listAdd(this.specList);
         this.invenData = this.invenList;
         if(this.type !='0'){
             this.isSpec = false;

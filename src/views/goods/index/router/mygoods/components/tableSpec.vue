@@ -105,6 +105,7 @@ export default {
                 goodsStatus: '',//商品类型
                 spec:[]//规格
             },
+
             fromSelecteds:[],
             checked1:'',
             options:[],
@@ -112,13 +113,9 @@ export default {
         }
     },
     watch: {
-        'row'(a){
+        'row'(a,b){
             this.specList = a;
         },
-        'flag'(a){
-            this.$emit('change',this.specList)
-            
-        }
     },
     mounted() {
         let _this = this;
@@ -187,13 +184,14 @@ export default {
                 }
                 return;
             }
-           
+            
             //排重
             if(_this.nameList != null && _this.nameList.length > 0){
                 for(let k = 0; k < _this.nameList.length ;k++){
 
                     if(_this.nameList[k] == val){
                         //重新对应返回原值
+                        debugger
                         isAdd = false;
                         //重复提示
                         _this.$message({
@@ -231,8 +229,6 @@ export default {
                     }
                     index2 = k;
                 }
-                //this.flag = !this.flag;
-                //if(typeof val === 'number') return _isAdd = false;
                 //无对应新增
                 if(_isAdd && typeof val != 'number'){
                     newId = index2 + 1;
@@ -359,14 +355,12 @@ export default {
                 specNameId:'',
                 specValues:[]
             }
-            this.flag = !this.flag;
             this.specList.push(data);
         },
         /** 
          * 删除规格行列
          */
         removeList(index) {
-            this.flag = !this.flag;
             if(index == 0){
                 this.isAddImg = false;
             }
@@ -375,15 +369,15 @@ export default {
             if(this.nameList.length > 0){
                 this.deleteFlag = false;
             }
+            _this.$emit('change',this.specList);
         },
         /** 
          * 删除分组规格
          */
         remove(index,i){
             let _this = this;
-            this.flag = !this.flag;
             this.specList[index].specValues.splice(i, 1);
-            
+            _this.$emit('change',this.specList);
         },
         /** 
          * 选择分组下规格
@@ -411,7 +405,8 @@ export default {
                 })
             }
             _this.selectedSpec ="";//新增后清空
-            this.flag = !this.flag;
+            _this.$emit('change',this.specList);
+            console.log(this.specList,'确定this.specList')
         },
         /** 
          *修改图片
@@ -420,8 +415,7 @@ export default {
             let _index = this.itemIndex[0];
             let _i = this.itemIndex[1];
             this.specList[_index].specValues[_i].newSpecImage = val;
-            //促使监听
-            this.flag = !this.flag;
+            _this.$emit('change',this.specList);
         },
         changeData(index,i){
             this.itemIndex = [];

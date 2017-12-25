@@ -55,10 +55,10 @@
                     <div class="item-title">库存/规格</div>
                     <div class="item-content">
                             <el-form-item label="商品规格 :"  v-if="form.pro.shopId">
-                                <tableSpec :row="form.specList" :shopId="form.pro.shopId" @change="changeSpac"></tableSpec>
+                                <table-spec :row="form.specList" :shopId="form.pro.shopId" @change="changeSpac"></table-spec>
                             </el-form-item>
                             <el-form-item label="商品库存 :" v-if=" form.specList !='' && form.specList != null">
-                                <tableList :specList="form.specList" :invenList="form.invenList" ref="specForm"></tableList>
+                                <table-list :specList="form.specList" :invenList="form.invenList"  ref="specForm" @stockTotal="changeStock"></table-list>
                             </el-form-item>
                             <el-form-item label="商品参数 :"  v-if="form.pro.shopId">
                                 <gt-param :row="form.paramList" :shopId="form.pro.shopId"  @change="paramSelected"></gt-param>
@@ -234,6 +234,7 @@
                     </div>
                 </div>
             </el-form>
+
         </div>
         <div class="mygoods-content" v-if="active == 2">
             编辑商品详情页
@@ -249,8 +250,8 @@
         <el-button style="margin-top: 12px;" v-if="active != 3">返回</el-button>
         <div class="shop-textc" v-if="active == 3" >
             <el-button type="primary">继续添加</el-button>
-            <el-button style="margin-top: 12px;" >返回</el-button>
-        </div>
+            <el-button style="margin-top: 12px;" >返回 </el-button>
+        </div> 
     </div>
   </div>
 </template>
@@ -301,8 +302,9 @@ export default {
                isWarranty:0,//保修
             },
            imageList:[],
-           proGroupList:[]
+           proGroupList:[],
         },//保存填充数据
+        aa:1,
         paramList:[],//参数列表
         imgUrl:'',//图片域名
         isImgno:false,//图片验证
@@ -335,7 +337,7 @@ export default {
       if(this.active == 1){
         let submit = this.submitForm('ruleForm');                   //商品信息验证结果
         let cascaderSubmit = this.$refs.cascader.submitForm();      //分组验证结果
-        let imgSubmit= this.changeIMG();                            //上传图片验证结果
+        let imgSubmit= this.IMGRules();                            //上传图片验证结果
         let specSubmit = this.$refs.specForm.allRules();            //规格库存列表验证结果
         let logisticsSubmit = this.$refs.logisticsForm.allRules();  //运费物流列表验证结果
 
@@ -421,81 +423,79 @@ export default {
      * 商品规格
      */
     changeSpac(data){
-        console.log(data,'商品规格specList',data.length);
-        let add = false;
-        data.forEach((item,i)=>{
-            if(item.specValues.length == 0 && add){
-                add = true;
-            }
-        })
+        //父级中介
+        console.log(data,'商品规格specList ',data.length);
+        if( data.length == 0 ) return;
         
-        console.log(add)
-        if(add){
-            console.log(this.newSpecList,'this.newSpecList')
-            this.form.specList = this.newSpecList;
-        }else{
-            if( data.length == 0 ) return;
-            let _this = this;
-            _this.form.specList = data;
-            _this.newSpecList = data;
-            //请求数据需要
-            let _data2={
-                specificas:[ {
-                    specificaNameId: null,        //规格名称ID
-                    specificaName: null,            //规格名称
-                    specificaValueId: null,         //规格值ID
-                    specificaValue: null,          //规格值
-                }] ,
-                invPrice: null,          // 价格
-                invNum: null,           //数量
-                invCode: null,          //商家编码
-                isDefault: 0,          //是否默认
-                logisticsWeight: null   //重量
-            } 
-            //数据重组 --传值--specificaIds组合(笛卡尔乘积)
+        let _this = this;
+
+        // _this.form.specList = data ;
+        _this.$set(_this.form,'specList',data);
+        _this.form.specList.splice(1,0);
+
+
+        // //请求数据需要
+        let _data2={
+            specificas:[ {
+                specificaNameId: null,        //规格名称ID
+                specificaName: null,            //规格名称
+                specificaValueId: null,         //规格值ID
+                specificaValue: null,          //规格值
+            }] ,
+            invPrice: null,          // 价格
+            invNum: null,           //数量
+            invCode: null,          //商家编码
+            isDefault: 0,          //是否默认
+            logisticsWeight: null   //重量
+        } 
+        //数据重组 --传值--specificaIds组合(笛卡尔乘积)
            
 
-            var result=[];//结果保存到这个数组
-            function toResult(arrIndex,aresult){
-                if(arrIndex >= data.length) {
-                    result.push(aresult);
-                    return;
-                }
-                var aArr = data[arrIndex].specValues;
-                if(!aresult) aresult = [];
-                for(var i=0; i<aArr.length; i++){
-                    var theResult = aresult.slice(0,aresult.length);
-                    theResult.push(aArr[i].specValueId);
-                    toResult(arrIndex+1,theResult);
-                }
+        var result=[];//结果保存到这个数组
+        function toResult(arrIndex,aresult){
+            if(arrIndex >= data.length) {
+                result.push(aresult);
+                return;
             }
-            toResult(0);
-            // 显示数据
-            let arr=[]
-            //显示列表需要 -- 新增时
-            if(_this.$route.params.id === 'add'){
-                result.forEach((item,i)=>{
-                let data1={
-                        id: null,
-                        productId: null,
-                        specificaIds: null,     //规格ID
-                        invPrice: null,          //库存价格
-                        invNum: null,            //库存数量
-                        invCode: null,         //产品编码
-                        invSaleNum: null,       //销量
-                        isDefault: 0,             //是否默认  0没有 1是
-                        specificaImgId: 0,        // 有图片的规格ID
-                        logisticsWeight: null,    //物流重量
-                        specList: null
-                    }
-                    data1.specificaIds = item.toString();
-                    arr.push(data1);
-                })
-                
-                _this.$set(_this.form,'invenList',arr) 
+            var aArr = data[arrIndex].specValues;
+            if(!aresult) aresult = [];
+            for(var i=0; i<aArr.length; i++){
+                var theResult = aresult.slice(0,aresult.length);
+                theResult.push(aArr[i].specValueId);
+                toResult(arrIndex+1,theResult);
             }
-            console.log(_this.form.invenList,'商品规格invenList');
         }
+        toResult(0);
+            // 显示数据
+        let arr=[]
+        //显示列表需要 -- 新增时
+        if(_this.$route.params.id === 'add'){
+            result.forEach((item,i)=>{
+            let data1={
+                    id: null,
+                    productId: null,
+                    specificaIds: null,     //规格ID
+                    invPrice: null,          //库存价格
+                    invNum: null,            //库存数量
+                    invCode: null,         //产品编码
+                    invSaleNum: null,       //销量
+                    isDefault: 0,             //是否默认  0没有 1是
+                    specificaImgId: 0,        // 有图片的规格ID
+                    logisticsWeight: null,    //物流重量
+                    specList: null
+                }
+                data1.specificaIds = item.toString();
+                arr.push(data1);
+            })
+            
+            _this.$set(_this.form,'invenList',arr) 
+        }
+    },
+    /** 
+     * 总库存
+     */
+    changeStock(val){
+        this.form.pro.proStockTotal = val;
     },
     /** 
      * 物流id
@@ -518,9 +518,24 @@ export default {
         this.$refs[formName].resetFields();
     },
     /** 
-     * 图片验证
+     * 图片排序数据处理
      */
     changeIMG(data){
+        let _this = this;
+        console.log(data,'data');
+        let arr = [];
+        for(let i =0;i<data.length;i++){
+            console.log(data[i].sort,'data[i].sort')
+            if(data[i].sort-data[i+1].sort > 0){
+                arr.push(data[i]);
+            }
+        }
+        console.log(arr,'data');
+    },
+    /** 
+     * 图片验证
+     */
+    IMGRules(){
         let flag = true;
         if(this.form.imageList.length>0){
             this.isImgno = false;
