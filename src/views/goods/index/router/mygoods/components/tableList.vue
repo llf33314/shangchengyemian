@@ -250,7 +250,6 @@ export default {
         listAdd(data){
             let _this =this;
             this.listData=[] ;
-            
             data.forEach((item,i)=>{
                 if(item.specValues.length >0){
                     debugger

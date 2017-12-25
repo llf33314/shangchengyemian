@@ -326,7 +326,8 @@ export default {
                { validator: formMoney, trigger: 'blur'}
             ]
         },
-        newSpecList:[]//暂存新列表
+        newSpecList:[],//暂存新列表
+        newimageList:[]
     }
   },
   methods: {
@@ -338,19 +339,43 @@ export default {
         let submit = this.submitForm('ruleForm');                   //商品信息验证结果
         let cascaderSubmit = this.$refs.cascader.submitForm();      //分组验证结果
         let imgSubmit= this.IMGRules();                            //上传图片验证结果
-        let specSubmit = this.$refs.specForm.allRules();            //规格库存列表验证结果
-        let logisticsSubmit = this.$refs.logisticsForm.allRules();  //运费物流列表验证结果
-
+        
         if(submit && cascaderSubmit && imgSubmit){
-            // this.active == 2;
+            if(this.form.invenList != null ){
+                let specSubmit = this.$refs.specForm.allRules();//规格库存列表验证结果
+                if(this.form.pro.proFreightSet == 2)  {
+                    let logisticsSubmit = this.$refs.logisticsForm.allRules();  //运费物流列表验证结果
+                    if(specSubmit && logisticsSubmit ){
+                        this.active = 2;
+                    }
+                }         
+            }else{
+                this.active = 2;
+            }
             console.log(this.form,'this.form')
         }
+        this.newimageList = this.newimageList.sort(this.compare("sort"))    
         return
       }
       if(this.active == 2){
           console.log(this.active,'this.active')
       }
       if(this.active++ > 2) this.active = 1;
+    },
+    /** 
+     *排序 
+     */
+    compare(prop){
+        return function (obj1, obj2) {
+            let val1 = obj1[prop];
+            let val2 = obj2[prop];if (val1 < val2) {
+                return -1;
+            } else if (val1 > val2) {
+                return 1;
+            } else {
+                return 0;
+            }            
+        }   
     },
     /** 
      * 验证表单
@@ -451,16 +476,16 @@ export default {
         //数据重组 --传值--specificaIds组合(笛卡尔乘积)
            
 
-        var result=[];//结果保存到这个数组
+        let result=[];//结果保存到这个数组
         function toResult(arrIndex,aresult){
             if(arrIndex >= data.length) {
                 result.push(aresult);
                 return;
             }
-            var aArr = data[arrIndex].specValues;
+            let aArr = data[arrIndex].specValues;
             if(!aresult) aresult = [];
-            for(var i=0; i<aArr.length; i++){
-                var theResult = aresult.slice(0,aresult.length);
+            for(let i=0; i<aArr.length; i++){
+                let theResult = aresult.slice(0,aresult.length);
                 theResult.push(aArr[i].specValueId);
                 toResult(arrIndex+1,theResult);
             }
@@ -523,14 +548,7 @@ export default {
     changeIMG(data){
         let _this = this;
         console.log(data,'data');
-        let arr = [];
-        for(let i =0;i<data.length;i++){
-            console.log(data[i].sort,'data[i].sort')
-            if(data[i].sort-data[i+1].sort > 0){
-                arr.push(data[i]);
-            }
-        }
-        console.log(arr,'data');
+        this.newimageList = data;
     },
     /** 
      * 图片验证
