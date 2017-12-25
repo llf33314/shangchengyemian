@@ -54,29 +54,35 @@
                     </p>
                     
                 </td>
-                <td v-if="isSpec">
-                    <el-input v-model="item.invPrice" placeholder="请输入内容" @blur="itemRules(item.invPrice,$event)"></el-input>
-                    <span class="p-warning"></span>
+
+                <td v-if="isSpec" class="td-input-box">
+                    <input v-model="item.invPrice" placeholder="请输入内容" @blur="itemRules(item,index,1)" 
+                    :class="{'input-warning':item.errorMsg.Price != null}"/>
+                    <span class="p-warning" v-if="item.errorMsg.Price != null">{{item.errorMsg.Price}}</span>
                 </td>
-                <td v-if="isSpec">
-                    <el-input v-model="item.invNum" placeholder="请输入内容"></el-input>
+                <td v-if="isSpec" class="td-input-box">
+                    <input v-model="item.invNum" placeholder="请输入内容" @blur="itemRules(item,index,2)" 
+                    :class="{'input-warning':item.errorMsg.invNum != null}"/>
+                    <span class="p-warning" v-if="item.errorMsg.invNum != null">{{item.errorMsg.invNum}}</span>
                 </td >
                 <td v-if="isSpec">
-                    <el-input v-model="item.invCode" ></el-input>
+                    <el-input v-model="item.invCode" placeholder="请输入内容"></el-input>
                 </td>
                 <td v-if="isSpec">
                     {{item.invSaleNum==null?'0':item.invSaleNum}}
                 </td>
                 <td v-if="isSpec">
-                    <el-radio v-model="isDefault" 
+                    <el-radio v-model="isDefault"
                             :label="index"
                             @change="changeDefault(index)">
-                            &nbsp
+                            &nbsp 
                     </el-radio>
                  </td>
-                 <td v-if="!isSpec">
+                 <td v-if="!isSpec" class="td-input-box">
                     <div style="width:120px">
-                        <el-input v-model="item.logisticsWeight" placeholder="请输入商品重量"></el-input>
+                        <input v-model="item.logisticsWeight" placeholder="请输入内容" @blur="itemRules(item,index,3)" 
+                    :class="{'input-warning':item.errorMsg.logistics != null}"/>
+                        <span class="p-warning" v-if="item.errorMsg.logistics != null" >{{item.errorMsg.logistics}}</span>
                     </div>
                 </td>
             </tr>
@@ -106,6 +112,8 @@ export default {
             isDefault:1,//是否默认
             listData:[],//列表数据
             isSpec:true,//物流和规格判断
+
+            isRules:''//全部验证条件
         }
     },
     watch:{
@@ -136,35 +144,103 @@ export default {
             //规格遍历
             _this.invenData.forEach((item,i) => {
                 item.specificaIds = item.specificaIds.split(",");
+                item.errorMsg = {
+                    Price:null,
+                    invNum:null,
+                    logistics:null
+                };
             });
         },
         /** 
          * 单个数据验证
-         * @param text 输入内容
-         * @param 当前数据
+         * @param data 当前内容
+         * @param index 当前索引
+         * @param type 1-价钱，2-库存，3-重量
          */
-        itemRules(text,e){
-            let reg =/^[0-9]{1}\d{0,5}(\.\d{1,2})?$/;
-            let _flag = false;
+        itemRules(data,index,type){
+            let ErrorData = data;
+            let ErrorText = data.errorMsg;
+            let rules = false;
             //错误文本
-            let ErrorMsg ='';
+            if(type === 1){
+                //价钱
+                let regPrice =/^[0-9]{1}\d{0,5}(\.\d{1,2})?$/;
+                if(!data.invPrice){
+                    ErrorText.Price = '请输入价格';
+                }else if(!regPrice.test(data.invPrice)){
+                    ErrorText.Price = '价格最多只能输入六位整数+两位小数,如：300000.00';
+                }else{
+                    rules = true;
+                    ErrorText.Price= null;
+                }
+            }else if(type === 2){
+                //库存
+                let regInvNum =/^[0-9]{1}\d{0,5}?$/;
+                 if(!data.invNum){
+                    ErrorText.invNum = '请输入商品库存';
+                }else if(!regInvNum.test(data.invNum)){
+                    ErrorText.invNum = '商品库存只能输入是6位数字：999999';
+                }else{
+                    rules = true;
+                    ErrorText.invNum= null;
+                }
+            }else if(type === 3){
+                //重量
+                let reglogisti =/^[0-9]{1}\d{0,5}(\.\d{1,2})?$/;
+
+                if(!data.logisticsWeight){
+                    ErrorText.logistics = '请输入商品物流重量';
+                }else if(!reglogisti.test(data.logisticsWeight)){
+                    ErrorText.logistics = '商品物流重量最多只能输入六位整数+两位小数,如：300000.00';
+                }else{
+                    rules = true;
+                    ErrorText.logistics= null;
+                }
+            }
+
+            this.$set(this.invenData[index],'errorMsg',ErrorText)
+            this.invenData.push([]);
+            this.invenData.pop([]);
             
-            if(!text){
-                ErrorMsg = '请输入统一邮费价';
-                _flag = true;
-            }
-            if(!reg.test(text)){
-                ErrorMsg = '价格最多只能输入六位整数+两位小数,如：300000.00';
-                _flag = true;
-            }
-            if(_flag){
-                
-                let dom = '<span class="p-warning">'+ErrorMsg+'</span>';
-                
-                console.log($(e.target).parent(),'e')
-            }
-            
-        }
+            return rules;
+        },
+        /** 
+         * 全部数据验证
+         * @param text 输入内容
+         * @param index 当前索引
+         * @param type 1-价钱，2-库存，3-重量
+         */
+        allRules(){
+           let _this = this;
+           let isRules = true;
+           let rules = true;
+           _this.invenData.forEach((item,i)=>{
+                if(this.isSpec){
+                    let a = _this.itemRules(item,i,1);
+                    let b = _this.itemRules(item,i,2);
+                    //a或b有一个是false为就不通过验证,
+                    //rules为false变不进入赋值 防止 结果被覆盖
+                    if(rules && (!a || !b)){
+                        rules = false;
+                        //rules为false，补全验证不通过
+                        if(!rules){
+                            isRules = false;
+                        }
+                    }
+                }else{
+                    let c = _this.itemRules(item,i,3);
+                    if(rules && !c){
+                        rules = false;
+                        if(!rules){
+                            isRules = false;
+                        }
+                    }
+                }
+              
+           })
+           console.log(isRules,'isRules2')
+           return isRules;
+        },
     },
     mounted() {
         this.listData = this.specList;
@@ -177,8 +253,6 @@ export default {
                 this.isDefault = i;
             }
         })
-        //console.log(this.listData,'编辑规格listData');
-        //console.log(this.invenList,'编辑库存');
         this.newlistData()
     }
 }
@@ -209,6 +283,27 @@ export default {
     .p-warning{
         color:rgb(255, 73, 73);
         font-size: 12px;
+    }
+    .td-input-box{
+        text-align:left;
+        .input-warning{
+            border: 1px solid rgb(255, 73, 73) !important;
+        }
+        input{
+            width: 100%;
+            background-color: #fff;
+            background-image: none;
+            border-radius: 4px;
+            border: 1px solid #bfcbd9;
+            box-sizing: border-box;
+            color: #1f2d3d;
+            font-size: inherit;
+            height: 36px;
+            line-height: 1;
+            outline: 0;
+            padding: 3px 10px;
+            transition: border-color .2s cubic-bezier(.645,.045,.355,1);
+        }
     }
 }
 </style>

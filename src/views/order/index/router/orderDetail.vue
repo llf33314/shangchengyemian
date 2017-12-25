@@ -121,7 +121,7 @@
                     <em v-text="time.ss"></em>秒</span>
                     响应买家发起的维权，若超过期限没有响应，则系统默认您同意退款，并将款项原路打回买家账户。
               </p>
-              <p v-if="returnData.takeTimes">您还有04天12小时25分
+              <p v-if="returnData.takeTimes">您还有
                  <span class="fs36" style="color:red">
                     <em v-text="time.DD"></em> 天
                     <em v-text="time.HH"></em>时
@@ -167,7 +167,7 @@
                          {{log.createTime|format}}
                       </el-col>
                       <el-col :span="11">
-                         {{log.statusContent}}</span>
+                         {{log.statusContent}}
                       </el-col>
                     </el-row>
                   </div>
@@ -182,11 +182,7 @@
                 <el-button type="primary" size="small" v-if="returnData.isShowRefuseConfirmTakeButton == 1" @click="openDialog(6,returnData,4)">拒绝确认收货</el-button>
                 
                 <el-button type="primary" size="small" v-if="returnData.isShowUpdateAddressButton == 1" @click="openDialog(6,returnData,5)">修改退货地址</el-button>
-                <el-button v-if="returnData.isShowRefuseApplyButton == 1">申请多粉介入</el-button>
-                <!-- <el-button type="primary">确认收货</el-button>
-                <el-button type="primary" :disabled="false" @click="dialogShow">同意</el-button>
-                <el-button type="primary" @click="dialogVisible = true" > 拒绝</el-button>
-                <el-button >申请多粉介入</el-button> -->
+                <el-button  size="small" v-if="returnData.isShowRefuseApplyButton == 1">申请多粉介入</el-button>
               </div>
             </div>
           </div>
@@ -216,7 +212,7 @@
             <div class="table-content">
               <div class="table-tr">
                 <div class="col-2">
-                  <div class="clearfix table-item" v-for="orderDetail in orderDetail.mallOrderDetail" :key="orderDetail.id">
+                  <div class="clearfix table-item" v-for="orderDetail  in orderDetail.mallOrderDetail" :key="orderDetail.id">
                     <div class="table-img">
                       <defaultImg :background="imgUrl+orderDetail.productImageUrl"></defaultImg>
                     </div>
@@ -235,9 +231,17 @@
                   <div class="table-item"  v-for="orderDetail in orderDetail.mallOrderDetail" :key="orderDetail.id">{{orderDetail.discountedPrices}}</div> 
                 </div>
                 <div class="border-r col-1">
-                   <div class="table-item"  v-for="orderDetail in orderDetail.mallOrderDetail" :key="orderDetail.id">
-                     {{orderDetail.statusName}}
+                  
+                   <div class="table-item"  v-for="detail in orderDetail.mallOrderDetail" :key="detail.id">
+                     {{detail.statusName}}
+                      <p>
+                        <el-radio-group v-model="returnId" v-if="detail.returnResult !=null && returnNum > 1">
+                          <el-radio-button :label="detail.returnResult.id">维权信息</el-radio-button>
+                        </el-radio-group>
+                      </p>
                     </div> 
+                  
+                    
                 </div>
                 <div class="col-1 border-r table-td">{{orderDetail.orderMoney}}
                 </div>
@@ -273,7 +277,6 @@
 </template>
 
 <script>
-
 import commons from '../common';
 import Lib from 'assets/js/Lib';
 import defaultImg from 'components/defaultImg';
@@ -295,10 +298,41 @@ export default {
       orderDetail:{}, //订单信息
       imgUrl:'',    //资源前缀
       returnData:{}, //维权信息
-      time: {}
+      time: {}, //倒计时信息
+      returnId:0,//当前维权ID
+      returnNum:0, //维权数量
     }
   },
+  watch: {
+    returnId:function(a,b){
+      let _this = this;
+      let i=0;
+      for (var n = _this.orderDetail.mallOrderDetail.length; i < n; i++) {
+            var detail=_this.orderDetail.mallOrderDetail[i];   
+            if(detail.returnResult != null){
+              if(detail.returnResult.id == a){
+                _this.returnTabHandle(detail.returnResult);
+              }
+            }
+        };
+    }
+  }, 
   methods: {
+    /**多维权信息切换 */
+    returnTabHandle(data){
+      let _this = this;
+      _this.returnData=data;
+      console.log(_this.returnData,"_this.returnData");
+      //启动倒计时
+      if(_this.returnData.applyTimes){
+        clearInterval(_this.Interval);
+        _this.setTiming( _this.returnData.applyTimes);
+      }
+      if(_this.returnData.takeTimes){
+         clearInterval(_this.Interval);
+        _this.setTiming( _this.returnData.takeTimes);
+      }
+    },
     /**弹出框 成功返回结果 */
     dialogResultRet(val) {
         let _this = this;
@@ -323,17 +357,21 @@ export default {
           var i = 0;
           _this.returnData={};
           for (var n = _this.orderDetail.mallOrderDetail.length; i < n; i++) {
-              var detail=_this.orderDetail.mallOrderDetail[i];          
-              if(JSON.stringify(_this.returnData) == '{}' && detail.returnResult != null){
-                _this.returnData= detail.returnResult;
-                //启动倒计时
-                if(_this.returnData.applyTimes){
-                  _this.setTiming( _this.returnData.applyTimes);
-                }
-                if(_this.returnData.takeTimes){
-                  _this.setTiming( _this.returnData.takeTimes);
-                }
-                console.log( _this.returnData,' _this.returnData');
+              var detail=_this.orderDetail.mallOrderDetail[i];   
+              if(detail.returnResult != null){
+                  _this.returnNum +=1;    
+                  if(JSON.stringify(_this.returnData) == '{}'){
+                    _this.returnData= detail.returnResult;
+                    _this.returnId=detail.returnResult.id;
+                    //启动倒计时
+                    if(_this.returnData.applyTimes){
+                      _this.setTiming( _this.returnData.applyTimes);
+                    }
+                    if(_this.returnData.takeTimes){
+                      _this.setTiming( _this.returnData.takeTimes);
+                    }
+                    // console.log( _this.returnData,' _this.returnData');
+                  }
               }
           };
           //如无维权信息，设置订单信息DIV大小
