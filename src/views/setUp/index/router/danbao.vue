@@ -44,7 +44,7 @@
             要求没有自有微信支付平台账户的商家必须参加担保交易，否则多粉平台不予提供支持
          </el-row>
       </div>
-      <div v-if="isSecuritytrade != ''">
+      <div>
         <el-button type="primary" v-if="!isSecuritytrade" @click="mallSecuritytradeAdd()">立即加入担保交易</el-button>
         <el-button  v-else-if="isSecuritytrade && securitytradeQuit !=null" disabled>退出担保审核中</el-button>
         <el-button @click="exitGuarantee()"  v-else-if="isSecuritytrade">退出担保交易</el-button>
@@ -115,9 +115,9 @@ export default {
         'url': DFshop.activeAPI.mallIsSecuritytrade_post,
         'success':function (data){
           _this.isSecuritytrade=data.data.isSecuritytrade;
-          _this.securitytradeQuit=data.data.securitytradeQuit;
           if(data.data.isSecuritytrade){
             _this.isColor = '#34d063';//已加入状态--颜色
+            _this.securitytradeQuit=data.data.securitytradeQuit;
           }else{
             _this.isColor = '#cacaca';//待加入状态--颜色
           }

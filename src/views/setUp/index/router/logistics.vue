@@ -16,8 +16,11 @@
               label="模板名称">
             </el-table-column>
             <el-table-column
-              prop="money"
               label="运费(元)">
+              <template scope="scope">
+                <p v-if="scope.row.isNoMoney === 1 && scope.row.money!=null ">{{scope.row.money}}</p>
+                <p v-else>0.00</p> 
+              </template>
             </el-table-column>
             <el-table-column label="免邮规则(指定省份除外)">
               <template scope="scope">

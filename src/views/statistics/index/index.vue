@@ -25,7 +25,7 @@
             </div>
             <div class="col1">
               <p v-text="dataCount.yesterIncomeCount">¥1971.00</p>
-              <div>今日总收入</div>
+              <div>昨日总收入</div>
             </div>
             <div class="col1">
               <p v-text="dataCount.sevenIncomeCount" >￥1971.00</p>
