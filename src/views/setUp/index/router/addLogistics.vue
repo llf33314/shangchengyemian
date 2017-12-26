@@ -457,7 +457,6 @@ export default {
       window.history.go(-1);
     },
     addTable() {
-      let _this = this;
       var newTab = {
         name: "",
         num: "",
@@ -470,9 +469,9 @@ export default {
         selectList: [],
         id: null
       };
-      console.log(_this.ruleForm,"3232");
-      _this.ruleForm.tableData.push(newTab);
-
+      this.ruleForm.tableData.push(newTab);
+      this.ruleForm.tableData.splice(1,0);
+      console.log(this.ruleForm,"3232");
     },
     //弹出框返回
      dialogChange(changeData){
@@ -534,8 +533,9 @@ export default {
         },
         success: function(data) {
           let myData = data.data;
+          myData.isResultMoney = myData.isResultMoney == 1 ? true : false;
+          myData.tableData=[];
           _this.ruleForm = myData;
-          _this.ruleForm.tableData=[];
           let detailList = myData.detailList || [];
           if(detailList != null && detailList.length > 0){
             let list = [];
