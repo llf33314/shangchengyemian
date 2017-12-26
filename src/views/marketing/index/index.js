@@ -4,9 +4,10 @@ import VueRouter from 'vue-router'
 import store from 'store';
 import Vuex from 'vuex' ;
 
-
 //首页
 import Index from './index.vue'
+//首页Nav
+import IndexNav from './router/indexNav.vue'
 //团购管理
 import Group from './router/group/index'
 //新增团购
@@ -76,48 +77,92 @@ import addApplet from './router/applet/addApplet'
 
 import quillEditor from 'vue-quill-editor'; //调用编辑器
 const routes = [
-  { path: '/', component: Index},
-  { path: '/group', component: Group},
-  { path: '/addgroup/:id', component: addGruop},
-  { path: '/marketing/:activeName', component: Marketing},
-  { path: '/recommendList/:id', component: recommendList},
-  { path: '/withDrawList/:id', component: withDrawList},
+  { path: '/', component: Index,
+      children:[
+        { path: '/index', component: IndexNav},
+        { path: '/group', component: Group},
+        { path: '/addgroup/:id', component: addGruop},
+        { path: '/marketing/:activeName', component: Marketing},
+        { path: '/recommendList/:id', component: recommendList},
+        { path: '/withDrawList/:id', component: withDrawList},
+
+        { path: '/addBond/:id', component: AddBond},
+        { path: '/mallIntegral/:activeName', component: IntegralMall},
+        { path: '/mallIntegral/goods/:id', component: addGoods},
+        { path: '/mallIntegral/banner/:id', component: addBanner},
+        { path: '/presale/:activeName', component: Presale},
+        { path: '/presale/addpresale/:id', component: addPresale},
+        { path: '/pifa/:activeName', component: Pifa},
+        { path: '/addPifa/:id', component: addPifa},
+
+        { path: '/purchase/:activeName', component: purchase},
+        { path: '/order/add', component: addPurchase},
+        { path: '/order/update/:id', component: addPurchase},
+        { path: '/receivablesDetails/:id/:memberId', component: receivablesDetails},
+        { path: '/statisticsList/:id', component: statisticsList},
+        { path: '/languageList/:id', component: languageList},
+        { path: '/languageDetails/:id/:memberId', component: languageDetails},
+        { path: '/details/:id', component: details},
+        { path: '/contract/add', component: addContract},
+        { path: '/contract/update/:id', component: addContract},
+        { path: '/company/add', component: addCompany},
+        { path: '/company/update/:id', component: addCompany},
+
+        { path: '/auction/:activeName', component: Auction},
+        { path: '/auction/addauction/:id', component: addAuction},
+        { path: '/h5', component: h5},
+        { path: '/h5/fromList/:id', component: h5Table},
+        { path: '/h5/addH5', component: addH5},
+        { path: '/modular', component: modular},
+        { path: '/seckill', component: seckill},
+        { path: '/addSeckill/:id', component: addSeckill},
+
+        { path: '/applet', component: applet},
+        { path: '/applet/add', component: addApplet},
+        { path: '/applet/update/:id', component: addApplet},
+      ]  
+  },
+  // { path: '/group', component: Group},
+  // { path: '/addgroup/:id', component: addGruop},
+  // { path: '/marketing/:activeName', component: Marketing},
+  // { path: '/recommendList/:id', component: recommendList},
+  // { path: '/withDrawList/:id', component: withDrawList},
   
-  // { path: '/marketing/:activeName/:pageNO', component: Marketing},
-  { path: '/addBond/:id', component: AddBond},
-  { path: '/mallIntegral/:activeName', component: IntegralMall},
-  { path: '/mallIntegral/goods/:id', component: addGoods},
-  { path: '/mallIntegral/banner/:id', component: addBanner},
-  { path: '/presale/:activeName', component: Presale},
-  { path: '/presale/addpresale/:id', component: addPresale},
-  { path: '/pifa/:activeName', component: Pifa},
-  { path: '/addPifa/:id', component: addPifa},
+  // // { path: '/marketing/:activeName/:pageNO', component: Marketing},
+  // { path: '/addBond/:id', component: AddBond},
+  // { path: '/mallIntegral/:activeName', component: IntegralMall},
+  // { path: '/mallIntegral/goods/:id', component: addGoods},
+  // { path: '/mallIntegral/banner/:id', component: addBanner},
+  // { path: '/presale/:activeName', component: Presale},
+  // { path: '/presale/addpresale/:id', component: addPresale},
+  // { path: '/pifa/:activeName', component: Pifa},
+  // { path: '/addPifa/:id', component: addPifa},
 
-  { path: '/purchase/:activeName', component: purchase},
-  { path: '/order/add', component: addPurchase},
-  { path: '/order/update/:id', component: addPurchase},
-  { path: '/receivablesDetails/:id/:memberId', component: receivablesDetails},
-  { path: '/statisticsList/:id', component: statisticsList},
-  { path: '/languageList/:id', component: languageList},
-  { path: '/languageDetails/:id/:memberId', component: languageDetails},
-  { path: '/details/:id', component: details},
-  { path: '/contract/add', component: addContract},
-  { path: '/contract/update/:id', component: addContract},
-  { path: '/company/add', component: addCompany},
-  { path: '/company/update/:id', component: addCompany},
+  // { path: '/purchase/:activeName', component: purchase},
+  // { path: '/order/add', component: addPurchase},
+  // { path: '/order/update/:id', component: addPurchase},
+  // { path: '/receivablesDetails/:id/:memberId', component: receivablesDetails},
+  // { path: '/statisticsList/:id', component: statisticsList},
+  // { path: '/languageList/:id', component: languageList},
+  // { path: '/languageDetails/:id/:memberId', component: languageDetails},
+  // { path: '/details/:id', component: details},
+  // { path: '/contract/add', component: addContract},
+  // { path: '/contract/update/:id', component: addContract},
+  // { path: '/company/add', component: addCompany},
+  // { path: '/company/update/:id', component: addCompany},
 
-  { path: '/auction/:activeName', component: Auction},
-  { path: '/auction/addauction/:id', component: addAuction},
-  { path: '/h5', component: h5},
-  { path: '/h5/fromList/:id', component: h5Table},
-  { path: '/h5/addH5', component: addH5},
-  { path: '/modular', component: modular},
-  { path: '/seckill', component: seckill},
-  { path: '/addSeckill/:id', component: addSeckill},
+  // { path: '/auction/:activeName', component: Auction},
+  // { path: '/auction/addauction/:id', component: addAuction},
+  // { path: '/h5', component: h5},
+  // { path: '/h5/fromList/:id', component: h5Table},
+  // { path: '/h5/addH5', component: addH5},
+  // { path: '/modular', component: modular},
+  // { path: '/seckill', component: seckill},
+  // { path: '/addSeckill/:id', component: addSeckill},
 
-  { path: '/applet', component: applet},
-  { path: '/applet/add', component: addApplet},
-  { path: '/applet/update/:id', component: addApplet},
+  // { path: '/applet', component: applet},
+  // { path: '/applet/add', component: addApplet},
+  // { path: '/applet/update/:id', component: addApplet},
 ]
 
 Vue.use(VueRouter)

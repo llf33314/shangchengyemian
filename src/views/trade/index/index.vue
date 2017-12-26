@@ -301,9 +301,15 @@ export default {
   },
   mounted(){
     let _this = this;
-    _this.getTurnoverCount();
-    _this.searchData.curPage=1;
-    _this.tradeList(_this.searchData);
+    _this.isAdminUser({
+      success: function(data) {
+        if (data.code == -1) return;
+        _this.getTurnoverCount();
+        _this.searchData.curPage=1;
+        _this.tradeList(_this.searchData);
+      }
+    });
+   
   }
 }
 </script>

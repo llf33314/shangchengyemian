@@ -162,8 +162,8 @@
                   <span v-else-if="order.orderPayWay ==9">支付宝支付</span> 
                 </p>
                 <p>
-                  <a  @click="jumpRouter('detail/'+order.id)">订单详情</a>
-                  <a  @click="openDialog(5,order.id)">打印订单</a>
+                  <a @click="jumpRouter('detail/'+order.id)">订单详情</a>
+                  <a v-if="order.orderPayWay !=5" @click="openDialog(5,order.id)">打印订单</a>
                   <a @click="openDialog(4,order)">备注</a>
                 </p>
               </div>
@@ -172,7 +172,7 @@
                     {{order.shopName}}
                 </div>
                 <div class=" col-4">
-                  <div class="clearfix table-item" v-for="orderDetail in order.mallOrderDetail" :key="orderDetail.id">
+                  <div class="clearfix table-item" v-if="order.orderPayWay !=5"  v-for="orderDetail in order.mallOrderDetail" :key="orderDetail.id">
                     <div class="table-img">
                       <defaultImg :background="imgUrl+orderDetail.productImageUrl"></defaultImg>
                     </div>
@@ -180,17 +180,27 @@
                       <p>{{orderDetail.productSpeciname}}</p>
                     </div>
                   </div>
+                  <div class="clearfix table-item" v-else>
+                    <div class="table-img"></div>
+                    <div class="table-text">扫码支付</div>
+                  </div>
                 </div>
                 <div class="col-1">
-                  <div class="table-item" v-for="orderDetail in order.mallOrderDetail" :key="orderDetail.id">&#65509;{{orderDetail.detProPrice}}</div>
+                   <div class="table-item" v-if="order.orderPayWay !=5"  v-for="orderDetail in order.mallOrderDetail" :key="orderDetail.id">
+                      &#65509;{{orderDetail.detProPrice}} 
+                  </div> 
+                  <div class="table-item" v-else >&#65509;{{order.orderMoney}}</div> 
                 </div>
                 <div class=" border-r col-1">
-                  <div class="table-item"  v-for="orderDetail in order.mallOrderDetail" :key="orderDetail.id">{{orderDetail.detProNum}}</div> 
+                  <div class="table-item" v-if="order.orderPayWay !=5"  v-for="orderDetail in order.mallOrderDetail" :key="orderDetail.id">
+                      {{orderDetail.detProNum}} 
+                  </div> 
+                  <div class="table-item" v-else >1</div> 
                 </div>
                 <div class="border-r col-3">
-                   <div class="table-item"  v-for="orderDetail in order.mallOrderDetail" :key="orderDetail.id">
+                   <div class="table-item order-ret-but"  v-for="orderDetail in order.mallOrderDetail" :key="orderDetail.id">
                      {{orderDetail.statusName}}
-                     <p v-if="orderDetail.returnResult">
+                     <p v-if="orderDetail.returnResult && order.orderPayWay !=5">
                         <el-button type="primary" size="small" v-if="orderDetail.returnResult.isShowAgreeApplyButton == 1" @click="openDialog(6,orderDetail.returnResult,1)">同意退款</el-button>
                         <el-button type="primary" size="small" v-if="orderDetail.returnResult.isShowAgreeRetGoodsApplyButton == 1" @click="openDialog(6,orderDetail.returnResult,2)">同意退货退款</el-button>
                         <el-button type="primary" size="small" v-if="orderDetail.returnResult.isShowRefuseApplyButton == 1" @click="openDialog(6,orderDetail.returnResult,-1)">拒绝退款</el-button>
@@ -206,15 +216,20 @@
                 </div>
                 <div class="table-td border-r col-2">{{order.createTime|format}}
                 </div>
-                <div class="table-td border-r col-1">
+                <div class="table-td border-r col-1" v-if="order.orderPayWay !=5">
                   <p>{{order.orderStatusName}}</p>
                   <el-button type="primary" size="small" v-if="order.isShowCancelOrderButton == 1" @click="openDialog(1,order.id)">取消订单</el-button>
                   <el-button type="primary" size="small" v-if="order.isShowDeliveryButton == 1" @click="openDialog(3,order)">发货</el-button>
                   <el-button type="primary" size="small" v-if="order.isShowPickUpGoodsButton == 1" @click="pickUpGoods(order.id,1)">确认已提货</el-button>
                 </div>
+                <div class="table-td border-r col-1" v-else>
+                  <p v-if="order.orderStatus==1">待付款</p>
+                  <p v-else-if="order.orderStatus==2">已付款</p>
+                  <p v-else-if="order.orderStatus==5">订单已关闭</p>
+                </div>
                 <div class="table-td border-r col-1">&#65509;{{order.orderMoney}}
                     <p v-if="order.orderFreightMoney >0" style="font-size:11px;color:#999">(含运费 &#65509;{{order.orderFreightMoney}})</p>
-                    <p>
+                    <p  v-if="order.orderPayWay !=5">
                       <el-button type="primary" size="small" v-if="order.isShowUpdatePriceButton == 1" @click="openDialog(2,order)">修改价格</el-button>
                     </p>
                 </div>
@@ -331,8 +346,14 @@ export default {
        _this.searchData.status ='7';
        _this.searchData.orderSource ='';
      }
-    _this.searchData.curPage=1;
-    _this.mallOrderList( _this.searchData);
+     _this.isAdminUser({
+        success: function(data) {
+          if (data.code == -1) return;
+          _this.searchData.curPage=1;
+          _this.mallOrderList( _this.searchData);
+        }
+      });
+   
     }
   },
   methods: {
@@ -410,9 +431,11 @@ export default {
     /**选项卡切换 */
     handleClick() {
       let _this = this;
+ 
       _this.searchData.curPage=1;
       _this.searchData.status = _this.activeName2;
-      _this.mallOrderList(_this.searchData);
+      _this.mallOrderList( _this.searchData);
+   
     },
     handleCurrentChange(val) {
       // console.log(`当前页: ${val}`);
@@ -475,13 +498,15 @@ export default {
        _this.searchData.status ='7';
        _this.searchData.orderSource ='';
      }
-     _this.storeList({
+  
+    _this.storeList({
       'success'(data){
         _this.shopList = data.data;
       }
     });
     _this.searchData.curPage=1;
     _this.mallOrderList( _this.searchData);
+      
   }
 }
 </script>
@@ -491,6 +516,12 @@ export default {
  .el-dialog--small{
    width:18%
  }
+}
+.order-ret-but {
+  .el-button+.el-button{
+    margin-top: 3px;
+    margin-left: 0px;
+  }
 }
 </style>
 

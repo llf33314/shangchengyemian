@@ -28,6 +28,11 @@ export default {
     const _this = this;
     let _href = window.location.hash.split('/')[1];
     _this.activeName = _href;
+    _this.isAdminUser({
+      success: function(data) {
+        if (data.code == -1) return;
+      }
+    });
   }
 }
 </script>

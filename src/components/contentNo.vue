@@ -23,6 +23,7 @@
         <p v-else-if="show === 'trade'">还没有相关交易记录</p>
         <p v-else-if="show === 'openComment'">您还没有开启评论功能，<a :href="window +'/views/setUp/index.html#/setup'">点击这里</a> 开启吧</p>
         <p v-else-if="show === 'colseBuyerComment'">暂时还没有买家评论哦</p>
+        <p v-else-if="show === 'noAdmin'">您不是管理员，不能操作商城！</p>
         <p v-else> 还没有相关数据</p>
     </div>
 </template>

@@ -29,10 +29,23 @@ Vue.mixin({
      * @param success  //强求后执行方法
      */
     isAdminUser(opt){
+        let vm = this;
         this.ajaxRequest({
             'url': DFshop.activeAPI.isAdminUser_post,
             'success':function (data){
-                if(typeof opt.success == 'function') opt.success(data);
+                if(data.data){
+                 if(typeof opt.success == 'function') opt.success(data);
+                }else{
+                    // vm.$message({
+                    //     message: "您不是管理员，不能操作！",
+                    //     type: 'warning'
+                    // });
+ 
+                    let href = window.location.href;
+                    let path = href.split('views')[0];
+                    window.location.href= path+'views/error/index.html';
+                    
+                }
             }
         });
     }, 

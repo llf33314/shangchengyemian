@@ -212,26 +212,35 @@
             <div class="table-content">
               <div class="table-tr">
                 <div class="col-2">
-                  <div class="clearfix table-item" v-for="orderDetail  in orderDetail.mallOrderDetail" :key="orderDetail.id">
+                  <div class="clearfix table-item" v-if="orderDetail.orderPayWay !=5"  v-for="detail  in orderDetail.mallOrderDetail" :key="detail.id">
                     <div class="table-img">
-                      <defaultImg :background="imgUrl+orderDetail.productImageUrl"></defaultImg>
+                      <defaultImg :background="imgUrl+detail.productImageUrl"></defaultImg>
                     </div>
-                    <div class="table-text">{{orderDetail.detProName}}
-                      <p>{{orderDetail.productSpeciname}}</p>
+                    <div class="table-text">{{detail.detProName}}
+                      <p>{{detail.productSpeciname}}</p>
                     </div>
+                  </div>
+                  <div class="clearfix table-item" v-else>
+                    <div class="table-img"></div>
+                    <div class="table-text">扫码支付</div>
                   </div>
                 </div>
                 <div class="col-1">
-                  <div class="table-item" v-for="orderDetail in orderDetail.mallOrderDetail" :key="orderDetail.id">&#65509;{{orderDetail.detProPrice}}</div>
+                   <div class="table-item" v-if="orderDetail.orderPayWay !=5"  v-for="detail in orderDetail.mallOrderDetail" :key="detail.id">
+                      &#65509;{{detail.detProPrice}} 
+                  </div> 
+                  <div class="table-item" v-else >&#65509;{{orderDetail.orderMoney}}</div> 
                 </div>
                 <div class=" border-r col-1">
-                  <div class="table-item"  v-for="orderDetail in orderDetail.mallOrderDetail" :key="orderDetail.id">{{orderDetail.detProNum}}</div> 
+                   <div class="table-item" v-if="orderDetail.orderPayWay !=5"  v-for="detail in orderDetail.mallOrderDetail" :key="detail.id">
+                      {{detail.detProNum}} 
+                  </div> 
+                  <div class="table-item" v-else >1</div> 
                 </div>
                  <div class=" border-r col-1">
                   <div class="table-item"  v-for="orderDetail in orderDetail.mallOrderDetail" :key="orderDetail.id">{{orderDetail.discountedPrices}}</div> 
                 </div>
                 <div class="border-r col-1">
-                  
                    <div class="table-item"  v-for="detail in orderDetail.mallOrderDetail" :key="detail.id">
                      {{detail.statusName}}
                       <p>
@@ -240,16 +249,19 @@
                         </el-radio-group>
                       </p>
                     </div> 
-                  
-                    
                 </div>
                 <div class="col-1 border-r table-td">{{orderDetail.orderMoney}}
                 </div>
-                <div class="col-1 border-r table-td">
+                 <div class="col-1 border-r table-td" v-if="orderDetail.orderPayWay !=5">
                   <p>{{orderDetail.orderStatusName}}</p>
                   <el-button type="primary" size="small" v-if="orderDetail.isShowCancelOrderButton == 1" @click="openDialog(1,orderDetail.id)">取消订单</el-button>
                   <el-button type="primary" size="small" v-if="orderDetail.isShowDeliveryButton == 1" @click="openDialog(3,orderDetail)">发货</el-button>
                   <el-button type="primary" size="small" v-if="orderDetail.isShowPickUpGoodsButton == 1" @click="pickUpGoods(orderDetail.id)">确认已提货</el-button>
+                </div>
+                <div class="table-td border-r col-1" v-else>
+                  <p v-if="orderDetail.orderStatus==1">待付款</p>
+                  <p v-else-if="orderDetail.orderStatus==2">已付款</p>
+                  <p v-else-if="orderDetail.orderStatus==5">订单已关闭</p>
                 </div>
                 <div class="col-1 border-r table-td">
                   <span v-if="orderDetail.orderFreightMoney>0">{{orderDetail.orderFreightMoney}}</span>
@@ -257,7 +269,7 @@
                 </div>
                 <div class="col-1 table-td">
                   {{orderDetail.orderMoney}}
-                  <p>
+                  <p v-if="orderDetail.orderPayWay !=5">
                     <el-button type="primary" size="small" v-if="orderDetail.isShowUpdatePriceButton == 1" @click="openDialog(2,orderDetail)">修改价格</el-button>
                   </p>
                 </div>

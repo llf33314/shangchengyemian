@@ -27,6 +27,11 @@ export default {
     }
   },
   mounted() {
+    this.isAdminUser({
+      success: function(data) {
+        if (data.code == -1) return;
+      }
+    });
     this.activeName = window.location.hash.split("/")[1];
     if (this.activeName == "logistics") {
       this.activeName = "logistics/logistics";
