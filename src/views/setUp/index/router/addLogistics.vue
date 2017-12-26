@@ -12,8 +12,8 @@
       <el-input v-model="ruleForm.name" placeholder="请输入模板名字" class="add-input"></el-input>
       <span class="addLogistics-warn">物流名称限制20字数，1个汉字等于2个数字</span>
     </el-form-item>
-    <el-form-item label="默认快递公司 :" prop="express" class="icon-warn" required>
-      <el-select v-model="ruleForm.express" placeholder="请选择活动区域" class="add-input" >
+    <el-form-item label="默认快递公司 :" prop="expressId" class="icon-warn" required>
+      <el-select v-model="ruleForm.expressId" placeholder="请选择活动区域" class="add-input" >
         <el-option :label="option.item_value" :value="option.item_key" :key="option.item_key" v-for="(option,index) in options" ></el-option>
       </el-select>
     </el-form-item>
@@ -22,7 +22,13 @@
         <el-option :label="option.sto_name" :value="option.id" :key="option.id" :aa='option.sto_name' v-for="(option,index) in shopList"></el-option>
       </el-select>
     </el-form-item>
-    <el-form-item label="计价方式 :" prop="priceType" required>
+     <el-form-item label="是否包邮 :" prop="isNoMoney" required>
+      <el-radio-group v-model="ruleForm.isNoMoney">
+        <el-radio :label="1">自定义运费</el-radio>
+        <el-radio :label="2">卖家承担运费</el-radio> 
+      </el-radio-group>
+    </el-form-item>
+    <el-form-item label="计价方式 :" prop="priceType" required v-if="ruleForm.isNoMoney==1">
       <el-radio-group v-model="ruleForm.priceType" @change="validateForm" >
         <el-radio :label="0">统一运费</el-radio>
         <el-radio :label="1">按件数</el-radio>
@@ -30,12 +36,12 @@
         <el-radio :label="3">按公里</el-radio>
       </el-radio-group>
     </el-form-item>
-    <el-form-item label="运费 :" prop="money"  required v-if="ruleForm.priceType == 0">
+    <el-form-item label="运费 :" prop="money"  required v-if="ruleForm.isNoMoney==1 && ruleForm.priceType == 0">
       <el-input  v-model.number="ruleForm.money" class="add-input" >
         <template slot="prepend">¥</template>
       </el-input>
     </el-form-item>
-    <el-form-item label="运费 :"  v-if="ruleForm.priceType > 0">
+    <el-form-item label="运费 :"  v-if="ruleForm.priceType > 0 && ruleForm.isNoMoney==1">
       <table border="1" cellspacing="0" cellpadding="0" width="100%" class="order_tab log_table">
         <tbody>
         <tr class="order_tab_header">
@@ -69,7 +75,7 @@
         </tbody>
       </table>
     </el-form-item>
-    <el-form-item label="配送区域和运费 :" >
+    <el-form-item label="配送区域和运费 :" v-if="ruleForm.isNoMoney==1">
       <el-switch on-text="开启" off-text="关闭" v-model="ruleForm.isResultMoney" class="add-input"></el-switch>
       <table border="1" cellspacing="0" cellpadding="0" width="100%" class="order_tab log_table" v-if="ruleForm.isResultMoney == 1">
           <tbody>
@@ -167,11 +173,11 @@
         </table>
       <p class="table-button" v-if="ruleForm.isResultMoney == 1" @click="addTable"><a>指定可配送区域和运费</a></p>
     </el-form-item>
-    <el-form-item label="包邮数量 :" prop="noMoneyNum">
+    <el-form-item label="包邮数量 :" prop="noMoneyNum" v-if="ruleForm.isNoMoney==1">
       满 <el-input  v-model.number="ruleForm.noMoneyNum" style="width:220px"></el-input> 件包邮
       <span class="addLogistics-warn">不填写代表没有包邮数量</span>
     </el-form-item>
-    <el-form-item label="包邮价格 :" prop="noMoney">
+    <el-form-item label="包邮价格 :" prop="noMoney" v-if="ruleForm.isNoMoney==1">
       满 <el-input  v-model.number="ruleForm.noMoney" style="width:220px">
          <template slot="prepend">¥</template>
          </el-input> 包邮
@@ -282,7 +288,7 @@ export default {
     return {
       ruleForm: {
         name: "",
-        express: "",
+        expressId: "",
         shopId: "",
         priceType: 0,
         money: "",
@@ -291,6 +297,7 @@ export default {
         addMoney: "",
         noMoneyNum: "",
         noMoney: "",
+        isNoMoney:1,
         tableData: []
       },
       provinceList: [], //省份集合
@@ -303,7 +310,7 @@ export default {
       area: [],
       rules: {
         name: [{ validator: formName, trigger: "blur" }],
-        express: [
+        expressId: [
           { type: "object", validator: formExpress, trigger: "change" }
         ],
         shopId: [
@@ -356,11 +363,11 @@ export default {
             name: formData.name,
             shopId: formData.shopId,
             isNoMoney: formData.isNoMoney || 1,
-            noMoneyNum: formData.noMoneyNum,
-            noMoney: formData.noMoney,
+            noMoneyNum: formData.noMoneyNum || 0,
+            noMoney: formData.noMoney||0,
             isResultMoney: formData.isResultMoney ? 1 : 0,
-            expressId:  formData.express,
-            express: formData.express.item_value,
+            expressId:  formData.expressId,
+            express: formData.expressId.item_value,
             id: formData.id || null,
             money: formData.money,
             priceType:formData.priceType,
@@ -371,7 +378,7 @@ export default {
           //循环快递公司
           for(let i = 0; i < _this.options.length; i++){
             let expressObj = _this.options[i];
-            if(expressObj.item_key == formData.express){
+            if(expressObj.item_key == formData.expressId){
               freight.express = expressObj.item_value;
               break;
             }
@@ -389,7 +396,7 @@ export default {
               let obj = {
                 id : item.id || null,
                 freightId: formData.id || null,
-                expressId:  formData.express.item_key ,
+                expressId:  formData.expressId,
                 express: freight.express,
                 money: item.money || 0,
                 noMoneyNum: item.noMoneyNum || 0,
@@ -450,6 +457,7 @@ export default {
       window.history.go(-1);
     },
     addTable() {
+      let _this = this;
       var newTab = {
         name: "",
         num: "",
@@ -462,7 +470,9 @@ export default {
         selectList: [],
         id: null
       };
-      this.ruleForm.tableData.push(newTab);
+      console.log(_this.ruleForm,"3232");
+      _this.ruleForm.tableData.push(newTab);
+
     },
     //弹出框返回
      dialogChange(changeData){
@@ -525,6 +535,7 @@ export default {
         success: function(data) {
           let myData = data.data;
           _this.ruleForm = myData;
+          _this.ruleForm.tableData=[];
           let detailList = myData.detailList || [];
           if(detailList != null && detailList.length > 0){
             let list = [];
