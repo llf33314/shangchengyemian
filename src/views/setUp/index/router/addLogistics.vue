@@ -508,7 +508,7 @@ export default {
         dialogMsg: '删除后，数据将无法恢复哦~',
         callback: {
           btnOne: function() {
-            _this.ruleForm.tableData.splice(row,1);
+            _this.ruleForm.tableData.splice(index,1);
           }
         }
       };

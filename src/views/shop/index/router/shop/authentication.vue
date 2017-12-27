@@ -848,6 +848,7 @@ export default {
   mounted() {
     this.data = JSON.parse(this.$route.query.data);
     this.mallStoreMapAjax();
+    this.isMaterialUrl();
     console.log(this.data,'传递数据data');
   },
 }

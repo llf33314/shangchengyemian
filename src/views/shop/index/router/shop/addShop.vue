@@ -277,6 +277,7 @@ export default {
     }
   },
   mounted() {
+    this.isMaterialUrl();
     this.shopAjax();
   },
 }

@@ -334,6 +334,7 @@ export default {
       this.mallTakeInfo(this.$route.params.id);
     }
     let _this =this;
+    _this.isMaterialUrl();
     //获取省级数据列表
     _this.getAreaList({
       'cityId':"",

@@ -18,14 +18,16 @@
   /*start 请求接口***********************************************************************************************************/
   
   DFshop.activeAPI = {
-    /*调用素材库*/
-    materialUrl: 'https://suc.deeptel.com.cn/common/material.do',
+    /*素材库地址*/
+    materialUrl: '',
     /*判断是否是管理员*/
     isAdminUser_post: '/mall/E9lM9uM4ct/isAdminUser',
     /*商城概况*/
     mallCount_post: '/mall/E9lM9uM4ct/count',
     /*获取商城营销地址*/
     getMarketingUrl_post: '/mall/E9lM9uM4ct/getMarketingUrl',
+     /*获取素材库地址*/
+    getMaterialUrl_post: '/mall/E9lM9uM4ct/getMaterialUrl',
     /**
      * 店铺管理相关接口
      */
