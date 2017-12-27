@@ -215,6 +215,7 @@ export default {
     },
   },
   mounted(){
+    this.isMaterialUrl();
     //店铺列表请求
     let _this = this;
     let id = this.$route.params.Id;

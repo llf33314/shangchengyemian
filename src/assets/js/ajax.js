@@ -5,6 +5,27 @@ import C from './conf';
 Vue.mixin({
     methods:{
     /**
+     * 判断素材库地址是否存在
+     */    
+    isMaterialUrl(){
+        if(DFshop.activeAPI.materialUrl == ''){
+            this.getMaterialUrl();
+        }
+    },
+    /**
+     * 获取素材库地址
+     */
+    getMaterialUrl(){
+        let _this=this;
+        this.ajaxRequest({
+            'url': DFshop.activeAPI.getMaterialUrl_post,
+            'success':function (data){
+                DFshop.activeAPI.materialUrl=data.data;
+                // console.log( DFshop.activeAPI.materialUrl," DFshop.activeAPI.materialUrl");
+            }
+        });
+    }, 
+    /**
      * 判断营销地址是否存在
      */    
     isMarketingUrl(){

@@ -17,16 +17,17 @@ export default {
    
   },
   mounted(){
-    $('body').addClass('bg');
+    // $('body').addClass('bg');
     this.isAdminUser({
       success: function(data) {
         if (data.code == -1) return;
       }
     });
-    
+    this.isMaterialUrl();
+    this.isMarketingUrl();
   },
   destroyed () {
-     $('body').removeClass('bg');
+    //  $('body').removeClass('bg');
      //sessionStorage.removeItem('href');
   }
 }
