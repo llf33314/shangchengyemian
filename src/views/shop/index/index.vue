@@ -372,20 +372,30 @@ export default {
       _this.$root.$refs.dialogWarn.showDialog(msg);
     },
     /**
-     *链接--二维码
+     *链接--二维码(店铺)
      @param data 店铺id
      */
-    shopLink(data) {
+    shopLink(shopData) {
       let _this = this;
-      let msg = {
-        title: "店铺链接",
-        path: _this.webPath,
-        pageLink: "/classify/" + data.id + "/" + data.stoUserId + "/0/k=k" //商城首页的链接(只是代替)
-      };
-      _this.$root.$refs.dialogQR.showDialog(msg);
+      _this.ajaxRequest({
+        url: DFshop.activeAPI.getPageIdByShopId_get,
+        data: {
+          shopId: shopData.id
+        },
+        contentType: "application/json",
+        type:"get",
+        success: function(data) {
+          let msg = {
+            title: "店铺链接",
+            path: _this.webPath,
+            pageLink: "/index/" + data.data //商城首页的链接(只是代替)
+          };
+          _this.$root.$refs.dialogQR.showDialog(msg);
+        }
+      });
     },
     /**
-     *链接--二维码
+     *链接--二维码（页面）
      @param data 店铺id
      */
     pageLink(data) {
@@ -394,8 +404,7 @@ export default {
         title: "店铺链接",
         urlQR: "",
         path: _this.webPath,
-        pageLink:
-          "/classify/" + data.pag_sto_id + "/" + data.pag_user_id + "/0/k=k" //商城首页的链接(只是代替
+        pageLink: "/index/" + data.id //商城首页的链接(只是代替
       };
       _this.$root.$refs.dialogQR.showDialog(msg);
     },
