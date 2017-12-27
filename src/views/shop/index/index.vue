@@ -29,9 +29,10 @@
                   <div class="list-shop-dtl">
                     <p v-text="scope.row.stoName"></p>
                      <div class="list-shop-txt">
-                      <div class="pass" > 
+                      <div class="pass"  v-if="scope.row.certStoType >= 0"> 
                         <i class="iconfont icon-renzheng"></i> 
-                        <span v-if="scope.row.certStoType == 0">个人</span><span v-else>企业</span>认证
+                        <span v-if="scope.row.certStoType == 0">个人</span>
+                        <span v-else>企业</span>认证
                       </div>
                       <div :class="{'pass':isSecuritytrade}">
                         <i class="iconfont icon-renzheng"></i> 担保交易
