@@ -63,6 +63,8 @@
     mallStoreStoreList_post: '/mallStore/E9lM9uM4ct/storeList',
     /*页面类型 (可用于下拉框)*/
     mallPageNewTypeMap_post: '/mallPage/E9lM9uM4ct/typeMap',
+    /*根据店铺id查询页面id*/
+    getPageIdByShopId_get: '/mallPage/E9lM9uM4ct/getPageIdByShopId',
     /*获取短信验证码 */
     mallStoreCertGetValCode_post: '/mallStore/E9lM9uM4ct/cert/getValCode',
 

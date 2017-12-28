@@ -32,8 +32,8 @@
                       <div :class="{'pass':scope.row.certStoType}" > 
                         <i class="iconfont icon-renzheng"></i> 
                          <span v-if="scope.row.certStoType ==null">个人</span>
-                        <span v-else-if="scope.row.certStoType == 0">个人</span>
-                        <span v-else>企业</span>认证
+                         <span v-else-if="scope.row.certStoType == 0">个人</span>
+                         <span v-else>企业</span>认证
                       </div>
                       <div :class="{'pass':isSecuritytrade}">
                         <i class="iconfont icon-renzheng"></i> 担保交易

@@ -43,7 +43,7 @@
                 </div>
               </div>
               <span>示例 :</span>
-              <div class="shop-img ID-img1">
+              <div class="shop-img " :style="{backgroundImage: 'url(' + imgID1_min + ')'}">
                 <div class="shop-img2" @click="showBigImg(imgID1)">
                   <i class="el-icon-view"></i>
                 </div>
@@ -63,7 +63,7 @@
                 </div>
               </div>
               <span>示例 :</span>
-              <div class="shop-img ID-img2">
+              <div class="shop-img " :style="{backgroundImage: 'url(' + imgID2_min + ')'}">
                  <div class="shop-img2" @click="showBigImg(imgID2)">
                   <i class="el-icon-view"></i>
                 </div>
@@ -92,7 +92,7 @@
                 </div>
               </div>
               <span>示例 :</span>
-              <div class="shop-img ID-img1">
+              <div class="shop-img " :style="{backgroundImage: 'url(' + imgID1_min + ')'}">
                  <div class="shop-img2" @click="showBigImg(imgID1)">
                   <i class="el-icon-view"></i>
                 </div>
@@ -113,7 +113,7 @@
                 </div>
               </div>
               <span>示例 :</span>
-              <div class="shop-img ID-img2">
+              <div class="shop-img" :style="{backgroundImage: 'url(' + imgID2_min + ')'}">
                  <div class="shop-img2" @click="showBigImg(imgID2)">
                   <i class="el-icon-view"></i>
                 </div>
@@ -133,7 +133,7 @@
                 </div>
               </div>
               <span>示例 :</span>
-              <div class="shop-img ID-img3">
+              <div class="shop-img" :style="{backgroundImage: 'url(' + imgLicense1_min + ')'}">
                  <div class="shop-img2" @click="showBigImg(imgLicense1)">
                   <i class="el-icon-view"></i>
                 </div>
@@ -179,7 +179,7 @@
                 </div>
               </div>
               <span>示例 :</span>
-              <div class="shop-img ID-img5">
+              <div class="shop-img " :style="{backgroundImage: 'url(' + imgLicense3_min + ')'}">
                  <div class="shop-img2" @click="showBigImg(imgLicense3)">
                   <i class="el-icon-view"></i>
                 </div>
@@ -202,7 +202,7 @@
                 </div>
               </div>
               <span>示例 :</span>
-              <div class="shop-img ID-img4">
+              <div class="shop-img " :style="{backgroundImage: 'url(' + imgLicense2_min + ')'}">
                  <div class="shop-img2" @click="showBigImg(imgLicense2)">
                   <i class="el-icon-view"></i>
                 </div>
@@ -223,7 +223,7 @@
                 </div>
               </div>
               <span>示例 :</span>
-              <div class="shop-img ID-img6">
+              <div class="shop-img " :style="{backgroundImage: 'url(' + imgLicense4_min + ')'}">
                  <div class="shop-img2" @click="showBigImg(imgLicense4)">
                   <i class="el-icon-view"></i>
                 </div>
@@ -244,7 +244,7 @@
                 </div>
               </div>
               <span>示例 :</span>
-              <div class="shop-img ID-img6">
+              <div class="shop-img " :style="{backgroundImage: 'url(' + imgLicense4_min + ')'}">
                  <div class="shop-img2" @click="showBigImg(imgLicense4)">
                   <i class="el-icon-view"></i>
                 </div>
@@ -297,7 +297,7 @@
                 </div>
               </div>
               <span>示例 :</span>
-              <div class="shop-img ID-img7">
+              <div class="shop-img " :style="{backgroundImage: 'url(' + imgLicense5 + ')'}">
                  <div class="shop-img2" @click="showBigImg(imgLicense5)">
                   <i class="el-icon-view"></i>
                 </div>
@@ -320,7 +320,7 @@
                 </div>
               </div>
               <span>示例 :</span>
-              <div class="shop-img ID-img7">
+              <div class="shop-img " :style="{backgroundImage: 'url(' + imgLicense6 + ')'}">
                  <div class="shop-img2" @click="showBigImg(imgLicense6)">
                   <i class="el-icon-view"></i>
                 </div>
@@ -343,7 +343,7 @@
                 </div>
               </div>
               <span>示例 :</span>
-              <div class="shop-img ID-img7">
+              <div class="shop-img " :style="{backgroundImage: 'url(' + imgLicense6 + ')'}">
                  <div class="shop-img2" @click="showBigImg(imgLicense6)">
                   <i class="el-icon-view"></i>
                 </div>
@@ -394,6 +394,17 @@ import imgLicense3 from '../../../img/ID5_1.png' //商标使用许可合同
 import imgLicense4 from '../../../img/ID6_1.jpg'//商标注册证
 import imgLicense5 from '../../../img/ID7_1.png'//微信渠道授权证书
 import imgLicense6 from '../../../img/ID8.png'//关系认证书
+
+
+
+import imgID1_min from '../../../img/ID1.jpg' //身份证正面
+import imgID2_min from '../../../img/ID2.jpg' //身份证反面
+import imgLicense1_min from '../../../img/ID3.jpg' //营业执照
+import imgLicense2_min from '../../../img/ID4.jpg' //商标注册通知书
+import imgLicense3_min from '../../../img/ID5.jpg' //商标使用许可合同
+import imgLicense4_min from '../../../img/ID6.jpg'//商标注册证
+import imgLicense5_min from '../../../img/ID7.jpg'//微信渠道授权证书
+// import imgLicense6_min from '../../../img/ID8.png'//关系认证书
 
 
 export default {
@@ -531,6 +542,15 @@ export default {
       imgLicense4:imgLicense4,
       imgLicense5:imgLicense5,
       imgLicense6:imgLicense6,
+      imgID1_min:imgID1_min,
+      imgID2_min:imgID2_min,
+      imgLicense1_min:imgLicense1_min,
+      imgLicense2_min:imgLicense2_min,
+      imgLicense3_min:imgLicense3_min,
+      imgLicense4_min:imgLicense4_min,
+      imgLicense5_min:imgLicense5_min,
+      // imgLicense6_min:imgLicense6_min,
+      // imgLicense7_min:imgLicense7_min,
       imgs:{//数据图片
         idCardFront: '',//身份证正面--1
         idCardBack: '',//身份证反面--2
