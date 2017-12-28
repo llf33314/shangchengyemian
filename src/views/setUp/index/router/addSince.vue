@@ -10,7 +10,7 @@
   <div class="addLogistics-main">
   <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="135px" class="demo-ruleForm">
     <el-form-item label="自提点名称 :" prop="visitName">
-      <el-input v-model="ruleForm.visitName" placeholder="请输入自提点名称" class="add-input"></el-input>
+      <el-input v-model.trim="ruleForm.visitName" placeholder="请输入自提点名称" class="add-input"></el-input>
     </el-form-item>
     <el-form-item label="自提点地址 :" class="icon-warn" prop="visit">
       <el-select v-model="ruleForm.visitProvinceId" placeholder="省份"  style="width:100px" @change="getCityOrArea('city')">
@@ -22,10 +22,10 @@
       <el-select v-model="ruleForm.visitAreaId" placeholder="区县" style="width:100px">
         <el-option :label="option.city_name" :value="option.id" :key="option.id" v-for="option in areas" ></el-option>
       </el-select> 
-      <el-input v-model="ruleForm.visitAddress" placeholder="请点击选择自提地址" class="add-input block"></el-input>
+      <el-input v-model.trim="ruleForm.visitAddress" placeholder="请点击选择自提地址" class="add-input block"></el-input>
     </el-form-item>
     <el-form-item label="联系电话 ：" prop="visitContactNumber">
-        <el-input v-model="ruleForm.visitContactNumber" placeholder="请输入联系电话"   class="add-input"></el-input>
+        <el-input v-model.trim="ruleForm.visitContactNumber" placeholder="请输入联系电话"   class="add-input"></el-input>
     </el-form-item>
     <el-form-item label="接待时间 :" prop="timeList">
        <time-list :timeList.sync="ruleForm.timeList" ref="timeComp"></time-list>
@@ -54,7 +54,7 @@
     </el-form-item>
     <el-form-item label="自提点备注 :">
         <el-input class="add-input" type="textarea" :rows="2"
-            placeholder="请输入内容"  v-model="ruleForm.visitRemark">
+            placeholder="请输入内容"  v-model.trim="ruleForm.visitRemark">
         </el-input>
     </el-form-item>
     <el-form-item label="是否同时作为线下门店接待 :" >

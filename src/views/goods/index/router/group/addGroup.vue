@@ -34,7 +34,7 @@
           <span >{{groupName1}}</span>
         </el-form-item>
         <el-form-item label="分组名称 :" prop="groupName">
-          <el-input v-model="form.groupName" placeholder="请输入分组名称"></el-input>
+          <el-input v-model.trim="form.groupName" placeholder="请输入分组名称"></el-input>
           <span class="p-warn">分组名称最多输入6位汉字或12位字符</span>
         </el-form-item>
         <el-form-item label="排序方式 :">
@@ -152,6 +152,8 @@ export default {
       if(add == 'addChild' || add == 'editChild'){
         _this.form.isChild = 0;//没有子集
         _this.form.isFirstParents = 0;//不是父级
+      }else{
+        _this.form.isFirstParents = 1;//是父级
       } 
       console.log('提交内容',_this.form)    
       _this.ajaxRequest({

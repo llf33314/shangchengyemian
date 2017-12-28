@@ -11,8 +11,12 @@
       </div>
       <p class="fs14">您可以关注多粉微信公众号，收到相关推送，请扫一扫下方二维码关注多粉微信公众号吧~</p>
       <div class="message-QRcode">
-        <img src="../../img/QRcode.jpg"/>
-        <p class="fs12">关注多粉微信公众号，开启消息模板 </p>
+        <img :src="duofenTwoCodeUrl" v-if="duofenTwoCodeUrl !=''"/>
+        <img style="margin-left:20px;"  :src="busMessageUrl" v-if="busMessageUrl !=''" />
+        <p>
+          <span class="fs12">关注多粉微信公众号，开启消息模板 </span>
+          <span class="fs12" style="margin-left:25px;">扫描二维码，获得商家模板提醒 </span>
+        </p>
       </div>
       <div class="fs14">您也可以： <el-button type="primary">去注册认证服务号</el-button></div>
     </div>
@@ -134,6 +138,9 @@ export default {
       selected4:'',
       isShow:'', //-1无认证 0无服务号 1有服务号
       template:[],
+      duofenTwoCodeUrl:'',
+      busMessageUrl:'',
+  
     }
   },
   methods: {
@@ -144,7 +151,12 @@ export default {
       _this.ajaxRequest({
         'url':DFshop.activeAPI.mallPaySetIsAuthService_post,
         'success':function (data){
-          _this.isShow = data.data;
+          _this.isShow = data.data.flag;
+          _this.duofenTwoCodeUrl = data.data.duofenTwoCodeUrl;
+          //商家消息提醒授权二维码生成
+          let url=data.path+"phoneBusMessageMember/L6tgXlBFeK/grant/"+data.data.busId;
+          _this.busMessageUrl = DFshop.activeAPI.mallStoreGenerateQRCode_get +"?url="+ url;//生成二维码链接
+
           _this.mallPaySetGetTemplate();
         }
       });
@@ -200,6 +212,7 @@ export default {
     },
   },
   mounted(){
+     let _this = this;
     this.mallPaySetIsAuthService();
   }
 }

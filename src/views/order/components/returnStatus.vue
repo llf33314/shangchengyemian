@@ -23,12 +23,12 @@
         </div>
         <div class="dialog-list clearfix" v-if="type == -1">
         <span class="dialog-title">拒绝理由 :</span>
-        <p class="dialog-text"><el-input type="textarea" v-model="noReturnReason" placeholder="请输入拒绝理由"></el-input></p>
+        <p class="dialog-text"><el-input type="textarea" v-model.trim="noReturnReason" placeholder="请输入拒绝理由"></el-input></p>
         </div>
         <div class="dialog-list clearfix" v-if="type == 2 || type == 5">
         <span class="dialog-title">退货地址 :</span>
         <p class="dialog-text">
-            <el-input type="textarea" v-model="returnAddress" :value="returnInfo.returnAddress"
+            <el-input type="textarea" v-model.trim="returnAddress" :value="returnInfo.returnAddress"
             placeholder="填写您的完整收货地址信息，以便买家可退货给您!如，浙江省杭州市有赞区致富路888号，张三，13588888888 ，由买家承担寄回运费。"></el-input>
         </p>
         </div>

@@ -1,6 +1,6 @@
 <template>
   <div class="order_tab_main">
-    <el-input type="textarea" v-model="remarkData.orderSellerRemark" auto-complete="off" placeholder="最多可输入256个字符"></el-input>
+    <el-input type="textarea" v-model.trim="remarkData.orderSellerRemark" auto-complete="off" placeholder="最多可输入256个字符"></el-input>
     <div slot="footer" class="dialog-footer dialog-list shop-textr">
         <el-button type="primary" @click="submitRemark()">确 定</el-button>
         <el-button @click="resetDialog()">取 消</el-button>

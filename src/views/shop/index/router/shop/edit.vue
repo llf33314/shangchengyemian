@@ -20,7 +20,7 @@
             <span class="shop-prompt" style="margin-left:20px;vertical-align: bottom;">图片比例：1:1</span>
         </el-form-item>
         <el-form-item label="联系人 :">
-             <el-input v-model="form.stoLinkman" placeholder="请输入联系人"></el-input>
+             <el-input v-model.trim="form.stoLinkman" placeholder="请输入联系人"></el-input>
         </el-form-item>
         <el-form-item label="联系电话 :">
              <el-input v-model="form.stoPhone" :disabled="true"></el-input>
@@ -123,7 +123,8 @@ export default {
         　　for (let i in this.Telephones){
             　　var str = this.Telephones[i].phone
                 if(_this.form.stoIsSms){
-                    _this.phone(str);
+                   if(!_this.phone(str)) return;
+                     _this.phone(str);
                 }
             　　arr.push(str);
         　　}
@@ -163,15 +164,15 @@ export default {
                     type: 'warning'
                 });
                 return false;
-            }
-            if(!Lib.M.validPhone(phone)){
+            }else if(!Lib.M.validPhone(phone)){
                 this.$message({
                     message: '请正确的手机号码',
                     type: 'warning'
                 });
                 return false;
+            }else{
+                return true;
             }
-            return true;
         },
         /**
          * 增添推广人手机

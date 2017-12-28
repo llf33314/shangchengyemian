@@ -38,10 +38,10 @@
         </el-select>
         </el-form-item>
         <el-form-item label="物流名称 :" v-if=" expressData.expressId === 999 " prop="otherExpressName">
-        <el-input v-model="expressData.otherExpressName" placeholder="请输入物流名称"  ></el-input>
+        <el-input v-model.trim="expressData.otherExpressName" placeholder="请输入物流名称"  ></el-input>
         </el-form-item>
         <el-form-item label="快递单号 :" prop="expressDelivery" >
-        <el-input v-model="expressData.expressDelivery" placeholder="请输入快递单号"></el-input>
+        <el-input v-model.trim="expressData.expressDelivery" placeholder="请输入快递单号"></el-input>
         </el-form-item>
     </el-form>
     </div>

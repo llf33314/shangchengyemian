@@ -45,7 +45,7 @@
                 <el-switch on-text="开启" off-text="关闭" v-model="off"></el-switch>
             </el-form-item>
             <el-form-item label="限购规则 :" v-if="off" prop="sMaxBuyNum" required>
-                <el-input v-model="ruleForm.sMaxBuyNum" class="addGruop-input"></el-input>
+                <el-input v-model.number="ruleForm.sMaxBuyNum" class="addGruop-input"></el-input>
                 <span>件/人</span>
             </el-form-item>
             <el-form-item>

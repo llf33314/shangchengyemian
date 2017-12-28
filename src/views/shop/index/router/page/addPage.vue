@@ -37,14 +37,14 @@
           </el-select>
           </el-form-item>
            <el-form-item label="页面名称 :" prop="pagName">
-            <el-input v-model="ruleForm.pagName" placeholder="请输入页面名称" ></el-input>
+            <el-input v-model.trim="ruleForm.pagName" placeholder="请输入页面名称" ></el-input>
           </el-form-item>
           <el-form-item label="页面描述 :">
             <el-input
               type="textarea"
               :rows="2"
               placeholder="请输入内容"
-              v-model="ruleForm.pagDescript">
+              v-model.trim="ruleForm.pagDescript">
             </el-input>
           </el-form-item>
           <el-form-item label="是否为主页 :" prop="pagIsMain">

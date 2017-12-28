@@ -39,7 +39,7 @@
           <div class="index-shopInfo">
             <el-form :inline="true" :model="searchData" class="demo-form-inline">
               <el-form-item >
-                <el-input v-model="searchData.orderNo" placeholder="订单号"></el-input>
+                <el-input v-model.trim="searchData.orderNo" placeholder="订单号"></el-input>
               </el-form-item>
               <el-form-item label="订单状态 :">
                 <el-select v-model="searchData.status" placeholder="全部">
