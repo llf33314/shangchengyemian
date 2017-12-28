@@ -33,7 +33,7 @@
         <div class="dialog-list">
             <span>买家实付  :</span>
                 {{orderData.orderMoney}}元
-                <span v-if="orderData.orderFreightMoney >0" style="font-size:13px;color:red">(含运费{{orderData.orderFreightMoney}})</span>
+                <span v-if="orderData.orderFreightMoney >0" style="font-size:13px;color:red">(含运费)</span>
             </div>
             <div class="dialog-list shop-textr">
             <el-button type="primary" @click="submitUpMoney()">确定</el-button>

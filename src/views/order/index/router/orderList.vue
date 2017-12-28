@@ -134,7 +134,7 @@
           <el-tab-pane :label="'退款处理中( '+(count.status8|'0')+' )'" name="8" ></el-tab-pane>
           <el-tab-pane :label="'退款结束( '+(count.status9|'0')+' )'" name="9" ></el-tab-pane>
         </el-tabs>
-        <div class="index-table" >
+        <div class="index-table" v-loading.body="loading" element-loading-text="拼命加载中">
           <div class="table-header">
             <div class="table-th col-3">所属店铺</div>
             <div class="table-th col-4">商品</div>
@@ -228,7 +228,9 @@
                   <p v-else-if="order.orderStatus==5">订单已关闭</p>
                 </div>
                 <div class="table-td border-r col-1">&#65509;{{order.orderMoney}}
-                    <p v-if="order.orderFreightMoney >0" style="font-size:11px;color:#999">(含运费 &#65509;{{order.orderFreightMoney}})</p>
+                    <p v-if="order.orderFreightMoney >0" style="font-size:11px;color:#999">
+                      (含运费<span v-if="order.orderMoney>order.orderFreightMoney">&#65509;{{order.orderFreightMoney}}</span>)
+                    </p>
                     <p  v-if="order.orderPayWay !=5">
                       <el-button type="primary" size="small" v-if="order.isShowUpdatePriceButton == 1" @click="openDialog(2,order)">修改价格</el-button>
                     </p>
@@ -285,6 +287,7 @@ export default {
         isShow: true,
         isTable: true,//是否有数据
         isPage: true,//列表页数多页
+        loading: true,
         pickerOptions2: {
           disabledDate(time) {
             return time.getTime() > Date.now();
@@ -382,7 +385,7 @@ export default {
      */
     mallOrderList(searchData){
       let _this = this;
-
+      _this.loading = true;
       _this.ajaxRequest({
         'url': DFshop.activeAPI.mallOrderList_post,
         'data':searchData,
@@ -401,6 +404,7 @@ export default {
             _this.count=data.data.count;
           }
           _this.activeName2=_this.searchData.status;
+          _this.loading = false;
         }
       });
     },  
@@ -517,6 +521,7 @@ export default {
    width:18%
  }
 }
+ 
 .order-ret-but {
   .el-button+.el-button{
     margin-top: 3px;

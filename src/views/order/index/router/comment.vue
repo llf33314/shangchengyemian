@@ -35,7 +35,7 @@
             <el-tab-pane :label="'中评( '+(count.medium|0)+' )'" name="0"></el-tab-pane>
             <el-tab-pane :label="'差评( '+(count.bad|0)+' )'" name="-1"></el-tab-pane>
           </el-tabs>
-          <div class="index-table-comment">
+          <div class="index-table-comment"  v-loading.body="loading" element-loading-text="拼命加载中">
             <div class="table-header">
               <div class="table-th col-3">评论内容</div>
               <div class="table-th col-2">商品</div>
@@ -164,7 +164,8 @@ export default {
             }
           }]
         },
-        value7: ''
+        value7: '',
+        loading:true,
     }
   },
   watch:{
@@ -208,13 +209,12 @@ export default {
      */
     mallCommentList(data){
       let _this = this;
+      _this.loading=true;
       this.tableData = '';
       _this.ajaxRequest({
         'url': DFshop.activeAPI.mallCommentList_post,
         'data':data,
         'success':function (data){
-          
-
            _this.isComment=data.data.isComment;
           _this.count=data.data.count;
           if( _this.isComment == 0){//不开启
@@ -223,14 +223,14 @@ export default {
              _this.contentShow="colseBuyerComment";
           }else{
             _this.subList = data.data.page.subList;
-          _this.page = {
-            curPage:  data.data.page.curPage,
-            pageCount: data.data.page.pageCount,
-            pageSize: data.data.page.pageSize,
-            rowCount: data.data.page.rowCount
+            _this.page = {
+              curPage:  data.data.page.curPage,
+              pageCount: data.data.page.pageCount,
+              pageSize: data.data.page.pageSize,
+              rowCount: data.data.page.rowCount
+            }
           }
-          }
- 
+          _this.loading=false;
         }
       });
     },

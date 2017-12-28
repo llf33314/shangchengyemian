@@ -57,6 +57,8 @@
     mallPageNewDelete_post: '/mallPage/E9lM9uM4ct/delete',
     /*获取页面信息*/
     mallPageNewPageInfo_post: '/mallPage/E9lM9uM4ct/pageInfo',
+    /*保存页面信息*/
+    mallPageSave_post: '/mallPage/E9lM9uM4ct/save',
     /*获取商家店铺列表  (可用于下拉框)*/
     mallStoreStoreList_post: '/mallStore/E9lM9uM4ct/storeList',
     /*页面类型 (可用于下拉框)*/

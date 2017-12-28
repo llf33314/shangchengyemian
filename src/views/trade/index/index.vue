@@ -67,7 +67,7 @@
                 <el-button type="primary" :disabled="subList==null" @click="exportTrade()">批量导出</el-button>
             </el-form>
           </div>
-          <div class="index-content">
+          <div class="index-content" v-loading.body="loading" element-loading-text="拼命加载中">
             <el-tabs v-model="activeName2" type="card" @tab-click="handleClick(activeName2)">
               <el-tab-pane label="全部" name="0"></el-tab-pane>
               <el-tab-pane label="成功" name="1"></el-tab-pane>
@@ -199,7 +199,8 @@ export default {
             }
           }]
         },
-        value7: ''
+        value7: '',
+        loading:true,
     }
   },
   methods: {
@@ -264,6 +265,7 @@ export default {
      */
     tradeList(data){
       let _this = this;
+      _this.loading=true;
       _this.ajaxRequest({
         'url': DFshop.activeAPI.tradeList_post,
         'data':data,
@@ -276,6 +278,7 @@ export default {
             pageSize: data.data.page.pageSize,
             rowCount: data.data.page.rowCount
           }
+          _this.loading=false;
         }
       });
     },
