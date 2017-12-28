@@ -1,5 +1,6 @@
 <template>
-  <div class="table-spec">
+<div :class="{'table-nopass':!isPass}">
+  <div class="table-spec" >
         <div class="table-spec-box" v-if="specList.length>0" v-for="(item,index) in specList" :key="index">
             <div class="table-spec-title">
                 <div class="table-inline">
@@ -51,7 +52,7 @@
                                 v-for="(test,i) in item.all_specList"
                                 :key="i"
                                 :label="test"
-                                :value="i">
+                                :value="Number(i)">
                             </el-option>
                         </el-select>
                         <el-button type="primary" @click="addoptions(selectedSpec,index)">确定</el-button>
@@ -65,6 +66,9 @@
             <el-button @click="addspec">添加项目规格</el-button>
         </div>
     </div>
+    <p v-if="!isPass" class="table-nopass-text">请完善商品规格信息
+    </p>
+</div>
 </template>
 <script>
 
@@ -98,18 +102,7 @@ export default {
             itemIndex:[],//图片上传改变的索引
             flag:false,//需要触发事件的监听
             newSpecList:[],//传递数据
-
-            fromSelected:{//选中的内容
-                shop: '',//店铺
-                grouping: [],//分组
-                goodsStatus: '',//商品类型
-                spec:[]//规格
-            },
-
-            fromSelecteds:[],
-            checked1:'',
-            options:[],
-            value10:''
+            isPass:true
         }
     },
     watch: {
@@ -176,6 +169,7 @@ export default {
          * 总规格选中
          */
         selectedSpec1(val,index,i){
+            
             let _this = this;
             let isAdd = true;
             if(!this.deleteFlag){
@@ -184,14 +178,13 @@ export default {
                 }
                 return;
             }
-            
+            debugger
             //排重
             if(_this.nameList != null && _this.nameList.length > 0){
                 for(let k = 0; k < _this.nameList.length ;k++){
 
                     if(_this.nameList[k] == val){
                         //重新对应返回原值
-                        debugger
                         isAdd = false;
                         //重复提示
                         _this.$message({
@@ -201,6 +194,10 @@ export default {
                         
                         //拿到规格改变对应的值
                         let changeData = _this.specList[index];
+                        if(changeData.specValues.length == 0){
+                            _this.specList.splice(index,1);
+                            return
+                        }
                         for(let j in _this.listData){
                             //遍历总规格列表里的属性值和改变值相等，赋值原来的改变值;
                             if(_this.listData[j] == changeData.specName){
@@ -369,7 +366,7 @@ export default {
             if(this.nameList.length > 0){
                 this.deleteFlag = false;
             }
-            _this.$emit('change',this.specList);
+            this.$emit('change',this.specList);
         },
         /** 
          * 删除分组规格
@@ -384,6 +381,7 @@ export default {
          */
         addoptions(opt,index){
             let _this = this;
+            _this.isPass = true;
             //新增的集合
             let _data = this.specList[index];
             for(let i in _data.all_specList){
@@ -415,18 +413,43 @@ export default {
             let _index = this.itemIndex[0];
             let _i = this.itemIndex[1];
             this.specList[_index].specValues[_i].newSpecImage = val;
-            _this.$emit('change',this.specList);
+            this.$emit('change',this.specList);
         },
         changeData(index,i){
             this.itemIndex = [];
             this.itemIndex.push(index);
             this.itemIndex.push(i);
+        },
+        /** 
+         * 验证规格
+         */
+        allRules(){
+            let _this = this;
+            let pass = true;
+            if(_this.specList.length != 0){
+                _this.specList.forEach((item,i)=>{
+                    if(item.specValues.length == 0 && pass){
+                        pass = false;
+                    }
+                })
+            }
+            this.isPass = pass;
+            return pass;
         }
     }
 }
 </script>
 <style lang="less" scoped>
 @import '../../../../../../assets/css/mixins.less';
+.table-nopass{
+    .table-spec{
+        border: 1px solid #ff4949;
+    }
+    .table-nopass-text{
+        color: #ff4949;
+        font-size: 12px
+    }
+}
 .table-spec{
     width: 100%;
     border: 1px solid #bfcbd9;

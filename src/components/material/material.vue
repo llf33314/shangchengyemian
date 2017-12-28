@@ -15,7 +15,7 @@
     <!--多个上传-->
     <div class="avatar-box" v-if="imgLists != '0'"  @drop='drop($event)'>
          <div v-for=" (item,index) in imgdata"
-              :style="{backgroundImage: 'url(' +item.path+item.imageUrl + ')',
+              :style="{backgroundImage: 'url(' +(item.path?item.path:path)+item.imageUrl + ')',
                       width:Width,
                       height:Height}"
               :key="index"
@@ -105,7 +105,10 @@
       },
       'imgLists'(a,b){
         //多个上传数据
-          this.imgdata = a;
+        a.forEach((item,i)=>{
+          item.sort = i+1
+        })
+        this.imgdata = a;
       },
     },
     mounted () {
@@ -134,17 +137,18 @@
           width: 820, //宽度
           height: 500, //高度
           lockScroll: false, //弹出框后是否锁定滚动轴
-          closeOnClickModal: false, //点击遮罩是否关闭
+          closeOnClickModal: true, //点击遮罩是否关闭
           closeOnPressEscape: false
         }).then(function (val) {
           //确认
             if(_this.imgLists != '0'){
               //多个 tudo
+              let length = _this.imgdata.length;
               val.forEach((item,i) => {
                 let data = {
                   path: item.url.split("/image")[0],
                   imageUrl:'/image'+ item.url.split("/image")[1],
-                  sort: i+1
+                  sort: length+i+1,
                 }
                 _this.imgdata.push(data);
               });
@@ -216,7 +220,7 @@
           $(e.target).before(this.dom); 
         }
         _this.$emit('change',_this.imgdata);
-      }
+      },
     }
   }
 

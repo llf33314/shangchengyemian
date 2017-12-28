@@ -11,6 +11,7 @@
                     :key="i"
                     :label="test" 
                     :value="Number(i)">
+                    {{test}}
             </el-option>
         </el-select>
         <!--参数值-->
@@ -23,6 +24,7 @@
                     :key="i"
                     :label="test" 
                     :value="Number(i)">
+                    {{test}}
             </el-option>
         </el-select>
         <a class="fontBlue" v-if="index == 0" @click="add(item)">新增</a>
@@ -48,12 +50,29 @@ export default {
             paramList:[],//绑定数据
             listData1:[],//参数列表
             listData2:[],//参数列表
+            flag:true,
         }
     },
     watch:{
-        'paramList'(a,b){
-            //console.log(a,'paramList变化',b)
-        },
+        'flag'(){
+            let _this = this;
+            let obj = this.paramList;
+            _this.paramList.forEach((item,i)=>{
+                for(let i in this.listData1){
+                    if(i== item.paramsNameId){
+                        item.paramsName = _this.listData1[i];
+                    }
+                }
+                for(let i in item.all_params){
+                    if(i == item.paramsValueId){
+                        item.paramsValue = item.all_params[i];
+                    }
+                }
+                item.sort = i;
+            })
+            
+            _this.$emit('change',_this.paramList)
+        }
     },
     methods:{
          /** 
@@ -133,6 +152,9 @@ export default {
         params2(data,index){
             let _this = this;
             let add = true;
+
+            if(data.paramsValueId == '') return;
+
             _this.paramList.forEach((item,i) => {
                 if(i == index) return;
                 if(data.paramsNameId == item.paramsNameId && add){
@@ -146,9 +168,10 @@ export default {
                     }
                 }
             });
-
+            this.flag = !this.flag;
+            
             if(add && data.paramsValueId != null && !isNaN(data.paramsValueId)){
-                if(data.all_params.hasOwnProperty(data.paramsValueId)) return;
+                if(data.all_params.hasOwnProperty(data.paramsValueId)) return false;
                 data.paramsValueId = null;
                 /**
                  * 新增名称
@@ -162,6 +185,7 @@ export default {
                     specId: data.paramsNameId
                 },index)
             }
+           
         },
         /** 
          * 添加
@@ -236,7 +260,6 @@ export default {
                 paramsValueId: null,   //参数值ID
                 paramsName: null,      //参数名称
                 paramsValue: null,     //参数值 
-                sort: 0 ,              //序号
             }]
         }
     }

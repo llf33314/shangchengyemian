@@ -25,7 +25,7 @@
                     :key="i"> 
                     <!--每个规格对应库存ids-->
                     <p v-for="(c,d) in item.specificaIds" :key="d">
-                        <span v-for="(a,b) in test.specValues" v-if=" c == a.id && a.specValue!=''" :key="b"> 
+                        <span v-for="(a,b) in test.specValues" v-if=" c == a.specValueId && a.specValue!=''" :key="b"> 
                             {{a.specValue}}
                         </span>
                     </p>
@@ -37,7 +37,7 @@
                     :rowspan="[listData[2] != null?listData[2].specValues.length:listData[1].specValues.length]"
                     :key="i"> 
                     <p v-for="(c,d) in item.specificaIds" :key="d">
-                        <span v-for="(a,b) in test.specValues" v-if=" c == a.id && c.specValue!=''" :key="b"> 
+                        <span v-for="(a,b) in test.specValues" v-if=" c == a.specValueId && c.specValue!=''" :key="b"> 
                             {{a.specValue}}
                         </span>
                     </p>
@@ -48,7 +48,7 @@
                     v-if="listData.length-i == 1"
                     :key="i"> 
                     <p v-for="(c,d) in item.specificaIds" :key="d"> 
-                        <span v-for="(a,b) in test.specValues" v-if=" c == a.id && c.specValue!=''" :key="b">
+                        <span v-for="(a,b) in test.specValues" v-if=" c == a.specValueId && c.specValue!=''" :key="b">
                             {{a.specValue}}
                         </span>
                     </p>
@@ -56,17 +56,17 @@
                 </td>
 
                 <td v-if="isSpec" class="td-input-box">
-                    <input v-model="item.invPrice" placeholder="请输入内容" @blur="itemRules(item,index,1)" 
+                    <input v-model.trim="item.invPrice" placeholder="请输入内容" @blur="itemRules(item,index,1)" 
                     :class="{'input-warning':item.errorMsg.Price != null}"/>
                     <span class="p-warning" v-if="item.errorMsg.Price != null">{{item.errorMsg.Price}}</span>
                 </td>
                 <td v-if="isSpec" class="td-input-box">
-                    <input v-model="item.invNum" placeholder="请输入内容" @blur="itemRules(item,index,2)" 
+                    <input v-model.trim="item.invNum" placeholder="请输入内容" @blur="itemRules(item,index,2)" 
                     :class="{'input-warning':item.errorMsg.invNum != null}"/>
                     <span class="p-warning" v-if="item.errorMsg.invNum != null">{{item.errorMsg.invNum}}</span>
                 </td >
                 <td v-if="isSpec">
-                    <el-input v-model="item.invCode" placeholder="请输入内容"></el-input>
+                    <el-input v-model.trim="item.invCode" placeholder="请输入内容"></el-input>
                 </td>
                 <td v-if="isSpec">
                     {{item.invSaleNum==null?'0':item.invSaleNum}}
@@ -80,7 +80,7 @@
                  </td>
                  <td v-if="!isSpec" class="td-input-box">
                     <div style="width:120px">
-                        <input v-model="item.logisticsWeight" placeholder="请输入内容" @blur="itemRules(item,index,3)" 
+                        <input v-model.number="item.logisticsWeight" placeholder="请输入内容" @blur="itemRules(item,index,3)" 
                     :class="{'input-warning':item.errorMsg.logistics != null}"/>
                         <span class="p-warning" v-if="item.errorMsg.logistics != null" >{{item.errorMsg.logistics}}</span>
                     </div>
@@ -109,7 +109,7 @@ export default {
         return {
             specData:'',//规格
             invenData:'',//库存
-            isDefault:1,//是否默认
+            isDefault:0,//是否默认
             listData:[],//列表数据
             isSpec:true,//物流和规格判断
 
@@ -118,41 +118,31 @@ export default {
         }
     },
     watch:{
-        /** 
-         * 默认值改变
-         */
         'isDefault'(a,b){
-            this.invenData.forEach((item,i)=>{
-                if(i === a){
-                    item.isDefault = 1;
-                }
-            })
-        } ,
+            this.invenData[a].isDefault = 1;
+            this.invenData[b].isDefault = 0;
+        },
         'specList'(a,b){
             this.listAdd(a);
         },
         'invenList'(a,b){
+            console.log(a,b,'invenListinvenListinvenList变化');
             if(a.length == 0){
                 this.invenData = b;
             }else{
                 this.invenData = a;
-                this.newlistData();
+                this.newlistData(this.invenData);
             }
-            
-        },
-        'form'(a,b){
-            console.log(a,b,"form")
         }
     },
     methods:{
         /** 
          * 数据重组
         */
-        newlistData(){
+        newlistData(data){
             let _this = this;
             //规格遍历
-
-            _this.invenData.forEach((item,i) => {
+            data.forEach((item,i) => {
                 item.specificaIds = item.specificaIds.split(",");
                 item.errorMsg = {
                     Price:null,
@@ -252,24 +242,71 @@ export default {
             this.listData=[] ;
             data.forEach((item,i)=>{
                 if(item.specValues.length >0){
-                    debugger
                     _this.listData.push(item);
                 }
             })
-        }
+        },
+        invenAdd(data1,data2){
+            let _this =this;
+            this.invenData=[];
+            let myArray=new Array();
+            data1.forEach((item,i)=>{
+                item.specificaIds = item.specificaIds.split(",");
+                myArray.push(item);
+            })
+
+            myArray.forEach((item,i)=>{
+                let arr = []
+                item.specificaIds.forEach((test,j)=>{
+                    data2.forEach((a,b)=>{
+                        a.specValues.forEach((c,d)=>{
+                            if(test == c.id){
+                                arr.push(c.specValueId)
+                            }
+                        })
+                    })
+                })
+                item.specificaIds = arr.toString();
+            })
+            this.invenData = myArray;
+            this.newlistData(this.invenData);
+            this.invenData.forEach((item,i)=>{
+                if(item.isDefault == 1){
+                    this.isDefault = i;
+                }
+            })
+        },
+        /**
+         * 深复制
+         * @param src
+         * @returns {{}}
+         */
+        copy(obj) {
+            var dst = obj.constructor === Array ? [] : {};
+            for (var prop in obj) {
+            if (obj.hasOwnProperty(prop)) {
+                if(typeof obj[prop] == 'object'){
+                dst[prop] = this.copy(obj[prop])
+                }else{
+                dst[prop] = obj[prop];
+                }
+            }
+            }
+            return dst;
+        },
     },
     mounted() {
-        this.listAdd(this.specList);
-        this.invenData = this.invenList;
+        let _this = this;
+        _this.listAdd(_this.specList);
+        if(this.$route.params.id === 'add'){
+            _this.invenAdd(_this.invenList,_this.specList);
+        }else{
+            _this.invenAdd(_this.copy(_this.invenList),_this.specList);
+        }
         if(this.type !='0'){
             this.isSpec = false;
         }
-        this.invenData.forEach((item,i)=>{
-            if(item.isDefault == 1){
-                this.isDefault = i;
-            }
-        })
-        this.newlistData()
+        
     }
 }
 </script>
