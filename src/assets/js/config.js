@@ -11,8 +11,8 @@
    * 开发启用代理api
    * 打包注释DFshop.api（不需要）
    */
-  DFshop.api ="";
-  // DFshop.api = "/api";
+  //DFshop.api ="";
+  DFshop.api = "/api";
   //get请求   接口前加上 DFshop.api
 
   /*start 请求接口***********************************************************************************************************/
@@ -123,6 +123,8 @@
     mallProductToEdit_post:'/mallProduct/E9lM9uM4ct/to_edit',
     /*新增商品 */
     mallProductAdd_post:'/mallProduct/E9lM9uM4ct/add',
+    /*修改商品*/
+    mallProductUpdatet_post: '/mallProduct/E9lM9uM4ct/update',
     /*获取商品分组列表 (包含下级) */
     mallProductGetGroups_post:'/mallProduct/E9lM9uM4ct/group/getGroups',
     /*获取商品分组信息*/
@@ -149,6 +151,12 @@
     mallProductSpecaddSpecifica_post: '/mallProduct/E9lM9uM4ct/spec/addSpecifica',
     /*根据店铺ID获取物流信息*/
     mallFreightGetFreightByShopId_post: '/mallFreight/E9lM9uM4ct/getFreightByShopId',
+    /*获取会员卡列表*/
+    mallCardList_post: '/mall/E9lM9uM4ct/cardList',
+    /*获取卡券包列表*/
+    mallCardReceiveList_post: '/mall/E9lM9uM4ct/cardReceiveList',
+    /*获取商家流量列表*/
+    mallFlowList_post: '/mall/E9lM9uM4ct/flowList',
 
 
     /*团购列表 */
