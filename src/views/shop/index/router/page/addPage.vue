@@ -36,7 +36,7 @@
           </el-select>
           </el-form-item>
            <el-form-item label="页面名称 :">
-            <el-input v-model="form.pagName" placeholder="请输入页面名称" ></el-input>
+            <el-input v-model.trim="form.pagName" placeholder="请输入页面名称" ></el-input>
           </el-form-item>
           <el-form-item label="页面描述 :">
             <el-input

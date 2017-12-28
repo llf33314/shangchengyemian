@@ -23,7 +23,7 @@
                 <p class="p-warn" v-if="isReplacePro">如需修改商品信息，请在商品管理中更新</p>
             </el-form-item>
             <el-form-item label="活动名称 :" prop="gName" required>
-                <el-input v-model="ruleForm.gName" class="addGruop-input"></el-input>
+                <el-input v-model.trim="ruleForm.gName" class="addGruop-input"></el-input>
                 <span class="p-warn">最多可输入50位汉字或100位字符</span>
             </el-form-item>
             <el-form-item label="团购价 :" prop="gPrice" required v-if="ruleForm.isSpecifica == 0">
