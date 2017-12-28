@@ -11,11 +11,11 @@
       <div class="addBond-main">
           <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
               <el-form-item label="合同标题 :" prop="contractTitle">
-                  <el-input v-model="ruleForm.contractTitle" placeholder="请输入合同标题" class="max-input"></el-input>
+                  <el-input v-model.trim="ruleForm.contractTitle" placeholder="请输入合同标题" class="max-input"></el-input>
               </el-form-item>
               <el-form-item label="合同内容 :" prop="contractContent">
                 <div class="edit_container">
-                  <quill-editor v-model="ruleForm.contractContent"
+                  <quill-editor v-model.trim="ruleForm.contractContent"
                           ref="myQuillEditor"
                           class="editer"
                           :options="editorOption"

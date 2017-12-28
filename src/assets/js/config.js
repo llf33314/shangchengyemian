@@ -18,14 +18,16 @@
   /*start 请求接口***********************************************************************************************************/
   
   DFshop.activeAPI = {
-    /*调用素材库*/
-    materialUrl: 'https://suc.deeptel.com.cn/common/material.do',
+    /*素材库地址*/
+    materialUrl: '',
     /*判断是否是管理员*/
     isAdminUser_post: '/mall/E9lM9uM4ct/isAdminUser',
     /*商城概况*/
     mallCount_post: '/mall/E9lM9uM4ct/count',
     /*获取商城营销地址*/
     getMarketingUrl_post: '/mall/E9lM9uM4ct/getMarketingUrl',
+     /*获取素材库地址*/
+    getMaterialUrl_post: '/mall/E9lM9uM4ct/getMaterialUrl',
     /**
      * 店铺管理相关接口
      */
@@ -55,10 +57,14 @@
     mallPageNewDelete_post: '/mallPage/E9lM9uM4ct/delete',
     /*获取页面信息*/
     mallPageNewPageInfo_post: '/mallPage/E9lM9uM4ct/pageInfo',
+    /*保存页面信息*/
+    mallPageSave_post: '/mallPage/E9lM9uM4ct/save',
     /*获取商家店铺列表  (可用于下拉框)*/
     mallStoreStoreList_post: '/mallStore/E9lM9uM4ct/storeList',
     /*页面类型 (可用于下拉框)*/
     mallPageNewTypeMap_post: '/mallPage/E9lM9uM4ct/typeMap',
+    /*根据店铺id查询页面id*/
+    getPageIdByShopId_get: '/mallPage/E9lM9uM4ct/getPageIdByShopId',
     /*获取短信验证码 */
     mallStoreCertGetValCode_post: '/mallStore/E9lM9uM4ct/cert/getValCode',
 

@@ -270,7 +270,7 @@
                                 </el-select>
                             </el-form-item>
                             <el-form-item label="礼品名称" prop="giveName">
-                                <el-input v-model="form.giveName" class="mix-input" style="width:200px;"></el-input>
+                                <el-input v-model.trim="form.giveName" class="mix-input" style="width:200px;"></el-input>
                             </el-form-item>
                             <el-form-item label="礼品数量" prop="giveNum">
                                 <el-input v-model.number="form.giveNum" class="mix-input" style="width:200px;"></el-input>

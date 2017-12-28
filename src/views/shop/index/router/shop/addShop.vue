@@ -47,7 +47,7 @@
             </div>
           </el-form-item>
           <el-form-item label="联系人 :">
-            <el-input v-model="form.stoLinkman" ></el-input>
+            <el-input v-model.trim="form.stoLinkman" ></el-input>
             <span class="p-warn">(必填)</span>
           </el-form-item>
           <el-form-item label="联系电话 :">
@@ -88,7 +88,7 @@
     <el-button type="primary" v-if="active == 2" @click="Submit()">保存</el-button>
     <el-button style="margin-top: 12px;" v-if="active !== 3" @click="Back">返回</el-button>
     <div class="shop-textc" v-if="active == 3" >
-      <el-button type="primary"@click="next">继续添加</el-button>
+      <el-button type="primary" v-if="data.length >1"  @click="next">继续添加</el-button>
       <el-button style="margin-top: 12px;" @click="jumpRouter('/shop')">返回</el-button>
     </div>
      <el-dialog v-model="dialogimg" size="small">
@@ -150,7 +150,8 @@ export default {
         return this.active ++;
       }
       if(this.active ++> 2) {
-        return this.active = 1;
+         this.shopAjax();
+         return this.active = 1;
       };
     },
     selectedItem(index,data){
@@ -236,21 +237,21 @@ export default {
      * 推广手机验证
      */
     phone(phone){
-        if(!phone){
-            this.$message({
-                message: '请输入推送手机号码',
-                type: 'warning'
-            });
-            return false;
-        }
-        if(!Lib.M.validPhone(phone)){
-            this.$message({
-                message: '请正确的手机号码',
-                type: 'warning'
-            });
-            return false;
-        }
+      if(!phone){
+          this.$message({
+              message: '请输入推送手机号码',
+              type: 'warning'
+          });
+          return false;
+      }else if(!Lib.M.validPhone(phone)){
+          this.$message({
+              message: '请正确的手机号码',
+              type: 'warning'
+          });
+          return false;
+      }else{
         return true;
+      }
     },
     /**
      * 增添推广人手机
@@ -277,6 +278,7 @@ export default {
     }
   },
   mounted() {
+    this.isMaterialUrl();
     this.shopAjax();
   },
 }

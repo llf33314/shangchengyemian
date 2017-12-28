@@ -29,9 +29,11 @@
                   <div class="list-shop-dtl">
                     <p v-text="scope.row.stoName"></p>
                      <div class="list-shop-txt">
-                      <div class="pass" > 
+                      <div :class="{'pass':scope.row.certStoType}" > 
                         <i class="iconfont icon-renzheng"></i> 
-                        <span v-if="scope.row.certStoType == 0">个人</span><span v-else>企业</span>认证
+                         <span v-if="scope.row.certStoType ==null">个人</span>
+                         <span v-else-if="scope.row.certStoType == 0">个人</span>
+                         <span v-else>企业</span>认证
                       </div>
                       <div :class="{'pass':isSecuritytrade}">
                         <i class="iconfont icon-renzheng"></i> 担保交易
@@ -234,7 +236,7 @@
         :current-page.sync="currentPage"
         :page-size="tabelData.page.pageSize"
         layout="prev, pager, next, jumper"
-        :total="tabelData.page.pageCount">
+        :total="tabelData.page.rowCount">
       </el-pagination>
     </div>
   </el-tabs>
@@ -372,20 +374,20 @@ export default {
       _this.$root.$refs.dialogWarn.showDialog(msg);
     },
     /**
-     *链接--二维码
+     *链接--二维码(店铺)
      @param data 店铺id
      */
-    shopLink(data) {
+    shopLink(shopData) {
       let _this = this;
       let msg = {
-        title: "店铺链接",
-        path: _this.webPath,
-        pageLink: "/classify/" + data.id + "/" + data.stoUserId + "/0/k=k" //商城首页的链接(只是代替)
-      };
-      _this.$root.$refs.dialogQR.showDialog(msg);
+            title: "店铺链接",
+            path: _this.webPath,
+            pageLink: "/index/" + shopData.pageId //商城首页的链接 
+          };
+          _this.$root.$refs.dialogQR.showDialog(msg);
     },
     /**
-     *链接--二维码
+     *链接--二维码（页面）
      @param data 店铺id
      */
     pageLink(data) {
@@ -394,8 +396,7 @@ export default {
         title: "店铺链接",
         urlQR: "",
         path: _this.webPath,
-        pageLink:
-          "/classify/" + data.pag_sto_id + "/" + data.pag_user_id + "/0/k=k" //商城首页的链接(只是代替
+        pageLink: "/index/" + data.id //商城首页的链接 
       };
       _this.$root.$refs.dialogQR.showDialog(msg);
     },
@@ -563,8 +564,16 @@ export default {
         }
       });
     },
+    handleSizeChange(val) {
+        console.log(`每页 ${val} 条`);
+    },
     handleCurrentChange(val) {
-      this.shopAjax(val);
+      if (this.activeName === "shop") {
+        this.shopAjax(val);
+      } else if (this.activeName === "page") {
+        this.pageAjax(val);
+      }
+ 
     }
   },
   mounted() {

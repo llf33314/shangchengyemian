@@ -39,7 +39,7 @@
           <div class="index-shopInfo">
             <el-form :inline="true" :model="searchData" class="demo-form-inline">
               <el-form-item >
-                <el-input v-model="searchData.orderNo" placeholder="订单号"></el-input>
+                <el-input v-model.trim="searchData.orderNo" placeholder="订单号"></el-input>
               </el-form-item>
               <el-form-item label="订单状态 :">
                 <el-select v-model="searchData.status" placeholder="全部">
@@ -67,7 +67,7 @@
                 <el-button type="primary" :disabled="subList==null" @click="exportTrade()">批量导出</el-button>
             </el-form>
           </div>
-          <div class="index-content">
+          <div class="index-content" v-loading.body="loading" element-loading-text="拼命加载中">
             <el-tabs v-model="activeName2" type="card" @tab-click="handleClick(activeName2)">
               <el-tab-pane label="全部" name="0"></el-tab-pane>
               <el-tab-pane label="成功" name="1"></el-tab-pane>
@@ -199,7 +199,8 @@ export default {
             }
           }]
         },
-        value7: ''
+        value7: '',
+        loading:true,
     }
   },
   methods: {
@@ -264,6 +265,7 @@ export default {
      */
     tradeList(data){
       let _this = this;
+      _this.loading=true;
       _this.ajaxRequest({
         'url': DFshop.activeAPI.tradeList_post,
         'data':data,
@@ -276,6 +278,7 @@ export default {
             pageSize: data.data.page.pageSize,
             rowCount: data.data.page.rowCount
           }
+          _this.loading=false;
         }
       });
     },
@@ -301,9 +304,15 @@ export default {
   },
   mounted(){
     let _this = this;
-    _this.getTurnoverCount();
-    _this.searchData.curPage=1;
-    _this.tradeList(_this.searchData);
+    _this.isAdminUser({
+      success: function(data) {
+        if (data.code == -1) return;
+        _this.getTurnoverCount();
+        _this.searchData.curPage=1;
+        _this.tradeList(_this.searchData);
+      }
+    });
+   
   }
 }
 </script>

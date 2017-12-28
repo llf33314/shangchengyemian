@@ -24,7 +24,7 @@
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="链接地址 :" prop="returnUrl" v-if="ruleForm.type == 1">
-                <el-input v-model="ruleForm.returnUrl" style="width:300px;">
+                <el-input v-model.trim="ruleForm.returnUrl" style="width:300px;">
                      <template slot="prepend">Http://</template>
                 </el-input>
             </el-form-item>

@@ -44,7 +44,7 @@
                 </div>
             </el-form-item>
             <el-form-item label="交纳定金 :" prop="deposit_percent" required class="msg-right-item"> 
-                 <el-input  v-model="ruleForm.deposit_percent" class="max-input">
+                 <el-input  v-model.trim="ruleForm.deposit_percent" class="max-input">
                     <template slot="prepend">¥</template>
                 </el-input>
                 <span class="p-warn" v-if="ruleForm.proPrice > 0">不能高于商品价格，商品的价格为￥{{ruleForm.proPrice}}</span>
@@ -95,7 +95,7 @@
                 </div>
             </el-form-item>
             <el-form-item label="订货数量 :" >
-                <el-input  v-model="ruleForm.order_num" placeholder="请输入订货数量" class="max-input"></el-input>
+                <el-input  v-model.number="ruleForm.order_num" placeholder="请输入订货数量" class="max-input"></el-input>
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
@@ -118,12 +118,15 @@ export default {
   data() {
     var formDepositPercent = (rule, value, callback) => {
       console.log(this.ruleForm.proPrice, "this.ruleForm.proPrice");
+       let reg = /^[0-9]{1,5}(\.\d{1,2})?$/;
       if (this.ruleForm.product_id > 0) {
         if (value >= this.ruleForm.proPrice || value < 0) {
           return callback(new Error("交纳定金必须大于0并且要小于商品的价格"));
         } else if (value == "") {
           callback(new Error("交纳定金不能为空"));
-        } else {
+        } else if (!reg.test(value) || value <= 0) {
+        return callback(new Error("定金最多只能输入大于0的5位小数"));
+        }else {
           callback();
         }
       }

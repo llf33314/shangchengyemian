@@ -13,7 +13,7 @@
       </el-form-item>
       <el-form-item label="待付款订单取消时间设置 :">
         拍下未付款订单 
-        <el-input v-model="form.set.orderCancel" style="width:80px;"></el-input>
+        <el-input v-model.number="form.set.orderCancel" style="width:80px;"></el-input>
         分钟内未付款，自动取消订单
       </el-form-item>
       <el-form-item label="货到付款 :">
@@ -42,7 +42,7 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="支付成功提醒内容 :" v-if="form.set.isSmsMember == 1">
-        <el-input type="textarea" v-model="form.paySuccessText" style="width:418px" placeholder="请输入内容"></el-input>
+        <el-input type="textarea" v-model.trim="form.paySuccessText" style="width:418px" placeholder="请输入内容"></el-input>
       </el-form-item>
       <el-form-item label="商品预售 :">
         <el-radio-group v-model="form.set.isPresale">
@@ -81,7 +81,7 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="接收申请审核手机 :"  v-if="form.set.isCheckSeller == 1 && form.set.isSeller == 1">
-        <el-input v-model="form.set.checkSellerPhone" style="width:180px;"></el-input>
+        <el-input v-model.number="form.set.checkSellerPhone" style="width:180px;"></el-input>
         <p class="p-warn">
           该手机号码用于接收申请成为超级销售员的信息，请填写正确号码。
         </p>
