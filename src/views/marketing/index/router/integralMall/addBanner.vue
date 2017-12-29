@@ -181,7 +181,6 @@ export default {
   },
    mounted(){
     let _this = this;
-    this.isMarketingUrl();
     this.storeList({
       'success'(data){
         _this.shopList = data.data;

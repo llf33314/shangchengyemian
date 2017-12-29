@@ -248,7 +248,6 @@ export default {
     },
   },
   mounted(){
-    this.isMarketingUrl();
     this.mallHtmlList(1);
   }
 }

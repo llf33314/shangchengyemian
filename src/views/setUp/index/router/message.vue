@@ -78,7 +78,7 @@
             开启后，买家发起维权通过多粉公众号推送给商家。
           </p>
         </div>
-        <div class="message-item">
+        <!-- <div class="message-item">
           <div class="message-switch message-title">
             <p>买家提现审核成功</p>
             <el-switch
@@ -90,7 +90,7 @@
           <p class="p-warn">
             开启后，买家提现审核成功通过多粉公众号推送给商家。
           </p>
-        </div>
+        </div> -->
       </div>
       <div class="message-text">
         <p class="message-title">粉丝消息模板<p>

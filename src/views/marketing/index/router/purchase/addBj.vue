@@ -370,14 +370,13 @@ export default {
     },
   },
    mounted() {
-       let _this = this;
-       this.isMarketingUrl();
-       _this.purchaseAllcontractList();
-       _this.purchaseCompanyModeList();
-       //修改报价单时
-       if(_this.$route.params.id != undefined && _this.$route.params.id != ''){     
-            _this.purchaseOrderInfo(this.$route.params.id);
-       }
+    let _this = this;
+    _this.purchaseAllcontractList();
+    _this.purchaseCompanyModeList();
+    //修改报价单时
+    if(_this.$route.params.id != undefined && _this.$route.params.id != ''){     
+        _this.purchaseOrderInfo(this.$route.params.id);
+    }
    }
 }
 </script>

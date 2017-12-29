@@ -377,7 +377,7 @@ export default {
         ]
       },
       webPath: "",
-      loading: true
+      loading: false,
     };
   },
   watch: {
@@ -430,8 +430,16 @@ export default {
       this.mallPresaleGiveList(val);
     },
     handleClick(tab, event) {
+       let _this = this;
       let _activeName = tab.name;
       this.$router.push(_activeName);
+      if(_activeName == 1){
+        _this.mallPresaleList(1);
+      }else if(_activeName ==2){
+        _this.mallPresaleDepositList(1);
+      }else if(_activeName ==3){
+        _this.mallPresaleGiveList();
+      }
     },
     //商品预售删除弹出框
     presaleDel(id, type) {
@@ -506,6 +514,7 @@ export default {
     //预售管理列表
     mallPresaleList(pageNum) {
       let _this = this;
+      _this.loading = true;
       _this.ajaxRequest({
         url: DFshop.activeAPI.mallPresaleList_post,
         data: {
@@ -718,16 +727,20 @@ export default {
   },
   mounted() {
     let _this = this;
-    this.isMarketingUrl();
     _this.activeName = _this.$route.params.activeName;
     _this.storeList({
       success(data) {
         _this.shopList = data.data;
       }
     });
-    _this.mallPresaleList(1);
-    _this.mallPresaleDepositList(1);
-    _this.mallPresaleGiveList();
+    if(_this.activeName == 1){
+      _this.mallPresaleList(1);
+    }else if(_this.activeName ==2){
+       _this.mallPresaleDepositList(1);
+    }else if(_this.activeName ==3){
+      _this.mallPresaleGiveList();
+    }  
+    
   }
 };
 </script>

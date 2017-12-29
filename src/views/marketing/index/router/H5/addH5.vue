@@ -120,7 +120,6 @@ export default {
     }
   },
   mounted(){
-    this.isMarketingUrl();
     this.mallHtmlModelList(1);
   }
 }

@@ -785,7 +785,6 @@ export default {
   },
   mounted() {
     let _this = this;
-    this.isMarketingUrl();
     _this.activeName = _this.$route.params.activeName;
   
     _this.storeList({

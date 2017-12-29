@@ -423,8 +423,16 @@ export default {
       this.mallPifaShangList(val);
     },
     handleClick(tab, event) {
+      let _this = this;
       let _activeName = tab.name;
       this.$router.push(_activeName);
+      if(_activeName == 1){
+        _this.mallWholesaleList(1);
+      }else if(_activeName ==2){
+        _this.mallPifaShangList(1);
+      }else if(_activeName ==3){
+        _this.mallSetWholesale();
+      } 
     },
     handleDelete(id, type) {
       //删除批发事件
@@ -681,16 +689,19 @@ export default {
   },
   mounted() {
     let _this = this;
-    this.isMarketingUrl();
     _this.activeName = _this.$route.params.activeName;
     _this.storeList({
       success(data) {
         _this.shopList = data.data;
       }
     });
-    _this.mallWholesaleList(1);
-    _this.mallPifaShangList(1);
-    _this.mallSetWholesale();
+    if(_this.activeName == 1){
+        _this.mallWholesaleList(1);
+    }else if(_this.activeName ==2){
+       _this.mallPifaShangList(1);
+    }else if(_this.activeName ==3){
+      _this.mallSetWholesale();
+    } 
   }
 };
 </script>

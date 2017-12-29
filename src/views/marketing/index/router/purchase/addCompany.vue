@@ -148,10 +148,9 @@ export default {
   },
   mounted() {
     let _this = this;
-    this.isMarketingUrl();
     //修改模板时
     if(_this.$route.params.id != undefined && _this.$route.params.id != ''){
-      console.log(this.$route.params.id);
+    //   console.log(this.$route.params.id);
       _this.purchaseCompanyInfo(this.$route.params.id);
     }
   }   
