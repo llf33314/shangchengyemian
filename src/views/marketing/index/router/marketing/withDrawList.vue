@@ -146,9 +146,8 @@ export default {
  },
 mounted() {
   let _this = this;
-     this.isMarketingUrl();
-     _this.saleMemberId=_this.$route.params.id;
-    _this.mallSellersWithDrawList(1);
+  _this.saleMemberId=_this.$route.params.id;
+  _this.mallSellersWithDrawList(1);
 } 
 }
 </script>

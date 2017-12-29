@@ -38,7 +38,7 @@
               :key="index">
           <div class="material-square">
             <img class="img" :src="img.imageUrl" />
-            <div class="delete"  @click.stop="stopDelete">
+            <div class="delete"  @click.stop="deleteImg(index)">
               <i class="el-icon-view" @click.stop="showBigImg(img)"></i>
               <i class="el-icon-delete2" @click.stop="deleteImg(index)"></i>
             </div>

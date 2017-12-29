@@ -466,7 +466,6 @@ export default {
     }
   },
   mounted() {
-    this.isMarketingUrl();
     this.activeName = this.$route.params.activeName;
     this.refreshData(1); 
   }   

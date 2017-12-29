@@ -15,10 +15,10 @@
           <p v-text="dataCount.yesterday_orders_num"></p>
           <div>昨日订单</div>
         </div>
-        <div class="col1">
+        <!-- <div class="col1">
           <p v-text="dataCount.yesterday_orders_num"></p>
           <div>商家当前可提现余额</div>
-        </div>
+        </div> -->
       </div>
     </div>
     <div class="survey-item function-main" v-if="path !=null">
@@ -29,16 +29,18 @@
             <i class="iconfont icon-jia"></i>发布商品
           </a>
         </div>
-        <div class="col1">
+        <!-- <div class="col1">
            <i class="iconfont icon-renminbi"></i>收入/提现
-        </div>
+        </div> -->
         <div class="col1">
           <a :href="path+'views/order/index.html#/allOrder'">
             <i class="iconfont icon-dingdan1"></i>所有订单
           </a>
         </div>
         <div class="col1">
+            <a target="_blank" :href="path+'wxapplet/indexstart.do'">
           <i class="iconfont icon-xiaochengxu1"></i>小程序
+            </a>
         </div>
       </div>
       <div class="item-content">
@@ -52,9 +54,9 @@
             <i class="iconfont icon-shezhi1"></i>通用设置
           </a>
         </div>
-        <div class="col1">
+        <!-- <div class="col1">
           <i class="iconfont icon-msnui-weixin"></i>公众号
-        </div>
+        </div> -->
         <div class="col1">
           <a :href="path+'views/trade/index.html#/'">
             <i class="iconfont icon-zhankai"></i>交易记录

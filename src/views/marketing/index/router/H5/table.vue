@@ -164,9 +164,8 @@ export default {
     },
   },
   mounted(){
-      this.isMarketingUrl();
       this.h5Id=this.$route.params.id;
-      console.log(this.h5Id);
+    //   console.log(this.h5Id);
       this.mallHtmlFromList(1);
   }
 }

@@ -335,7 +335,6 @@ export default {
   },
   mounted() {
     let _this = this;
-    this.isMarketingUrl();
     _this.storeList({
       success(data) {
         if (data.data == null || data.data.length == 0) {

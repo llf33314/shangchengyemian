@@ -213,7 +213,6 @@ export default {
   },
    mounted(){
     let _this = this;
-    this.isMarketingUrl();
     // console.log(_this.$route.params.id );
     if(_this.$route.params.id != undefined){
       _this.mallAppletInfo(_this.$route.params.id);

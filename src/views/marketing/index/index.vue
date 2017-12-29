@@ -1,9 +1,8 @@
 <template>
   <router-view/>
 </template>
- <script>
+<script>
 import Lib from 'assets/js/Lib';
-
 export default {
   components: {
     

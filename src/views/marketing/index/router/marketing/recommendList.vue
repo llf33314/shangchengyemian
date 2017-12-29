@@ -178,9 +178,8 @@ export default {
  },
 mounted() {
   let _this = this;
-     this.isMarketingUrl();
-     _this.saleMemberId=_this.$route.params.id;
-    _this.mallSellersList(1);
+  _this.saleMemberId=_this.$route.params.id;
+  _this.mallSellersList(1);
 } 
 }
 </script>

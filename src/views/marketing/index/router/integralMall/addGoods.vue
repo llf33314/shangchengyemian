@@ -226,7 +226,6 @@ export default {
   },
   mounted(){
     let _this = this;
-    this.isMarketingUrl();
     if(_this.$route.params.id != 0){
       _this.mallIntegralInfo(_this.$route.params.id);
       _this.disabledShop = true;

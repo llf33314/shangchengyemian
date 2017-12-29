@@ -106,10 +106,9 @@ export default {
   },
   mounted() {
     let _this = this;
-    this.isMarketingUrl();
     //修改合同时
     if(_this.$route.params.id != undefined && _this.$route.params.id != ''){
-      console.log(this.$route.params.id);
+      // console.log(this.$route.params.id);
       _this.purchaseContractInfo(this.$route.params.id);
     }
   }   

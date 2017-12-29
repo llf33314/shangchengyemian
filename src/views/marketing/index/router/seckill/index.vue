@@ -205,7 +205,6 @@ export default {
     }
   },
   mounted() {
-    this.isMarketingUrl();
     this.mallSeckillList(1);
   }
 };
