@@ -51,6 +51,15 @@
         shortUrl:'正在生成链接...',
       }
     },
+    watch:{
+      'copyUrlVisible'(a){
+        if(a){
+          parent.window.postMessage("openMask()", "*");
+        }else{
+          parent.window.postMessage("closeMask()", "*");
+        }
+      }
+    },
     methods:{
       down(){
         let _this = this;

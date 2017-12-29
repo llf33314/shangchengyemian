@@ -24,7 +24,7 @@
               @dragstart='drag($event,index)'
               @dragover='allowDrop($event,index)'>
               <div class="avatar-layer">
-                <i class="el-icon-search" @click.self="largeImg(item.path+item.imageUrl)"></i>
+                <i class="el-icon-search" @click.self="largeImg((item.path?item.path:path)+item.imageUrl)"></i>
                 <i class="el-icon-delete" @click.self="deleteImg(index)"></i>
               </div>
         </div>
@@ -110,6 +110,13 @@
         })
         this.imgdata = a;
       },
+      'materialLargeSrcVisible'(a){
+        if(a){
+          parent.window.postMessage("openMask()", "*");
+        }else{
+          parent.window.postMessage("closeMask()", "*");
+        }
+      }
     },
     mounted () {
       //单图上传--初始
@@ -123,6 +130,7 @@
             item.path = this.path;
           })
       }
+      this.isMaterialUrl();
     },
     methods: {
       /** 

@@ -387,7 +387,21 @@ export default {
     },
     $route: function(t, f) {
       this.activeName = t.params.activeName;
-    }
+    },
+    'dialogVisibleGift'(a){
+      if(a){
+        parent.window.postMessage("openMask()", "*");
+      }else{
+        parent.window.postMessage("closeMask()", "*");
+      }
+    },
+    'dialogVisible'(a){
+      if(a){
+        parent.window.postMessage("openMask()", "*");
+      }else{
+        parent.window.postMessage("closeMask()", "*");
+      }
+    },
   },
   methods: {
     //复制退定金链接

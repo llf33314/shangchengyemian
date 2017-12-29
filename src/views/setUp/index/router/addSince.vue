@@ -157,6 +157,13 @@ export default {
   watch: {
     "ruleForm.timeList"(a, b) {
       this.$refs.ruleForm.validate(valid => {});
+    },
+    'materialLargeSrcVisible'(a){
+      if(a){
+        parent.window.postMessage("openMask()", "*");
+      }else{
+        parent.window.postMessage("closeMask()", "*");
+      }
     }
   },
   methods: {

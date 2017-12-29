@@ -327,7 +327,14 @@ export default {
               }
             }
         };
-    }
+    },
+    'dialogVisible'(a){
+      if(a){
+        parent.window.postMessage("openMask()", "*");
+      }else{
+        parent.window.postMessage("closeMask()", "*");
+      }
+    },
   }, 
   methods: {
     /**多维权信息切换 */

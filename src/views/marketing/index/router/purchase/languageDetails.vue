@@ -86,6 +86,15 @@ export default {
         }
     }
   },
+  watch:{
+    'dialogFormVisible'(a){
+      if(a){
+        parent.window.postMessage("openMask()", "*");
+      }else{
+        parent.window.postMessage("closeMask()", "*");
+      }
+    },
+  },
   methods: {
       /**打开回复对话框  */
     openDialog(id){

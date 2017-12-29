@@ -345,6 +345,13 @@ export default {
     gtTransger
   },
   watch: {
+    'dialogVisible'(a){
+      if(a){
+        parent.window.postMessage("openMask()", "*");
+      }else{
+        parent.window.postMessage("closeMask()", "*");
+      }
+    }
   },
   methods: {
     confirmArea() {

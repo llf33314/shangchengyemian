@@ -615,7 +615,15 @@ export default {
       code:'获取验证码',//验证码 倒计时
     }
   },
-  
+  watch:{
+    'materialLargeSrcVisible'(a){
+      if(a){
+        parent.window.postMessage("openMask()", "*");
+      }else{
+        parent.window.postMessage("closeMask()", "*");
+      }
+    }
+  },
   methods: {
     /**
       选择店铺类型

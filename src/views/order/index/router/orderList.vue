@@ -356,7 +356,13 @@ export default {
           _this.mallOrderList( _this.searchData);
         }
       });
-   
+    },
+    'dialogVisible'(a){
+      if(a){
+        parent.window.postMessage("openMask()", "*");
+      }else{
+        parent.window.postMessage("closeMask()", "*");
+      }
     }
   },
   methods: {

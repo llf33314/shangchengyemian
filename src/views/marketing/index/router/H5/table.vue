@@ -99,6 +99,15 @@ export default {
       h5Id:'',
     }
   },
+  watch:{
+    'dialogVisible'(a){
+      if(a){
+        parent.window.postMessage("openMask()", "*");
+      }else{
+        parent.window.postMessage("closeMask()", "*");
+      }
+    }
+  },
   methods: {
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);

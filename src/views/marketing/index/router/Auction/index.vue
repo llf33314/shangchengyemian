@@ -227,6 +227,13 @@ export default {
     },
     $route: function(t, f) {
       this.activeName = t.params.activeName;
+    },
+    'dialogViewDetails'(a){
+      if(a){
+        parent.window.postMessage("openMask()", "*");
+      }else{
+        parent.window.postMessage("closeMask()", "*");
+      }
     }
   },
   methods: {

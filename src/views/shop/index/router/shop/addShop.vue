@@ -123,6 +123,15 @@ export default {
       addshopImg:''
     }
   },
+  watch:{
+    'dialogimg'(a){
+      if(a){
+        parent.window.postMessage("openMask()", "*");
+      }else{
+        parent.window.postMessage("closeMask()", "*");
+      }
+    }
+  },
   methods: {
     /**
      * 上一页跳转

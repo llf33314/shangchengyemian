@@ -85,6 +85,15 @@ export default {
       isReplacePro : '', //显示替换商品true
     };
   },
+  watch: {
+    'materialLargeSrcVisible'(a){
+      if(a){
+        parent.window.postMessage("openMask()", "*");
+      }else{
+        parent.window.postMessage("closeMask()", "*");
+      }
+    }
+  },
   methods: {
     /**打开商品选择窗口 */
     showDialog(){

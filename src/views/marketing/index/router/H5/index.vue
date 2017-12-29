@@ -100,6 +100,15 @@ export default {
       },
     }
   },
+  watch:{
+    'modifyDialog'(a){
+      if(a){
+        parent.window.postMessage("openMask()", "*");
+      }else{
+        parent.window.postMessage("closeMask()", "*");
+      }
+    }
+  },
   methods: {
     /**打开修改对话框 */
     modifyData(index,row){

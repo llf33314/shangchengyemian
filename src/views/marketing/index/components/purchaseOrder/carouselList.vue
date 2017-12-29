@@ -85,6 +85,13 @@ export default {
   watch: {
     rowList(a, b) {
       this.ruleForm.rowList = this.rowList;
+    },
+    'materialLargeSrcVisible'(a){
+      if(a){
+        parent.window.postMessage("openMask()", "*");
+      }else{
+        parent.window.postMessage("closeMask()", "*");
+      }
     }
   },
   mounted() {  

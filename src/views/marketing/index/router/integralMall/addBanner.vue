@@ -93,6 +93,15 @@ export default {
       disabledShop : '',//编辑时,店铺不可改
     };
   },
+  watch:{
+    'materialLargeSrcVisible'(a){
+      if(a){
+        parent.window.postMessage("openMask()", "*");
+      }else{
+        parent.window.postMessage("closeMask()", "*");
+      }
+    }
+  },
   methods: {
     submitForm(formName) {
       let _this = this;

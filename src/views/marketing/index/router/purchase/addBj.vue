@@ -192,7 +192,14 @@ export default {
             _this.ruleForm.allMoney +=_this.ruleForm.freight;
         }
         _this.$refs['ruleForm'].validate();
-    }
+    },
+    'materialLargeSrcVisible'(a){
+      if(a){
+        parent.window.postMessage("openMask()", "*");
+      }else{
+        parent.window.postMessage("closeMask()", "*");
+      }
+    },
   },
   methods: {
         /**
