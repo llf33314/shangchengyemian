@@ -8,7 +8,7 @@
             <em class="down" :class="{'is-reverse':isShow}"></em>
             <span class="item" v-for=" (item,i) in selectedData" :key="i">
                 <em>{{item.groupName}}</em>
-                <i class="el-icon-circle-close"  @click.self="deleteData(item.groupId)"></i>
+                <i class="el-icon-circle-close"  @click.stop="deleteData(item.groupId)"></i>
             </span>
         </div>
         <el-form-item prop="group" >

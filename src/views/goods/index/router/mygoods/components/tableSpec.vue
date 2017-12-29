@@ -408,14 +408,13 @@ export default {
          *修改图片
          */
         changeImg(val){
-            console.log()
             let _index = this.itemIndex[0];
             let _i = this.itemIndex[1];
             this.specList[_index].specValues[_i].newSpecImage = val;
             this.$emit('change',this.specList);
+            console.log(this.specList,'this.specList')
         },
         changeImgData(index,i){
-            console.log(index,i)
             this.itemIndex = [];
             this.itemIndex.push(index);
             this.itemIndex.push(i);
