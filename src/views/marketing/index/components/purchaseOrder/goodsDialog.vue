@@ -58,10 +58,10 @@ export default {
     isShow() {
       let _this = this;
       if (_this.isShow) {
-        parent.window.postMessage("openMask()", "*");
+        parent.parent.window.postMessage("openMask()", "*");
         this.purchaseOrderGetProductAll();
       }else{
-        parent.window.postMessage("closeMask()", "*");
+        parent.parent.window.postMessage("closeMask()", "*");
       }
     }
   },
