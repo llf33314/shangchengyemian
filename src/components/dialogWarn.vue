@@ -90,6 +90,7 @@ export default {
                
         },
         showDialog(msg) {
+            parent.parent.window.postMessage("openMask()", "*");
             let vm = this;
             vm.dialogType = msg.dialogType || '' ;
             vm.dialogLink = msg.dialogLink || '';
@@ -108,6 +109,7 @@ export default {
         handleClose(){
             this.close = true ;
             this.dialogWarn = false;
+            parent.parent.window.postMessage("closeMask()", "*");
         }
     },
     mounted () {
