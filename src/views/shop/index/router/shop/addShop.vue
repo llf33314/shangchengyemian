@@ -47,7 +47,7 @@
             </div>
           </el-form-item>
           <el-form-item label="联系人 :">
-            <el-input v-model="form.stoLinkman" ></el-input>
+            <el-input v-model.trim="form.stoLinkman" ></el-input>
             <span class="p-warn">(必填)</span>
           </el-form-item>
           <el-form-item label="联系电话 :">
@@ -121,6 +121,15 @@ export default {
             phone:''
         }],
       addshopImg:''
+    }
+  },
+  watch:{
+    'dialogimg'(a){
+      if(a){
+        parent.window.postMessage("openMask()", "*");
+      }else{
+        parent.window.postMessage("closeMask()", "*");
+      }
     }
   },
   methods: {
@@ -237,21 +246,21 @@ export default {
      * 推广手机验证
      */
     phone(phone){
-        if(!phone){
-            this.$message({
-                message: '请输入推送手机号码',
-                type: 'warning'
-            });
-            return false;
-        }
-        if(!Lib.M.validPhone(phone)){
-            this.$message({
-                message: '请正确的手机号码',
-                type: 'warning'
-            });
-            return false;
-        }
+      if(!phone){
+          this.$message({
+              message: '请输入推送手机号码',
+              type: 'warning'
+          });
+          return false;
+      }else if(!Lib.M.validPhone(phone)){
+          this.$message({
+              message: '请正确的手机号码',
+              type: 'warning'
+          });
+          return false;
+      }else{
         return true;
+      }
     },
     /**
      * 增添推广人手机

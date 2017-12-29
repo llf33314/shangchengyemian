@@ -64,6 +64,15 @@ export default {
       codeUrl:''
     }
   },
+  watch:{
+    'dialogVisible'(a){
+      if(a){
+        parent.window.postMessage("openMask()", "*");
+      }else{
+        parent.window.postMessage("closeMask()", "*");
+      }
+    }
+  },
   methods: {
     selectedModule(item,index){
       this.selected == index ? this.selected ='-1': this.selected =index;
@@ -120,7 +129,6 @@ export default {
     }
   },
   mounted(){
-    this.isMarketingUrl();
     this.mallHtmlModelList(1);
   }
 }

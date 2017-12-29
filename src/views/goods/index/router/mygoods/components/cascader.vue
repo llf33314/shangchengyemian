@@ -80,17 +80,19 @@ export default {
         },
         'selectedData'(a,b){
             let _this = this;
-
             if(a.length == 0){
                 _this.ruleForm.group = false;
             }
-
             _this.selectedData.forEach((item,i)=>{
                 item.sort = i;
                 _this.ruleForm.group = true;
             })
-            _this.$emit('change',_this.selectedData);
+           _this.$emit('change',_this.selectedData);
         },
+        'value'(a,b){
+            if(a.length == b.length) return false;
+            this.initialValue(a);
+        }
     },
     methods:{
         /** 
@@ -156,12 +158,10 @@ export default {
          * @param id  删除的id
          */
         deleteData(id){
-            //let add = true;//不重复
             let _this = this;
             _this.selectedData.forEach((item,i)=>{
                 if(id == item.groupId){
                     _this.selectedData.splice(i, 1);
-                   // add = false;//重复
                 }
             })
            // return add

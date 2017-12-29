@@ -4,7 +4,7 @@
       <div class="index-shopInfo">
         <el-form :inline="true" :model="searchData" class="demo-form-inline">
           <el-form-item class="input-all">
-            <el-input v-model="searchData.queryName" placeholder="订单号/姓名/联系电话"></el-input>
+            <el-input v-model.trim="searchData.queryName" placeholder="订单号/姓名/联系电话"></el-input>
           </el-form-item>
            <el-form-item >
               <span class="demonstration" 
@@ -356,7 +356,13 @@ export default {
           _this.mallOrderList( _this.searchData);
         }
       });
-   
+    },
+    'dialogVisible'(a){
+      if(a){
+        parent.window.postMessage("openMask()", "*");
+      }else{
+        parent.window.postMessage("closeMask()", "*");
+      }
     }
   },
   methods: {

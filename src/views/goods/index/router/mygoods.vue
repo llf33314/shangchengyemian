@@ -78,7 +78,7 @@
             <span v-if="scope.row.isPublish == 1 && scope.row.checkStatus == 1">
               已上架
             </span>
-            <span  v-if="scope.row.isPublish == -1 && scope.row.checkStatus == 1">
+            <span  v-if="(scope.row.isPublish == -1 || scope.row.isPublish == 0) && scope.row.checkStatus == 1">
               未上架
             </span>
             <span class="shop-red" v-if="scope.row.checkStatus == -1">
@@ -105,12 +105,12 @@
                          @click="mallProductBatchProduct(scope.row.id,4)">
                 下架
             </el-button>
-            <el-button  size="small" 
+            <!-- <el-button  size="small" 
                         class="buttonBlue" 
                         v-if="scope.row.checkStatus == -2 || scope.row.checkStatus == -1"
                         @click="mallProductBatchProduct(scope.row.id,2)">
               送审
-            </el-button>
+            </el-button> -->
             <el-button  size="small" 
                         class="buttonBlue" 
                         v-if=" scope.row.checkStatus == 1 && scope.row.isPublish == 1"
@@ -145,7 +145,7 @@
             <el-button @click="mallProductBatchProduct(ids,1)">批量删除</el-button>
             <el-button @click="mallProductBatchProduct(ids,3)">批量上架</el-button>
             <el-button @click="mallProductBatchProduct(ids,4)">批量下架</el-button>
-            <el-button @click="mallProductBatchProduct(ids,2)">批量送审</el-button>
+            <!-- <el-button @click="mallProductBatchProduct(ids,2)">批量送审</el-button> -->
           </div>
         </el-col>
         <el-col :span="8">

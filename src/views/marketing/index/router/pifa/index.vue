@@ -105,7 +105,7 @@
                      <div class="index-shopInfo" >
                         <div class="index-input-box">
                             <el-input placeholder="搜索关键词" icon="search" class="max-input" @keyup.enter.native="handleIconClick"
-                                v-model="keyword" :on-icon-click="handleIconClick" >
+                                v-model.trim="keyword" :on-icon-click="handleIconClick" >
                             </el-input>
                         </div>
                         <el-button type="primary" @click="synData" v-if="pifaData.page.rowCount > 0">同步成交数/金额</el-button>
@@ -249,7 +249,7 @@
                             <!-- <el-checkbox-group v-model="form.type"> -->
                                 <el-checkbox name="type" v-model="form.pfSet.isSpHand">
                                     一次性购买商品达
-                                      <el-input v-model="form.pfSet.spHand" class="mix-input" ></el-input> 手
+                                      <el-input v-model.number="form.pfSet.spHand" class="mix-input" ></el-input> 手
                                 </el-checkbox> 
                             <!-- </el-checkbox-group> -->
                             <p class="p-warn">混批条件和手批条件必须设置一种</p>
@@ -257,11 +257,11 @@
                             <p class="p-warn">如果没有选择手批条件，我们会为您默认购买手批商品必须达到一手才能批发</p>
                         </el-form-item>
                         <el-form-item label="批发商说明：" prop="pfRemark">
-                            <el-input v-model="form.paySet.pfRemark" type="textarea" :rows="2"
+                            <el-input v-model.trim="form.paySet.pfRemark" type="textarea" :rows="2"
                                 placeholder="请输入内容" style="width:420px"></el-input>
                         </el-form-item>
                         <el-form-item label="批发商申请说明：" prop="pfApplyRemark">
-                            <el-input v-model="form.paySet.pfApplyRemark" type="textarea" :rows="2"
+                            <el-input v-model.trim="form.paySet.pfApplyRemark" type="textarea" :rows="2"
                                 placeholder="请输入内容" style="width:420px"></el-input>
                         </el-form-item>
                         <el-form-item>
@@ -393,7 +393,14 @@ export default {
     },
     $route: function(t, f) {
       this.activeName = t.params.activeName;
-    }
+    },
+    'dialogViewDetails'(a){
+      if(a){
+        parent.window.postMessage("openMask()", "*");
+      }else{
+        parent.window.postMessage("closeMask()", "*");
+      }
+    },
   },
   methods: {
     searchPifa() {
@@ -423,8 +430,16 @@ export default {
       this.mallPifaShangList(val);
     },
     handleClick(tab, event) {
+      let _this = this;
       let _activeName = tab.name;
       this.$router.push(_activeName);
+      if(_activeName == 1){
+        _this.mallWholesaleList(1);
+      }else if(_activeName ==2){
+        _this.mallPifaShangList(1);
+      }else if(_activeName ==3){
+        _this.mallSetWholesale();
+      } 
     },
     handleDelete(id, type) {
       //删除批发事件
@@ -681,16 +696,19 @@ export default {
   },
   mounted() {
     let _this = this;
-    this.isMarketingUrl();
     _this.activeName = _this.$route.params.activeName;
     _this.storeList({
       success(data) {
         _this.shopList = data.data;
       }
     });
-    _this.mallWholesaleList(1);
-    _this.mallPifaShangList(1);
-    _this.mallSetWholesale();
+    if(_this.activeName == 1){
+        _this.mallWholesaleList(1);
+    }else if(_this.activeName ==2){
+       _this.mallPifaShangList(1);
+    }else if(_this.activeName ==3){
+      _this.mallSetWholesale();
+    } 
   }
 };
 </script>

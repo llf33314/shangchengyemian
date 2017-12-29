@@ -142,7 +142,6 @@ export default {
   },
   mounted() {
     let _this = this;
-    this.isMarketingUrl();
     if(_this.$route.params.id != undefined && _this.$route.params.id != ''){
         _this.orderId=this.$route.params.id;
         _this.memberId=this.$route.params.memberId;

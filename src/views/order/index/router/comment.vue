@@ -4,7 +4,7 @@
       <div class="index-shopInfo">
         <el-form :inline="true" :model="searchData" class="demo-form-inline">
           <el-form-item class="input-all">
-            <el-input v-model="searchData.queryName" placeholder="订单号/商品名称" @blur="search()"></el-input>
+            <el-input v-model.trim="searchData.queryName" placeholder="订单号/商品名称" @blur="search()"></el-input>
           </el-form-item>         
           <el-form-item label="选择店铺 :">
             <el-select v-model="searchData.shopId" placeholder="选择店铺"  @change="search()">
@@ -84,7 +84,7 @@
                 </div>
                 <div class="table-footer">
                   <p  v-if="comment.isRep == 1 && comment.chilComment !=null ">回复：{{comment.chilComment.content}}</p>
-                  <el-input :class="showText==true?'active':''" @change="blurChange" placeholder="请输入内容" v-model="input5" v-if="comment.isRep == 0">
+                  <el-input :class="showText==true?'active':''" @change="blurChange" placeholder="请输入内容" v-model.trim="input5" v-if="comment.isRep == 0">
                     <template slot="prepend">
                       <i class="iconfont icon-biaoqing"></i>
                     </template>

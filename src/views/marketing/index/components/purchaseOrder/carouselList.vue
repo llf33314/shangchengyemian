@@ -42,7 +42,7 @@
                         :rules="[
                             { required: true, message: '请输入跳转链接'}
                         ]">
-                        <el-input class="addGruop-input" placeholder="请输入跳转链接" v-model="row.carouselUrl" @blur="changeData" >
+                        <el-input class="addGruop-input" placeholder="请输入跳转链接" v-model.trim="row.carouselUrl" @blur="changeData" >
                              <template slot="prepend">Http://</template>
                         </el-input>
                     </el-form-item>
@@ -85,6 +85,13 @@ export default {
   watch: {
     rowList(a, b) {
       this.ruleForm.rowList = this.rowList;
+    },
+    'materialLargeSrcVisible'(a){
+      if(a){
+        parent.window.postMessage("openMask()", "*");
+      }else{
+        parent.window.postMessage("closeMask()", "*");
+      }
     }
   },
   mounted() {  

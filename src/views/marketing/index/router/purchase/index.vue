@@ -13,7 +13,7 @@
                     <div class="index-shopInfo">
                         <el-form :inline="true" :model="searchData" class="demo-form-inline">
                             <el-form-item >
-                                <el-input v-model="searchData.search" placeholder="请输入报价单号" @blur="search()"></el-input>
+                                <el-input v-model.trim="searchData.search" placeholder="请输入报价单号" @blur="search()"></el-input>
                             </el-form-item>
                             <el-form-item label="订单状态 :">
                                 <el-select v-model="searchData.status" placeholder="全部" @change="search()">
@@ -109,7 +109,7 @@
                 <div class="common-content">
                     <div class="index-shopInfo">
                         <div class="index-input-box">
-                            <el-input v-model="contractTitle" placeholder="请输入合同标题" icon="search" class="max-input" @blur="contractSearch()"></el-input>
+                            <el-input v-model.trim="contractTitle" placeholder="请输入合同标题" icon="search" class="max-input" @blur="contractSearch()"></el-input>
                         </div>
                         
                         <router-link to="/contract/add">
@@ -145,7 +145,7 @@
                 <div class="common-content">
                         <div class="index-shopInfo">
                         <div class="index-input-box">
-                            <el-input v-model="keyWord" placeholder="请输入名称/电话/地址" icon="search" class="max-input"  @blur="companySearch()"></el-input>
+                            <el-input v-model.trim="keyWord" placeholder="请输入名称/电话/地址" icon="search" class="max-input"  @blur="companySearch()"></el-input>
                         </div>
                         <router-link to="/company/add">
                             <el-button  type="primary" >新增</el-button>
@@ -466,7 +466,6 @@ export default {
     }
   },
   mounted() {
-    this.isMarketingUrl();
     this.activeName = this.$route.params.activeName;
     this.refreshData(1); 
   }   

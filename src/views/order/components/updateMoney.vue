@@ -84,12 +84,19 @@ export default {
             var i = 0;
             for (var n = _this.orderData.mallOrderDetail.length; i < n; i++) {
                 var detail=_this.orderData.mallOrderDetail[i];
+                 let reg = /^[0-9]{1,5}(\.\d{1,2})?$/;
                 if(detail.updateMoney ==""){
-                _this.$message({
-                    message: '商品的价格不能为空',
-                    type: 'error'
-                });
-                return false;
+                    _this.$message({
+                        message: '商品的价格不能为空',
+                        type: 'error'
+                    });
+                    return false;
+                } else if (!reg.test(detail.updateMoney)) {
+                    _this.$message({
+                        message: '只能输入大于0的5位小数',
+                        type: 'error'
+                    });
+                    return false;
                 }
                 detailObj[i]={
                 "id":detail.id,

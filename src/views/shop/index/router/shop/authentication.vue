@@ -370,7 +370,7 @@
             <span class="shop-promptText" style="margin-bottom:67px;" v-if="data.stoSmsTelephone != '' ">验证短信将发送到该店铺绑定的推送手机：+86 {{data.stoSmsTelephone}} </span>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary"@click="submitForm('form')">提交认证</el-button>
+          <el-button type="primary" @click="submitForm('form')">提交认证</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -615,7 +615,15 @@ export default {
       code:'获取验证码',//验证码 倒计时
     }
   },
-  
+  watch:{
+    'materialLargeSrcVisible'(a){
+      if(a){
+        parent.window.postMessage("openMask()", "*");
+      }else{
+        parent.window.postMessage("closeMask()", "*");
+      }
+    }
+  },
   methods: {
     /**
       选择店铺类型

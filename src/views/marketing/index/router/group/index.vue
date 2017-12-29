@@ -200,7 +200,6 @@ export default {
     }
   },
   mounted() {
-    this.isMarketingUrl();
     this.mallGroupBuyList(1);
   }
 };

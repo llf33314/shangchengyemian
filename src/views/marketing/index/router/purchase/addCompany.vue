@@ -11,16 +11,16 @@
       <div class="addBond-main">
           <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
               <el-form-item label="公司名称 :" prop="companyName">
-                  <el-input v-model="ruleForm.companyName" placeholder="请输入公司名称" class="max-input" ></el-input>
+                  <el-input v-model.trim="ruleForm.companyName" placeholder="请输入公司名称" class="max-input" ></el-input>
               </el-form-item>
               <el-form-item label="公司电话 :" prop="companyTel">
-                  <el-input v-model="ruleForm.companyTel" placeholder="请输入公司官网" class="max-input" ></el-input>
+                  <el-input v-model.trim="ruleForm.companyTel" placeholder="请输入公司官网" class="max-input" ></el-input>
               </el-form-item>
               <el-form-item label="公司官网 :" prop="companyInternet">
-                  <el-input v-model="ruleForm.companyInternet" placeholder="请输入公司官网" class="max-input" ></el-input>
+                  <el-input v-model.trim="ruleForm.companyInternet" placeholder="请输入公司官网" class="max-input" ></el-input>
               </el-form-item>
               <el-form-item label="公司地址 :" prop="companyAddress">
-                 <el-input v-model="ruleForm.companyAddress" placeholder="请输入公司地址" class="max-input" ></el-input>
+                 <el-input v-model.trim="ruleForm.companyAddress" placeholder="请输入公司地址" class="max-input" ></el-input>
               </el-form-item>
               <el-form-item>
                   <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
@@ -148,10 +148,9 @@ export default {
   },
   mounted() {
     let _this = this;
-    this.isMarketingUrl();
     //修改模板时
     if(_this.$route.params.id != undefined && _this.$route.params.id != ''){
-      console.log(this.$route.params.id);
+    //   console.log(this.$route.params.id);
       _this.purchaseCompanyInfo(this.$route.params.id);
     }
   }   

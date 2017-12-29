@@ -85,6 +85,15 @@ export default {
       isReplacePro : '', //显示替换商品true
     };
   },
+  watch: {
+    'materialLargeSrcVisible'(a){
+      if(a){
+        parent.window.postMessage("openMask()", "*");
+      }else{
+        parent.window.postMessage("closeMask()", "*");
+      }
+    }
+  },
   methods: {
     /**打开商品选择窗口 */
     showDialog(){
@@ -204,7 +213,6 @@ export default {
   },
    mounted(){
     let _this = this;
-    this.isMarketingUrl();
     // console.log(_this.$route.params.id );
     if(_this.$route.params.id != undefined){
       _this.mallAppletInfo(_this.$route.params.id);

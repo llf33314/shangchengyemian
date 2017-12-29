@@ -31,7 +31,7 @@
                 <span v-if="ruleForm.commission_type !== 2">
                     <el-input v-model="ruleForm.commission_rate" class="addBond-input"></el-input>%
                 </span>
-                 <el-input v-model="ruleForm.commission_rate" class="addBond-input" v-if="ruleForm.commission_type ==2">
+                 <el-input v-model.number="ruleForm.commission_rate" class="addBond-input" v-if="ruleForm.commission_type ==2">
                      <template slot="prepend">¥</template>
                  </el-input>
                  <span class="p-warn" v-if="disabledCommission">商品佣金按百分比的计算公式：商品价*（佣金商品佣金/100）</span>
@@ -228,7 +228,6 @@ export default {
   },
   mounted() {
     let _this = this;
-    this.isMarketingUrl();
     _this.storeList({
       success(data) {
         _this.shopList = data.data;

@@ -227,8 +227,7 @@ export default {
     },
   },
   mounted() {
-     let _this = this;
-     _this.isMarketingUrl();
+    let _this = this;
     if(_this.$route.params.id != undefined && _this.$route.params.id != ''){     
       _this.purchaseOrderInfo(this.$route.params.id);
     }

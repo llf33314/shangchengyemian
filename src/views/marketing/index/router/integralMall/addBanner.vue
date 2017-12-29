@@ -24,7 +24,7 @@
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="链接地址 :" prop="returnUrl" v-if="ruleForm.type == 1">
-                <el-input v-model="ruleForm.returnUrl" style="width:300px;">
+                <el-input v-model.trim="ruleForm.returnUrl" style="width:300px;">
                      <template slot="prepend">Http://</template>
                 </el-input>
             </el-form-item>
@@ -92,6 +92,15 @@ export default {
       largeSrc: '',//查看大图 图片地址
       disabledShop : '',//编辑时,店铺不可改
     };
+  },
+  watch:{
+    'materialLargeSrcVisible'(a){
+      if(a){
+        parent.window.postMessage("openMask()", "*");
+      }else{
+        parent.window.postMessage("closeMask()", "*");
+      }
+    }
   },
   methods: {
     submitForm(formName) {
@@ -181,7 +190,6 @@ export default {
   },
    mounted(){
     let _this = this;
-    this.isMarketingUrl();
     this.storeList({
       'success'(data){
         _this.shopList = data.data;

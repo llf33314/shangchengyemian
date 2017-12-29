@@ -11,7 +11,7 @@
     <div class="addbj-main">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="148px" class="demo-ruleForm">
             <el-form-item label="标题 :" prop="orderTitle">
-               <el-input v-model="ruleForm.orderTitle" class="addbj-input" placeholder="请输入报价单标题" ></el-input>
+               <el-input v-model.trim="ruleForm.orderTitle" class="addbj-input" placeholder="请输入报价单标题" ></el-input>
             </el-form-item>
             <el-form-item label="所属公司 :" prop="companyId">
                 <el-select v-model="ruleForm.companyId" placeholder="请选择公司模板" class="addbj-input">
@@ -45,13 +45,13 @@
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="报价单描述 :"  prop="orderDescribe">
-                <el-input  v-model="ruleForm.orderDescribe" class="addbj-input" type="textarea" :rows="2" placeholder="请输入内容" ></el-input>
+                <el-input  v-model.trim="ruleForm.orderDescribe" class="addbj-input" type="textarea" :rows="2" placeholder="请输入内容" ></el-input>
             </el-form-item>
              <el-form-item label="报价单说明 :" prop="orderExplain">
-                <el-input  v-model="ruleForm.orderExplain" class="addbj-input" type="textarea" :rows="2" placeholder="请输入内容" ></el-input>
+                <el-input  v-model.trim="ruleForm.orderExplain" class="addbj-input" type="textarea" :rows="2" placeholder="请输入内容" ></el-input>
             </el-form-item>
              <el-form-item label="报价单备注 :" prop="orderRemarks">
-                <el-input  v-model="ruleForm.orderRemarks" class="addbj-input" type="textarea" :rows="2" placeholder="请输入内容" ></el-input>
+                <el-input  v-model.trim="ruleForm.orderRemarks" class="addbj-input" type="textarea" :rows="2" placeholder="请输入内容" ></el-input>
             </el-form-item>
             <el-form-item  label="底部二维码 :" prop="orderQrcode" style="width:40%;height:40%">
                 <div class="addbj-img" :class="ruleForm.orderQrcode == '' ? 'border':''">
@@ -192,7 +192,14 @@ export default {
             _this.ruleForm.allMoney +=_this.ruleForm.freight;
         }
         _this.$refs['ruleForm'].validate();
-    }
+    },
+    'materialLargeSrcVisible'(a){
+      if(a){
+        parent.window.postMessage("openMask()", "*");
+      }else{
+        parent.window.postMessage("closeMask()", "*");
+      }
+    },
   },
   methods: {
         /**
@@ -370,14 +377,13 @@ export default {
     },
   },
    mounted() {
-       let _this = this;
-       this.isMarketingUrl();
-       _this.purchaseAllcontractList();
-       _this.purchaseCompanyModeList();
-       //修改报价单时
-       if(_this.$route.params.id != undefined && _this.$route.params.id != ''){     
-            _this.purchaseOrderInfo(this.$route.params.id);
-       }
+    let _this = this;
+    _this.purchaseAllcontractList();
+    _this.purchaseCompanyModeList();
+    //修改报价单时
+    if(_this.$route.params.id != undefined && _this.$route.params.id != ''){     
+        _this.purchaseOrderInfo(this.$route.params.id);
+    }
    }
 }
 </script>

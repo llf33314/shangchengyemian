@@ -49,7 +49,7 @@
                 <p class="p-warn">提现规则为最低1元，最高2000元</p>
               </el-form-item>
               <el-form-item label="经纪人说明 :">
-               <el-input type="textarea" :rows="3" placeholder="请输入内容" v-model="setupForm.sellerRemark" style="width:358px;">
+               <el-input type="textarea" :rows="3" placeholder="请输入内容" v-model.trim="setupForm.sellerRemark" style="width:358px;">
                 </el-input>
               </el-form-item>
               <el-form-item>
@@ -134,7 +134,7 @@
             <div class="index-shopInfo">
               <!-- <el-autocomplete v-model="state4" :fetch-suggestions="querySearchAsync"
                 placeholder="销售员名字/手机" @select="handleSelect" icon="search" ></el-autocomplete> -->
-                <el-input v-model="keyWord" placeholder="销售员名字/手机" icon="search" class="max-input"
+                <el-input v-model.trim="keyWord" placeholder="销售员名字/手机" icon="search" class="max-input"
                   @keyup.enter.native="searchExamine" :on-icon-click="searchExamine"></el-input>
             </div>
             <el-table :data="examineData.page.subList" style="width: 100%" v-if="examineData.page.rowCount > 0">
@@ -187,7 +187,7 @@
         <el-tab-pane label="销售员管理" name="4">
           <div class="common-content">
             <div class="index-shopInfo">
-              <el-input v-model="keyWord_sellers" placeholder="销售员名字/手机" icon="search" class="max-input" 
+              <el-input v-model.trim="keyWord_sellers" placeholder="销售员名字/手机" icon="search" class="max-input" 
                  @keyup.enter.native="searchSeller" :on-icon-click="searchSeller"></el-input>
             </div>
             <el-table :data="sellersList.page.subList" style="width: 100%" v-if="sellersList.page.rowCount > 0">
@@ -250,7 +250,7 @@
             <div class="index-shopInfo">
               <div class="index-input-box">
                 <span>
-                  <el-input v-model="keyWord_tixian" placeholder="销售员名字/手机" icon="search" class="max-input" 
+                  <el-input v-model.trim="keyWord_tixian" placeholder="销售员名字/手机" icon="search" class="max-input" 
                     @keyup.enter.native="searchSale" :on-icon-click="searchSale"></el-input>
                 </span>
                 <span>
@@ -785,7 +785,6 @@ export default {
   },
   mounted() {
     let _this = this;
-    this.isMarketingUrl();
     _this.activeName = _this.$route.params.activeName;
   
     _this.storeList({

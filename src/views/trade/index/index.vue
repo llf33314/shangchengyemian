@@ -1,7 +1,7 @@
 <template>
 <div class="index-wrapper">
-    <el-tabs v-model="activeName" >
-      <el-tab-pane label="交易记录" name="index">
+    <!-- <el-tabs v-model="activeName" > -->
+      <!-- <el-tab-pane label="交易记录" name="index"> -->
         <div class="index-main" v-if="isShow">
           <div class="index-msg">
             <div class="index-item">
@@ -19,7 +19,7 @@
                 <p>7日营业额（截止至今日0点）</p>
               </div>
             </div>
-            <div class="index-item">
+            <!-- <div class="index-item">
               <div>
                 <p v-text="dataCount.settlementCount" class="index-item-money">￥0.00
                 </p>
@@ -34,12 +34,12 @@
               </div>
               <el-button type="primary" 
                         size="small">提现</el-button>
-            </div>
+            </div> -->
           </div>
           <div class="index-shopInfo">
             <el-form :inline="true" :model="searchData" class="demo-form-inline">
               <el-form-item >
-                <el-input v-model="searchData.orderNo" placeholder="订单号"></el-input>
+                <el-input v-model.trim="searchData.orderNo" placeholder="订单号"></el-input>
               </el-form-item>
               <el-form-item label="订单状态 :">
                 <el-select v-model="searchData.status" placeholder="全部">
@@ -121,7 +121,7 @@
                 <el-table-column
                   label="操作">
                   <template scope="scope">
-                     <a target="_blank" :href="'/views/order/index.html#/detail/'+scope.row.id">查看</a>
+                     <a :href="path+'views/order/index.html#/detail/'+scope.row.id">查看</a>
                   </template>
                 </el-table-column>
               </el-table>
@@ -139,13 +139,13 @@
           </div>
         </div> 
         <contentNo :show="'trade'" v-else></contentNo>
-      </el-tab-pane>
-      <el-tab-pane label="保证金记录" name="bond">
+      <!-- </el-tab-pane> -->
+      <!-- <el-tab-pane label="保证金记录" name="bond">
         <div class="index-main">
           bond
         </div> 
-      </el-tab-pane>
-    </el-tabs>
+      </el-tab-pane> -->
+    <!-- </el-tabs> -->
 </div>
 </template>
  <script>
@@ -201,6 +201,7 @@ export default {
         },
         value7: '',
         loading:true,
+        path:'',
     }
   },
   methods: {
@@ -304,6 +305,9 @@ export default {
   },
   mounted(){
     let _this = this;
+     let href = window.location.href;
+    _this.path = href.split('views')[0]; 
+    
     _this.isAdminUser({
       success: function(data) {
         if (data.code == -1) return;

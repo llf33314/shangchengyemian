@@ -42,12 +42,76 @@
                             </router-link>
                         </el-form-item>
                         <el-form-item label="商品类型 :">
-                            <el-radio-group v-model="form.pro.proTypeId">
+                            <el-radio-group v-model="form.pro.proTypeId" @change="changeTypeId(form.pro.proTypeId)">
                                 <el-radio :label="0" class="item-radio">实物商品</el-radio>
                                 <el-radio :label="1" class="item-radio">虚拟商品（非会员卡，无需物流）</el-radio>
-                                <el-radio :label="2" class="item-radio">虚 拟商品（会员卡，无需物流）</el-radio>
-                                <el-radio :label="3" class="item-radio">虚拟商品（流量包，无需物流）</el-radio>
+                                <el-radio :label="2" class="item-radio">虚拟商品（会员卡，无需物流）</el-radio>
+                                <el-radio :label="3" class="item-radio">虚拟商品（卡券包，无需物流）</el-radio>
+                                <el-radio :label="4" class="item-radio">虚拟商品（流量包，无需物流）</el-radio>
                             </el-radio-group>
+                        </el-form-item>
+                        <el-form-item 
+                            :label="form.pro.proTypeId==2?'会员卡':form.pro.proTypeId==3?'卡券包':'流量包'"
+                            v-if="form.pro.proTypeId != 0 && form.pro.proTypeId != 1">
+                            <!--会员卡-->
+                            <el-radio-group v-if="form.pro.proTypeId == 2" 
+                                            v-model.number="form.pro.memberType">
+                                <el-radio v-for="card in cardList" 
+                                            :label="card.ctId" 
+                                            class="item-radio"
+                                            :key="card.ctId"
+                                        >{{card.ctName}}</el-radio>
+                            </el-radio-group>
+                            <!--卡券包-->
+                            <div v-if="form.pro.proTypeId == 3" >
+                                <el-radio-group v-if="form.pro.proTypeId == 3" 
+                                                v-model.number="form.pro.cardType" 
+                                                @change="changeCardType(form.pro.cardType)">
+                                    <el-radio v-for="card in cardReceiveList" 
+                                                :label="card.id" 
+                                                class="item-radio"
+                                                :key="card.id"
+                                    >{{card.cardsName}}</el-radio>
+                                </el-radio-group>
+                                 <el-table :data="cardReceiveItem.messageList"
+                                    style="width:500px"
+                                    border>
+                                    <el-table-column
+                                        prop="cardName"
+                                        label="卡券名">
+                                    </el-table-column>
+                                    <el-table-column
+                                        prop="num"
+                                        label="卡券数量">
+                                    </el-table-column>
+                                </el-table>
+                            </div>
+                            <!--流量包-->
+                            <el-table v-if="form.pro.proTypeId == 4"
+                                :data="flowList"
+                                style="width:500px"
+                                border>
+                                 <el-table-column
+                                    label="选择"
+                                    prop="id"
+                                    width="80">
+                                        <template scope="scope">
+                                            <el-radio class="radio" 
+                                                v-model.number="form.pro.flowId" 
+                                                :label="Number(scope.row.id)">
+                                                &nbsp
+                                            </el-radio>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column
+                                prop="type"
+                                label="流量包名">
+                                </el-table-column>
+                                <el-table-column
+                                prop="count"
+                                label="流量包数量">
+                                </el-table-column>
+                            </el-table>
                         </el-form-item>
                     </div>
                 </div>
@@ -55,17 +119,17 @@
                     <div class="item-title">库存/规格</div>
                     <div class="item-content">
                             <el-form-item label="商品规格 :"  v-if="form.pro.shopId">
-                                <table-spec :row="form.specList" :shopId="form.pro.shopId" @change="changeSpac"></table-spec>
+                                <table-spec :row="form.specList" :shopId="form.pro.shopId" @change="changeSpac" ref="specForm"></table-spec>
                             </el-form-item>
                             <el-form-item label="商品库存 :" v-if=" form.specList !='' && form.specList != null">
-                                <table-list :specList="form.specList" :invenList="form.invenList"  ref="specForm" @stockTotal="changeStock"></table-list>
+                                <table-list :specList="form.specList" :invenList="form.invenList"  ref="invenForm" @stockTotal="changeStock"></table-list>
                             </el-form-item>
                             <el-form-item label="商品参数 :"  v-if="form.pro.shopId">
                                 <gt-param :row="form.paramList" :shopId="form.pro.shopId"  @change="paramSelected"></gt-param>
                             </el-form-item>
                             <el-form-item label="总库存 :" :rules="rules.proStockTotal" prop="pro.proStockTotal" required>
                                 <div class="item-inline">
-                                    <el-input v-model.number="form.pro.proStockTotal" :disabled=" form.invenList != null " placeholder="0"></el-input>
+                                    <el-input v-model.number="form.pro.proStockTotal" :disabled=" form.invenList != '' " placeholder="0"></el-input>
                                 </div>
                                 <span>
                                     <el-checkbox v-model="form.pro.isShowStock">页面不显示商品库存</el-checkbox>
@@ -92,7 +156,7 @@
                         </el-form-item>
                         <el-form-item label="价格 :" prop="pro.proPrice" :inline="true" :rules="rules.proPrice">
                             <div class="item-inline">
-                                <el-input v-model="form.pro.proPrice">
+                                <el-input v-model.number="form.pro.proPrice">
                                     <template slot="prepend">¥</template>
                                 </el-input>
                             </div>
@@ -159,6 +223,11 @@
                             </div>
                             <div class="item-inline" style="width:220px">
                                 <el-select v-model="form.pro.proFreightTempId" placeholder="请选择运费模板">
+                                    <!-- <el-option  v-for="log in this.logisticsList " 
+                                                :key="log.id"
+                                                :label="log.name"
+                                                :value="log.id">
+                                    </el-option> -->
                                     <el-option  :key="logisticsList.id"
                                                 :label="logisticsList.name"
                                                 :value="logisticsList.id">
@@ -166,11 +235,11 @@
                                 </el-select>
                             </div>
                             <div class="item-inline" style="width:auto">
-                                <span class="fontBlue">刷新</span>
-                                <span class="fontBlue">新建</span>
+                                <span class="fontBlue" @click="freightAjax(form.pro.proFreightTempId)">刷新</span>
+                                <span class="fontBlue" @click="addLogistics">新建</span>
                             </div>
                         </el-form-item>
-                        <el-form-item label="物流重量 :" v-if=" form.pro.proFreightSet == 2">
+                        <el-form-item label="物流重量 :" v-if=" form.pro.proFreightSet == 2 && form.invenList.length>0">
                             <tableList :specList="form.specList" :invenList="form.invenList" :type="'logisticsList'"
                                         ref="logisticsForm"></tableList>
                         </el-form-item>
@@ -245,12 +314,16 @@
                 <p>发布商品成功</p>
             </div>
         </div>
-        <el-button style="margin-top: 12px;" @click="next()" v-if="active != 3">下一步</el-button>
+        <el-button style="margin-top: 12px;" @click="next()" v-if="active == 1">下一步</el-button>
         <el-button type="primary" v-if="active == 2">保存</el-button>
-        <el-button style="margin-top: 12px;" v-if="active != 3">返回</el-button>
+        <el-button type="primary" v-if="active == 2" @click="this.changeData(2)">预览</el-button>
+        <el-button style="margin-top: 12px;" v-if="active == 1 " @click="window.history.go(-1)">返回</el-button>
+        <el-button style="margin-top: 12px;" v-if="active == 2 " @click=" active=2 ">返回</el-button>
         <div class="shop-textc" v-if="active == 3" >
-            <el-button type="primary">继续添加</el-button>
-            <el-button style="margin-top: 12px;" >返回 </el-button>
+            <el-button type="primary" @click="to_add()">继续添加</el-button>
+            <router-link to='/mygoods'>
+                <el-button style="margin-top: 12px;" >返回 </el-button>
+            </router-link>
         </div> 
     </div>
   </div>
@@ -287,24 +360,32 @@ export default {
         shopList:[],//店铺列表
         form:{//默认值
             pro:{
-               shopId:'',//店铺id
-               proTypeId:0,//商品类型
-               proStockTotal: null,//总库存
-               proFreightSet:1,//物流
-               proFreightTempId:'',//物流id
-               isMemberDiscount:1,//会员折扣
-               isCoupons:1,//使用优惠券
-               isIntegralDeduction:0,//积分抵扣
-               isFenbiDeduction:0,//粉币抵扣
-               isFenbiChangePro:0,//粉币兑换商品
-               isShowViews:0,//显示浏览量
-               isInvoice:0,//发票
-               isWarranty:0,//保修
+                shopId:'',//店铺id
+                proTypeId:0,//商品类型
+                proStockTotal: null,//总库存
+                proFreightSet:1,//物流
+                proFreightTempId:'',//物流id
+                isMemberDiscount:1,//会员折扣
+                isCoupons:1,//使用优惠券
+                isIntegralDeduction:0,//积分抵扣
+                isFenbiDeduction:0,//粉币抵扣
+                isFenbiChangePro:0,//粉币兑换商品
+                isShowViews:0,//显示浏览量
+                isInvoice:0,//发票
+                isWarranty:0,//保修
+                memberType:0,//购买会员卡类型 
+                cardType:0,//购买卡券包id
+                flowId: 0, //流量id，用于流量购买
+                flowRecordId: 0, //流量冻结id，用于流量购买
+                isSpecifica:0,//是否有规格
+                proWeight:0,//商品重量
+                proCode:0,//商家编码
             },
            imageList:[],
            proGroupList:[],
+           invenList:[],
         },//保存填充数据
-        aa:1,
+
         paramList:[],//参数列表
         imgUrl:'',//图片域名
         isImgno:false,//图片验证
@@ -316,7 +397,7 @@ export default {
                 { min: 1, max: 100, message: '长度在 100 个字符内', trigger: 'blur' }
             ],
             proPrice: [
-                { required: true, message: '请输入商品价格', trigger: 'blur' },
+                { type: 'number',required: true, message: '请输入商品价格', trigger: 'blur' },
                 { validator: formMoney, trigger: 'blur'}
             ],
             proStockTotal: [
@@ -327,7 +408,13 @@ export default {
             ]
         },
         newSpecList:[],//暂存新列表
-        newimageList:[]
+        newimageList:[],//图片数据
+
+        cardList:[],//会员卡列表
+        cardReceiveList:[],//卡券包列表
+        cardReceiveItem:{},//卡卷包选择模块
+        flowList:[],//流量包列表
+        webPath:''//手机端域名
     }
   },
   methods: {
@@ -339,28 +426,44 @@ export default {
         let submit = this.submitForm('ruleForm');                   //商品信息验证结果
         let cascaderSubmit = this.$refs.cascader.submitForm();      //分组验证结果
         let imgSubmit= this.IMGRules();                            //上传图片验证结果
-        
+        let specListSubmit = this.$refs.specForm.allRules()    //规格选择列表
         if(submit && cascaderSubmit && imgSubmit){
-            if(this.form.invenList != null ){
-                let specSubmit = this.$refs.specForm.allRules();//规格库存列表验证结果
+            if(this.form.invenList != null && specListSubmit){
+                let invenSubmit = this.$refs.invenForm.allRules();//规格库存列表验证结果
                 if(this.form.pro.proFreightSet == 2)  {
                     let logisticsSubmit = this.$refs.logisticsForm.allRules();  //运费物流列表验证结果
-                    if(specSubmit && logisticsSubmit ){
+                    if(invenSubmit && logisticsSubmit ){
                         this.active = 2;
                     }
-                }         
+                }else{
+                    this.active = 2;
+                }       
             }else{
                 this.active = 2;
             }
-            console.log(this.form,'this.form')
+        }else{
+            this.$message({
+                message: '请完善商品的基本信息',
+                type: 'warning'
+            });
         }
-        this.newimageList = this.newimageList.sort(this.compare("sort"))    
         return
       }
       if(this.active == 2){
-          console.log(this.active,'this.active')
+        this.changeData(1);
+        return
       }
       if(this.active++ > 2) this.active = 1;
+    },
+    /**
+     * 继续添加
+     */
+    to_add(){
+        if(this.$route.params.id === 'add'){
+            location.reload()
+        }else{
+            this.$router.push('/releaseGoods/add')
+        }
     },
     /** 
      *排序 
@@ -393,7 +496,7 @@ export default {
         return flag;
     },
     /** 
-     *  编辑请求
+     *  编辑数据请求
      */
     editAjax(){
         let _this = this;
@@ -403,24 +506,110 @@ export default {
                 id:_this.goodsId
             },
             'success':function (data){
-                //console.log(data,'编辑请求数据');
+                console.log(data,'编辑请求数据');
                 _this.form = data.data;
+
             }
         });
     },
     /** 
-     *  新增请求
+     * 保存请求
+     * @param data  数据
+     * @param type  1新增保存，2新增预览
      */
-    addAjax(){
+    dataAjax(type,data){
         let _this = this;
-        let data={};
+        let url = '';
+        if(this.$route.params.id === 'add'){
+            //新增
+            url = DFshop.activeAPI.mallProductAdd_post;
+        }else{
+            //修改
+            url = DFshop.activeAPI.mallProductUpdatet_post;
+        }
         _this.ajaxRequest({
-            'url': DFshop.activeAPI.mallProductAdd_post,
+            'url': url,
             'data':data,
             'success':function (data){
-                    
+                if(type==1){
+                    _this.active = 3;
+                }else{
+                    let _pageLink='';
+                    if(_this.$route.params.id === 'add'){
+                        _pageLink = 'goods/details/'+_this.form.pro.shopId+'/'+data.data.userId+'/0/'+data.data.id+'/0';
+                    }else{
+                        _pageLink = 'goods/details/'+_this.form.pro.shopId+'/'+_this.form.pro.userId+'/0/'+_this.form.pro.id+'/0';
+                    }
+                    let msg ={
+                        title: '商品预览',
+                        path: _this.webPath,
+                        pageLink: _pageLink//页面链接
+                    };
+                    _this.$root.$refs.dialogQR.showDialog(msg);
+                }
             }
         });
+    },
+    /** 
+     * 数据请求 --  整理数据
+     * @param type 1保存，2预览
+    */
+    changeData(type){
+        let _this = this;
+        let imageList =[];
+        if(_this.newimageList.length == 0){
+            imageList = _this.form.imageList
+        }else{
+            _this.newimageList = this.newimageList.sort(this.compare("sort"));
+            _this.newimageList.forEach((item,i)=>{
+                if(i == 0){
+                    item.isMainImages = 1;
+                }else{
+                    item.isMainImages = 0;
+                }
+                if(item.assId == undefined){
+                    let img = {
+                        imageUrl:item.imageUrl,
+                        isMainImages:'',
+                        assType:1,
+                        assSort:i,
+                    }
+                    imageList.push(img)
+                }else{
+                    imageList.push(item)
+                }
+            })
+        }
+        let specList=[];
+        _this.form.specList.forEach((item,i)=>{
+            item.specValues.forEach((test,j)=>{
+                let _item ={
+                    productId: item.productId || null,
+                    specificaNameId: item.specNameId,
+                    specificaName: item.specName,
+                    specificaImgUrl: item.newSpecImage || null,
+                    specificaValue: test.specValue,
+                    specificaValueId: test.specValueId
+                }
+                specList.push(_item);
+            })
+        })
+         //请求数据需要
+
+        let data={
+            product:_this.form.pro,
+            imageList: JSON.stringify(imageList),
+            groupList:JSON.stringify(this.form.proGroupList),
+            detail:null,
+            speList:JSON.stringify(specList),
+            invenList:_this.form.invenList.length> 0?JSON.stringify(_this.form.invenList):null,
+            paramsList:JSON.stringify(_this.form.paramList),
+        };
+
+        data.invenList == null ? data.product.isSpecifica = 0:data.product.isSpecifica = 1;
+    
+        console.log(data,'修改提交数据')
+        this.dataAjax(type,data)
     },
     /** 
      * 切换店铺id
@@ -434,7 +623,69 @@ export default {
      */
     groupselected(data){
         this.form.proGroupList = data;
-        //console.log(data,'选中分组')
+    },
+    /** 
+     * 修改商品类型
+     * @param type 类型   0实物商品
+     *                    1虚拟商品（非会员卡，无需物流）
+     *                    2虚拟商品（会员卡，无需物流）
+     *                    3虚拟商品（卡券包，无需物流）
+     *                    4虚拟商品（流量包，无需物流）
+     */
+    changeTypeId(type){
+        let _this = this;
+        if(type ==2){
+        //会员卡
+            if(this.cardList == ''){
+                _this.ajaxRequest({
+                    'url': DFshop.activeAPI.mallCardList_post,
+                    // 'data':,
+                    'success':function (data){
+                        //console.log(data,'会员卡data');
+                        _this.cardList = data.data
+                    }
+                });
+            }
+        }else if(type == 3){
+        //卡券包
+            if(this.cardReceiveList == ''){
+                _this.ajaxRequest({
+                    'url': DFshop.activeAPI.mallCardReceiveList_post,
+                    // 'data':,
+                    'success':function (data){
+                        //console.log(data,'卡券包data')
+                        _this.cardReceiveList = data.data;
+                    }
+                });
+            }
+        }else if(type == 4){
+        //流量包
+            if(this.flowList == ''){
+                _this.ajaxRequest({
+                    'url': DFshop.activeAPI.mallFlowList_post,
+                    // 'data':,
+                    'success':function (data){
+                        console.log(data,'流量包data',_this.form.pro.flowId)
+                        _this.flowList = data.data;
+                        _this.$set(_this.form.pro,'flowId',data.data[0].id)
+                        //_this.form.pro.flowId= data.data[0].id;
+                        console.log(_this.form.pro.flowId,'_this.form.pro.flowId')
+
+                    }
+                });
+            }
+        }
+    },
+    /** 
+     * 修改卡卷包id
+     */
+    changeCardType(id){
+        let _this = this;
+        this.cardReceiveList.forEach((item,i)=>{
+            if(id == item.id){
+                _this.cardReceiveItem = item;
+            }
+        })
     },
     /** 
      * 选择参数
@@ -442,64 +693,68 @@ export default {
      */
     paramSelected(data){
         this.form.paramList = data;
-        //console.log(data,'商品参数')
     },
     /** 
      * 商品规格
      */
     changeSpac(data){
-        //父级中介
+        //接受数据
         console.log(data,'商品规格specList ',data.length);
         if( data.length == 0 ) return;
-        
         let _this = this;
-
-        // _this.form.specList = data ;
         _this.$set(_this.form,'specList',data);
         _this.form.specList.splice(1,0);
-
-
-        // //请求数据需要
-        let _data2={
-            specificas:[ {
-                specificaNameId: null,        //规格名称ID
-                specificaName: null,            //规格名称
-                specificaValueId: null,         //规格值ID
-                specificaValue: null,          //规格值
-            }] ,
-            invPrice: null,          // 价格
-            invNum: null,           //数量
-            invCode: null,          //商家编码
-            isDefault: 0,          //是否默认
-            logisticsWeight: null   //重量
-        } 
+        
         //数据重组 --传值--specificaIds组合(笛卡尔乘积)
-           
+        let listData = [];
+        let productId = null;
+        data.forEach((item,i)=>{
+            if(item.productId == null){
+                productId = item.productId;
+            }
+            if(item.specValues.length >0){
+                listData.push(item);
+            }
+        })
 
         let result=[];//结果保存到这个数组
-        function toResult(arrIndex,aresult){
-            if(arrIndex >= data.length) {
-                result.push(aresult);
+        function toResult(arrIndex,aresult,specArr){
+            if(arrIndex >= listData.length) {
+                let obj = {
+                    specificaIds:aresult,
+                    specificas:specArr
+                }
+                result.push(obj);
                 return;
             }
-            let aArr = data[arrIndex].specValues;
+            let aArr = listData[arrIndex].specValues;
             if(!aresult) aresult = [];
+            if(!specArr) specArr = [];
             for(let i=0; i<aArr.length; i++){
                 let theResult = aresult.slice(0,aresult.length);
+                let theSpecArr = specArr.slice(0,aresult.length);
                 theResult.push(aArr[i].specValueId);
-                toResult(arrIndex+1,theResult);
+                let specificasData = {
+                    specificaNameId:listData[arrIndex].specNameId,      //规格名称ID
+                    specificaName:listData[arrIndex].specName,          //规格名称
+                    specificaValueId: aArr[i].specValueId,              // 规格值ID
+                    specificaValue: aArr[i].specValue,                  //规格值
+                }
+                theSpecArr.push(specificasData)
+                toResult(arrIndex+1,theResult,theSpecArr);
             }
         }
         toResult(0);
-            // 显示数据
+        console.log(result,'result')
+        // 显示数据
         let arr=[]
-        //显示列表需要 -- 新增时
-        if(_this.$route.params.id === 'add'){
+        // if(_this.$route.params.id === 'add'){
             result.forEach((item,i)=>{
-            let data1={
+                let data={
+                    specificas: item.specificas,//请求需要
                     id: null,
-                    productId: null,
-                    specificaIds: null,     //规格ID
+                    productId: productId,
+                    specificaIds: item.specificaIds.toString(),     //规格ID
                     invPrice: null,          //库存价格
                     invNum: null,            //库存数量
                     invCode: null,         //产品编码
@@ -507,14 +762,12 @@ export default {
                     isDefault: 0,             //是否默认  0没有 1是
                     specificaImgId: 0,        // 有图片的规格ID
                     logisticsWeight: null,    //物流重量
-                    specList: null
                 }
-                data1.specificaIds = item.toString();
-                arr.push(data1);
+                arr.push(data); 
             })
-            
-            _this.$set(_this.form,'invenList',arr) 
-        }
+            _this.$set(_this.form,'invenList',arr);
+            console.log(_this.form.invenList,'invenList')
+        // }
     },
     /** 
      * 总库存
@@ -528,12 +781,10 @@ export default {
     proFreightSet(e){
         if(e==2){
             //物流模板id默认
-            this.form.pro.proFreightTempId = this.logisticsList;
+            this.form.pro.proFreightTempId = this.logisticsList.id;
             this.form.pro.proFreightPrice = null;
         }else{
             this.form.pro.proFreightTempId = null;
-            //this.submitForm('ruleForm');
-            //this.resetForm('ruleForm');
         }
     },
     /** 
@@ -547,7 +798,7 @@ export default {
      */
     changeIMG(data){
         let _this = this;
-        console.log(data,'data');
+        console.log(data,'data')
         this.newimageList = data;
     },
     /** 
@@ -568,11 +819,17 @@ export default {
      * @param ID 
      */
     freightAjax(id){
+        if(id == null){
+            this.$message({
+                message: '运费设置请选中运费模板',
+                type: 'warning'
+            });
+        }
         let _this = this;
         _this.ajaxRequest({
             'url': DFshop.activeAPI.mallFreightGetFreightByShopId_post,
             'data':{
-                shopId: id
+                shopId: _this.form.pro.shopId
             },
             'success':function (data){
                 _this.logisticsList = data.data;
@@ -582,6 +839,13 @@ export default {
                 }
             }
         });
+    },
+    /** 
+     * 新增物流跳转
+     */
+    addLogistics(){
+        let  href = window.location.href.split('views')[0];
+        window.location.href = href+'views/setUp/index.html#/logistics/logistics'
     }
   },
   mounted(){
@@ -597,13 +861,12 @@ export default {
         'success'(data) {
             _this.shopList = data.data;
             _this.imgUrl = data.imgUrl;
+            _this.webPath = data.webPath;
             if(_this.$route.params.id === 'add'){
                 _this.form.pro.shopId = _this.shopList[0].id; 
-                //_this.freightAjax(_this.form.pro.shopId);
             }
         }
     })
-    //console.log(_this.form,'form')
   }
 }
 </script>

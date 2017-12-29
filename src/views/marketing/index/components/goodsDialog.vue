@@ -74,6 +74,7 @@ export default {
     isShow() {
       let _this = this;
       if (_this.isShow) {
+        parent.window.postMessage("openMask()", "*");
         this.mallGroupBuyGetProduct({
           defaultProId: _this.defaultProId,
           shopId: _this.shopId,
@@ -86,6 +87,8 @@ export default {
             _this.imgPath = data.imgUrl;
           }
         });
+      }else{
+        parent.window.postMessage("closeMask()", "*");
       }
     }
   },

@@ -86,6 +86,15 @@ export default {
         }
     }
   },
+  watch:{
+    'dialogFormVisible'(a){
+      if(a){
+        parent.window.postMessage("openMask()", "*");
+      }else{
+        parent.window.postMessage("closeMask()", "*");
+      }
+    },
+  },
   methods: {
       /**打开回复对话框  */
     openDialog(id){
@@ -157,7 +166,6 @@ export default {
   },
   mounted() {
     let _this = this;
-    this.isMarketingUrl();
     if(_this.$route.params.id != undefined && _this.$route.params.id != ''){
         _this.orderId=this.$route.params.id;
         _this.memberId=this.$route.params.memberId;

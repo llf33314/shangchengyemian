@@ -99,6 +99,15 @@ export default {
       h5Id:'',
     }
   },
+  watch:{
+    'dialogVisible'(a){
+      if(a){
+        parent.window.postMessage("openMask()", "*");
+      }else{
+        parent.window.postMessage("closeMask()", "*");
+      }
+    }
+  },
   methods: {
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
@@ -155,9 +164,8 @@ export default {
     },
   },
   mounted(){
-      this.isMarketingUrl();
       this.h5Id=this.$route.params.id;
-      console.log(this.h5Id);
+    //   console.log(this.h5Id);
       this.mallHtmlFromList(1);
   }
 }

@@ -15,48 +15,50 @@
           <p v-text="dataCount.yesterday_orders_num"></p>
           <div>昨日订单</div>
         </div>
-        <div class="col1">
+        <!-- <div class="col1">
           <p v-text="dataCount.yesterday_orders_num"></p>
           <div>商家当前可提现余额</div>
-        </div>
+        </div> -->
       </div>
     </div>
-    <div class="survey-item function-main">
+    <div class="survey-item function-main" v-if="path !=null">
       <p class="item-title">常用功能</p>
-      <div class="item-content">
+      <div class="item-content" >
         <div class="col1">
-          <a target="_blank" href="/views/goods/index.html#/releaseGoods/add">
+          <a :href="path+'views/goods/index.html#/releaseGoods/add'">
             <i class="iconfont icon-jia"></i>发布商品
           </a>
         </div>
-        <div class="col1">
+        <!-- <div class="col1">
            <i class="iconfont icon-renminbi"></i>收入/提现
-        </div>
+        </div> -->
         <div class="col1">
-          <a target="_blank" href="/views/order/index.html#/allOrder">
+          <a :href="path+'views/order/index.html#/allOrder'">
             <i class="iconfont icon-dingdan1"></i>所有订单
           </a>
         </div>
         <div class="col1">
+            <a target="_blank" :href="path+'wxapplet/indexstart.do'">
           <i class="iconfont icon-xiaochengxu1"></i>小程序
+            </a>
         </div>
       </div>
       <div class="item-content">
         <div class="col1" >
-          <a target="_blank" href="/views/shop/index.html#/page">
+          <a :href="path+'views/shop/index.html#/page'">
             <i class="iconfont icon-yemian"></i>页面管理
           </a>
         </div>
         <div class="col1">
-          <a target="_blank" href="/views/setUp/index.html#/setup">
+          <a :href="path+'views/setUp/index.html#/setup'">
             <i class="iconfont icon-shezhi1"></i>通用设置
           </a>
         </div>
-        <div class="col1">
+        <!-- <div class="col1">
           <i class="iconfont icon-msnui-weixin"></i>公众号
-        </div>
+        </div> -->
         <div class="col1">
-          <a target="_blank" href="/views/trade/index.html#/">
+          <a :href="path+'views/trade/index.html#/'">
             <i class="iconfont icon-zhankai"></i>交易记录
           </a>
         </div>
@@ -87,26 +89,31 @@ export default {
   data () {
     return {
         dataCount:{
-          yesterday_orders_num:''
+          yesterday_orders_num:'',
+          path:null,
         }
     }
   },
   methods: {
     ajax(){
       let _this = this;
-      console.log(DFshop.activeAPI,'DFshop.activeAPI')
+      // console.log(DFshop.activeAPI,'DFshop.activeAPI')
       this.ajaxRequest({
         'url': DFshop.activeAPI.mallCount_post,
         'success':function (data){
           console.log(data);
           _this.dataCount = data.data;
-          _this.yesterday_orders_num = '¥ '+data.yesterday_orders_num;
+          _this.yesterday_orders_num = '¥ '+data.yesterday_orders_num;         
         }
       });
     }
   },
   mounted(){
+     let _this = this;
     this.ajax();
+    let href = window.location.href;
+    _this.path = href.split('views')[0]; 
+   
   }
 }
 </script>

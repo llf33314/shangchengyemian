@@ -59,10 +59,10 @@
     <el-dialog title="修改信息"  :visible.sync="modifyDialog" size="tiny">
       <el-form  :model="modifyForm"  :rules="rules" ref="modifyForm" label-width="90px">
         <el-form-item label="页面名称 :" prop="htmlname">
-          <el-input v-model="modifyForm.htmlname" placeholder="请输入页面名称，不能有超过20字" maxlength="20"></el-input>
+          <el-input v-model.trim="modifyForm.htmlname" placeholder="请输入页面名称，不能有超过20字" maxlength="20"></el-input>
         </el-form-item>
         <el-form-item label="页面介绍 :">
-          <el-input v-model="modifyForm.introduce" placeholder="用于微信分享朋友圈"></el-input>
+          <el-input v-model.trim="modifyForm.introduce" placeholder="用于微信分享朋友圈"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -98,6 +98,15 @@ export default {
           { required: true, message: '页面名称不能为空', trigger: 'blur' }
         ],
       },
+    }
+  },
+  watch:{
+    'modifyDialog'(a){
+      if(a){
+        parent.window.postMessage("openMask()", "*");
+      }else{
+        parent.window.postMessage("closeMask()", "*");
+      }
     }
   },
   methods: {
@@ -248,7 +257,6 @@ export default {
     },
   },
   mounted(){
-    this.isMarketingUrl();
     this.mallHtmlList(1);
   }
 }

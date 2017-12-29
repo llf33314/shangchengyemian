@@ -15,7 +15,7 @@
     <!--多个上传-->
     <div class="avatar-box" v-if="imgLists != '0'"  @drop='drop($event)'>
          <div v-for=" (item,index) in imgdata"
-              :style="{backgroundImage: 'url(' +item.path+item.imageUrl + ')',
+              :style="{backgroundImage: 'url(' +(item.path?item.path:path)+item.imageUrl + ')',
                       width:Width,
                       height:Height}"
               :key="index"
@@ -24,7 +24,7 @@
               @dragstart='drag($event,index)'
               @dragover='allowDrop($event,index)'>
               <div class="avatar-layer">
-                <i class="el-icon-search" @click.self="largeImg(item.path+item.imageUrl)"></i>
+                <i class="el-icon-search" @click.self="largeImg((item.path?item.path:path)+item.imageUrl)"></i>
                 <i class="el-icon-delete" @click.self="deleteImg(index)"></i>
               </div>
         </div>
@@ -105,8 +105,18 @@
       },
       'imgLists'(a,b){
         //多个上传数据
-          this.imgdata = a;
+        a.forEach((item,i)=>{
+          item.sort = i+1
+        })
+        this.imgdata = a;
       },
+      'materialLargeSrcVisible'(a){
+        if(a){
+          parent.window.postMessage("openMask()", "*");
+        }else{
+          parent.window.postMessage("closeMask()", "*");
+        }
+      }
     },
     mounted () {
       //单图上传--初始
@@ -120,6 +130,7 @@
             item.path = this.path;
           })
       }
+      this.isMaterialUrl();
     },
     methods: {
       /** 
@@ -140,11 +151,12 @@
           //确认
             if(_this.imgLists != '0'){
               //多个 tudo
+              let length = _this.imgdata.length;
               val.forEach((item,i) => {
                 let data = {
                   path: item.url.split("/image")[0],
                   imageUrl:'/image'+ item.url.split("/image")[1],
-                  sort: i+1
+                  sort: length+i+1,
                 }
                 _this.imgdata.push(data);
               });
@@ -216,7 +228,7 @@
           $(e.target).before(this.dom); 
         }
         _this.$emit('change',_this.imgdata);
-      }
+      },
     }
   }
 

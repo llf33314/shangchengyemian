@@ -9,7 +9,7 @@
   <div class="addLogistics-main">
   <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
     <el-form-item label="模板名称 :" prop="name" required>
-      <el-input v-model="ruleForm.name" placeholder="请输入模板名字" class="add-input"></el-input>
+      <el-input v-model.trim="ruleForm.name" placeholder="请输入模板名字" class="add-input"></el-input>
       <span class="addLogistics-warn">物流名称限制20字数，1个汉字等于2个数字</span>
     </el-form-item>
     <el-form-item label="默认快递公司 :" prop="expressId" class="icon-warn" required>
@@ -345,6 +345,13 @@ export default {
     gtTransger
   },
   watch: {
+    'dialogVisible'(a){
+      if(a){
+        parent.window.postMessage("openMask()", "*");
+      }else{
+        parent.window.postMessage("closeMask()", "*");
+      }
+    }
   },
   methods: {
     confirmArea() {

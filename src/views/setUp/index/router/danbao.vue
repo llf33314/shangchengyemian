@@ -107,6 +107,15 @@ export default {
         },
     }
   },
+  watch:{
+    'dialogFormVisible'(a){
+      if(a){
+        parent.window.postMessage("openMask()", "*");
+      }else{
+        parent.window.postMessage("closeMask()", "*");
+      }
+    }
+  },
   methods: {
     /**是否加入担保交易 */
     mallIsSecuritytrade(){
