@@ -105,7 +105,7 @@ export default {
      * 上一页跳转
      */
     Back(){
-      this.active == 2? this.active --:this.jumpRouter('/shop');
+      this.active == 2? this.active --:this.jumpRouter('/page');
     },
     /**
       下一页跳转
