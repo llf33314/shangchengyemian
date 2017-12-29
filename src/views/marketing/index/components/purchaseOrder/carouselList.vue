@@ -88,9 +88,9 @@ export default {
     },
     'materialLargeSrcVisible'(a){
       if(a){
-        parent.window.postMessage("openMask()", "*");
+        parent.parent.window.postMessage("openMask()", "*");
       }else{
-        parent.window.postMessage("closeMask()", "*");
+        parent.parent.window.postMessage("closeMask()", "*");
       }
     }
   },
