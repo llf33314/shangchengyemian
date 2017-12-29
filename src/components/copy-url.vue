@@ -53,10 +53,11 @@
     },
     watch:{
       'copyUrlVisible'(a){
+        console.log(parent,"parent")
         if(a){
-          parent.window.postMessage("openMask()", "*");
+          parent.parent.window.postMessage("openMask()", "*");
         }else{
-          parent.window.postMessage("closeMask()", "*");
+          parent.parent.window.postMessage("closeMask()", "*");
         }
       }
     },
