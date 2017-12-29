@@ -237,9 +237,9 @@
 <style lang="less" type="text/css" scoped>
 @import '../../assets/css/mixins.less';
 //上传图片 无图
-section{
-  height: 100%;
-}
+// section{
+//   height: 100%;
+// }
 .avatar-box{
   .avatar-uploaderNo,
   .avatar-uploader{

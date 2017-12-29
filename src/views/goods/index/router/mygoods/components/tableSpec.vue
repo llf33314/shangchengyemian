@@ -31,7 +31,7 @@
                         {{test.specValue}}
                         <i @click="remove(index,i)" class="el-icon-circle-close"></i>
                     </div>
-                    <div class="table-img" v-if="isAddImg && index === 0" @click="changeData(index,i)">
+                    <div class="table-img" v-if="isAddImg && index === 0" @click="changeImgData(index,i)">
                         <gt-material v-if="isAddImg" :img="test.specImage==null? '': imgUrl+test.specImage" 
                             @change="changeImg">
                         </gt-material>
@@ -178,7 +178,6 @@ export default {
                 }
                 return;
             }
-            debugger
             //排重
             if(_this.nameList != null && _this.nameList.length > 0){
                 for(let k = 0; k < _this.nameList.length ;k++){
@@ -404,18 +403,19 @@ export default {
             }
             _this.selectedSpec ="";//新增后清空
             _this.$emit('change',this.specList);
-            console.log(this.specList,'确定this.specList')
         },
         /** 
          *修改图片
          */
         changeImg(val){
+            console.log()
             let _index = this.itemIndex[0];
             let _i = this.itemIndex[1];
             this.specList[_index].specValues[_i].newSpecImage = val;
             this.$emit('change',this.specList);
         },
-        changeData(index,i){
+        changeImgData(index,i){
+            console.log(index,i)
             this.itemIndex = [];
             this.itemIndex.push(index);
             this.itemIndex.push(i);

@@ -126,7 +126,6 @@ export default {
             this.listAdd(a);
         },
         'invenList'(a,b){
-            console.log(a,b,'invenListinvenListinvenList变化');
             if(a.length == 0){
                 this.invenData = b;
             }else{
@@ -245,36 +244,7 @@ export default {
                     _this.listData.push(item);
                 }
             })
-        },
-        invenAdd(data1,data2){
-            let _this =this;
-            this.invenData=[];
-            let myArray=new Array();
-            data1.forEach((item,i)=>{
-                item.specificaIds = item.specificaIds.split(",");
-                myArray.push(item);
-            })
-
-            myArray.forEach((item,i)=>{
-                let arr = []
-                item.specificaIds.forEach((test,j)=>{
-                    data2.forEach((a,b)=>{
-                        a.specValues.forEach((c,d)=>{
-                            if(test == c.id){
-                                arr.push(c.specValueId)
-                            }
-                        })
-                    })
-                })
-                item.specificaIds = arr.toString();
-            })
-            this.invenData = myArray;
-            this.newlistData(this.invenData);
-            this.invenData.forEach((item,i)=>{
-                if(item.isDefault == 1){
-                    this.isDefault = i;
-                }
-            })
+            //_this.newlistData(_this.invenData);
         },
         /**
          * 深复制
@@ -298,11 +268,8 @@ export default {
     mounted() {
         let _this = this;
         _this.listAdd(_this.specList);
-        if(this.$route.params.id === 'add'){
-            _this.invenAdd(_this.invenList,_this.specList);
-        }else{
-            _this.invenAdd(_this.copy(_this.invenList),_this.specList);
-        }
+        _this.invenData = _this.invenList
+        _this.newlistData(_this.invenData);
         if(this.type !='0'){
             this.isSpec = false;
         }

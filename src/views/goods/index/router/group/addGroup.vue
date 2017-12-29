@@ -330,7 +330,7 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 @import '../../../less/group.less';
  
  .shop-IDUpload,.shop-img {

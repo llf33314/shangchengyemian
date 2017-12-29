@@ -122,7 +122,7 @@
                                 <table-spec :row="form.specList" :shopId="form.pro.shopId" @change="changeSpac" ref="specForm"></table-spec>
                             </el-form-item>
                             <el-form-item label="商品库存 :" v-if=" form.specList !='' && form.specList != null">
-                                <table-list :specList="form.specList" :invenList="form.invenList"  ref="invenForm" @stockTotal="changeStock"></table-list>
+                                <table-list :specList="form.specList" :invenList="form.invenList"  ref="invenForm" @stockTotal="changeStock" @change="changeInven"></table-list>
                             </el-form-item>
                             <el-form-item label="商品参数 :"  v-if="form.pro.shopId">
                                 <gt-param :row="form.paramList" :shopId="form.pro.shopId"  @change="paramSelected"></gt-param>
@@ -318,7 +318,7 @@
         <el-button type="primary" v-if="active == 2">保存</el-button>
         <el-button type="primary" v-if="active == 2" @click="this.changeData(2)">预览</el-button>
         <el-button style="margin-top: 12px;" v-if="active == 1 " @click="window.history.go(-1)">返回</el-button>
-        <el-button style="margin-top: 12px;" v-if="active == 2 " @click=" active=2 ">返回</el-button>
+        <el-button style="margin-top: 12px;" v-if="active == 2 " @click=" active=1 ">返回</el-button>
         <div class="shop-textc" v-if="active == 3" >
             <el-button type="primary" @click="to_add()">继续添加</el-button>
             <router-link to='/mygoods'>
@@ -508,9 +508,40 @@ export default {
             'success':function (data){
                 console.log(data,'编辑请求数据');
                 _this.form = data.data;
-
+                //初始化处理数据
+                _this.invenAdd(_this.form.invenList,_this.form.specList);
+                _this.changeSpac(_this.form.specList);
             }
         });
+    },
+    invenAdd(data1,data2){
+        let _this =this;
+        this.invenData=[];
+        let myArray=new Array();
+        data1.forEach((item,i)=>{
+            item.specificaIds = item.specificaIds.split(",");
+            myArray.push(item);
+        })
+
+        myArray.forEach((item,i)=>{
+            let arr = []
+            item.specificaIds.forEach((test,j)=>{
+                data2.forEach((a,b)=>{
+                    a.specValues.forEach((c,d)=>{
+                        if(test == c.id){
+                            arr.push(c.specValueId)
+                        }
+                    })
+                })
+            })
+            item.specificaIds = arr.toString();
+        })
+        _this.form.invenList = myArray;
+        _this.form.invenList.forEach((item,i)=>{
+            if(item.isDefault == 1){
+                this.isDefault = i;
+            }
+        })
     },
     /** 
      * 保存请求
@@ -519,36 +550,55 @@ export default {
      */
     dataAjax(type,data){
         let _this = this;
-        let url = '';
         if(this.$route.params.id === 'add'){
             //新增
-            url = DFshop.activeAPI.mallProductAdd_post;
+            _this.ajaxRequest({
+                'url':  DFshop.activeAPI.mallProductAdd_post,
+                'data':data,
+                'success':function (data){
+                    if(type==1){
+                        _this.active = 3;
+                    }else{
+                        let _pageLink='';
+                        if(_this.$route.params.id === 'add'){
+                            _pageLink = 'goods/details/'+_this.form.pro.shopId+'/'+data.data.userId+'/0/'+data.data.id+'/0';
+                        }else{
+                            _pageLink = 'goods/details/'+_this.form.pro.shopId+'/'+_this.form.pro.userId+'/0/'+_this.form.pro.id+'/0';
+                        }
+                        let msg ={
+                            title: '商品预览',
+                            path: _this.webPath,
+                            pageLink: _pageLink//页面链接
+                        };
+                        _this.$root.$refs.dialogQR.showDialog(msg);
+                    }
+                }
+            });
         }else{
             //修改
-            url = DFshop.activeAPI.mallProductUpdatet_post;
-        }
-        _this.ajaxRequest({
-            'url': url,
-            'data':data,
-            'success':function (data){
-                if(type==1){
-                    _this.active = 3;
-                }else{
-                    let _pageLink='';
-                    if(_this.$route.params.id === 'add'){
-                        _pageLink = 'goods/details/'+_this.form.pro.shopId+'/'+data.data.userId+'/0/'+data.data.id+'/0';
+            _this.ajaxRequestJQ({
+                'url':  DFshop.activeAPI.mallProductUpdatet_post,
+                'data':data,
+                'success':function (data){
+                    if(type==1){
+                        _this.active = 3;
                     }else{
-                        _pageLink = 'goods/details/'+_this.form.pro.shopId+'/'+_this.form.pro.userId+'/0/'+_this.form.pro.id+'/0';
+                        let _pageLink='';
+                        if(_this.$route.params.id === 'add'){
+                            _pageLink = 'goods/details/'+_this.form.pro.shopId+'/'+data.data.userId+'/0/'+data.data.id+'/0';
+                        }else{
+                            _pageLink = 'goods/details/'+_this.form.pro.shopId+'/'+_this.form.pro.userId+'/0/'+_this.form.pro.id+'/0';
+                        }
+                        let msg ={
+                            title: '商品预览',
+                            path: _this.webPath,
+                            pageLink: _pageLink//页面链接
+                        };
+                        _this.$root.$refs.dialogQR.showDialog(msg);
                     }
-                    let msg ={
-                        title: '商品预览',
-                        path: _this.webPath,
-                        pageLink: _pageLink//页面链接
-                    };
-                    _this.$root.$refs.dialogQR.showDialog(msg);
                 }
-            }
-        });
+            });
+        }
     },
     /** 
      * 数据请求 --  整理数据
@@ -558,8 +608,10 @@ export default {
         let _this = this;
         let imageList =[];
         if(_this.newimageList.length == 0){
+            //没有修改新图
             imageList = _this.form.imageList
         }else{
+            //接受新图片 重新排序
             _this.newimageList = this.newimageList.sort(this.compare("sort"));
             _this.newimageList.forEach((item,i)=>{
                 if(i == 0){
@@ -568,6 +620,7 @@ export default {
                     item.isMainImages = 0;
                 }
                 if(item.assId == undefined){
+                    //新增图片
                     let img = {
                         imageUrl:item.imageUrl,
                         isMainImages:'',
@@ -594,9 +647,9 @@ export default {
                 specList.push(_item);
             })
         })
-         //请求数据需要
 
-        let data={
+        //请求数据
+        let  data={
             product:_this.form.pro,
             imageList: JSON.stringify(imageList),
             groupList:JSON.stringify(this.form.proGroupList),
@@ -607,7 +660,7 @@ export default {
         };
 
         data.invenList == null ? data.product.isSpecifica = 0:data.product.isSpecifica = 1;
-    
+        data.product=JSON.stringify(data.product);
         console.log(data,'修改提交数据')
         this.dataAjax(type,data)
     },
@@ -695,11 +748,10 @@ export default {
         this.form.paramList = data;
     },
     /** 
-     * 商品规格
+     * 商品规格 接受子组件传统数据
      */
     changeSpac(data){
         //接受数据
-        console.log(data,'商品规格specList ',data.length);
         if( data.length == 0 ) return;
         let _this = this;
         _this.$set(_this.form,'specList',data);
@@ -707,16 +759,12 @@ export default {
         
         //数据重组 --传值--specificaIds组合(笛卡尔乘积)
         let listData = [];
-        let productId = null;
         data.forEach((item,i)=>{
-            if(item.productId == null){
-                productId = item.productId;
-            }
             if(item.specValues.length >0){
                 listData.push(item);
             }
         })
-
+        
         let result=[];//结果保存到这个数组
         function toResult(arrIndex,aresult,specArr){
             if(arrIndex >= listData.length) {
@@ -745,29 +793,37 @@ export default {
             }
         }
         toResult(0);
-        console.log(result,'result')
         // 显示数据
+        
         let arr=[]
-        // if(_this.$route.params.id === 'add'){
-            result.forEach((item,i)=>{
-                let data={
-                    specificas: item.specificas,//请求需要
-                    id: null,
-                    productId: productId,
-                    specificaIds: item.specificaIds.toString(),     //规格ID
-                    invPrice: null,          //库存价格
-                    invNum: null,            //库存数量
-                    invCode: null,         //产品编码
-                    invSaleNum: null,       //销量
-                    isDefault: 0,             //是否默认  0没有 1是
-                    specificaImgId: 0,        // 有图片的规格ID
-                    logisticsWeight: null,    //物流重量
+        result.forEach((item,i)=>{
+            let data={
+                specificas: item.specificas,//请求需要
+                id: null,
+                productId: this.$route.params.id == 'add' ? null : this.$route.params.id,
+                specificaIds: item.specificaIds.toString(),     //规格ID
+                invPrice: null,          //库存价格
+                invNum:  null,            //库存数量
+                invCode: null,         //产品编码
+                invSaleNum:  null,       //销量
+                isDefault: 0,             //是否默认  0没有 1是
+                specificaImgId:  null ,       // 有图片的规格ID
+                logisticsWeight: null,    //物流重量
+            }
+            _this.form.invenList.forEach((test,j)=>{
+                if(data.specificaIds == test.specificaIds){
+                    data.invPrice = test.invPrice || null;       //库存价格
+                    data.invNum =  test.invNum || null;         //库存数量
+                    data.invCode =  test.invCode || null;          //产品编码
+                    data.invSaleNum =  test.invSaleNum || null;         //销量
+                    data.isDefault =  test.isDefault || null;              //是否默认  0没有 1是
+                    data.specificaImgId =  test.specificaImgId || null;         // 有图片的规格ID
+                    data.logisticsWeight =  test.logisticsWeight || null;      //物流重量
                 }
-                arr.push(data); 
             })
-            _this.$set(_this.form,'invenList',arr);
-            console.log(_this.form.invenList,'invenList')
-        // }
+            arr.push(data);
+        })
+        _this.$set(_this.form,'invenList',arr); 
     },
     /** 
      * 总库存
@@ -846,6 +902,12 @@ export default {
     addLogistics(){
         let  href = window.location.href.split('views')[0];
         window.location.href = href+'views/setUp/index.html#/logistics/logistics'
+    },
+    changeInven(val){
+        val.forEach((item,i)=>{
+            item.specificaIds = item.specificaIds.toString()
+        })
+        this.form.invenList = val;
     }
   },
   mounted(){
@@ -871,6 +933,6 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 @import '../../../less/mygoods.less';
 </style>
