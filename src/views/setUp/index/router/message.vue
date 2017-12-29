@@ -147,11 +147,10 @@ export default {
     /**判断有无认证服务号 */
     mallPaySetIsAuthService(){
       let _this = this;
-      _this.isShow = -1;
       _this.ajaxRequest({
         'url':DFshop.activeAPI.mallPaySetIsAuthService_post,
         'success':function (data){
-          _this.isShow = data.data.flag;
+          _this.isShow = Number(data.data.flag);
           _this.duofenTwoCodeUrl = data.data.duofenTwoCodeUrl;
           //商家消息提醒授权二维码生成
           let url=data.path+"phoneBusMessageMember/L6tgXlBFeK/grant/"+data.data.busId;
