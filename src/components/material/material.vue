@@ -112,9 +112,9 @@
       },
       'materialLargeSrcVisible'(a){
         if(a){
-          parent.parent.window.postMessage("openMask()", "*");
+          parent.parent.parent.window.postMessage("openMask()", "*");
         }else{
-          parent.parent.window.postMessage("closeMask()", "*");
+          parent.parent.parent.window.postMessage("closeMask()", "*");
         }
       }
     },

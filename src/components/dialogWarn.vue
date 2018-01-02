@@ -60,7 +60,8 @@ export default {
     methods: {
         //确定
         dialogConfirm() {
-            this.dialogWarn = false;
+            // this.dialogWarn = false;
+            this.handleClose();
             if(this.callback !== undefined &&　this.callback　!== ''){
                 return this.callback.btnOne && !this.callback.btnOne();
             }
@@ -78,6 +79,7 @@ export default {
                 if(timer < 0 ){
                     clearInterval(interval);
                     _this.dialogWarn = false;
+                    _this.closeParent();
                     if(!_this.close){
                         window.location.href = window.location.origin+window.location.pathname + '#' + _this.dialogLink;
                     }
@@ -109,6 +111,9 @@ export default {
         handleClose(){
             this.close = true ;
             this.dialogWarn = false;
+            this.closeParent();
+        },
+        closeParent(){
             parent.parent.window.postMessage("closeMask()", "*");
         }
     },
