@@ -26,15 +26,15 @@
           <div v-if="isShow == 1">
             <p class="p-warn">
               商家消息推送功能可以让您通过短信和已有的公众号，接收交易和物流相关的提醒消息，包括订单付款成功通知、确认收货通知、维权等，以提升商家的开店体验，
-              更有效地管理交易和订单。短信计费：0.08元/条起，<a>点击详情</a>查看。
+              更有效地管理交易和订单。短信计费：0.08元/条起，<a @click="link(domain+'trading/smsRecharge.do?setType=trading')">点击详情</a>查看。
             </p>
           </div>
           <div v-if="isShow == 0">
             <p class="p-warn">
               商家消息推送功能可以让您通过短信和多粉微信公众号，接收交易和物流相关的提醒消息，包括订单付款成功通知、确认收货通知、维权等，以提升商家的开店体验，
-              更有效地管理交易和订单。短信计费：0.08元/条起，<a>点击详情</a>查看。
+              更有效地管理交易和订单。短信计费：0.08元/条起，<a @click="link(domain+'trading/smsRecharge.do?setType=trading')">点击详情</a>查看。
             </p>
-            <el-button class="buttonBlue" size="small">获取多粉链接</el-button>
+            <el-button @click="dialogVisible = true"  class="buttonBlue" size="small">获取多粉链接</el-button>
           </div>
       </div>
       <div class="message-item-box" >
@@ -97,17 +97,17 @@
           <div v-if="isShow == 1">
             <p class="p-warn">
               粉丝消息推送功能可以让您通过短信和已有的公众号，给买家推送交易和物流相关的提醒消息，
-              包括积分、购物、充值、奖品等，以提升买家的购物体验，获得更高的订单转化率和复购率。短信计费：0.08元/条起，<a>点击详情</a>查看。
+              包括积分、购物、充值、奖品等，以提升买家的购物体验，获得更高的订单转化率和复购率。短信计费：0.08元/条起，<a @click="link(domain+'trading/smsRecharge.do?setType=trading')">点击详情</a>查看。
               <br/>注意：粉丝首先必须关注您的公众号，否则不能收到相关推送。
             </p> 
-            <el-button class="buttonBlue" size="small">获取关注链接</el-button>
+            <el-button @click="dialogVisible = true"  class="buttonBlue" size="small">获取关注链接</el-button>
           </div>
           <div v-if="isShow == 0">
             <p class="p-warn">
               粉丝消息推送功能可以让您通过短信和多粉公众号，给买家推送交易和物流相关的提醒消息，
-              包括积分、购物、充值、奖品等，以提升买家的购物体验，获得更高的订单转化率和复购率。短信计费：0.08元/条起，<a>点击详情</a>查看。
+              包括积分、购物、充值、奖品等，以提升买家的购物体验，获得更高的订单转化率和复购率。短信计费：0.08元/条起，<a @click="link(domain+'trading/smsRecharge.do?setType=trading')">点击详情</a>查看。
             </p> 
-            <el-button class="buttonBlue" size="small">获取多粉链接</el-button>
+            <el-button @click="dialogVisible = true"  class="buttonBlue" size="small">获取多粉链接</el-button>
           </div>
       </div>
       <div class="message-item-box">
@@ -123,6 +123,9 @@
         </div>
       </div>
     </div>
+    <el-dialog  title="关注链接" :visible.sync="dialogVisible"  class="minDialog">
+       <img style="width: 188px;height: 188px;"  :src="busMessageUrl" v-if="busMessageUrl !=''"  />
+    </el-dialog>
   </div>
 </template>
 
@@ -140,10 +143,16 @@ export default {
       template:[],
       duofenTwoCodeUrl:'',
       busMessageUrl:'',
+      dialogVisible:false,
+      domain:'',
   
     }
   },
   methods: {
+    link(url,params){
+      // console.log(url);
+        parent.window.postMessage("changeMenus('"+url+"','"+params+"')", "*");
+    },
     /**判断有无认证服务号 */
     mallPaySetIsAuthService(){
       let _this = this;
@@ -151,6 +160,7 @@ export default {
         'url':DFshop.activeAPI.mallPaySetIsAuthService_post,
         'success':function (data){
           _this.isShow = Number(data.data.flag);
+          _this.domain=data.data.domain;
           _this.duofenTwoCodeUrl = data.data.duofenTwoCodeUrl;
           //商家消息提醒授权二维码生成
           let url=data.path+"phoneBusMessageMember/L6tgXlBFeK/grant/"+data.data.busId;
@@ -217,6 +227,15 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 @import '../../less/message.less';
+.minDialog{
+ .el-dialog--small{
+   width:16%;
+ }
+ .el-dialog__body{
+   text-align: center;
+ }
+}
+ 
 </style>

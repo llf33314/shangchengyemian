@@ -23,7 +23,7 @@
               <el-radio :label="1" >企业</el-radio>
           </el-radio-group>
         </el-form-item>
-        <div v-show="stoType == 0">
+        <div v-if="stoType == 0">
           <el-form-item label="姓名 :" prop="name">
             <el-input v-model="form.name" placeholder="请输入姓名"></el-input>
           </el-form-item>
@@ -71,7 +71,7 @@
             </div>
           </el-form-item>
         </div>
-        <div v-show="stoType == 1">
+        <div v-if="stoType == 1">
           <el-form-item label="企业名称 :" prop="companyName">
             <el-input v-model="form.companyName" placeholder="请输入企业名称" ></el-input>
           </el-form-item>
@@ -725,7 +725,7 @@ export default {
         stoCategory: _this.isMapOne || '',  //店铺类型
         certType:  _this.isMapTwo || '' ,    //认证类型
         isCertDoc: 0||'',                //是否有补充资料  0无 1有
-        code: ''                      //验证码
+        code: _this.form.code                      //验证码
       }
       if(_this.imgs.busLicenseImg){//营业执照
         _data.busLicenseImg = '/image'+_this.imgs.busLicenseImg.split("image")[1];      
@@ -752,10 +752,10 @@ export default {
             'url': DFshop.activeAPI.mallStoreCertSave_post,
             'data': _data,
              'success':function (data){
-                 this.$message({
-                 message: '恭喜你，保存成功',
-                 type: 'success'
-                 });
+                _this.$message({
+                  message: '恭喜你，保存成功',
+                  type: 'success'
+                });
                 _this.jumpRoute('/shop');
             }
           });

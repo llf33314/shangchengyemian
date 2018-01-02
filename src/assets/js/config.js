@@ -116,6 +116,9 @@
     mallStoreCertSave_post: '/mallStore/E9lM9uM4ct/cert/save',
     /*获取认证的店铺类型*/
     mallStoreCertCategoryMap_post: '/mallStore/E9lM9uM4ct/cert/categoryMap',
+    /*认证信息设置失效*/
+    mallStoreCertSetInvalid_post: '/mallStore/E9lM9uM4ct/cert/setInvalid',
+
     /**
      * 商品管理相关接口
      */

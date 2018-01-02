@@ -29,7 +29,7 @@
                   <div class="list-shop-dtl">
                     <p v-text="scope.row.stoName"></p>
                      <div class="list-shop-txt">
-                      <div :class="{'pass':scope.row.certStoType}" > 
+                      <div :class="{'pass':scope.row.certStoType!=null}" > 
                         <i class="iconfont icon-renzheng"></i> 
                          <span v-if="scope.row.certStoType ==null">个人</span>
                          <span v-else-if="scope.row.certStoType == 0">个人</span>
@@ -41,7 +41,7 @@
                       <div class="pass">
                           <i class="iconfont icon-renzheng "></i >线下店铺
                       </div>
-                      <div :class="{'pass':scope.row.certStoCategoryName}">
+                      <div :class="{'pass':scope.row.certStoCategoryName!=null}">
                           <i class="iconfont icon-renzheng"></i>
                           <span v-if="scope.row.certStoCategoryName ">{{scope.row.certStoCategoryName}}</span>
                           <span v-else>普通店铺</span>
@@ -112,6 +112,12 @@
             <el-table-column label="访客数/浏览量" prop="flow">
               <template  scope="scope">
                   {{scope.row.visitor_num}}/{{scope.row.views_num}}
+              </template>
+            </el-table-column>
+             <el-table-column label="是否主页" prop="pag_is_main">
+              <template  scope="scope">
+                  <span v-if="scope.row.pag_is_main == 1">是</span>
+                  <span v-else>否</span> 
               </template>
             </el-table-column>
             <el-table-column label="操作" min-width="150">
@@ -367,7 +373,16 @@ export default {
         dialogMsg: "您的店铺已经通过认证，如果重新发起认证，您提交的店铺认证信息将失效！",
         callback: {
           btnOne: function() {
-            _this.jumpRouter("shop/authentication/", data);
+            //认证信息设置失效
+            _this.ajaxRequest({
+              url: DFshop.activeAPI.mallStoreCertSetInvalid_post,
+              data: {
+                id: certId
+              },
+              success: function(data) {
+                _this.jumpRouter("shop/authentication/", data);
+              }
+            });           
           }
         }
       };

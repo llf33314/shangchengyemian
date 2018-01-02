@@ -38,7 +38,7 @@
           <span class="p-warn">分组名称最多输入6位汉字或12位字符</span>
         </el-form-item>
         <el-form-item label="排序方式 :">
-          <el-select v-model="form.sortOrder" placeholder="按选择排序模式">
+          <el-select v-model="form.sortOrder" placeholder="按选择排序模式" @change="sortValidate">
             <el-option label="按热度排列" :value="1"></el-option>
             <el-option label="按序号排列(由大到小)" :value="2"></el-option>
           </el-select>
@@ -91,17 +91,22 @@ export default {
   },
   data () {
     var validateSort = (rule, value, callback) => {
-      if (!Number(value) && value != 0) {
-        callback(new Error('请输入序号'));
-      }else if(value.toString().length>4){
-        callback(new Error('请输入1~4位数字'));
+      let reg = /^[0-9]{1,4}$/;
+      if(this.form.sortOrder== 2 ){
+        if(value === ''){
+           callback(new Error('请输入序号'));
+        }else if (!reg.test(value)) {
+          callback(new Error('请输入1~4位数字'));
+        }else{
+          callback();
+        }
       }else{
         callback();
       }
     }
     var validateGroupName = (rule, value, callback) => {
       // let  Reg= /^[\u4E00-\u9FA5\uf900-\ufa2d\w\.\s]{1,6}$/g;
-      if (value === '' ) {
+      if (value == '' ) {
         callback(new Error('请输入分组名称'));
       }else if(this.getBytes(value) > 12){  
         callback(new Error('最多输入6位汉字或12位字符'));
@@ -118,7 +123,7 @@ export default {
         shopId:'',//店铺id
         groupName:'',//分组名称
         sortOrder:2 ,//排序方式
-        sort:'',//序号
+        sort:0,//序号
       },
       rules: {
         groupName: [
@@ -135,6 +140,10 @@ export default {
     }
   },
   methods: {
+    /**改变序号的 验证与否 */
+    sortValidate(){
+        this.$refs.form.validateField('sort');
+    },
     getBytes(value){      
         var cArr = value.match(/[^\x00-\xff]/ig);      
         return value.length + (cArr == null ? 0 : cArr.length);      
