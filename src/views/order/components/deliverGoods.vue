@@ -117,7 +117,11 @@ export default {
             _this.ajaxRequest({
                 'url': DFshop.activeAPI.mallFreightExpressList_post,
                 'success':function (data){
-                _this.expressList = data.data;
+                    _this.expressList = data.data;
+                    let expressId = _this.expressData.expressId;
+                    if (expressId=='') {
+                        _this.expressData.expressId = _this.expressList[0].item_key;
+                    }
                 }
             });
         },

@@ -21,7 +21,7 @@
                     <div class="item-title">基本信息</div>
                     <div class="item-content">
                         <el-form-item label="选择店铺 :"  required>                
-                        <el-select v-model="form.pro.shopId" placeholder="请选择店铺" @change="changeShopId(form.pro.shopId)" >
+                        <el-select v-model="form.pro.shopId" placeholder="请选择店铺" @change="changeShopId(form.pro.shopId)" :disabled="$route.params.id !='add'">
                             <el-option
                                 v-for="item in shopList"
                                 :key="item.id"
@@ -609,26 +609,36 @@ export default {
         let imageList =[];
         if(_this.newimageList.length == 0){
             //没有修改新图
-            imageList = _this.form.imageList
-        }else{
-            //接受新图片 重新排序
-            _this.newimageList = this.newimageList.sort(this.compare("sort"));
-            _this.newimageList.forEach((item,i)=>{
-                if(i == 0){
+            imageList = _this.form.imageList;
+            imageList.forEach((item,i)=>{
+                if(i==0){
                     item.isMainImages = 1;
                 }else{
                     item.isMainImages = 0;
                 }
+            })
+        }else{
+            //接受新图片 重新排序
+            _this.newimageList = this.newimageList.sort(this.compare("sort"));
+            _this.newimageList.forEach((item,i)=>{
                 if(item.assId == undefined){
                     //新增图片
                     let img = {
                         imageUrl:item.imageUrl,
-                        isMainImages:'',
+                        isMainImages: 0,
                         assType:1,
                         assSort:i,
                     }
+                    if(i==0){
+                        img.isMainImages = 1;
+                    }
                     imageList.push(img)
                 }else{
+                    if(i==0){
+                        item.isMainImages = 1;
+                    }else{
+                        item.isMainImages = 0;
+                    }
                     imageList.push(item)
                 }
             })
@@ -640,7 +650,7 @@ export default {
                     productId: item.productId || null,
                     specificaNameId: item.specNameId,
                     specificaName: item.specName,
-                    specificaImgUrl: item.newSpecImage || null,
+                    specificaImgUrl: test.newSpecImage == null?null:'image'+test.newSpecImage.split('/image')[1],
                     specificaValue: test.specValue,
                     specificaValueId: test.specValueId
                 }
@@ -756,7 +766,6 @@ export default {
         let _this = this;
         _this.$set(_this.form,'specList',data);
         _this.form.specList.splice(1,0);
-        
         //数据重组 --传值--specificaIds组合(笛卡尔乘积)
         let listData = [];
         data.forEach((item,i)=>{
@@ -787,12 +796,14 @@ export default {
                     specificaName:listData[arrIndex].specName,          //规格名称
                     specificaValueId: aArr[i].specValueId,              // 规格值ID
                     specificaValue: aArr[i].specValue,                  //规格值
+                    specificaImgUrl: aArr[i].newSpecImage,                  //规格值
                 }
                 theSpecArr.push(specificasData)
                 toResult(arrIndex+1,theResult,theSpecArr);
             }
         }
         toResult(0);
+        console.log(result,'result')
         // 显示数据
         
         let arr=[]

@@ -4,7 +4,7 @@
       <div class="index-shopInfo">
         <el-form :inline="true" :model="searchData" class="demo-form-inline">
           <el-form-item class="input-all">
-            <el-input v-model.trim="searchData.queryName" placeholder="订单号/商品名称" @blur="search()"></el-input>
+            <el-input v-model.trim="searchData.queryName" placeholder="订单号/商品名称" @blur="search()"  @keyup.enter.native="search"></el-input>
           </el-form-item>         
           <el-form-item label="选择店铺 :">
             <el-select v-model="searchData.shopId" placeholder="选择店铺"  @change="search()">
