@@ -43,7 +43,6 @@
                             { required: true, message: '请输入跳转链接'}
                         ]">
                         <el-input class="addGruop-input" placeholder="请输入跳转链接" v-model.trim="row.carouselUrl" @blur="changeData" >
-                             <template slot="prepend">Http://</template>
                         </el-input>
                     </el-form-item>
                 </td>
@@ -183,6 +182,16 @@ export default {
       let isTrue = true;
       for (let i = 0; i < list.length; i++) {
         let obj = list[i];
+        let url=obj.carouselUrl;
+        if (url != "" && !Lib.M.validURL(url)) {
+          this.$message({
+            showClose: true,
+            message: "请填写正确的跳转链接",
+            type: "error"
+          });
+          isTrue=false;
+          break;
+        }
       }
       if (isTrue) {
         //更新值

@@ -39,7 +39,7 @@
       </div>
       <div class="message-item-box" >
         <!-- v-for="msg in template.busMsgArr" :key="msg.id" -->
-        <div class="message-item">
+        <!-- <div class="message-item">
           <div class="message-switch message-title">
             <p>买家付款成功通知</p>
             <el-switch 
@@ -77,7 +77,27 @@
           <p class="p-warn">
             开启后，买家发起维权通过多粉公众号推送给商家。
           </p>
+        </div> -->
+        <div class="message-item" v-for="temp in template.busMessages" :key="temp.id">
+          <div class="message-switch message-title">
+            <p>{{temp.title}}</p>
+            <el-switch
+            v-model="temp.selected"
+            on-text="开启" on-value="1"
+            off-text="关闭" off-value="0" @change="mallPaySetSmsTemplate(temp.id,temp.title,temp.selected,0)">
+            </el-switch>
+          </div>
+          <p class="p-warn" v-if="temp.title =='付款成功通知'">
+            开启后，买家付款成功通过多粉公众号推送给商家。
+          </p>
+          <p class="p-warn" v-if="temp.title =='确认收货提醒'">
+            开启后，买家确认收货通过多粉公众号推送给商家。
+          </p>
+          <p class="p-warn" v-if="temp.title =='申请维权通知'">
+            开启后，买家发起维权通过多粉公众号推送给商家。
+          </p>
         </div>
+
         <!-- <div class="message-item">
           <div class="message-switch message-title">
             <p>买家提现审核成功</p>
@@ -135,10 +155,10 @@ export default {
   data () {
     return {
       selected:false,
-      selected1:'',
-      selected2:'',
-      selected3:'',
-      selected4:'',
+      // selected1:'',
+      // selected2:'',
+      // selected3:'',
+      // selected4:'',
       isShow:'', //-1无认证 0无服务号 1有服务号
       template:[],
       duofenTwoCodeUrl:'',
@@ -179,18 +199,18 @@ export default {
         'url':DFshop.activeAPI.mallPaySetGetTemplate_post,
         'success':function (data){
             _this.template = data.data;
-            $.each(_this.template.busMsgArr,function(i){
-              var num = _this.template.busMsgArr[i].id;
-              if(num == 1){
-                _this.selected1 = '1';
-              }else if(num == 2){
-                _this.selected2 = '1';
-              }else if(num == 3){
-                _this.selected3 = '1';
-              }else{
-                _this.selected4 = '1';
-              }
-            });
+            // $.each(_this.template.busMsgArr,function(i){
+            //   var num = _this.template.busMsgArr[i].id;
+            //   if(num == 1){
+            //     _this.selected1 = '1';
+            //   }else if(num == 2){
+            //     _this.selected2 = '1';
+            //   }else if(num == 3){
+            //     _this.selected3 = '1';
+            //   }else{
+            //     _this.selected4 = '1';
+            //   }
+            // });
         }
       });
     },
