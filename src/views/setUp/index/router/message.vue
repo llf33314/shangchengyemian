@@ -183,7 +183,7 @@ export default {
           _this.domain=data.data.domain;
           _this.duofenTwoCodeUrl = data.data.duofenTwoCodeUrl;
           //商家消息提醒授权二维码生成
-          let url=data.path+"phoneBusMessageMember/L6tgXlBFeK/grant/"+data.data.busId;
+          let url="/grant/"+data.data.busId;
           _this.busMessageUrl = DFshop.activeAPI.mallStoreGenerateQRCode_get +"?url="+ url;//生成二维码链接
 
           _this.mallPaySetGetTemplate();

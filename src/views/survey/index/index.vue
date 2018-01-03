@@ -98,9 +98,9 @@ export default {
   methods: {
 
     link(url,url1,params){
-      // console.log(url);
-        parent.window.postMessage("changeMenus('"+url1+"','"+params+"')", "*");
-        window.location.href=url;
+      console.log(url1,"changeMenus(url)");
+      parent.window.postMessage("changeMenus('"+url1+"','"+params+"')", "*");
+      window.location.href=url;
     },
     ajax(){
       let _this = this;
