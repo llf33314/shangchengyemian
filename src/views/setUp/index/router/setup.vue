@@ -1,6 +1,6 @@
 <template>
   <div class="setup-wrapper">
-   <el-form ref="form" :model="form" label-width="175px" v-if="form!=''">
+   <el-form ref="form" :model="form" :rules="rules" label-width="175px" v-if="form!=''">
       <el-form-item label="商品评价 :">
        <el-radio-group v-model="form.set.isComment">
           <el-radio :label="1">开启评价</el-radio>
@@ -11,7 +11,7 @@
         <p class="p-warn" v-else-if="form.set.isComment == 0">关闭评价：仅在商品详情页关闭显示全部评价内容，但买家依旧可以评价。</p>
         <p class="p-warn" v-else-if="form.set.isComment == 2">关闭评价及买家评价：关闭显示商品详情页全部评价内容以及关闭买家评价按钮。</p>
       </el-form-item>
-      <el-form-item label="待付款订单取消时间设置 :">
+      <el-form-item label="待付款订单取消时间设置 :" prop="orderCancel">
         拍下未付款订单 
         <el-input v-model.number="form.set.orderCancel" style="width:80px;"></el-input>
         分钟内未付款，自动取消订单
@@ -41,7 +41,7 @@
           <el-radio :label="0">关闭</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="支付成功提醒内容 :" v-if="form.set.isSmsMember == 1">
+      <el-form-item label="支付成功提醒内容 :" prop="paySuccessText" v-if="form.set.isSmsMember == 1">
         <el-input type="textarea" v-model.trim="form.paySuccessText" style="width:418px" placeholder="请输入内容"></el-input>
       </el-form-item>
       <el-form-item label="商品预售 :">
@@ -80,7 +80,7 @@
           <el-radio :label="0">关闭</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="接收申请审核手机 :"  v-if="form.set.isCheckSeller == 1 && form.set.isSeller == 1">
+      <el-form-item label="接收申请审核手机 :" prop="checkSellerPhone"  v-if="form.set.isCheckSeller == 1 && form.set.isSeller == 1">
         <el-input v-model.number="form.set.checkSellerPhone" style="width:180px;"></el-input>
         <p class="p-warn">
           该手机号码用于接收申请成为超级销售员的信息，请填写正确号码。
@@ -95,7 +95,7 @@
           店铺的各个页面可以通过导航串联起来。设置的导航，方便买家在栏目间快速切换，引导买家前往。
         </p>
       </el-form-item>
-      <el-form-item label="店铺导航 :"  v-if="form.set.isFooter == 1">
+      <el-form-item label="店铺导航 :" prop="foorerObj" v-if="form.set.isFooter == 1">
         <!-- <el-checkbox-group v-model="form.foorerObj"> -->
         <el-checkbox v-model="form.foorerObj.home">首页</el-checkbox>
         <el-checkbox v-model="form.foorerObj.group">分类</el-checkbox>
@@ -115,8 +115,39 @@
   import Lib from 'assets/js/Lib';
   export default {
     data() {
+      var formOrderCancel = (rule, value, callback) => {
+        if (this.form.set.orderCancel  == '' ||this.form.set.orderCancel  == undefined) {
+          return callback(new Error('请输入取消时间设置'));
+        } else if(this.form.set.orderCancel <30){
+           return callback(new Error('自动取消订单时间最少30分钟'));
+        }else{
+          callback();
+        }
+      };
+      var formCheckSellerPhone = (rule, value, callback) => {
+        console.log(this.form.set.checkSellerPhone);
+        if (this.form.set.checkSellerPhone  == '' ||this.form.set.checkSellerPhone  == undefined) {
+          return callback(new Error('接收申请审核手机不能为空'));
+        } else if(!Lib.M.validPhone(this.form.set.checkSellerPhone)){
+           return callback(new Error('审核手机格式不正确'));
+        }else{
+          callback();
+        }
+      };
       return {
-        form: ''
+        form: '',
+        rules:{
+           orderCancel:[
+              { validator: formOrderCancel, trigger: 'blur,change'},
+            ],
+            paySuccessText: [
+              { required: true, message: '支付成功提醒内容不能为空', trigger: 'blur' }
+            ],
+            checkSellerPhone: [
+             { validator: formCheckSellerPhone, trigger: 'blur'},
+            ],
+          
+        }
       }
     },
     mounted(){
@@ -125,23 +156,25 @@
     methods: {
       onSubmit() {//保存设置
         let _this = this;
-        let f = this.$refs.form.model.foorerObj;
-        let paramsForm = this.$refs.form.model.set;
-        let smsMsg = {};
-        smsMsg[1] = this.$refs.form.model.paySuccessText;
-        let param = paramsForm;
-        let footerMenu = {};
-        footerMenu.home = Number(f.home);
-        footerMenu.group = Number(f.group);
-        footerMenu.cart = Number(f.cart);
-        footerMenu.my = Number(f.my);
-        param.footerJson = footerMenu;
-        param.smsMessage = JSON.stringify(smsMsg);
-        param.messageJson = paramsForm.messageJson;
-        param.pfRemark = paramsForm.pfRemark;
-        param.pfApplyRemark = paramsForm.pfApplyRemark;
-        param.busMessageJson = paramsForm.busMessageJson;
-        _this.ajaxRequest({
+        this.$refs['form'].validate((valid) => {
+          if (valid) {
+            let f = this.$refs.form.model.foorerObj;
+            let paramsForm = this.$refs.form.model.set;
+            let smsMsg = {};
+            smsMsg[1] = this.$refs.form.model.paySuccessText;
+            let param = paramsForm;
+            let footerMenu = {};
+            footerMenu.home = Number(f.home);
+            footerMenu.group = Number(f.group);
+            footerMenu.cart = Number(f.cart);
+            footerMenu.my = Number(f.my);
+            param.footerJson = footerMenu;
+            param.smsMessage = JSON.stringify(smsMsg);
+            param.messageJson = paramsForm.messageJson;
+            param.pfRemark = paramsForm.pfRemark;
+            param.pfApplyRemark = paramsForm.pfApplyRemark;
+            param.busMessageJson = paramsForm.busMessageJson;
+            _this.ajaxRequest({
               'url': DFshop.activeAPI.mallPaySetSave_post,
               'data':param,
               'success':function (data){
@@ -152,6 +185,8 @@
                 _this.mallPaySetPaySetInfo();
               }
             });
+          }
+        });
       },
       mallPaySetPaySetInfo(){//获取设置信息
         let _this = this;
