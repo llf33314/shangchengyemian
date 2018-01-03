@@ -26,13 +26,13 @@
           <div v-if="isShow == 1">
             <p class="p-warn">
               商家消息推送功能可以让您通过短信和已有的公众号，接收交易和物流相关的提醒消息，包括订单付款成功通知、确认收货通知、维权等，以提升商家的开店体验，
-              更有效地管理交易和订单。短信计费：0.08元/条起，<a @click="link(domain+'trading/smsRecharge.do?setType=trading')">点击详情</a>查看。
+              更有效地管理交易和订单。短信计费：0.08元/条起，<a target="_blank" :href="domain+'trading/smsRecharge.do?setType=trading'">点击详情</a>查看。
             </p>
           </div>
           <div v-if="isShow == 0">
             <p class="p-warn">
               商家消息推送功能可以让您通过短信和多粉微信公众号，接收交易和物流相关的提醒消息，包括订单付款成功通知、确认收货通知、维权等，以提升商家的开店体验，
-              更有效地管理交易和订单。短信计费：0.08元/条起，<a @click="link(domain+'trading/smsRecharge.do?setType=trading')">点击详情</a>查看。
+              更有效地管理交易和订单。短信计费：0.08元/条起，<a target="_blank" :href="domain+'trading/smsRecharge.do?setType=trading'">点击详情</a>查看。
             </p>
             <el-button @click="dialogVisible = true"  class="buttonBlue" size="small">获取多粉链接</el-button>
           </div>
@@ -117,7 +117,7 @@
           <div v-if="isShow == 1">
             <p class="p-warn">
               粉丝消息推送功能可以让您通过短信和已有的公众号，给买家推送交易和物流相关的提醒消息，
-              包括积分、购物、充值、奖品等，以提升买家的购物体验，获得更高的订单转化率和复购率。短信计费：0.08元/条起，<a @click="link(domain+'trading/smsRecharge.do?setType=trading')">点击详情</a>查看。
+              包括积分、购物、充值、奖品等，以提升买家的购物体验，获得更高的订单转化率和复购率。短信计费：0.08元/条起，<a target="_blank" :href="domain+'trading/smsRecharge.do?setType=trading'">点击详情</a>查看。
               <br/>注意：粉丝首先必须关注您的公众号，否则不能收到相关推送。
             </p> 
             <el-button @click="dialogVisible = true"  class="buttonBlue" size="small">获取关注链接</el-button>
@@ -125,7 +125,7 @@
           <div v-if="isShow == 0">
             <p class="p-warn">
               粉丝消息推送功能可以让您通过短信和多粉公众号，给买家推送交易和物流相关的提醒消息，
-              包括积分、购物、充值、奖品等，以提升买家的购物体验，获得更高的订单转化率和复购率。短信计费：0.08元/条起，<a @click="link(domain+'trading/smsRecharge.do?setType=trading')">点击详情</a>查看。
+              包括积分、购物、充值、奖品等，以提升买家的购物体验，获得更高的订单转化率和复购率。短信计费：0.08元/条起，<a target="_blank" :href="domain+'trading/smsRecharge.do?setType=trading'">点击详情</a>查看。
             </p> 
             <el-button @click="dialogVisible = true"  class="buttonBlue" size="small">获取多粉链接</el-button>
           </div>

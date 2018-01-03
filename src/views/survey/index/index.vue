@@ -25,7 +25,7 @@
       <p class="item-title">常用功能</p>
       <div class="item-content" >
         <div class="col1">
-          <a @click="link(path+'views/order/index.html#/allOrder')">
+          <a @click="link(path+'views/goods/index.html#/releaseGoods/add',path+'/views/goods/index.html#/mygoods')">
             <i class="iconfont icon-jia"></i>发布商品
           </a>
         </div>
@@ -33,24 +33,24 @@
            <i class="iconfont icon-renminbi"></i>收入/提现
         </div> -->
         <div class="col1">
-          <a @click="link(path+'views/order/index.html#/allOrder')">
+          <a @click="link(path+'views/order/index.html#/allOrder',path+'/views/order/index.html#/allOrder')">
             <i class="iconfont icon-dingdan1"></i>所有订单
           </a>
         </div>
         <div class="col1">
-            <a @click="link(domain+'wxapplet/indexstart.do')">
+            <a target="_blank" :href="domain+'wxapplet/indexstart.do'">
           <i class="iconfont icon-xiaochengxu1"></i>小程序
             </a>
         </div>
       </div>
       <div class="item-content">
         <div class="col1" >
-          <a @click="link(path+'views/shop/index.html#/page')">
+          <a @click="link(path+'views/shop/index.html#/page',path+'/views/shop/index.html#/shop')">
             <i class="iconfont icon-yemian"></i>页面管理
           </a>
         </div>
         <div class="col1">
-          <a @click="link(path+'views/setUp/index.html#/setup')">
+          <a @click="link(path+'views/setUp/index.html#/setup',path+'/views/setUp/index.html')">
             <i class="iconfont icon-shezhi1"></i>通用设置
           </a>
         </div>
@@ -58,7 +58,7 @@
           <i class="iconfont icon-msnui-weixin"></i>公众号
         </div> -->
         <div class="col1">
-          <a @click="link(path+'views/trade/index.html#/')">
+          <a @click="link(path+'views/trade/index.html#/',path+'/views/trade/index.html#/')">
             <i class="iconfont icon-zhankai"></i>交易记录
           </a>
         </div>
@@ -97,9 +97,10 @@ export default {
   },
   methods: {
 
-    link(url,params){
+    link(url,url1,params){
       // console.log(url);
-        parent.window.postMessage("changeMenus('"+url+"','"+params+"')", "*");
+        parent.window.postMessage("changeMenus('"+url1+"','"+params+"')", "*");
+        window.location.href=url;
     },
     ajax(){
       let _this = this;
