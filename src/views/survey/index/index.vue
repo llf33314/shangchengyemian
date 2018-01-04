@@ -25,7 +25,7 @@
       <p class="item-title">常用功能</p>
       <div class="item-content" >
         <div class="col1">
-          <a @click="link('releaseGoods/add','views/goods/index.html#/mygoods')">
+          <a @click="link('?url=releaseGoods/add',path+'views/goods/index.html#/mygoods')">
             <i class="iconfont icon-jia"></i>发布商品
           </a>
         </div>
@@ -45,12 +45,12 @@
       </div>
       <div class="item-content">
         <div class="col1" >
-          <a @click="link('page',path+'views/shop/index.html#/shop')">
+          <a @click="link('?url=page',path+'views/shop/index.html#/shop')">
             <i class="iconfont icon-yemian"></i>页面管理
           </a>
         </div>
         <div class="col1">
-          <a @click="link('setup',path+'views/setUp/index.html#/danbao')">
+          <a @click="link('?url=setup',path+'views/setUp/index.html#/danbao')">
             <i class="iconfont icon-shezhi1"></i>通用设置
           </a>
         </div>
@@ -97,9 +97,9 @@ export default {
   },
   methods: {
 
-    link(url,url1,params){
-      console.log(url1,"changeMenus(url)");
-      parent.window.postMessage("changeMenus('"+url1+"','"+url+"')", "*");
+    link(params,url){
+      console.log(url,params,"changeMenus(url)");
+      parent.window.postMessage("changeMenus('"+url+"','"+params+"')", "*");
       // window.location.href=url;
     },
     ajax(){

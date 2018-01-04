@@ -97,7 +97,7 @@
                   label="买方">
                 </el-table-column>
                 <el-table-column
-                  prop="totalPrice"
+                  prop="orderMoney"
                   label="支付金额(元)">
                 </el-table-column>
                  <el-table-column 
@@ -169,7 +169,7 @@ export default {
         searchData:{//筛选数据
            curPage:'',
            orderNo:'',
-           status:'',
+           status:'0',
            startTime:'',
            endTime:''
         },
