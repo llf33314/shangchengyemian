@@ -201,6 +201,7 @@ export default {
       this.$refs.goodsDialog.isShow=true;
       this.$refs.goodsDialog.shopId = this.ruleForm.shopId;
       this.$refs.goodsDialog.defaultProId = this.ruleForm.productId;
+      this.$refs.goodsDialog.isIntegral = true;
     },
     /**获取积分商品信息 */
     mallIntegralInfo(id){ 
