@@ -593,6 +593,14 @@ export default {
   },
   mounted() {
     let _this = this;
+
+    let url=Lib.M.getUrlQuery("url");
+    if(url !=''){
+      console.log(url ,"url");
+      _this.$router.push({ path: url });
+      this.switchAjax(url);
+    }
+
     let _href = window.location.hash.split("/")[1];
     _this.activeName = _href;
     _this.isAdminUser({

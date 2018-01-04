@@ -26,6 +26,12 @@ export default {
   },
   mounted(){
     const _this = this;
+    
+    let url=Lib.M.getUrlQuery("url");
+    if(url !=''){
+      this.$router.push({ path: "/" + url});
+    }
+
     let _href = window.location.hash.split('/')[1];
     _this.activeName = _href;
     _this.isAdminUser({

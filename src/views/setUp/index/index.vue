@@ -27,6 +27,10 @@ export default {
     }
   },
   mounted() {
+    let url=Lib.M.getUrlQuery("url");
+    if(url !=''){
+      this.$router.push({ path: "/" + url});
+    }
     this.isAdminUser({
       success: function(data) {
         if (data.code == -1) return;

@@ -1,26 +1,27 @@
 <template>
   <div class="message-wrapper"> 
-    <div class="message-no" v-if="isShow == -1">
+    <div class="message-no" v-if="isShow <0">
        <div class="message-header">
           <i class="el-icon-warning"></i> 
-        亲，您还没有认证服务号哦~ 
+        <span v-if="isShow ==-1">亲，您还没有认证服务号哦~ </span>
+        <span v-else-if="isShow == -2">亲，您还没有授权认证哦~ </span>
       </div>
       <div class="message-warn">
         消息推送功能可以让您通过微信公众号，接收交易和物流相关的提醒消息，包括订单付款成功通知、
         <br/>确认收货通知、维权等，以提升商家的开店体验，获得更高的订单转化率和复购率。
       </div>
-      <p class="fs14">您可以关注多粉微信公众号，收到相关推送，请扫一扫下方二维码关注多粉微信公众号吧~</p>
+      <p class="fs14">[买家已付款]等的消息模板推送，商家只需先扫描下方二维码关注多粉，接着完成授权认证操作，即可接收到相关消息</p>
       <div class="message-QRcode">
         <img :src="duofenTwoCodeUrl" v-if="duofenTwoCodeUrl !=''"/>
         <img style="margin-left:20px;"  :src="busMessageUrl" v-if="busMessageUrl !=''" />
         <p>
           <span class="fs12">关注多粉微信公众号，开启消息模板 </span>
-          <span class="fs12" style="margin-left:25px;">扫描二维码，获得商家模板提醒 </span>
+          <span class="fs12" style="margin-left:44px;">扫描二维码进行授权认证</span>
         </p>
       </div>
-      <!-- <div class="fs14">您也可以： <el-button type="primary">去注册认证服务号</el-button></div> -->
+      <div class="fs14" v-if="isShow == -1">您也可以： <el-button type="primary">去注册认证服务号</el-button></div>
     </div>
-    <div class="message-main" v-if=" isShow != -1">
+    <div class="message-main" v-if=" isShow >=0">
       <div class="message-text">
         <p class="message-title">商家消息模板<p>
           <div v-if="isShow == 1">
@@ -143,8 +144,18 @@
         </div>
       </div>
     </div>
-    <el-dialog  title="关注链接" :visible.sync="dialogVisible"  class="minDialog">
-       <img style="width: 188px;height: 188px;"  :src="busMessageUrl" v-if="busMessageUrl !=''"  />
+    <el-dialog  title="获取授权链接" :visible.sync="dialogVisible"  class="minDialog">
+      <div class="follow_link">
+        <p class="fs14" style="">[买家已付款]等的消息模板推送，商家只需先扫描下方二维码关注多粉，接着完成授权认证操作，即可接收到相关消息</p>
+        <div class="message-QRcode">
+          <img :src="duofenTwoCodeUrl" v-if="duofenTwoCodeUrl !=''"/>
+          <img :src="busMessageUrl" v-if="busMessageUrl !=''" />
+          <p>
+            <span class="fs12" style="float:left">关注多粉微信公众号，开启消息模板 </span>
+            <span class="fs12">扫描二维码进行授权认证</span>
+          </p>
+        </div>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -159,13 +170,22 @@ export default {
       // selected2:'',
       // selected3:'',
       // selected4:'',
-      isShow:'', //-1无认证 0无服务号 1有服务号
+      isShow:'', //-1无认证 -2 未授权 0无服务号 1有服务号
       template:[],
       duofenTwoCodeUrl:'',
       busMessageUrl:'',
       dialogVisible:false,
       domain:'',
   
+    }
+  },
+  watch:{
+    'dialogVisible'(a){
+      if(a){
+        parent.window.postMessage("openMask()", "*");
+      }else{
+        parent.window.postMessage("closeMask()", "*");
+      }
     }
   },
   methods: {
@@ -251,10 +271,38 @@ export default {
 @import '../../less/message.less';
 .minDialog{
  .el-dialog--small{
-   width:16%;
+   width:35%;
+ }
+ .el-dialog__header{
+   border-bottom: 1px solid #e1e1e1;
+    padding-bottom: 15px;
  }
  .el-dialog__body{
    text-align: center;
+   padding: 20px 20px;
+ }
+ .follow_link{
+    padding: 0 20px;
+    .message-QRcode{
+      padding: 0px 30px;
+      img:first-child{
+        float: left;
+      }
+      img{float:right}
+      p{
+        clear: both;
+        text-align: right;
+        padding-right: 26px;
+      }
+    }
+    p.fs14{
+      text-align: left;
+      line-height: 24px;
+    }
+    img{
+      width: 188px;
+      height: 188px;
+    }
  }
 }
  
