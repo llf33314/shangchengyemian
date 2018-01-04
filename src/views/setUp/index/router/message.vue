@@ -18,7 +18,7 @@
           <span class="fs12" style="margin-left:25px;">扫描二维码，获得商家模板提醒 </span>
         </p>
       </div>
-      <div class="fs14">您也可以： <el-button type="primary">去注册认证服务号</el-button></div>
+      <!-- <div class="fs14">您也可以： <el-button type="primary">去注册认证服务号</el-button></div> -->
     </div>
     <div class="message-main" v-if=" isShow != -1">
       <div class="message-text">

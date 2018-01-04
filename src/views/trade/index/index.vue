@@ -97,7 +97,7 @@
                   label="买方">
                 </el-table-column>
                 <el-table-column
-                  prop="orderMoney"
+                  prop="totalPrice"
                   label="支付金额(元)">
                 </el-table-column>
                  <el-table-column 
