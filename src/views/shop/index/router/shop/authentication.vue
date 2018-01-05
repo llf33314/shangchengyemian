@@ -750,7 +750,7 @@ export default {
         })
         _data.imageList = arr;
       }
-      console.log(_data,'提交认证数据');
+      //console.log(_data,'提交认证数据');
       _this.$refs[formName].validate((valid) => {
         if (valid) {
           _this.ajaxRequest({
