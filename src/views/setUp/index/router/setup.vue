@@ -190,6 +190,7 @@
     },
     mounted(){
       this.mallPaySetPaySetInfo();
+      this.mallCommentGiveInfo();
     },
     methods: {
       //评论送礼验证
@@ -266,8 +267,8 @@
                 message: '保存成功',
                 type: 'success'
               });
-              _this.mallPaySetPaySetInfo();
             }
+            _this.mallCommentGiveInfo();
           }
         });
           
@@ -318,18 +319,28 @@
           'url': DFshop.activeAPI.mallPaySetPaySetInfo_post,
           'success':function (data){
             _this.form = data.data;
-            if(data.data.giveList!=null &&data.data.giveList.length>0){
-               _this.giveList=data.data.giveList;
-              _this.giveList.forEach((e,i)=>{
-                e.isEnable=!!e.isEnable;
-              })
-              
-            }
+            
             _this.form.foorerObj.home = !!data.data.foorerObj.home;
             _this.form.foorerObj.group = !!data.data.foorerObj.group;
             _this.form.foorerObj.cart = !!data.data.foorerObj.cart;
             _this.form.foorerObj.my = !!data.data.foorerObj.my;
             console.log(_this.form);
+          }
+        });
+      },
+      mallCommentGiveInfo(){//获取设置信息
+        let _this = this;
+        _this.ajaxRequest({
+          'url': DFshop.activeAPI.mallCommentGiveInfo_post,
+          'success':function (data){
+            if(data.data!=null &&data.data.length>0){
+              _this.giveList=data.data;
+              _this.giveList.forEach((e,i)=>{
+                e.isEnable=!!e.isEnable;
+              })
+              
+            }
+           
           }
         });
       }
