@@ -84,19 +84,11 @@
                 </div>
                 <div class="table-footer">
                   <p  v-if="comment.isRep == 1 && comment.chilComment !=null ">回复：{{comment.chilComment.content}}</p>
-                  <el-input :class="showText==true?'active':''" @change="blurChange" placeholder="请输入内容" v-model.trim="input5" v-if="comment.isRep == 0">
-                    <template slot="prepend">
-                      <i class="iconfont icon-biaoqing"></i>
-                    </template>
-                    <el-button slot="append" @click="reply(comment.id,input5,comment.shopId)">回复</el-button>
-                  </el-input>
-                  <p v-if="comment.isRep == 0" style="position:absolute;top:35px;left:40px;color:red;">
-                    <span v-if="showText==true">请输入内容</span>
-                  </p>
+                  <face-input v-if="comment.isRep == 0" :row="comment" ></face-input>
                 </div>
               </div>
             </div>
-             <content-no :show="contentNo" v-if="page.rowCount == 0 " ></content-no>
+             <content-no :show="contentNo" v-if="page.rowCount == 0 " @success="successComment"></content-no>
           </div>
           <div class="block shop-textr" v-if="page.pageCount > 1">
             <el-pagination
@@ -118,9 +110,10 @@ import Lib from 'assets/js/Lib';
 import vueFilter from 'assets/js/vueFilter';
 import contentNo from 'components/contentNo';
 import defaultImg from 'components/defaultImg';
+import faceInput from 'components/faceInput';
 export default {
    components: {
-    defaultImg,contentNo 
+    defaultImg,contentNo,faceInput
   },
   data () {
     return {
@@ -178,7 +171,10 @@ export default {
     search(name){
       this.activeName2=this.searchData.feel;
       this.searchData.curPage=1;
-      this.mallCommentList( this.searchData);
+      if(name){
+        this.mallCommentList(this.searchData);
+      }
+      
     },
  
      /**时间筛选查询 */
@@ -234,15 +230,7 @@ export default {
         }
       });
     },
-    /**回复文本框验证 */
-    blurChange(){
-      let _this = this;
-      if(_this.input5!=""){
-        _this.showText=false;
-      }else{
-        _this.showText=true;
-      }
-    },
+    
     /**回复评论 */
     reply(id,content,shopId){
       let _this = this;
@@ -274,6 +262,14 @@ export default {
       this.searchData.curPage=val;
       this.mallCommentList( this.searchData);
       // console.log(`当前页: ${val}`);
+    },
+    /** 
+     * 表情包
+     */
+    successComment(val){
+      console.log(val);
+      // _this.searchData.curPage=1;
+      // _this.mallCommentList(_this.screenData);
     } 
   },
   mounted(){
@@ -289,5 +285,7 @@ export default {
 }
 </script>
 
-<style lang="less"></style>
+<style lang="less" >
+
+</style>
 
