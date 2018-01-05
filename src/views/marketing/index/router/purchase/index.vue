@@ -218,7 +218,7 @@ export default {
       activeName:'1', //选项卡编号
       value7:'',//创建时间参数
       page:{},//公共页面数据
-
+      path:'',
       searchData:{//报价单查询参数
         status:'',
         search:'',
@@ -295,6 +295,7 @@ export default {
                 _this.contentNo="baojia";
             }
           _this.orderList = data.data.page.subList;
+          _this.path=data.path;
           _this.page = {
             curPage:  data.data.page.curPage,
             pageCount: data.data.page.pageCount,
@@ -312,14 +313,9 @@ export default {
       let msg = {
         title: "预览",
         urlQR: "",
-        path: _this.webPath,
-        pageLink:
-          "/integral/product/" +
-          obj.user_id +
-          "/" +
-          obj.productId +
-          "/" +
-          obj.shop_id
+        path: _this.path,
+        status: 1,
+        pageLink:"purchaseOrder/downQrcode.do?orderId="+obj.id
       };
       _this.$root.$refs.dialogQR.showDialog(msg);
     },

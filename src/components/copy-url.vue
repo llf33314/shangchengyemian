@@ -97,7 +97,11 @@
         vm.title = msg.title || '' ;
         vm.pageLink = msg.path+msg.pageLink|| '';
         vm.urlQR =  msg.urlQR || DFshop.activeAPI.mallStoreGenerateQRCode_get;
-        vm.erweima = vm.urlQR +"?url="+ msg.pageLink;//生成二维码链接
+        if(msg.status==1){
+          vm.erweima = vm.urlQR +"?url="+ msg.pageLink+"&status=1";//生成二维码链接
+        }else{
+          vm.erweima = vm.urlQR +"?url="+ msg.pageLink;//生成二维码链接
+        }
         vm.copyUrlVisible = true;
         console.log(vm.erweima,vm.urlQR,'----------------')
       },

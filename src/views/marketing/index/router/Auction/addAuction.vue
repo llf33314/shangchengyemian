@@ -81,10 +81,18 @@
             <el-form-item label="结束时间 :" v-show="disabledTime">
                 <p >预计 <span>{{endTime}}</span>结束</p>
             </el-form-item>
-             <el-form-item label="商品限购 :" prop="aucRestrictionNum" v-if="ruleForm.aucType == 1">
+            <el-form-item label="商品限购 :" v-if="ruleForm.aucType == 1">
+                <el-switch on-text="开启" off-text="关闭" v-model="off"></el-switch>
+                  <p class="p-warn">开启后,该拍卖商品会限制出售数量</p>
+                  <el-form-item label="限购数量 :" v-if="off" prop="aucRestrictionNum" class="addGroup-maxBuy" >
+                    <el-input v-model.number="ruleForm.aucRestrictionNum" style="width: 120px;"></el-input>
+                    <span>件</span>
+                </el-form-item>
+            </el-form-item>
+             <!-- <el-form-item label="商品限购 :" prop="aucRestrictionNum" v-if="ruleForm.aucType == 1">
                 开始限购 <el-input  v-model.number="ruleForm.aucRestrictionNum" class="max-input"></el-input> 件/人
                 <span class="p-warn">不填写则代表该拍卖商品不限购</span>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item>
                 <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
                 <el-button @click="returnPage">取消</el-button>
@@ -176,13 +184,22 @@ export default {
     };
     //限购验证
     var formRestrictionNum = (rule, value, callback) => {
-      if (value != "" && value > 0) {
-        let reg = /^[0-9]{1,5}$/;
-        if (!reg.test(value)) {
-          return callback(new Error("商品限购最多只能输入的5位数"));
-        }
+        let reg = /^[1-9]\d{0,4}$/;
+      if (value === "") {
+        return callback(new Error("限购数量不能为空"));
+      } else if (!reg.test(value) || value <= 0) {
+        return callback(new Error("限购数量最多只能输入的5位数"));
+      } else {
+        callback();
       }
-      callback();
+      
+      // if (value != "" && value > 0) {
+      //   let reg = /^[0-9]{1,5}$/;
+      //   if (!reg.test(value)) {
+      //     return callback(new Error("商品限购最多只能输入的5位数"));
+      //   }
+      // }
+      // callback();
     };
     var formAucMargin = (rule, value, callback) => {
       if (this.ruleForm.isMargin == 1) {
@@ -275,6 +292,7 @@ export default {
         aucRestrictionNum: [{ validator: formRestrictionNum, trigger: "blur" }],
         aucMargin: [{ validator: formAucMargin, trigger: "blur" }]
       },
+       off: false,
       shopList: [],
       isChoicePro: "",
       isReplacePro: "",
@@ -344,6 +362,11 @@ export default {
             //降价拍
             auction.aucStartTime = Lib.M.format(new Date(time));
             auction.aucEndTime = _this.endTime;
+            if (!_this.off) {
+              auction.aucRestrictionNum = 0;
+            }else{
+              auction.aucRestrictionNum =formData.aucRestrictionNum;
+            }
           }
           _this.ajaxRequest({
             url: DFshop.activeAPI.mallAuctionSave_post,
@@ -384,6 +407,11 @@ export default {
         },
         success: function(data) {
           _this.ruleForm = data.data;
+          if (_this.ruleForm.aucRestrictionNum === 0) {
+              _this.off = false;
+            } else {
+              _this.off = true;
+            }
           _this.ruleForm.isMargin = !!data.data.isMargin;
           _this.boxData = {
             id: data.data.productId,
@@ -509,6 +537,12 @@ export default {
   .auction-input {
     width: 220px;
   }
+  .addGroup-maxBuy{
+    border:1px solid #e1e1e1;
+    padding:20px 10px;
+    margin-top:10px;
+    width:22%;
+  }
 }
 </style>
 <style lang="less">
@@ -517,6 +551,7 @@ export default {
     left: 66px;
   }
 }
+
 </style>
 
 

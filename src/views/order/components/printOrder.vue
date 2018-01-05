@@ -37,6 +37,11 @@
                 </tr>
             </tbody>
             </table>
+            <div>
+                支付状态：
+                <span v-if="printData.orderStatus==1 ||printData.orderStatus==5 ">未支付</span>
+                 <span v-else>已支付</span>
+            </div>
             <div>配送方式：{{printData.deliveryType}}</div>
             <div>商家备注：</div>
         </div>
