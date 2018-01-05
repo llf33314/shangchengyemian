@@ -308,14 +308,14 @@ export default {
     /**预览 */
     preview(obj) {
       let _this = this;
-      // console.log(obj, "obj");
+      // console.log(obj, "obj");     
       // /integral/product/:busId/:productId/:shopId
       let msg = {
         title: "预览",
         urlQR: "",
         path: _this.path,
         status: 1,
-        pageLink:"purchaseOrder/downQrcode.do?orderId="+obj.id
+        pageLink:"purchasePhone/79B4DE7C/findOrder.do?orderId="+obj.id
       };
       _this.$root.$refs.dialogQR.showDialog(msg);
     },

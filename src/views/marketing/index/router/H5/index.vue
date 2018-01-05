@@ -148,8 +148,9 @@ export default {
         title: "预览",
         urlQR: "",
         path: _this.path,
+        status: 1,
         pageLink:
-          "/mallhtml/" +
+          "mallhtml/" +
           obj.id +
           "/79B4DE7C/phoneHtml"
       };
