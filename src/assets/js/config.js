@@ -282,6 +282,8 @@
     mallCommentList_post:'/mallComment/E9lM9uM4ct/list',
     /**回复评论*/
     mallCommentReply_post:'/mallComment/E9lM9uM4ct/reply',
+    /**保存评论送礼信息*/
+    mallCommentSaveGive_post:'/mallComment/E9lM9uM4ct/saveCommentGive',
 
     /**
     * 订单管理相关接口

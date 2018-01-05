@@ -235,7 +235,7 @@
                       <el-button type="primary" size="small" v-if="order.isShowUpdatePriceButton == 1" @click="openDialog(2,order)">修改价格</el-button>
                     </p>
                 </div>
-                <div class="table-td border-r col-1">{{order.typeName}}
+                <div class="table-td border-r col-1">{{order.orderTypeName}}
                 </div>
               </div>
               <div class="table-tr shop-box-justify table-footer">买家留言：{{order.orderSellerRemark}}

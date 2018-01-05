@@ -48,11 +48,13 @@
             </el-form-item>
             <el-form-item label="商品限购 :">
                 <el-switch on-text="开启" off-text="关闭" v-model="off"></el-switch>
+                  <p class="p-warn">开启后,该团购商品会限制出售数量</p>
+                  <el-form-item label="限购数量 :" v-if="off" prop="gMaxBuyNum" required class="addGroup-maxBuy">
+                    <el-input v-model.number="ruleForm.gMaxBuyNum" style="width: 120px;"></el-input>
+                    <span>件</span>
+                </el-form-item>
             </el-form-item>
-            <el-form-item label="限购规则 :" v-if="off" prop="gMaxBuyNum" required>
-                <el-input v-model.number="ruleForm.gMaxBuyNum" class="addGruop-input"></el-input>
-                <span>件/人</span>
-            </el-form-item>
+          
             <el-form-item>
                 <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
                 <el-button @click="returnPage()">取消</el-button>
@@ -118,8 +120,11 @@ export default {
       }
     };
     var formMaxBuyNum = (rule, value, callback) => {
-      if (value == "") {
-        return callback(new Error("请选择店铺"));
+      let reg = /^[1-9]\d{0,4}$/;
+      if (value === "") {
+        return callback(new Error("限购数量不能为空"));
+      } else if (!reg.test(value) || value <= 0) {
+        return callback(new Error("限购数量只能是大于0的5位数"));
       } else {
         callback();
       }
@@ -219,7 +224,7 @@ export default {
           { validator: formChoicePro, trigger: "change", message: "请选择活动商品" }
         ],
         gMaxBuyNum: [
-          { validator: formMaxBuyNum, trigger: "blur", message: "请输入限购人数" }
+          { validator: formMaxBuyNum, trigger: "blur" }
         ]
       },
       shopList: [],
@@ -489,6 +494,12 @@ export default {
   padding: 40px 4%;
   .addGruop-input {
     width: 220px;
+  }
+  .addGroup-maxBuy{
+    border:1px solid #e1e1e1;
+    padding:20px 10px;
+    margin-top:10px;
+    width:22%
   }
 }
 </style>

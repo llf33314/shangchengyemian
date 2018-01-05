@@ -11,6 +11,40 @@
         <p class="p-warn" v-else-if="form.set.isComment == 0">关闭评价：仅在商品详情页关闭显示全部评价内容，但买家依旧可以评价。</p>
         <p class="p-warn" v-else-if="form.set.isComment == 2">关闭评价及买家评价：关闭显示商品详情页全部评价内容以及关闭买家评价按钮。</p>
       </el-form-item>
+      <!-- <el-form-item label="评价审核 :" v-if="form.set.isComment ==1">
+        <el-radio-group v-model="form.set.isCommentCheck" >
+          <el-radio :label="1">开启</el-radio>
+          <el-radio :label="0">关闭</el-radio>
+        </el-radio-group>
+      </el-form-item> -->
+      <el-form-item label="评价送礼 :" v-if="form.set.isComment ==1">
+        <el-radio-group v-model="form.set.isCommentGive" >
+          <el-radio :label="1">开启</el-radio>
+          <el-radio :label="0">关闭</el-radio>
+        </el-radio-group>
+        <div style="border: 1px solid #e1e1e1; padding: 20px; width: 38%;" v-if="form.set.isCommentGive == 1">
+          <table border="0" cellspacing="0" cellpadding="0" width="100%" class="give_tab">
+            <tbody>
+              <tr v-for="(row , index) in giveList" :key="index">
+                  <td class="text-overflow">
+                        <el-checkbox v-model="row.isEnable"></el-checkbox>
+                        <span v-if="row.giveStatus ==1">好评</span>
+                        <span v-else-if="row.giveStatus ==-1">差评</span>
+                        <span v-else-if="row.giveStatus ==0">中评</span>
+                  </td>
+                  <td style="text-align: left;">
+                    送 <el-select v-model="row.giveType" placeholder="请选择" style="width:160px;">
+                            <el-option label="积分" :value="1"></el-option>
+                            <el-option label="粉币" :value="2"></el-option>
+                    </el-select>
+                    <el-input v-model.number="row.num" placeholder="请输入数量" style="width:160px;"></el-input> 个
+                  </td>
+              </tr>
+            </tbody>
+          </table>
+           <el-button type="primary" @click="onSaveGive" style="margin-top:10px;">保存</el-button>
+        </div>
+      </el-form-item>
       <el-form-item label="待付款订单取消时间设置 :" prop="orderCancel">
         拍下未付款订单 
         <el-input v-model.number="form.set.orderCancel" style="width:80px;"></el-input>
@@ -135,6 +169,10 @@
         }
       };
       return {
+        giveList:[{"giveType":1,"giveStatus":"1","num":0,"isEnable":true},
+                {"giveType":1,"giveStatus":"0","num":0,"isEnable":true},
+                {"giveType":1,"giveStatus":"-1","num":0,"isEnable":true}
+        ],
         form: '',
         rules:{
            orderCancel:[
@@ -154,10 +192,92 @@
       this.mallPaySetPaySetInfo();
     },
     methods: {
+      //评论送礼验证
+      validateData() {
+        let _this = this;
+        let isValidate = true;
+        if(_this.form.set.isComment == 1 && _this.form.set.isCommentGive == 1){
+          for (let i = 0; i < _this.giveList.length; i++) {
+            let obj = _this.giveList[i];
+  
+            if (obj.isEnable) {
+              let reg = /^[1-9]\d{0,5}$/;
+              let status="";
+              if(obj.giveStatus ==-1){
+                status="差评"
+              }else if(obj.giveStatus ==0){
+                status="中评"
+              }else if(obj.giveStatus ==1){
+                status="好评"
+              }
+              if(obj.num =="" ||obj.num ==0){
+                this.$message({
+                  showClose: true,
+                  message: status+"的数量须大于0",
+                  type: "error"
+                });
+                isValidate=false;
+                break;
+              } else if (!reg.test(obj.num)) {
+                this.$message({
+                  showClose: true,
+                  message: status+"的数量有误(最长6位)",
+                  type: "error"
+                });
+                isValidate=false;
+                break;
+              }
+            }
+          }
+        }
+        return isValidate;
+      },
+      //保存送礼判断
+      onSaveGive(){
+        let _this = this;
+        let giveData=_this.validateData();
+        if(giveData){
+          _this.saveGive(1);
+        }
+      },
+       //保存评论送礼
+      saveGive(type){
+        let _this = this;
+        let _giveList = [];
+        for (var k = 0; k < _this.giveList.length; k++) {
+          let obj = _this.giveList[k];
+          let arr = {
+            id: obj.id || null,
+            giveType: obj.giveType,
+            giveStatus: obj.giveStatus,
+            num: obj.num,
+            isEnable: Number(obj.isEnable)
+          };
+          _giveList.push(arr);
+        }
+        let give = {};
+        give.giveList=JSON.stringify(_giveList);
+        _this.ajaxRequest({
+          'url': DFshop.activeAPI.mallCommentSaveGive_post,
+          'data':give,
+          'success':function (data){
+            if(type==1){
+              _this.$message({
+                message: '保存成功',
+                type: 'success'
+              });
+              _this.mallPaySetPaySetInfo();
+            }
+          }
+        });
+          
+      },
       onSubmit() {//保存设置
         let _this = this;
+        let giveData=_this.validateData();
+        
         this.$refs['form'].validate((valid) => {
-          if (valid) {
+          if (valid&&giveData) {
             let f = this.$refs.form.model.foorerObj;
             let paramsForm = this.$refs.form.model.set;
             let smsMsg = {};
@@ -174,6 +294,9 @@
             param.pfRemark = paramsForm.pfRemark;
             param.pfApplyRemark = paramsForm.pfApplyRemark;
             param.busMessageJson = paramsForm.busMessageJson;
+             if(_this.form.set.isComment == 1 && _this.form.set.isCommentGive == 1){
+              _this.saveGive(2);
+             }
             _this.ajaxRequest({
               'url': DFshop.activeAPI.mallPaySetSave_post,
               'data':param,
@@ -195,6 +318,13 @@
           'url': DFshop.activeAPI.mallPaySetPaySetInfo_post,
           'success':function (data){
             _this.form = data.data;
+            if(data.data.giveList!=null &&data.data.giveList.length>0){
+               _this.giveList=data.data.giveList;
+              _this.giveList.forEach((e,i)=>{
+                e.isEnable=!!e.isEnable;
+              })
+              
+            }
             _this.form.foorerObj.home = !!data.data.foorerObj.home;
             _this.form.foorerObj.group = !!data.data.foorerObj.group;
             _this.form.foorerObj.cart = !!data.data.foorerObj.cart;
@@ -211,6 +341,11 @@
 .setup-wrapper{
   width: 100%;
   padding: 40px 30px;
+}
+.give_tab{
+  tr{
+    height: 50px;;
+  }
 }
 
 </style>

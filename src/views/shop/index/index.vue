@@ -109,11 +109,11 @@
             </el-table-column>
             <el-table-column label="所属店铺" prop="business_name">
             </el-table-column>
-            <el-table-column label="访客数/浏览量" prop="flow">
+            <!-- <el-table-column label="访客数/浏览量" prop="flow">
               <template  scope="scope">
                   {{scope.row.visitor_num}}/{{scope.row.views_num}}
               </template>
-            </el-table-column>
+            </el-table-column> -->
              <el-table-column label="是否主页" prop="pag_is_main">
               <template  scope="scope">
                   <span v-if="scope.row.pag_is_main == 1">是</span>

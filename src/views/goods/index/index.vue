@@ -3,7 +3,7 @@
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="我的商品" name="mygoods"></el-tab-pane>
       <el-tab-pane label="分组管理" name="grouping"></el-tab-pane>
-      <el-tab-pane label="商品页模板" name="goodspage"></el-tab-pane>
+      <!-- <el-tab-pane label="商品页模板" name="goodspage"></el-tab-pane> -->
       <!-- todo 没有设计<el-tab-pane label="多粉商城" name="duofeng"></el-tab-pane> -->
     </el-tabs>
     <router-view></router-view>
@@ -26,7 +26,7 @@ export default {
   },
   mounted(){
     const _this = this;
-    
+
     let url=Lib.M.getUrlQuery("url");
     if(url !=''){
       this.$router.push({ path: "/" + url});
