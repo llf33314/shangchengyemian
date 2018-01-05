@@ -601,8 +601,8 @@ export default {
           { validator: formImgLicense6, trigger: 'blur' }
         ],
       },
-      button1: false,
-      button2: false,
+      button1: 0,
+      button2: 0,
       materialvisible: false,
       materialUrl: '',
       square: true,
@@ -631,16 +631,21 @@ export default {
       @shoptypes:子键内容
      */
     choiceShoptype(index,shoptypes,key){
+      console.log(shoptypes,'shoptypes',index,key)
+      //选择父级按钮
       this.button1 = index;
-      this.button2 = false;
-      this.isShow = false;
+      //切换默认第一个
+      this.button2 = 0;
       this.isMapOne = key;
-      if(!shoptypes){
+      if(shoptypes.length == 0){
         this.isProve = false;
+        
         return;
       }
+      this.isShow = true;
       this.isProve = true;
       this.shoptypes2 = shoptypes;
+      this.isMapTwo = shoptypes[0].id;
     },
     /**
      选择认证信息
@@ -745,7 +750,7 @@ export default {
         })
         _data.imageList = arr;
       }
-      console.log(_data,'提交认证数据')
+      //console.log(_data,'提交认证数据');
       _this.$refs[formName].validate((valid) => {
         if (valid) {
           _this.ajaxRequest({
@@ -756,7 +761,7 @@ export default {
                   message: '恭喜你，保存成功',
                   type: 'success'
                 });
-                _this.jumpRoute('/shop');
+                _this.jumpRouter('/shop');
             }
           });
         } else {
@@ -877,7 +882,7 @@ export default {
     this.data = JSON.parse(this.$route.query.data);
     this.mallStoreMapAjax();
     this.isMaterialUrl();
-    console.log(this.data,'传递数据data');
+    //console.log(this.data,'传递数据data');
   },
 }
 </script>

@@ -258,6 +258,12 @@
                             <el-checkbox v-model.number="form.pro.isMemberDiscount" 
                                         :true-label= "1" :false-label="0" >参加会员折扣</el-checkbox>
                         </el-form-item>
+                        <el-form-item label="允许7天退货 :" >
+                            <el-radio-group v-model.number="form.pro.isReturn">
+                                <el-radio :label="1">开启</el-radio>
+                                <el-radio :label="0">关闭</el-radio>
+                            </el-radio-group>
+                        </el-form-item>
                         <el-form-item label="使用优惠券 :" >
                             <el-radio-group v-model.number="form.pro.isCoupons">
                                 <el-radio :label="1">开启</el-radio>
@@ -366,6 +372,7 @@ export default {
                 proFreightSet:1,//物流
                 proFreightTempId:'',//物流id
                 isMemberDiscount:1,//会员折扣
+                isReturn: 1,//允许退款
                 isCoupons:1,//使用优惠券
                 isIntegralDeduction:0,//积分抵扣
                 isFenbiDeduction:0,//粉币抵扣
