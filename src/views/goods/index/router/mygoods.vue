@@ -382,7 +382,7 @@ export default {
         title = '到店购买'
         //todo 到店购买 链接目前没有
       }
-      let _pageLink = 'goods/details/'+data.shopId+'/'+data.userId+'/0/'+data.id+'/0';
+      let _pageLink = '/goods/details/'+data.shopId+'/'+data.userId+'/0/'+data.id+'/0';
       if(type == 2){//到店购买链接
         _pageLink += "/0/1";
       }
