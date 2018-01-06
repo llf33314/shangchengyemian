@@ -159,7 +159,7 @@ export default {
     /**设计页面 */
     updateHtml(obj){
 
-      window.open(this.path+'mallhtml/updateHtml.do?id='+obj.id);
+      window.open(this.path+'mallhtml/E9lM9uM4ct/updateHtml.do?id='+obj.id);
     },
       /**保存背景图 */
     materiallayer(row){
