@@ -11,8 +11,17 @@
    * 开发启用代理api
    * 打包注释DFshop.api（不需要）
    */
+  /**
+   * 生产build
+   */
   //DFshop.api ="";
+  //DFshop.face = '/images/activity/miniscene/phone/face/' 
+  /**
+   * 开发dev
+   */
   DFshop.api = "/api";
+  DFshop.face = '/static/arclist/' 
+
   //get请求   接口前加上 DFshop.api
 
   /*start 请求接口***********************************************************************************************************/
