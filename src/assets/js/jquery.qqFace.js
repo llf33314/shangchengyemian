@@ -12,18 +12,15 @@
 		var id = option.id;
 		var path = option.path;
 		var tip = option.tip;
-		debugger
 		if (assign.length <= 0) {
-			alert('缺少表情赋值对象。');
 			return false;
 		}
-		$(this).click(function (e) {
+		//$(this).unbind("click");
+		$(this).bind("click",function(e){
 			var strFace, labFace;
-			console.log(option.assign,'option.assign',assign)
 			if ($('#' + id).length <= 0) {
 				strFace = '<div id="' + id + '" style="position:absolute;display:none;z-index:1000;" class="qqFace">' +
 					'<table border="0" cellspacing="0" cellpadding="0"><tr>';
-				debugger
 				for (var i = 1; i <= 75; i++) {
 					labFace = '[' + tip + i + ']';
 					strFace += '<td><img src="' + path + i + '.gif" onclick="$(\'#' + option.assign + '\').setCaret();$(\'#' + option.assign + '\').insertAtCaret(\'' + labFace + '\');" /></td>';
@@ -38,6 +35,7 @@
 			$('#' + id).css('left', offset.left);
 			$('#' + id).show();
 			e.stopPropagation();
+			return false
 		});
 
 		$(document).click(function () {
@@ -67,7 +65,6 @@ jQuery.extend({
 });
 jQuery.fn.extend({
 	selectContents: function () {
-		debugger
 		$(this).each(function (i) {
 			var node = this;
 			var selection, range, doc, win;
@@ -96,22 +93,35 @@ jQuery.fn.extend({
 
 	insertAtCaret: function (textFeildValue) {
 		var textObj = $(this).get(0);
-		if (document.all && textObj.createTextRange && textObj.caretPos) {
-			var caretPos = textObj.caretPos;
-			caretPos.text = caretPos.text.charAt(caretPos.text.length - 1) == '' ?
-				textFeildValue + '' : textFeildValue;
-		} else if (textObj.setSelectionRange) {
-			var rangeStart = textObj.selectionStart;
-			var rangeEnd = textObj.selectionEnd;
-			var tempStr1 = textObj.value.substring(0, rangeStart);
-			var tempStr2 = textObj.value.substring(rangeEnd);
-			textObj.value = tempStr1 + textFeildValue + tempStr2;
-			textObj.focus();
-			var len = textFeildValue.length;
-			textObj.setSelectionRange(rangeStart + len, rangeStart + len);
+		var result = $(textObj).html();
+		if(document.all && textObj.createTextRange && textObj.caretPos){
+			var caretPos=textObj.caretPos; 
+			caretPos.text = caretPos.text.charAt(caretPos.text.length-1) == '' ? 
+			textFeildValue+'' : textFeildValue;
+		} else if(textObj.setSelectionRange){
+			var rangeStart=textObj.selectionStart; 
+			var rangeEnd=textObj.selectionEnd;
+			var tempStr1=textObj.value.substring(0,rangeStart);
+			var tempStr2=textObj.value.substring(rangeEnd); 
+			textObj.value=tempStr1+textFeildValue+tempStr2; 
+			textObj.focus(); 
+			var len=textFeildValue.length; 
+			textObj.setSelectionRange(rangeStart+len,rangeStart+len); 
 			textObj.blur();
-		} else {
-			textObj.value += textFeildValue;
+		}else{
+			result= replaceEm(textFeildValue);
+			$(textObj).append(result);
 		}
-	}
+		function replaceEm(str){ 
+			str = str.replace(/</g,'<；'); 
+			str = str.replace(/>/g,'>；'); 
+			str = str.replace(/>/g,'<；br/>'); 
+			str = str.replace(/\[em_([0-9]*)]/g,'<img src="/static/arclist/$1.gif" border="0" style="width:24px;higth:24px;vertical-align: text-top"/>'); 
+			return str; 
+		}
+	},
+	/** 
+     * 图片匹配
+     */
+    
 });

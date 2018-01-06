@@ -3,12 +3,14 @@
     <div id="show"></div>
     <div class="face-input-centent clearfix" >
       <div class="face-input-icon">
-         <i class="iconfont icon-biaoqing"  @click="faceShow($event)"></i>
+         <i class="iconfont icon-biaoqing" :class="'icon-biaoqing-'+comment.id" ></i>
       </div>
       <div class="face-input-textarea">
-         <input placeholder="请输入内容" 
-                :class="showText==true?'active':''"
-                :id="'js-'+comment.id"/>
+         <p :class="[showText==true?'active':'']"
+            :id="comment.id"
+            contenteditable="true">
+            <!-- <span>请输入内容</span> -->
+         </p>
       </div>
       <div class="face-input-button" @click="reply()">回复
       </div>
@@ -25,19 +27,25 @@ export default {
   data () {
     return {
         showText:false,//验证显示
+        content:'',
         comment:{}
+    }
+  },
+  watch:{
+    'content'(a){
+      console.log(a,'aaa')
     }
   },
   methods: {
     /** 
-     * 表情符号显示
+     * 图片匹配
      */
-    faceShow(e){
-        $('.icon-biaoqing').qqFace({
-            id : 'facebox', 
-            assign:'js-'+this.comment.id, 
-            path:'/static/arclist/'	//表情存放的路径
-        }); 
+    replace_em(str){ 
+        str = str.replace(/</g,'<；'); 
+        str = str.replace(/>/g,'>；'); 
+        str = str.replace(/>/g,'<；br/>'); 
+        //str = str.replace(/[em_([0-9]*)]/g,'<img src="face/$1.gif" border="0" />'); 
+        return str; 
     },
     /**
      * 回复评论
@@ -45,35 +53,39 @@ export default {
      **/
     reply(){
       let _this = this;
-      let content = $('#js-'+this.comment.id).val();
+      let content = $('#'+this.comment.id).html();
       if(content == "" || content == undefined){
         _this.showText = true;
         return;
       }
-      this.emit('change',1)
-      // _this.ajaxRequest({
-      //   'url': DFshop.activeAPI.mallCommentReply_post,
-      //   'data':{
-      //     "id":_this.comment.id,
-      //     "content":content,
-      //     "shopId":_this.comment.shopId
-      //   },
-      //   'success':function (data){
-      //      _this.$message({
-      //       message: '回复成功',
-      //       type: 'success'
-      //     });
-      //     _this.emit('success',)
-      //   }
-      // });
+      _this.ajaxRequest({
+        'url': DFshop.activeAPI.mallCommentReply_post,
+        'data':{
+          "id":_this.comment.id,
+          "content":content,
+          "shopId":_this.comment.shopId
+        },
+        'success':function (data){
+          _this.$emit('success','回复成功');
+        }
+      });
     },
   },
   mounted(){
     const _this = this;
     let face_width = $('.face-input-box').width();
     $('.face-input-textarea').width(face_width-(38+56+20)+'px');
-    this.comment = this.row
-    console.log(this.row,'comment')
+    this.comment = this.row;
+
+    _this.$nextTick(function(){
+    let _assign =  _this.comment.id;
+    $(".icon-biaoqing-"+_assign).qqFace({
+        id : 'facebox', 
+        assign:_assign, 
+        path:'/static/arclist/'	//表情存放的路径
+      }); 
+    })
+    
   }
 }
 </script>
@@ -134,13 +146,14 @@ export default {
       border-bottom-left-radius:0;
     }
     .face-input-textarea{
-      input{
-        padding:8px; 
+      p{
+        height: 37px;
+        padding:6px 8px; 
         width:100%;
         border:0;
         border:1px solid #bfcbd9;
       }
-      input[placeholder]{
+      p.no{
         color:#97a8be;
       }
     }

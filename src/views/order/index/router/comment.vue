@@ -83,12 +83,12 @@
                   </div>
                 </div>
                 <div class="table-footer">
-                  <p  v-if="comment.isRep == 1 && comment.chilComment !=null ">回复：{{comment.chilComment.content}}</p>
-                  <face-input v-if="comment.isRep == 0" :row="comment" ></face-input>
+                  <p  v-if="comment.isRep == 1 && comment.chilComment !=null ">回复：<span v-html="comment.chilComment.content"></span></p>
+                  <face-input v-if="comment.isRep == 0" :row="comment" @success="successComment"></face-input>
                 </div>
               </div>
             </div>
-             <content-no :show="contentNo" v-if="page.rowCount == 0 " @success="successComment"></content-no>
+             <content-no :show="contentNo" v-if="page.rowCount == 0 " ></content-no>
           </div>
           <div class="block shop-textr" v-if="page.pageCount > 1">
             <el-pagination
@@ -267,9 +267,12 @@ export default {
      * 表情包
      */
     successComment(val){
-      console.log(val);
-      // _this.searchData.curPage=1;
-      // _this.mallCommentList(_this.screenData);
+      this.$message({
+        message: '回复成功',
+        type: 'success'
+      });
+      this.searchData.curPage=1;
+      this.mallCommentList(this.screenData);
     } 
   },
   mounted(){
