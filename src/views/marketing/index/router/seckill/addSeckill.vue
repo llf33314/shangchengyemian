@@ -305,6 +305,7 @@ export default {
                 invenId: specObj.id,
                 specificaIds: specObj.specificaIds,
                 isJoinGroup: Number(specObj.isJoin),
+                seckillNum:specObj.invNum,
                 id: specObj.priceId || null
               };
               if (specObj.isJoin) {
