@@ -82,7 +82,7 @@ export default {
     $(".icon-biaoqing-"+_assign).qqFace({
         id : 'facebox', 
         assign:_assign, 
-        path:'/static/arclist/'	//表情存放的路径
+        path:'/images/activity/miniscene/phone/face/'	//表情存放的路径
       }); 
     })
     
