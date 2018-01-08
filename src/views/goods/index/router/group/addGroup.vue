@@ -55,7 +55,7 @@
                 <div class="material-square">
                   <img class="img" :src="img.imageUrl" />
                   <div class="delete"  @click.stop="deleteImg(index)">
-                    <i class="el-icon-view" @click.stop="showBigImg(img)"></i>
+                    <i class="el-icon-view" @click.stop="showBigImg(img.imageUrl)"></i>
                     <i class="el-icon-delete2" @click.stop="deleteImg(index)"></i>
                   </div>
                 </div>
@@ -139,6 +139,15 @@ export default {
       largeSrc: '',//查看大图的图片
     }
   },
+  watch:{
+    'materialLargeSrcVisible'(a){
+      if(a){
+        parent.window.postMessage("openMask()", "*");
+      }else{
+        parent.window.postMessage("closeMask()", "*");
+      }
+    }
+  },
   methods: {
     /**改变序号的 验证与否 */
     sortValidate(){
@@ -151,6 +160,7 @@ export default {
      /**调用素材库 */
     materiallayer(){
       let _this = this;
+      parent.window.postMessage("openMask()", "*");
       _this.$material({
         imageboxUrl: DFshop.activeAPI.materialUrl,   //地址
         modal: true,       //遮罩
@@ -191,7 +201,9 @@ export default {
                 });
               }
           }); 
+          parent.window.postMessage("closeMask()", "*");
       }).catch(function (error) {
+         parent.window.postMessage("closeMask()", "*");
           //取消
       })
     },

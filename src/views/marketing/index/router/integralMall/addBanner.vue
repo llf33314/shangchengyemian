@@ -156,6 +156,7 @@ export default {
      /**调用素材库 */
     materiallayer(){
       let _this = this;
+      parent.window.postMessage("openMask()", "*");
       _this.$material({
         imageboxUrl: DFshop.activeAPI.materialUrl,   //地址
         modal: true,       //遮罩
@@ -167,8 +168,10 @@ export default {
         closeOnPressEscape: false
       }).then(function (val) {
         _this.ruleForm.imageUrl =val[0].url;
-        _this.$refs['ruleForm'].validate()
+        _this.$refs['ruleForm'].validate();
+        parent.window.postMessage("closeMask()", "*");
       }).catch(function (error) {
+        parent.window.postMessage("closeMask()", "*");
           //取消
       })
     },
