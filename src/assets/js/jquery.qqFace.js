@@ -41,8 +41,6 @@
 		$(document).click(function () {
 			$('#' + id).hide();
 			$('#' + id).remove();
-			// $('#facebox').remove();
-			// $('#facebox').empty();
 		});
 	};
 

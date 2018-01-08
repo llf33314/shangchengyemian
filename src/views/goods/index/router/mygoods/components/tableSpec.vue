@@ -1,6 +1,6 @@
 <template>
-<div :class="{'table-nopass':!isPass}">
-  <div class="table-spec" >
+<div :class="{'table-nopass':!isPass}" style="position: relative">
+    <div class="table-spec" >
         <div class="table-spec-box" v-if="specList.length>0" v-for="(item,index) in specList" :key="index">
             <div class="table-spec-title">
                 <div class="table-inline">
@@ -39,7 +39,7 @@
                     </div>
                 </div>
                 <div class="table-inline fontBlue table-spec-add"
-                     style="padding-left:15px;">
+                        style="padding-left:15px;">
                     <span @click="showAddoption(item.specNameId,index)">+添加</span>
                     <div class="table-spec-add-option" v-if="index === isShowAdd">
                         <el-select
@@ -68,6 +68,16 @@
     </div>
     <p v-if="!isPass" class="table-nopass-text">请完善商品规格信息
     </p>
+    <div class="table-isType" v-if="isType != 0 || noUpSpec == 1">
+        <p v-if="isType == 1 ||isType == 5">该商品已经加入<span v-text="[isType==1?'团购':isType==5?'批发':'']"></span>。不能修改商品规格</p>
+        <p v-if="1<isType<5">
+            该商品已经加入
+            <span v-if="isType==2">秒杀</span>
+            <span v-if="isType==3">拍卖</span>
+            <span v-if="isType==4">预售</span>。不能修改商品规格和商品库存</p>
+          <p v-if="noUpSpec == 1">商城不能修改商品规格和库存</p>
+        <!-- ，请去进销存修改 -->
+    </div>
 </div>
 </template>
 <script>
@@ -83,6 +93,14 @@ export default {
         row:{
             type: [Array,String],
             default:'0'
+        },
+        isType:{
+            type:Number,
+            default:0,
+        },
+        noUpSpec:{
+            type:Number,
+            default:0,
         }
     },
     components: {
@@ -541,5 +559,20 @@ export default {
             border-bottom:  6px solid #fff;
         }
     }
+}
+.table-isType{
+    width: 100%;
+    background: rgba(0, 0, 0, 0.45);
+    position: absolute;
+    color:#e8e8e8;
+    top: 0;
+    left: 0;
+    height: 100%;
+    text-align: center;
+    font-size: 16px;
+    .ik-box;
+    .ik-box-align(center);
+    .ik-box-pack(center);
+    z-index: 2;
 }
 </style>
