@@ -803,6 +803,7 @@ export default {
     materiallayer(item,num){
       let _this = this;
       console.log(item,'上传');
+      parent.window.postMessage("openMask()", "*");
       _this.$material({
         imageboxUrl: DFshop.activeAPI.materialUrl,   //地址
         modal: true,       //遮罩
@@ -851,8 +852,9 @@ export default {
                     }
                 });
               }
-            
+            parent.window.postMessage("closeMask()", "*");
         }).catch(function (error) {
+           parent.window.postMessage("closeMask()", "*");
             //取消
         })
     },

@@ -120,6 +120,7 @@ export default {
     materiallayer(index){
       let _this = this;
       // console.log(item,'上传');
+       parent.parent.window.postMessage("openMask()", "*");
       _this.$material({
         imageboxUrl: DFshop.activeAPI.materialUrl,   //地址
         modal: true,       //遮罩
@@ -133,8 +134,9 @@ export default {
           //确认
           _this.ruleForm.rowList[index].carouselImg = val[0].url; 
           _this.validateData();
-      
+         parent.parent.window.postMessage("closeMask()", "*");
         }).catch(function (error) {
+          parent.parent.window.postMessage("closeMask()", "*");
             //取消
         })
     },

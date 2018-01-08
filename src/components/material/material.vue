@@ -138,6 +138,7 @@
       */
       material(){
         let _this = this;
+        parent.parent.parent.window.postMessage("openMask()", "*");
         _this.$material({
           imageboxUrl: DFshop.activeAPI.materialUrl,   //地址
           modal: true,       //遮罩
@@ -169,7 +170,9 @@
               _this.$emit('change',val[0].url)
               return
             }
+            parent.parent.parent.window.postMessage("closeMask()", "*");
           }).catch(function (error) {
+            parent.parent.parent.window.postMessage("closeMask()", "*");
           //取消
         }) 
 

@@ -240,6 +240,7 @@ export default {
     materiallayer(item){
       let _this = this;
       console.log(item,'上传');
+      parent.window.postMessage("openMask()", "*");
       _this.$material({
         imageboxUrl: DFshop.activeAPI.materialUrl,   //地址
         modal: true,       //遮罩
@@ -255,8 +256,9 @@ export default {
               _this.ruleForm.orderQrcode = val[0].url; 
               _this.$refs['ruleForm'].validate()
             } 
-            
+          parent.window.postMessage("closeMask()", "*");  
         }).catch(function (error) {
+          parent.window.postMessage("closeMask()", "*");
             //取消
         })
     },
