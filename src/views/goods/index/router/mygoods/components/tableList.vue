@@ -6,7 +6,7 @@
                 <th width="13%" 
                     v-for="(item,index) in listData"
                     :key="index" v-if="item.specName!=''">{{item.specName}}</th>
-                <th width="16%" v-if="isSpec">价格(元){{isSpec}}</th>
+                <th width="16%" v-if="isSpec">价格(元)</th>
                 <th width="16%" v-if="isSpec">库存</th>
                 <th width="16%" v-if="isSpec">商家编码</th>
                 <th width="8%"  v-if="isSpec">销量</th>
@@ -88,19 +88,28 @@
             </tr>
             <tr>
                <td :colspan="[isSpec != '0'?listData.length+5:listData.length+1]">
-                   批量设置 
-                   <a   class="td-button" 
-                        v-if="typeBatch !=2 "
-                        @click="typeBatch=1;isButton=true">价格</a>
-                   <a   class="td-button" 
-                        v-if="typeBatch !=1 "
-                        @click="typeBatch=2;isButton=true">库存</a>
+                   批量设置
+                   <div class="td-footer" v-if="isSpec">
+                        <a  class="td-button" 
+                            v-if="typeBatch !=2 "
+                            @click="typeBatch=1;isButton=true">价格</a>
+                        <a  class="td-button" 
+                            v-if="typeBatch !=1 "
+                            @click="typeBatch=2;isButton=true">库存</a>
+                    </div>
+                    <div class="td-footer" v-if="!isSpec">
+                        <a  class="td-button" 
+                            v-if="typeBatch !=2 "
+                            @click="typeBatch=1;isButton=true">重量</a>
+                    </div>
                    <div class="td-footer" v-if="isButton">
-                    <el-input v-model.trim="batchs"  
-                            placeholder="请输入内容" 
-                            class="td-footer-input"></el-input>
-                    <a class="td-button" @click="changeBatch(batchs)">保存</a>
-                    <a class="td-button" @click="isButton=false;batchs='';typeBatch=0">取消</a>
+                        <input  class="td-footer-input" 
+                                v-model.trim="batchs" 
+                                placeholder="请输入内容"
+                                :class="{'td-footer-inputNO':batchsWarning!=''}"/>
+                        <a class="td-button" @click="changeBatch(batchs)">保存</a>
+                        <a class="td-button" @click="isButton=false;batchs='';typeBatch=0;batchsWarning=''">取消</a>
+                        <p class="inputNO-warning">{{batchsWarning}}</p>
                    </div>
                </td>
             </tr>
@@ -152,6 +161,7 @@ export default {
             LSlist:[],//临时暂存数据
             isButton:false,//批量修改
             batchs:'',//输入批量内容
+            batchsWarning:'',//警告
             typeBatch:0,//批量选择
         }
     },
@@ -180,12 +190,15 @@ export default {
             let _this = this;
             //规格遍历
             data.forEach((item,i) => {
-                item.specificaIds = item.specificaIds.split(",");
-                item.errorMsg = {
-                    Price:null,
-                    invNum:null,
-                    logistics:null
-                };
+                if(typeof item.specificaIds == 'string'){
+                    item.specificaIds = item.specificaIds.split(",");
+                    item.errorMsg = {
+                        Price:null,
+                        invNum:null,
+                        logistics:null
+                    };
+                }
+               
             });
         },
         /** 
@@ -282,7 +295,6 @@ export default {
                     _this.listData.push(item);
                 }
             })
-            //_this.newlistData(_this.invenData);
         },
         /**
          * 深复制
@@ -307,12 +319,54 @@ export default {
          **/
         changeBatch(){
             let _this = this;
+            let flag = false;//验证
+            //验证
+            
+            if(this.typeBatch === 1){
+                //价钱
+                let regPrice =/^[0-9]{1}\d{0,5}(\.\d{1,2})?$/;
+                if(!this.batchs){
+                    this.batchsWarning = '请输入价格';
+                }else if(!regPrice.test(this.batchs)){
+                    this.batchsWarning = '价格最多只能输入六位整数+两位小数,如：300000.00';
+                }else{
+                    flag = true;
+                }
+            }else if(this.typeBatch === 2){
+                //库存
+                let regInvNum =/^[0-9]{1}\d{0,5}?$/;
+                 if(!this.batchs){
+                    this.batchsWarning = '请输入商品库存';
+                }else if(!regInvNum.test(this.batchs)){
+                    this.batchsWarning = '商品库存只能输入是6位数字：999999';
+                }else{
+                    flag = true;
+                }
+            }else if(this.typeBatch === 3){
+                //重量
+                let reglogisti =/^[0-9]{1}\d{0,5}(\.\d{1,2})?$/;
+
+                if(!this.batchs){
+                   this.batchsWarning = '请输入商品物流重量';
+                }else if(!reglogisti.test(this.batchs)){
+                   this.batchsWarning = '商品物流重量最多只能输入六位整数+两位小数,如：300000.00';
+                }else{
+                    flag = true;
+                }
+            }
+            if(!flag)return false;
+            let proStockTotal = 0;
             this.invenData.forEach((item,i)=>{
                 if(this.typeBatch ==1 ){
                     item.invPrice = this.batchs;
                 }
                 if(this.typeBatch ==2 ){
                     item.invNum = this.batchs;
+                    proStockTotal += Number(item.invNum);
+                    _this.$emit('stockTotal',proStockTotal);
+                }
+                if(this.typeBatch ==3){
+                    item.logisticsWeight = this.batchs;
                 }
             })
             this.isButton = false;
@@ -389,11 +443,33 @@ export default {
     }
     .td-footer{
         display: inline-block;
-        width: 60%;
+        text-align: left;
+        position: relative;
+        margin: 10px;
         .td-footer-input{
-            width: 60%;
+            width: 280px;
+            background-color: #fff;
+            background-image: none;
+            border-radius: 4px;
+            border: 1px solid #bfcbd9;
+            box-sizing: border-box;
+            color: #1f2d3d;
+            font-size: inherit;
+            height: 36px;
+            line-height: 1;
+            outline: 0;
+            padding: 3px 10px;
+            transition: border-color .2s cubic-bezier(.645,.045,.355,1);
+        }
+        .inputNO-warning{
+            position: absolute;
+            color: #ff4949;
+        }
+        .td-footer-inputNO{
+            border: 1px solid #ff4949 !important;    
         }
     }
+    
 }
 .table-isType{
     width: 100%;

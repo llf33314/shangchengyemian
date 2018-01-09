@@ -10,7 +10,7 @@
             <el-option label="审核未通过" :value="3"></el-option>
           </el-select>
           <el-select v-model="screenData.shopId" placeholder="请选择店铺" class="shopInfo-select" @change="search_shop(screenData.shopId)">
-            <el-option :key="0" label="全部商品" :value="''"></el-option>
+            <el-option :key="0" label="全部店铺" :value="''"></el-option>
             <el-option v-for="item in shopList" :key="item.id" :label="item.sto_name" :value="item.id"></el-option>
           </el-select>
           <el-input class="shopInfo-input" placeholder="请输入商品名称" icon="search" v-model="screenData.proName" @blur="search_goods()"></el-input>

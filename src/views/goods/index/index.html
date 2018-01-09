@@ -32,31 +32,41 @@
     function materiallayer(param, e, editor) {
         pic_type = param;
         paramList = arguments;
-        openIframe('素材库', '820px', '500px',  DFshop.activeAPI.materialUrl);
+        console.log(DFshop.activeAPI.materialUrl,'DFshop.activeAPI.materialUrl')
+       // openIframe('素材库', '820px', '500px',  DFshop.activeAPI.materialUrl+location.href);
+        openIframe('素材库', '820px', '500px',  'https://suc.deeptel.com.cn/common/material.do?retUrl='+window.location.href);
     }
     /**素材库里面返回信息**/
     window.addEventListener("message", function (e) {
         if(!e.data)return;
-        eval(e.data)
-    });
-    function image(id, url) {
-        //alert(url);
-        imgList = url;
-        if (pic_type == 0) {
-            $("#addswiperpic").click();
-        } else if (pic_type == 1) {
-            $("#addswiperpic_last").click();
-        } else if (pic_type == 2) {
-            $(".not-empty.current").css("background-color", "#ccc").find("img").attr("src", imgList);
-            $(".not-empty.current span").remove();
-            $("#saveclassify").click();
-            $(".not-empty.current").click();
-        } else if (typeof pic_type == 'function') {
-            pic_type(imgList, paramList[2], paramList[1])
-        }
 
-        layer.closeAll();
-    }
+        function image(id, url) {
+        //alert(url);
+            imgList = url;
+            if (pic_type == 0) {
+                $("#addswiperpic").click();
+            } else if (pic_type == 1) {
+                $("#addswiperpic_last").click();
+            } else if (pic_type == 2) {
+                $(".not-empty.current").css("background-color", "#ccc").find("img").attr("src", imgList);
+                $(".not-empty.current span").remove();
+                $("#saveclassify").click();
+                $(".not-empty.current").click();
+            } else if (typeof pic_type == 'function') {
+                pic_type(imgList, paramList[2], paramList[1])
+            }
+
+            layer.closeAll();
+        }
+        
+        function go_back() {
+            layer.closeAll();
+        }
+        
+
+        eval(e.data);
+    });
+
     function openIframe(title, width, height, content) {
         layer.open({
             type: 2,

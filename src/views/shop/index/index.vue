@@ -235,7 +235,7 @@
       </div>
     </el-tab-pane>
     <content-no :show="contentNo" v-if="tabelData.page.rowCount == 0 "></content-no>
-    <div class="shop-textr" v-if="tabelData.page.pageCount>1">
+    <div class="shop-textr" v-if="tabelData.page.pageCount>1 && activeName != 'style'">
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -287,6 +287,7 @@ export default {
       value: "",
       styles: "",
       style_key: false,
+      ajaxStyle_key: false,//请求过的风格 防止重复提交
       isColor: [],
       dialogVisible: false, //二维码弹出框
       contentNo: "shop", //没有数据显示
@@ -347,14 +348,11 @@ export default {
           curPage: Page
         },
         success: function(data) {
-          console.log(data.data, "data.data");
           _this.tabelData = data.data;
           _this.imgUrl = data.imgUrl;
           _this.path = data.path;
           _this.webPath = data.webPath;
           _this.isSecuritytrade = data.data.isSecuritytrade;
-
-          console.log(_this.tabelData, "_this.tabelData");
         }
       });
     },
@@ -365,7 +363,6 @@ export default {
      */
     authentication(certId, data) {
       let _this = this;
-      console.log(certId, "cert", data);
       if (!certId) return _this.jumpRouter("shop/authentication/", data);
       let msg = {
         dialogType: "warn",
@@ -565,22 +562,21 @@ export default {
      */
     saveStyle() {
       let _this = this;
+      //防止重复请求
+      if(_this.ajaxStyle_key != null && _this.ajaxStyle_key ==  _this.style_key) return false;
       _this.ajaxRequest({
         url: DFshop.activeAPI.mallStoreSaveStyle_post,
         data: {
           styleKey: _this.style_key
         },
         success: function(data) {
-          console.log(data.data);
           _this.$message({
             message: "保存成功",
             type: "success"
           });
+          _this.ajaxStyle_key = _this.style_key;
         }
       });
-    },
-    handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
       if (this.activeName === "shop") {
