@@ -363,8 +363,8 @@ export default {
         'success':function (data){
             if(data.code == 0){
                 _this.carouselList = data.data.carouselList;
-                _this.ruleForm = data.data.order; 
                 _this.orderDetailsList = data.data.orderdetails;
+                 _this.ruleForm = data.data.order; 
                 if(_this.ruleForm.haveContract == 0){
                   _this.ruleForm.contractId=data.data.orderContract.contract_id;
                 }
@@ -373,6 +373,10 @@ export default {
                 }else{
                     _this.timeList = [];
                 }
+                _this.$nextTick(function(){
+                    _this.$refs['ruleForm'].validate();
+                });
+                
             }
         }
         });

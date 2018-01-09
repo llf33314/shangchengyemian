@@ -188,7 +188,7 @@ export default {
         if (url != "" && !Lib.M.validURL(url)) {
           this.$message({
             showClose: true,
-            message: "请填写正确的跳转链接",
+             message: "第"+(i+1)+"个轮播图跳转链接格式有误",
             type: "error"
           });
           isTrue=false;
@@ -208,6 +208,21 @@ export default {
       this.$refs.ruleForm.validate(valid => {
         if (!valid) {
           isValidate = false;
+        }else{
+          let list = this.ruleForm.rowList;
+          for (let i = 0; i < list.length; i++) {
+            let obj = list[i];
+            let url=obj.carouselUrl;
+            if (url != "" && !Lib.M.validURL(url)) {
+              this.$message({
+                showClose: true,
+                message: "第"+(i+1)+"个轮播图跳转链接格式有误",
+                type: "error"
+              });
+              isValidate=false;
+              break;
+            }
+          }
         }
       });
       return isValidate;
