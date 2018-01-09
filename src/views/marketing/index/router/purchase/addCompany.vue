@@ -20,7 +20,8 @@
                   <el-input v-model.trim="ruleForm.companyInternet" placeholder="请输入公司官网" class="max-input" ></el-input>
               </el-form-item>
               <el-form-item label="公司地址 :" prop="companyAddress">
-                 <el-input v-model.trim="ruleForm.companyAddress" placeholder="请输入公司地址" class="max-input" ></el-input>
+                <el-input class="max-input" type="textarea" :rows="4" placeholder="请输入公司地址" v-model.trim="ruleForm.companyAddress"></el-input>
+                <img  @click="dialogVisible = true" title="点击选择地址" style="width:20px;cursor: pointer;" alt="" :src="png1"  >
               </el-form-item>
               <el-form-item>
                   <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
@@ -28,12 +29,25 @@
               </el-form-item>
           </el-form>
       </div>
+      <el-dialog title="我的位置"  :visible.sync="dialogVisible"  >
+       <template>
+           <my-map :longitude.sync="ruleForm.longitude" :latitude.sync="ruleForm.latitude" :address.sync="ruleForm.companyAddress"  ></my-map>
+        </template>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        </span>
+       </el-dialog>
   </div>
 </template>
 <script>
 import Lib from 'assets/js/Lib';
+import myMap from 'components/myMap'
+import addressPng from '../../../../../assets/img/address.png' //身份证正面
 export default {
-  
+  components:{
+    myMap
+  },
   data() {
     var companyTel = (rule, value, callback) => {
       if (value == '') {
@@ -53,6 +67,13 @@ export default {
          callback();
       }
     };
+    var companyAddress = (rule, value, callback) => {
+      if (value == ''|| this.ruleForm.longitude === '' || this.ruleForm.latitude === '') {
+        return callback(new Error('公司地址不能为空'));
+      }else{
+         callback();
+      }
+    };
     return {
       ruleForm: {
         id:'',
@@ -63,6 +84,8 @@ export default {
         latitude:'',
         companyAddress:''
       },
+      png1:addressPng,
+      dialogVisible:false,
       editorOption: {},
       rules: {
         companyName:[
@@ -75,10 +98,19 @@ export default {
          { validator: companyInternet, trigger: 'blur' },
         ],
         companyAddress: [
-          { required: true, message: '公司地址不能为空', trigger: 'blur' },
+            { validator: companyAddress, trigger: 'blur' }, 
         ]
       },
     }
+  },
+  watch: {
+    'dialogVisible'(a){
+      if(a){
+        parent.window.postMessage("openMask()", "*");
+      }else{
+        parent.window.postMessage("closeMask()", "*");
+      }
+    },
   },
   methods: {
     checkUrl(urlString) {
@@ -106,6 +138,7 @@ export default {
     },
     submitForm(formName) {
       let _this = this;
+    //    console.log(_this.ruleForm,"_this.ruleForm.");
       _this.$refs[formName].validate((valid) => {
         if (valid) {
           console.log(_this.ruleForm,"_this.ruleForm.");

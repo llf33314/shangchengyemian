@@ -205,11 +205,15 @@ export default {
           let specArr = [];
           for (var k = 0; k < _this.priceList.length; k++) {
             let specObj = _this.priceList[k];
+            let specificaIds = [];
+            specObj.specList.forEach((item, index) => {
+              specificaIds.push(item.specificaValueId);
+            });
             let arr = {
               id: specObj.priceId || null,
               seckillPrice: specObj.activityPrice,
               invenId: specObj.id,
-              specificaIds: specObj.specificaIds
+              specificaIds: specificaIds.toString()
             };
             specArr.push(arr);
             if (k == 0) {
@@ -319,7 +323,7 @@ export default {
             if (formPriceList != null && formPriceList.length > 0) {
               for (let j = 0; j < formPriceList.length; j++) {
                 let priceObj = formPriceList[j];
-                if (priceObj.specificaIds == price.specificaIds) {
+                if (priceObj.invenId == price.id) {
                   price.priceId = priceObj.id;
                   price.activityPrice = priceObj.seckillPrice;
                   break;
