@@ -16,7 +16,7 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="活动商品 :" prop="productId" required>{{isReplacePro}}{{isChoicePro}}
+            <el-form-item label="活动商品 :" prop="productId" required>
                 <el-button type="primary" @click="showDialog" v-if="isChoicePro">选择商品</el-button>
                 <goods-box :boxdata="boxData" v-if="isReplacePro"></goods-box>
                 <el-button type="primary" @click="showDialog" v-if="isReplacePro">替换商品</el-button>
@@ -207,9 +207,7 @@ export default {
           }
         ],
         sPrice: [{ validator: formPrice, trigger: "blur", message: "请输入秒杀价" }],
-        sMaxBuyNum: [
-          { validator: formMaxBuyNum, trigger: "blur" }
-        ]
+        sMaxBuyNum: [{ validator: formMaxBuyNum, trigger: "blur" }]
       },
       shopList: [],
       boxData: null,
@@ -292,8 +290,8 @@ export default {
           }
           if (!_this.off) {
             seckill.sMaxBuyNum = 0;
-          }else{
-            seckill.sMaxBuyNum =formData.sMaxBuyNum;
+          } else {
+            seckill.sMaxBuyNum = formData.sMaxBuyNum;
           }
           let isJoin = false;
           let _speciList = [];
@@ -301,7 +299,7 @@ export default {
             for (var k = 0; k < _this.priceList.length; k++) {
               let specObj = _this.priceList[k];
               let specificaIds = [];
-              specObj.specList.forEach((item,index)=>{
+              specObj.specList.forEach((item, index) => {
                 specificaIds.push(item.specificaValueId);
               });
               let arr = {
@@ -309,7 +307,7 @@ export default {
                 invenId: specObj.id,
                 specificaIds: specificaIds.toString(),
                 isJoinGroup: Number(specObj.isJoin),
-                seckillNum:specObj.invNum,
+                seckillNum: specObj.invNum,
                 id: specObj.priceId || null
               };
               if (specObj.isJoin) {
@@ -331,12 +329,13 @@ export default {
           }
           // console.log(seckill, "111");
           // console.log(_speciList, "2223333");
+          //   return;
           let param = {};
           param["seckill"] = seckill;
           param["specArr"] = JSON.stringify(_speciList);
           console.log(param, "speac");
           // return;
- 
+
           _this.ajaxRequest({
             url: DFshop.activeAPI.mallSeckillSave_post,
             data: param,
@@ -393,12 +392,10 @@ export default {
             image_url: data.imgUrl + myData.imageUrl,
             stockTotal: myData.proStockTotal
           };
-          console.log(_this.boxData,"_this.boxData")
+          console.log(_this.boxData, "_this.boxData");
           if (myData.isSpecifica == 1) {
             _this.getSpecificaByProId(_this.ruleForm.productId);
           }
-          // _this.isReplacePro = true;
-          // _this.isChoicePro = false;
         }
       });
     },
@@ -412,6 +409,7 @@ export default {
           if (_this.priceList == null || _this.priceList.length == 0) {
             return;
           }
+          // console.log(_this.priceList,"_this.priceList")
           let specList = _this.priceList[0].specList;
           for (var m = 0; m < specList.length; m++) {
             let spec = specList[m];
@@ -422,13 +420,14 @@ export default {
             _this.$set(_this.specificesList, _this.specificesList.length, obj);
           }
           let formPriceList = _this.ruleForm.priceList;
+          // console.log(formPriceList,"formPriceList")
           _this.priceList.forEach((price, index) => {
             price.isJoin = price.isJoin || true;
             if (formPriceList != null && formPriceList.length > 0) {
               price.isJoin = false;
               for (let j = 0; j < formPriceList.length; j++) {
                 let priceObj = formPriceList[j];
-                if (priceObj.specificaIds == price.specificaIds) {
+                if (priceObj.invenId == price.id) {
                   price.priceId = priceObj.id;
                   price.activityPrice = priceObj.seckillPrice;
                   if (priceObj.isJoinGroup == 1) {
@@ -440,6 +439,7 @@ export default {
             }
             _this.$set(_this.priceList, index, price);
           });
+          // console.log(_this.priceList,"_this.priceList")
         }
       });
     }
@@ -454,7 +454,10 @@ export default {
         }
         _this.shopList = data.data;
         let shopId = _this.ruleForm.shopId; //没有默认选择的店铺
-        if ((shopId == null || shopId == "" || shopId == 0) && _this.$route.params.id == 0) {
+        if (
+          (shopId == null || shopId == "" || shopId == 0) &&
+          _this.$route.params.id == 0
+        ) {
           //默认选中第一个店铺
           _this.ruleForm.shopId = _this.shopList[0].id;
           // _this.$set(_this.ruleForm,"shopId", _this.shopList[0].id);
@@ -482,11 +485,11 @@ export default {
   .addGruop-input {
     width: 220px;
   }
-  .addGroup-maxBuy{
-    border:1px solid #e1e1e1;
-    padding:20px 10px;
-    margin-top:10px;
-    width:22%
+  .addGroup-maxBuy {
+    border: 1px solid #e1e1e1;
+    padding: 20px 10px;
+    margin-top: 10px;
+    width: 22%;
   }
 }
 </style>

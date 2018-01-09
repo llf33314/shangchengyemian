@@ -318,11 +318,15 @@ export default {
           if (_this.ruleForm.isSpecifica == 1) {
             for (var k = 0; k < _this.priceList.length; k++) {
               let specObj = _this.priceList[k];
+              let specificaIds = [];
+              specObj.specList.forEach((item, index) => {
+                specificaIds.push(item.specificaValueId);
+              });
               let arr = {
                 id: specObj.priceId || null,
                 groupPrice: specObj.activityPrice,
                 invenId: specObj.id,
-                specificaIds: specObj.specificaIds,
+                specificaIds: specificaIds.toString(),
                 isJoinGroup: Number(specObj.isJoin)
               };
               if (specObj.isJoin) {
@@ -440,7 +444,7 @@ export default {
               price.isJoin = false;
               for (let j = 0; j < formPriceList.length; j++) {
                 let priceObj = formPriceList[j];
-                if (priceObj.specificaIds == price.specificaIds) {
+                if (priceObj.invenId == price.id) {
                   price.priceId = priceObj.id;
                   price.activityPrice = priceObj.groupPrice;
                   if (priceObj.isJoinGroup == 1) {
