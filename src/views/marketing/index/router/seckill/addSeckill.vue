@@ -16,7 +16,7 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="活动商品 :" prop="productId" required>
+            <el-form-item label="活动商品 :" prop="productId" required>{{isReplacePro}}{{isChoicePro}}
                 <el-button type="primary" @click="showDialog" v-if="isChoicePro">选择商品</el-button>
                 <goods-box :boxdata="boxData" v-if="isReplacePro"></goods-box>
                 <el-button type="primary" @click="showDialog" v-if="isReplacePro">替换商品</el-button>
@@ -189,8 +189,8 @@ export default {
       },
       off: false,
       proId: "",
-      isChoicePro: "",
-      isReplacePro: "",
+      isChoicePro: true,
+      isReplacePro: false,
       rules: {
         shopId: [
           { validator: formShopId, trigger: "change", message: "请选择所属店铺" }
@@ -300,10 +300,14 @@ export default {
           if (_this.ruleForm.isSpecifica == 1) {
             for (var k = 0; k < _this.priceList.length; k++) {
               let specObj = _this.priceList[k];
+              let specificaIds = [];
+              specObj.specList.forEach((item,index)=>{
+                specificaIds.push(item.specificaValueId);
+              });
               let arr = {
                 seckillPrice: specObj.activityPrice,
                 invenId: specObj.id,
-                specificaIds: specObj.specificaIds,
+                specificaIds: specificaIds.toString(),
                 isJoinGroup: Number(specObj.isJoin),
                 seckillNum:specObj.invNum,
                 id: specObj.priceId || null
@@ -331,6 +335,7 @@ export default {
           param["seckill"] = seckill;
           param["specArr"] = JSON.stringify(_speciList);
           console.log(param, "speac");
+          // return;
  
           _this.ajaxRequest({
             url: DFshop.activeAPI.mallSeckillSave_post,
@@ -388,9 +393,12 @@ export default {
             image_url: data.imgUrl + myData.imageUrl,
             stockTotal: myData.proStockTotal
           };
+          console.log(_this.boxData,"_this.boxData")
           if (myData.isSpecifica == 1) {
             _this.getSpecificaByProId(_this.ruleForm.productId);
           }
+          // _this.isReplacePro = true;
+          // _this.isChoicePro = false;
         }
       });
     },
@@ -446,17 +454,18 @@ export default {
         }
         _this.shopList = data.data;
         let shopId = _this.ruleForm.shopId; //没有默认选择的店铺
-        if (shopId == null || shopId == "" || shopId == 0) {
+        if ((shopId == null || shopId == "" || shopId == 0) && _this.$route.params.id == 0) {
           //默认选中第一个店铺
           _this.ruleForm.shopId = _this.shopList[0].id;
+          // _this.$set(_this.ruleForm,"shopId", _this.shopList[0].id);
         }
       }
     });
-
     if (_this.$route.params.id != 0) {
       _this.disabledShop = true;
-      _this.mallSeckillSeckillInfo(_this.$route.params.id);
       _this.isReplacePro = true;
+      _this.isChoicePro = false;
+      _this.mallSeckillSeckillInfo(_this.$route.params.id);
     } else {
       _this.disabledShop = false;
       _this.isChoicePro = true;
