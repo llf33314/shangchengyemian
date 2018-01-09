@@ -63,7 +63,7 @@ export default {
     },
     isShowJoin: {
       type: Boolean,
-      default: false
+      default: true
     }
   },
   data: function() {

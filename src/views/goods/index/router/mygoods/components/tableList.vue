@@ -1,12 +1,12 @@
 <template>
-<div class="table-spec">
+<div class="table-spec" style="position: relative">
     <table border="1" cellspacing="0" cellpadding="0" width="100%" class="order_tab">
         <tbody>
             <tr class="order_tab_header">
                 <th width="13%" 
                     v-for="(item,index) in listData"
                     :key="index" v-if="item.specName!=''">{{item.specName}}</th>
-                <th width="16%" v-if="isSpec">价格(元)</th>
+                <th width="16%" v-if="isSpec">价格(元){{isSpec}}</th>
                 <th width="16%" v-if="isSpec">库存</th>
                 <th width="16%" v-if="isSpec">商家编码</th>
                 <th width="8%"  v-if="isSpec">销量</th>
@@ -86,8 +86,35 @@
                     </div>
                 </td>
             </tr>
+            <tr>
+               <td :colspan="[isSpec != '0'?listData.length+5:listData.length+1]">
+                   批量设置 
+                   <a   class="td-button" 
+                        v-if="typeBatch !=2 "
+                        @click="typeBatch=1;isButton=true">价格</a>
+                   <a   class="td-button" 
+                        v-if="typeBatch !=1 "
+                        @click="typeBatch=2;isButton=true">库存</a>
+                   <div class="td-footer" v-if="isButton">
+                    <el-input v-model.trim="batchs"  
+                            placeholder="请输入内容" 
+                            class="td-footer-input"></el-input>
+                    <a class="td-button" @click="changeBatch(batchs)">保存</a>
+                    <a class="td-button" @click="isButton=false;batchs='';typeBatch=0">取消</a>
+                   </div>
+               </td>
+            </tr>
         </tbody>
     </table>
+    <div class="table-isType" v-if=" (1<isType && isType<5 )|| noUpSpec == 1">
+        <p>
+            该商品已经加入
+            <span v-if="isType==2">秒杀</span>
+            <span v-if="isType==3">拍卖</span>
+            <span v-if="isType==4">预售</span>。不能修改商品规格和商品库存</p>
+        <p v-if="noUpSpec == 1">商城不能修改商品规格和库存</p>
+        <!-- ，请去进销存修改 -->
+    </div>
 </div>
 </template>
 <script>
@@ -103,6 +130,14 @@ export default {
         type:{
             type:String,
             default:'0'
+        },
+        isType:{
+            type:Number,
+            default:0,
+        },
+        noUpSpec:{
+            type:Number,
+            default:0,
         }
     },
     data() {
@@ -115,6 +150,9 @@ export default {
 
             isRules:'',//全部验证条件
             LSlist:[],//临时暂存数据
+            isButton:false,//批量修改
+            batchs:'',//输入批量内容
+            typeBatch:0,//批量选择
         }
     },
     watch:{
@@ -264,13 +302,32 @@ export default {
             }
             return dst;
         },
+        /** 
+         * 批量修改 
+         **/
+        changeBatch(){
+            let _this = this;
+            this.invenData.forEach((item,i)=>{
+                if(this.typeBatch ==1 ){
+                    item.invPrice = this.batchs;
+                }
+                if(this.typeBatch ==2 ){
+                    item.invNum = this.batchs;
+                }
+            })
+            this.isButton = false;
+            this.batchs = '';
+            this.typeBatch = 0;
+        }
     },
     mounted() {
         let _this = this;
         _this.listAdd(_this.specList);
         _this.invenData = _this.invenList
         _this.newlistData(_this.invenData);
+        console.log(this.type,'this.type ')
         if(this.type !='0'){
+            console.log(this.type,'this.type ')
             this.isSpec = false;
         }
         
@@ -325,5 +382,32 @@ export default {
             transition: border-color .2s cubic-bezier(.645,.045,.355,1);
         }
     }
+    .td-button{
+        margin: 10px;
+        color:#20a0ff;
+        cursor: pointer;
+    }
+    .td-footer{
+        display: inline-block;
+        width: 60%;
+        .td-footer-input{
+            width: 60%;
+        }
+    }
+}
+.table-isType{
+    width: 100%;
+    background: rgba(0, 0, 0, 0.45);
+    position: absolute;
+    color:#e8e8e8;
+    top: 0;
+    left: 0;
+    height: 100%;
+    text-align: center;
+    font-size: 16px;
+    .ik-box;
+    .ik-box-align(center);
+    .ik-box-pack(center);
+    z-index: 2;
 }
 </style>

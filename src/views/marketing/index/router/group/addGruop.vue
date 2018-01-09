@@ -318,11 +318,15 @@ export default {
           if (_this.ruleForm.isSpecifica == 1) {
             for (var k = 0; k < _this.priceList.length; k++) {
               let specObj = _this.priceList[k];
+              let specificaIds = [];
+              specObj.specList.forEach((item, index) => {
+                specificaIds.push(item.specificaValueId);
+              });
               let arr = {
                 id: specObj.priceId || null,
                 groupPrice: specObj.activityPrice,
                 invenId: specObj.id,
-                specificaIds: specObj.specificaIds,
+                specificaIds: specificaIds.toString(),
                 isJoinGroup: Number(specObj.isJoin)
               };
               if (specObj.isJoin) {
@@ -440,7 +444,7 @@ export default {
               price.isJoin = false;
               for (let j = 0; j < formPriceList.length; j++) {
                 let priceObj = formPriceList[j];
-                if (priceObj.specificaIds == price.specificaIds) {
+                if (priceObj.invenId == price.id) {
                   price.priceId = priceObj.id;
                   price.activityPrice = priceObj.groupPrice;
                   if (priceObj.isJoinGroup == 1) {
@@ -468,7 +472,7 @@ export default {
         }
         _this.shopList = data.data;
         let shopId = _this.ruleForm.shopId; //没有默认选择的店铺
-        if (shopId == null || shopId == "" || shopId == 0) {
+        if ((shopId == null || shopId == "" || shopId == 0)&& _this.$route.params.id == 0) {
           //默认选中第一个店铺
           _this.ruleForm.shopId = _this.shopList[0].id;
         }

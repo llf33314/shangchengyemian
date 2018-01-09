@@ -511,7 +511,7 @@ export default {
           return;
         }
         let shopId = _this.ruleForm.shopId; //没有默认选择的店铺
-        if (shopId == null || shopId == "" || shopId == 0) {
+        if ((shopId == null || shopId == "" || shopId == 0) && _this.$route.params.id == 0) {
           //默认选中第一个店铺
           _this.ruleForm.shopId = _this.shopList[0].id;
         }

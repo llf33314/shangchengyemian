@@ -119,10 +119,21 @@
                     <div class="item-title">库存/规格</div>
                     <div class="item-content">
                             <el-form-item label="商品规格 :"  v-if="form.pro.shopId">
-                                <table-spec :row="form.specList" :shopId="form.pro.shopId" @change="changeSpac" ref="specForm"></table-spec>
+                                <table-spec ref="specForm"
+                                            :row="form.specList" 
+                                            :shopId="form.pro.shopId" 
+                                            :isType="form.pro.isType"
+                                            :noUpSpec="form.pro.noUpSpec"
+                                            @change="changeSpac"></table-spec>
                             </el-form-item>
                             <el-form-item label="商品库存 :" v-if=" form.specList !='' && form.specList != null">
-                                <table-list :specList="form.specList" :invenList="form.invenList"  ref="invenForm" @stockTotal="changeStock" @change="changeInven"></table-list>
+                                <table-list ref="invenForm" 
+                                            :specList="form.specList" 
+                                            :invenList="form.invenList"
+                                            :isType="form.pro.isType"
+                                            :noUpSpec="form.pro.noUpSpec"   
+                                            @stockTotal="changeStock" 
+                                            @change="changeInven"></table-list>
                             </el-form-item>
                             <el-form-item label="商品参数 :"  v-if="form.pro.shopId">
                                 <gt-param :row="form.paramList" :shopId="form.pro.shopId"  @change="paramSelected"></gt-param>
@@ -312,7 +323,30 @@
 
         </div>
         <div class="mygoods-content" v-if="active == 2">
-            编辑商品详情页
+            <div class="editor-box">
+                <div class="editor-goodsinfo">
+                    商品信息：
+                    <el-input
+                        type="textarea"
+                        :autosize="{ minRows: 3, maxRows: 4}"
+                        placeholder="请输入商品信息"
+                        v-model="textarea3">
+                    </el-input>
+                </div>
+                <div class="editor-goodsinfo">
+                    商品简介（微信分享给好友时会显示此文案）
+                    <el-input
+                        type="textarea"
+                        :autosize="{ minRows: 3, maxRows: 4}"
+                        placeholder="请输入商品简介"
+                        v-model="textarea3">
+                    </el-input>
+                </div>
+                <div class="editor-trigger">
+                    <span>商品详情：</span>
+                    <div id="editor-trigger" style="height: 320px;"></div>
+                </div>
+            </div>
         </div>
         <div class="mygoods-content" v-if="active == 3">
              <div class="shop-addSuccess">
@@ -322,7 +356,7 @@
         </div>
         <el-button style="margin-top: 12px;" @click="next()" v-if="active == 1">下一步</el-button>
         <el-button type="primary" v-if="active == 2">保存</el-button>
-        <el-button type="primary" v-if="active == 2" @click="this.changeData(2)">预览</el-button>
+        <el-button type="primary" v-if="active == 2" @click="changeData(2)">预览</el-button>
         <el-button style="margin-top: 12px;" v-if="active == 1 " @click="window.history.go(-1)">返回</el-button>
         <el-button style="margin-top: 12px;" v-if="active == 2 " @click=" active=1 ">返回</el-button>
         <div class="shop-textc" v-if="active == 3" >
@@ -334,10 +368,10 @@
     </div>
   </div>
 </template>
-
 <script>
 
 import Lib from 'assets/js/Lib';
+//import E from 'wangeditor'
 import gtParam from './components/param';//选择参数模块
 import tableList from './components/tableList' ;//规格列表
 import tableSpec from './components/tableSpec';//选择规格
@@ -360,6 +394,7 @@ export default {
         callback()
     };
     return {
+        textarea3:'',
         active: 1,//步骤页初始，
         title:'发布',
         goodsId:'',//商品id
@@ -423,6 +458,48 @@ export default {
         flowList:[],//流量包列表
         webPath:''//手机端域名
     }
+  },
+  watch:{
+      active(a){
+          if(a==2){
+              this.$nextTick(()=>{
+                let editor = new wangEditor('editor-trigger');
+                console.log(editor,'editor.config')	
+                editor.config.pasteFilter = false;
+                editor.config.menus = [
+                    'source',
+                    'bold',
+                    'underline',
+                    'italic',
+                    'strikethrough',
+                    'eraser',
+                    'forecolor',
+                    'bgcolor',
+                    'quote',
+                    'fontfamily',
+                    'fontsize',
+                    'head',
+                    'unorderlist',
+                    'orderlist',
+                    'alignleft',
+                    'aligncenter',
+                    'alignright',
+                    'link',
+                    'unlink',
+                    'table',
+                    'emotion',
+                    'img',
+                    'video',
+                    'location',
+                    'insertcode',
+                    'undo',
+                    'redo',
+                    'fullscreen'
+                ];
+                editor.create();
+              })
+          }
+      }
   },
   methods: {
     /**
@@ -704,15 +781,19 @@ export default {
      */
     changeTypeId(type){
         let _this = this;
+        
         if(type ==2){
         //会员卡
             if(this.cardList == ''){
                 _this.ajaxRequest({
                     'url': DFshop.activeAPI.mallCardList_post,
-                    // 'data':,
                     'success':function (data){
-                        //console.log(data,'会员卡data');
-                        _this.cardList = data.data
+                        _this.cardList = data.data;
+                        _this.$nextTick(()=>{
+                            _this.$set(_this.form.pro,'memberType',data.data[0].ctId);
+                            _this.$set(_this.form.pro,'cardType',null);
+                            _this.$set(_this.form.pro,'flowId',null)
+                        })
                     }
                 });
             }
@@ -721,10 +802,13 @@ export default {
             if(this.cardReceiveList == ''){
                 _this.ajaxRequest({
                     'url': DFshop.activeAPI.mallCardReceiveList_post,
-                    // 'data':,
                     'success':function (data){
-                        //console.log(data,'卡券包data')
                         _this.cardReceiveList = data.data;
+                        _this.$nextTick(()=>{
+                            _this.$set(_this.form.pro,'cardType',data.data[0].id);
+                            _this.$set(_this.form.pro,'memberType',null);
+                            _this.$set(_this.form.pro,'flowId',null)
+                        })
                     }
                 });
             }
@@ -733,14 +817,13 @@ export default {
             if(this.flowList == ''){
                 _this.ajaxRequest({
                     'url': DFshop.activeAPI.mallFlowList_post,
-                    // 'data':,
                     'success':function (data){
-                        console.log(data,'流量包data',_this.form.pro.flowId)
                         _this.flowList = data.data;
-                        _this.$set(_this.form.pro,'flowId',data.data[0].id)
-                        //_this.form.pro.flowId= data.data[0].id;
-                        console.log(_this.form.pro.flowId,'_this.form.pro.flowId')
-
+                        _this.$nextTick(()=>{
+                            _this.$set(_this.form.pro,'flowId',data.data[0].id);
+                            _this.$set(_this.form.pro,'cardType',null);
+                            _this.$set(_this.form.pro,'memberType',null);
+                        })
                     }
                 });
             }
@@ -947,10 +1030,13 @@ export default {
             }
         }
     })
+    
   }
 }
 </script>
 
 <style lang="less" scoped>
 @import '../../../less/mygoods.less';
+@import '/static/wangEditor/wangEditor.min.css';
+@import '/static/wangEditor/layui.css';
 </style>
