@@ -57,13 +57,13 @@
 
                 <td v-if="isSpec" class="td-input-box">
                     <input v-model.trim="item.invPrice" placeholder="请输入内容" @blur="itemRules(item,index,1)" 
-                    :class="{'input-warning':item.errorMsg.Price != null}"/>
-                    <span class="p-warning" v-if="item.errorMsg.Price != null">{{item.errorMsg.Price}}</span>
+                    :class="{'input-warning':item.errorMsg.Price != null && item.invPrice == 0}"/>
+                    <span class="p-warning" v-if="item.errorMsg.Price != null && item.invPrice == 0">{{item.errorMsg.Price}}</span>
                 </td>
                 <td v-if="isSpec" class="td-input-box">
                     <input v-model.trim="item.invNum" placeholder="请输入内容" @blur="itemRules(item,index,2)" 
-                    :class="{'input-warning':item.errorMsg.invNum != null}"/>
-                    <span class="p-warning" v-if="item.errorMsg.invNum != null">{{item.errorMsg.invNum}}</span>
+                    :class="{'input-warning':item.errorMsg.invNum != null && item.invNum==0}"/>
+                    <span class="p-warning" v-if="item.errorMsg.invNum != null && item.invNum==0">{{item.errorMsg.invNum}}</span>
                 </td >
                 <td v-if="isSpec">
                     <el-input v-model.trim="item.invCode" placeholder="请输入内容"></el-input>
@@ -82,7 +82,7 @@
                     <div style="width:120px">
                         <input v-model.number="item.logisticsWeight" placeholder="请输入内容" @blur="itemRules(item,index,3)" 
                     :class="{'input-warning':item.errorMsg.logistics != null}"/>
-                        <span class="p-warning" v-if="item.errorMsg.logistics != null" >{{item.errorMsg.logistics}}</span>
+                        <span class="p-warning" v-if="item.errorMsg.logistics != null && item.logisticsWeight==0" >{{item.errorMsg.logistics}}</span>
                     </div>
                 </td>
             </tr>
@@ -100,7 +100,7 @@
                     <div class="td-footer" v-if="!isSpec">
                         <a  class="td-button" 
                             v-if="typeBatch !=2 "
-                            @click="typeBatch=1;isButton=true">重量</a>
+                            @click="typeBatch=3;isButton=true">重量</a>
                     </div>
                    <div class="td-footer" v-if="isButton">
                         <input  class="td-footer-input" 
@@ -377,14 +377,19 @@ export default {
     mounted() {
         let _this = this;
         _this.listAdd(_this.specList);
-        _this.invenData = _this.invenList
+        _this.invenData = _this.invenList;
         _this.newlistData(_this.invenData);
-        console.log(this.type,'this.type ')
         if(this.type !='0'){
-            console.log(this.type,'this.type ')
             this.isSpec = false;
         }
-        
+        //默认库存
+        _this.invenData.forEach((item,i)=>{
+            if(item.isDefault == 1){
+                this.isDefault = i;
+            }else{
+                this.isDefault = 0
+            }
+        })
     }
 }
 </script>

@@ -307,6 +307,7 @@ export default {
     }
   },
   methods: {
+    handleSizeChange(){},
     /**
      * 切换导航
      */

@@ -238,7 +238,6 @@ export default {
                     if(k == val && _isAdd){
                         newId = k;
                         newName = _this.listData[k];
-                        console.log(newName,newId)
                         _isAdd = false;
                     }
                     index2 = k;
@@ -493,7 +492,7 @@ export default {
     }
     .table-inline{
         display: inline-block;
-        width: 90px;
+        min-width: 90px;
         vertical-align:top;
         margin-right: 10px;
     }
@@ -513,7 +512,7 @@ export default {
             height: 77px;
         }
         .item-selected{
-            width: 100%;
+            min-width: 100%;
             height: 36px;
             border: 1px solid #bfcbd9;
             .border-radius(5px);
