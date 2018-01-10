@@ -1,13 +1,13 @@
 <template>
 <div class="shop-wrapper">
-  <div class="common-nav">
+  <div class="common-nav" >
     <el-breadcrumb separator="/">
       <el-breadcrumb-item :to="{ path: '/page' }">页面管理</el-breadcrumb-item>
       <el-breadcrumb-item v-if="ruleForm.id ==null">新增微页面</el-breadcrumb-item>
       <el-breadcrumb-item v-else>修改微页面</el-breadcrumb-item>
     </el-breadcrumb>
   </div>
-  <div class="shop-addpage-main">
+  <div class="shop-addpage-main" id="shop1">
     <div class="shop-steps">
       <el-steps :active="active"  center  >
       <el-step title="编辑页面信息">
@@ -16,12 +16,13 @@
       <el-step title="成功"></el-step>
     </el-steps>
     </div>
-    <div class="shop-addpage-content">
-      <div class="shop-addpage-one" v-if="active ==1">
+  </div>
+    <div class="shop-addpage-one" v-if="active ==1">
+      <div class="shop-addpage-content shop-addpage-main">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="90px">
-           <el-form-item label="所属店铺 :"  prop="pagStoId" required>
+          <el-form-item label="所属店铺 :"  prop="pagStoId" required>
             <el-select v-model="ruleForm.pagStoId" placeholder="请选择店铺" >
-               <el-option class="max-input" v-for="item in shopOptions"
+              <el-option class="max-input" v-for="item in shopOptions"
                   :key="item.id" :label="item.sto_name" :value="item.id">
               </el-option>
             </el-select>
@@ -36,7 +37,7 @@
             </el-option>
           </el-select>
           </el-form-item>
-           <el-form-item label="页面名称 :" prop="pagName">
+          <el-form-item label="页面名称 :" prop="pagName">
             <el-input v-model.trim="ruleForm.pagName" placeholder="请输入页面名称" ></el-input>
           </el-form-item>
           <el-form-item label="页面描述 :">
@@ -55,26 +56,30 @@
           </el-form-item>
         </el-form>
       </div>
-      <div class="shop-addshop-tow" v-if="active == 2">
-         编辑微页面
-      </div>
-      <div class="shop-addshop-Three" v-if="active == 3">
-        <div class="shop-addSuccess">
-          <i class="el-icon-circle-check"></i>
-          <p v-if="ruleForm.id ==null">新增页面成功</p>
-           <p v-else>修改页面成功</p>
+    </div>
+    <div class="shop-addshop-tow" v-if="active == 2">
+        <div class="iframe-box">
+          <iframe :src="iframeULR" :height="iframeHeight" name="myFrame"></iframe>
         </div>
+    </div>
+    <div class="shop-addshop-Three" v-if="active == 3">
+      <div class="shop-addSuccess">
+        <i class="el-icon-circle-check"></i>
+        <p v-if="ruleForm.id ==null">新增页面成功</p>
+          <p v-else>修改页面成功</p>
       </div>
     </div>
-    <el-button style="margin-top: 12px;" @click="next" v-if="active==1">下一步</el-button>
-    <el-button type="primary" v-if="active==2" @click="save">保存</el-button>
-    <el-button style="margin-top: 12px;" v-if="active !=3"  @click="Back">返回</el-button>
-    <div class="shop-textc" v-if="active ==3" >
-      <el-button type="primary" @click="next" >继续添加</el-button>
-      <el-button style="margin-top: 12px;" @click="jumpRouter('/page')">返回</el-button>
+    <div class="shop-addpage-main" id="shop2">
+      <el-button style="margin-top: 12px;" @click="next" v-if="active==1">下一步</el-button>
+      <el-button type="primary" v-if="active==2" @click="save(1)">保存</el-button>
+      <el-button type="primary" v-if="active==2" @click="save(2)">预览</el-button>
+      <el-button style="margin-top: 12px;" v-if="active !=3"  @click="Back">返回</el-button>
+      <div class="shop-textc" v-if="active ==3" >
+        <el-button type="primary" @click="next" >继续添加</el-button>
+        <el-button style="margin-top: 12px;" @click="jumpRouter('/page')">返回</el-button>
+      </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
@@ -96,8 +101,9 @@ export default {
         pagName:[
           { required: true, message: '名称不能为空', trigger: 'blur' },
         ],
-        
       },
+      iframeULR:'',//微页编辑地址
+      iframeHeight:'',//微页高度
     }
   },
   methods: {
@@ -116,6 +122,11 @@ export default {
         this.$refs['ruleForm'].validate((valid) => {
           if (valid) {
             this.active =2;
+            //_this.iframeULR= location.origin+'/mallPage/designPage.do?id='+_this.$route.params.pageId;;
+            _this.iframeULR= 'http://192.168.2.118:8080/mallPage/designPage.do?id='+_this.$route.params.pageId;
+            _this.$nextTick(()=>{
+              _this.iframeHeight = $(window).height()-$('.common-nav').outerHeight(true)-$('#shop1').outerHeight(true)-$('#shop2').outerHeight(true);
+            })
           } else {
             return false;
           }
@@ -134,30 +145,41 @@ export default {
         _this.ruleForm.pagTypeId = _this.pageOptions[0].item_key;
       } 
     },
-    /**保存 */
-    save(){
+    /**
+     * 保存 
+     * @param type 1保存 2预览
+     **/
+    save(type){
        let _this = this;
-      //  console.log(_this.ruleForm,"_this.ruleForm.");
        let page={
-          id:_this.ruleForm.id || null,
-          pagName:_this.ruleForm.pagName,
-          pagDescript:_this.ruleForm.pagDescript,
-          pagTypeId:_this.ruleForm.pagTypeId,
-          pagCss:_this.ruleForm.pagCss,
-          pagData:_this.ruleForm.pagData,
-          pagStoId:_this.ruleForm.pagStoId,
-          pagIsMain:_this.ruleForm.pagIsMain,
+          id:_this.ruleForm.id || null,//页面id//有ID则修改，无则新增
+          pagName:_this.ruleForm.pagName,//页面名称
+          pagDescript:_this.ruleForm.pagDescript,//页面描述
+          pagTypeId:_this.ruleForm.pagTypeId,//页面分类
+          pagCss:JSON.stringify(myFrame.dataJson),//样式
+          pagData:JSON.stringify(myFrame.picJson),//数据
+          pagStoId:_this.ruleForm.pagStoId,//店铺id
+          pagIsMain:_this.ruleForm.pagIsMain,//是否是主页 0不是主页 1 是主页
        };
-      //  console.log(page,"page");
-       _this.ajaxRequest({
-          'url': DFshop.activeAPI.mallPageSave_post,
-          'data': {
-              page: page
-          },
-          'success':function (data){
-               _this.active =3;
-          }
-      });
+       console.log(page,'page')
+        _this.ajaxRequest({
+            'url': DFshop.activeAPI.mallPageSave_post,
+            'data': {
+                page: page
+            },
+            'success':function (data){
+                if(type==1){
+                   _this.active =3;
+                }else if(type==2){
+                   let msg ={
+                      title: '页面预览',
+                      path: _this.webPath,
+                      pageLink: "/index/" + _this.ruleForm.id
+                  };
+                  _this.$root.$refs.dialogQR.showDialog(msg);
+                }
+            }
+        });
     },
     /**
      * 页面信息请求
@@ -177,7 +199,8 @@ export default {
               _this.ruleForm = data.data;
           }
       });
-    }
+    },
+ 
   },
   mounted() {
     let _this = this;
@@ -213,6 +236,21 @@ export default {
 }
 </script>
 
-<style lang="less">
-
+<style lang="less" scoped>
+.iframe-box{
+  iframe{
+    width: 100%;
+    border:none;
+  }
+}
+body{ 
+SCROLLBAR-FACE-COLOR :     rgb(10,236,209) ;     //滚动条凸出部分的颜色 
+SCROLLBAR-HIGHLIGHT-COLOR :     rgb(23,255,155) ; //滚动条空白部分的颜色 
+SCROLLBAR-SHADOW-COLOR :     rgb(255,116,23) ; //立体滚动条阴影的颜色 
+SCROLLBAR-3DLIGHT-COLOR :     rgb(66,93,127) ; //滚动条亮边的颜色 
+SCROLLBAR-ARROW-COLOR :     rgb(93,232,255) ; //上下按钮上三角箭头的颜色 
+SCROLLBAR-TRACK-COLOR :     rgb(255,70,130) ; //滚动条的背景颜色 
+SCROLLBAR-DARKSHADOW-COLOR :     rgb(10,0,209) ; //滚动条强阴影的颜 
+SCROLLBAR-BASE-COLOR :     rgb(66,93,128)//滚动条的基本颜色 
+}
 </style>

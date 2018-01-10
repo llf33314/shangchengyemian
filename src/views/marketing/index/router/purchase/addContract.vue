@@ -103,6 +103,31 @@ export default {
         }
         });
     },
+    /** 
+     * 编辑器调用素材库
+     */
+    material(){
+        let _this = this;
+        parent.window.postMessage("openMask()", "*");
+        _this.$material({
+          imageboxUrl: DFshop.activeAPI.materialUrl,   //地址
+          modal: true,       //遮罩
+          selecType: this.selecType,   //是否多选
+          width: 820, //宽度
+          height: 500, //高度
+          lockScroll: false, //弹出框后是否锁定滚动轴
+          closeOnClickModal: true, //点击遮罩是否关闭
+          closeOnPressEscape: false
+        }).then(function (val) {
+            let imgUrl = '<img src="'+val[0].url+'">';
+            $('.ql-editor p:last').append(imgUrl);
+            parent.window.postMessage("closeMask()", "*");
+          }).catch(function (error) {
+            parent.window.postMessage("closeMask()", "*");
+          //取消
+        }) 
+
+      },
   },
   mounted() {
     let _this = this;
@@ -111,6 +136,16 @@ export default {
       // console.log(this.$route.params.id);
       _this.purchaseContractInfo(this.$route.params.id);
     }
+    _this.$nextTick(()=>{
+      let _this = this;
+      let ql_image = $('.ql-image').html();
+      let new_image = '<button type="button" class="ql-image2">'+ql_image+'</button>';
+      $(new_image).insertAfter('.ql-image');
+      $('.ql-image').remove();
+      $('.ql-image2').click(()=>{
+          _this.material()
+      })
+    })
   }   
 }
 </script>

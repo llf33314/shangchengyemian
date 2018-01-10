@@ -238,7 +238,6 @@ export default {
                     if(k == val && _isAdd){
                         newId = k;
                         newName = _this.listData[k];
-                        console.log(newName,newId)
                         _isAdd = false;
                     }
                     index2 = k;

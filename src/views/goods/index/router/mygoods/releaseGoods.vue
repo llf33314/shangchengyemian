@@ -30,7 +30,7 @@
                                 </el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item label="商品分组 :"  required >
+                        <el-form-item label="商品分组 :"  required>
                             <gt-cascader    :width="'200px'"
                                             @change="groupselected"
                                             :value="form.proGroupList"
@@ -126,7 +126,7 @@
                                             :noUpSpec="form.pro.noUpSpec"
                                             @change="changeSpac"></table-spec>
                             </el-form-item>
-                            <el-form-item label="商品库存 :" v-if=" form.specList !='' && form.specList != null">
+                            <el-form-item label="商品库存 :" v-if=" form.specList !='' && form.specList != null && form.invenList.length>0">
                                 <table-list ref="invenForm" 
                                             :specList="form.specList" 
                                             :invenList="form.invenList"
@@ -140,7 +140,7 @@
                             </el-form-item>
                             <el-form-item label="总库存 :" :rules="rules.proStockTotal" prop="pro.proStockTotal" required>
                                 <div class="item-inline">
-                                    <el-input v-model.number="form.pro.proStockTotal" :disabled=" form.invenList != '' " placeholder="0"></el-input>
+                                    <el-input v-model.number="form.pro.proStockTotal" :disabled=" form.invenList != '' && form.invenList.length>0" placeholder="0"></el-input>
                                 </div>
                                 <span>
                                     <el-checkbox v-model="form.pro.isShowStock">页面不显示商品库存</el-checkbox>
@@ -177,7 +177,7 @@
                             </div>
                             <span class="shop-prompt">该原价价格只作展示作用</span>
                         </el-form-item>
-                        <el-form-item label="商品图片 :" :rules="rules.imageList" prop="imageList" required>
+                        <el-form-item label="商品图片 :" required>
                             <div class="imgboxUP">
                                 <gt-material :path="imgUrl" 
                                             :imgLists="form.imageList" 
@@ -330,7 +330,7 @@
                         type="textarea"
                         :autosize="{ minRows: 3, maxRows: 4}"
                         placeholder="请输入商品信息"
-                        v-model="form.detail.productMessage">
+                        v-model="form.proDetail.productMessage">
                     </el-input>
                 </div>
                 <div class="editor-goodsinfo">
@@ -339,13 +339,13 @@
                         type="textarea"
                         :autosize="{ minRows: 3, maxRows: 4}"
                         placeholder="请输入商品简介"
-                        v-model="form.detail.productIntrodu">
+                        v-model="form.proDetail.productIntrodu">
                     </el-input>
                 </div>
                 <div class="editor-trigger">
-                    <span>商品详情：</span>{{form.detail.productIntrodu}}
+                    <span>商品详情：</span>
                     <!-- <div id="editor-trigger" style="height: 320px;"></div> -->
-                    <quill-editor v-model.trim="form.detail.productDetail"
+                    <quill-editor v-model.trim="form.proDetail.productDetail"
                           ref="myQuillEditor"
                           class="editer"
                           :options="editorOption"
@@ -429,7 +429,7 @@ export default {
                 proWeight:0,//商品重量
                 proCode:0,//商家编码
             },
-            detail:{
+            proDetail:{
                 productDetail: null,        //商品详情
                 productIntrodu: null,       //商品简介 
                 productMessage: null,           //商品信息
@@ -495,22 +495,33 @@ export default {
       下一页跳转
      */
     next(){
+        let _this = this;
       if(this.active == 1){
         let submit = this.submitForm('ruleForm');                   //商品信息验证结果
         let cascaderSubmit = this.$refs.cascader.submitForm();      //分组验证结果
         let imgSubmit= this.IMGRules();                            //上传图片验证结果
-        let specListSubmit = this.$refs.specForm.allRules()    //规格选择列表
+        
+        //基本信息验证
         if(submit && cascaderSubmit && imgSubmit){
-            if(this.form.invenList != null && specListSubmit){
+            //有规格验证和库存验证
+            if(_this.form.invenList.length>0  && _this.form.specList.length>0){
+                let specListSubmit = this.$refs.specForm.allRules()    //规格选择列表
                 let invenSubmit = this.$refs.invenForm.allRules();//规格库存列表验证结果
-                if(this.form.pro.proFreightSet == 2)  {
-                    let logisticsSubmit = this.$refs.logisticsForm.allRules();  //运费物流列表验证结果
-                    if(invenSubmit && logisticsSubmit ){
+                if(specListSubmit && invenSubmit){
+                    if(this.form.pro.proFreightSet == 2)  {
+                        let logisticsSubmit = this.$refs.logisticsForm.allRules();  //运费物流列表验证结果
+                        if(invenSubmit && logisticsSubmit ){
+                            this.active = 2;
+                        }
+                    }else{
                         this.active = 2;
-                    }
+                    }   
                 }else{
-                    this.active = 2;
-                }       
+                    this.$message({
+                        message: '请完善商品的基本信息',
+                        type: 'warning'
+                    });
+                }
             }else{
                 this.active = 2;
             }
@@ -590,6 +601,47 @@ export default {
                         productMessage: null,           //商品信息
                     }
                 }
+                //商品类型会员卡
+                if(_this.form.pro.proTypeId == 2){
+                    //会员卡
+                    _this.ajaxRequest({
+                        'url': DFshop.activeAPI.mallCardList_post,
+                        'success':function (data){
+                            _this.cardList = data.data;
+                        }
+                    });
+                }else if(_this.form.pro.proTypeId == 3){
+                    //卡券包
+                    _this.ajaxRequest({
+                        'url': DFshop.activeAPI.mallCardReceiveList_post,
+                        'success':function (data){
+                            _this.cardReceiveList = data.data;
+                        }
+                    });
+                }else if(_this.form.pro.proTypeId == 4){
+                    //流量包
+                    _this.ajaxRequest({
+                        'url': DFshop.activeAPI.mallFlowList_post,
+                        'success':function (data){
+                            _this.flowList = data.data;
+                        }
+                    });
+                }
+
+                //物流
+                if(_this.form.pro.proFreightSet  == 2){
+                    _this.ajaxRequest({
+                        'url': DFshop.activeAPI.mallFreightGetFreightByShopId_post,
+                        'data':{
+                            shopId: _this.form.pro.shopId
+                        },
+                        'success':function (data){
+                            _this.logisticsList = data.data;
+                            _this.form.pro.proFreightTempId = data.data.id;
+                            
+                        }
+                    });
+                }
             }
         });
     },
@@ -601,7 +653,6 @@ export default {
             item.specificaIds = item.specificaIds.split(",");
             myArray.push(item);
         })
-
         myArray.forEach((item,i)=>{
             let arr = []
             item.specificaIds.forEach((test,j)=>{
@@ -616,11 +667,6 @@ export default {
             item.specificaIds = arr.toString();
         })
         _this.form.invenList = myArray;
-        _this.form.invenList.forEach((item,i)=>{
-            if(item.isDefault == 1){
-                this.isDefault = i;
-            }
-        })
     },
     /** 
      * 保存请求
@@ -741,13 +787,13 @@ export default {
             product:_this.form.pro,
             imageList: JSON.stringify(imageList),
             groupList:JSON.stringify(this.form.proGroupList),
-            detail:_this.form.detail,
+            detail:JSON.stringify(this.form.proDetail),
             speList:JSON.stringify(specList),
             invenList:_this.form.invenList.length> 0?JSON.stringify(_this.form.invenList):null,
             paramsList:JSON.stringify(_this.form.paramList),
         };
         data.invenList == null ? data.product.isSpecifica = 0:data.product.isSpecifica = 1;
-        data.product=JSON.stringify(data.product)
+        data.product=JSON.stringify(data.product);
         console.log(data,'修改提交数据')
         this.dataAjax(type,data)
     },
@@ -811,6 +857,14 @@ export default {
                 _this.ajaxRequest({
                     'url': DFshop.activeAPI.mallFlowList_post,
                     'success':function (data){
+                        if(data.data.length == 0){
+                            _this.$message({
+                                message: '暂无流量包，请选择其他选项',
+                                type: 'warning'
+                            });
+                            _this.form.pro.proTypeId = 0;
+                            return false;
+                        }
                         _this.flowList = data.data;
                         _this.$nextTick(()=>{
                             _this.$set(_this.form.pro,'flowId',data.data[0].id);
@@ -845,8 +899,12 @@ export default {
      */
     changeSpac(data){
         //接受数据
-        if( data.length == 0 ) return;
         let _this = this;
+        if( data.length == 0 ) {
+            this.$set(_this.form,'specList',[]);
+            this.$set(_this.form,'invenList',[]); 
+            return false;
+        }
         _this.$set(_this.form,'specList',data);
         _this.form.specList.splice(1,0);
         //数据重组 --传值--specificaIds组合(笛卡尔乘积)
@@ -886,7 +944,6 @@ export default {
             }
         }
         toResult(0);
-        console.log(result,'result')
         // 显示数据
         
         let arr=[]
@@ -910,7 +967,7 @@ export default {
                     data.invNum =  test.invNum || null;         //库存数量
                     data.invCode =  test.invCode || null;          //产品编码
                     data.invSaleNum =  test.invSaleNum || null;         //销量
-                    data.isDefault =  test.isDefault || null;              //是否默认  0没有 1是
+                    data.isDefault =  test.isDefault || 0;              //是否默认  0没有 1是
                     data.specificaImgId =  test.specificaImgId || null;         // 有图片的规格ID
                     data.logisticsWeight =  test.logisticsWeight || null;      //物流重量
                 }
@@ -924,14 +981,14 @@ export default {
      */
     changeStock(val){
         let _this = this;
-        // 流量包if(this.form.pro.proTypeId == 4){
+        // 流量包
+        if(this.form.pro.proTypeId == 4){
             _this.flowList.forEach((item,i)=>{
                 if(_this.form.pro.flowId == item.id && val>item.count){
                     _this.$message.error('总库存超出了流量包数量');
                 }
             })
-        //   if(val){}
-        // }
+        }
         this.form.pro.proStockTotal = val;
     },
     /** 
@@ -957,8 +1014,8 @@ export default {
      */
     changeIMG(data){
         let _this = this;
-        console.log(data,'data')
         this.newimageList = data;
+        this.isImgno = false;
     },
     /** 
      * 图片验证
@@ -1022,7 +1079,7 @@ export default {
      */
     material(){
         let _this = this;
-        parent.parent.parent.window.postMessage("openMask()", "*");
+        parent.parent.window.postMessage("openMask()", "*");
         _this.$material({
           imageboxUrl: DFshop.activeAPI.materialUrl,   //地址
           modal: true,       //遮罩
@@ -1035,9 +1092,9 @@ export default {
         }).then(function (val) {
             let imgUrl = '<img src="'+val[0].url+'">';
             $('.ql-editor p:last').append(imgUrl);
-            //parent.parent.parent.window.postMessage("closeMask()", "*");
+            parent.parent.window.postMessage("closeMask()", "*");
           }).catch(function (error) {
-            //parent.parent.parent.window.postMessage("closeMask()", "*");
+            parent.parent.window.postMessage("closeMask()", "*");
           //取消
         }) 
 
