@@ -22,7 +22,8 @@
       <el-select v-model="ruleForm.visitAreaId" placeholder="区县" style="width:100px">
         <el-option :label="option.city_name" :value="option.id" :key="option.id" v-for="option in areas" ></el-option>
       </el-select> 
-      <el-input v-model.trim="ruleForm.visitAddress" placeholder="请点击选择自提地址" class="add-input block"></el-input>
+      <el-input v-model.trim="ruleForm.visitAddress" :readonly="true" placeholder="请点击选择自提地址" class="add-input"></el-input>
+      <img  @click="dialogVisible = true" title="点击选择地址" style="width:20px;cursor: pointer;" alt="" :src="png1"  >
     </el-form-item>
     <el-form-item label="联系电话 ：" prop="visitContactNumber">
         <el-input v-model.trim="ruleForm.visitContactNumber" placeholder="请输入联系电话"   class="add-input"></el-input>
@@ -79,16 +80,27 @@
         <img width="100%" :src="largeSrc" alt="" class="img">
     </el-dialog>
   </div>
+  <el-dialog title="我的位置"  :visible.sync="dialogVisible">
+    <template>
+        <my-map :longitude.sync="ruleForm.visitLongitude" :latitude.sync="ruleForm.visitLatitude" :address.sync="ruleForm.visitAddress"  ></my-map>
+    </template>
+    <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+    </span>
+  </el-dialog>
 </div>
 </template>
 
 <script>
  import imgUpload from 'components/imgUpload.vue';
  import timeList from "../../components/timeList";
+ import myMap from 'components/myMap';
+ import addressPng from '../../../../assets/img/address.png' //地址图标
  import Lib from 'assets/js/Lib';
 export default {
   components:{
-      imgUpload,timeList
+      imgUpload,timeList,myMap
   },
   data() {
     var formVisit = (rule, value, callback) => {
@@ -125,7 +137,10 @@ export default {
         visitName:'',
         startTime:'',
         endTime:'',
+        visitLongitude:'',
+        visitLatitude:'',
       },
+      png1:addressPng,
       cities: cityOptions,
       rules: {
         visitName: [
@@ -151,6 +166,7 @@ export default {
       editAreaId:'',//修改时 存放选中区县ID
       materialLargeSrcVisible: false,//查看大图
       largeSrc: '',//查看大图的图片
+      dialogVisible:false
 
     }
   },
@@ -159,6 +175,13 @@ export default {
       this.$refs.ruleForm.validate(valid => {});
     },
     'materialLargeSrcVisible'(a){
+      if(a){
+        parent.window.postMessage("openMask()", "*");
+      }else{
+        parent.window.postMessage("closeMask()", "*");
+      }
+    },
+    'dialogVisible'(a){
       if(a){
         parent.window.postMessage("openMask()", "*");
       }else{
@@ -237,7 +260,7 @@ export default {
     submitForm(formName) {
       let _this = this;
       let timeValid = this.$refs.timeComp.validateData();
-
+    console.log(this.$refs[formName].model);
       this.$refs[formName].validate((valid) => {
         if (valid&& timeValid) {
           let paramsForm = this.$refs[formName].model;
@@ -304,6 +327,27 @@ export default {
           }
       });
     },
+    /**获取自提点信息 */
+    wxShopInfo(){
+      let _this = this;
+      _this.ajaxRequest({
+          'url': DFshop.activeAPI.wxShopInfo_post,
+          'data':{
+            wxShopId :17 
+          },
+          'success':function (data){
+            _this.ruleForm.visitProvinceId = Number(data.data.province);
+            _this.ruleForm.visitAddress = data.data.adder;
+            _this.ruleForm.visitAddressDetail = data.data.address;
+            _this.ruleForm.visitLongitude=data.data.longitude;
+            _this.ruleForm.visitLatitude=data.data.latitude;
+            _this.editCityId= Number(data.data.city);
+            _this.editAreaId= Number(data.data.district);
+
+     
+          }
+      });
+    },
     /**城市数据级联 */
     getCityOrArea(name){
       let _this =this;
@@ -342,6 +386,8 @@ export default {
   mounted(){
     if(this.$route.params.id != 0 && this.$route.params.id !='undefined'){
       this.mallTakeInfo(this.$route.params.id);
+    }else{
+      this.wxShopInfo();
     }
     let _this =this;
     _this.isMaterialUrl();

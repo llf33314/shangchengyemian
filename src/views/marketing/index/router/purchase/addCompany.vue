@@ -43,7 +43,7 @@
 <script>
 import Lib from 'assets/js/Lib';
 import myMap from 'components/myMap'
-import addressPng from '../../../../../assets/img/address.png' //身份证正面
+import addressPng from '../../../../../assets/img/address.png' //地址图标
 export default {
   components:{
     myMap
