@@ -3,7 +3,7 @@
     <el-amap-search-box class="search-box" :search-option="searchOption" :on-search-result="onSearchResult" style="position: absolute;"></el-amap-search-box>
     <div class="amap-demo vuep-scoped-52 vuep-preview">
       <el-amap vid="amapDemo" :zoom="zoom" :center="center" class="amap-demo" :plugin="plugin" :events="events">
-        <el-amap-info-window :position="mywindow.position" :content="address" :visible="mywindow.visible" :events="mywindow.events"></el-amap-info-window>
+        <el-amap-info-window :position="mywindow.position" :visible="mywindow.visible" :events="mywindow.events"></el-amap-info-window>
         <el-amap-marker :position="marker.position"  :events="marker.events" :visible="marker.visible" :draggable="marker.draggable"></el-amap-marker>
           <!-- <el-amap-marker :key="index"  v-for="(item,index) in marker.position" :position="item"  :events="marker.events" :visible="marker.visible" :draggable="marker.draggable"></el-amap-marker> -->
         <!-- <el-amap-circle :center="circle.center" :radius="circle.radius" :fillOpacity="circle.fillOpacity" :events="circle.events"
@@ -49,6 +49,7 @@
               if (status === 'complete' && result.info === 'OK') {
                 if (result && result.regeocode) {
                   self.address = result.regeocode.formattedAddress;
+                  console.log(result);
                   self.$nextTick();
                   var lnglatXY = [e.lnglat.M,e.lnglat.O];
                   self.marker.position=lnglatXY;
@@ -174,8 +175,10 @@
            let self=this;
           let latSum = 0;
           let lngSum = 0;
+          console.log("111222222222");
           if (pois.length > 0) {
             let i=0;
+            console.log("11111111111");
           pois.forEach(poi => {
             let {lng, lat} = poi;
             lngSum += lng;
