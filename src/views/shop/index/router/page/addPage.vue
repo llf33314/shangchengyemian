@@ -123,7 +123,7 @@ export default {
           if (valid) {
             this.active =2;
             //_this.iframeULR= location.origin+'/mallPage/designPage.do?id='+_this.$route.params.pageId;;
-            _this.iframeULR= 'http://192.168.2.118:8080/mallPage/designPage.do?id='+_this.$route.params.pageId;
+            _this.iframeULR= window.DFshop.api + '/mallPage/designPage.do?id='+_this.$route.params.pageId;
             _this.$nextTick(()=>{
               _this.iframeHeight = $(window).height()-$('.common-nav').outerHeight(true)-$('#shop1').outerHeight(true)-$('#shop2').outerHeight(true);
             })
