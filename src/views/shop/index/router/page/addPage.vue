@@ -79,6 +79,7 @@
         <el-button style="margin-top: 12px;" @click="jumpRouter('/page')">返回</el-button>
       </div>
     </div>
+    <div class="shade" id="shade"></div>
   </div>
 </template>
 
@@ -104,6 +105,7 @@ export default {
       },
       iframeULR:'',//微页编辑地址
       iframeHeight:'',//微页高度
+      isShade:false,
     }
   },
   methods: {
@@ -122,7 +124,7 @@ export default {
         this.$refs['ruleForm'].validate((valid) => {
           if (valid) {
             this.active =2;
-            //_this.iframeULR= location.origin+'/mallPage/designPage.do?id='+_this.$route.params.pageId;;
+            //_this.iframeULR= 'http://192.168.2.118:8080/mallPage/designPage.do?id='+_this.$route.params.pageId;
             _this.iframeULR= window.DFshop.api + '/mallPage/designPage.do?id='+_this.$route.params.pageId;
             _this.$nextTick(()=>{
               _this.iframeHeight = $(window).height()-$('.common-nav').outerHeight(true)-$('#shop1').outerHeight(true)-$('#shop2').outerHeight(true);
@@ -232,6 +234,14 @@ export default {
     }else{
       this.pageInfoAjax(this.$route.params.pageId);
     }
+    $('#shade').hide();
+    window.shadeShow = function(){
+       $('#shade').show();
+    };
+    window.shadeHide = function(){
+       $('#shade').hide();
+    };
+  
   },
 }
 </script>
@@ -243,14 +253,12 @@ export default {
     border:none;
   }
 }
-body{ 
-SCROLLBAR-FACE-COLOR :     rgb(10,236,209) ;     //滚动条凸出部分的颜色 
-SCROLLBAR-HIGHLIGHT-COLOR :     rgb(23,255,155) ; //滚动条空白部分的颜色 
-SCROLLBAR-SHADOW-COLOR :     rgb(255,116,23) ; //立体滚动条阴影的颜色 
-SCROLLBAR-3DLIGHT-COLOR :     rgb(66,93,127) ; //滚动条亮边的颜色 
-SCROLLBAR-ARROW-COLOR :     rgb(93,232,255) ; //上下按钮上三角箭头的颜色 
-SCROLLBAR-TRACK-COLOR :     rgb(255,70,130) ; //滚动条的背景颜色 
-SCROLLBAR-DARKSHADOW-COLOR :     rgb(10,0,209) ; //滚动条强阴影的颜 
-SCROLLBAR-BASE-COLOR :     rgb(66,93,128)//滚动条的基本颜色 
+.shade{
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.25);
+  position:fixed;
+  top:0;
+  left:0;
 }
 </style>
