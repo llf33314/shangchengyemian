@@ -251,12 +251,14 @@ export default {
   iframe{
     width: 100%;
     border:none;
+    position: relative;
+    z-index:999;
   }
 }
 .shade{
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.25);
+  background: rgba(0,0,0,0.5);
   position:fixed;
   top:0;
   left:0;
