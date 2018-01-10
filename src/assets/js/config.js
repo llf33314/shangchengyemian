@@ -39,6 +39,8 @@
     getMaterialUrl_post: '/mall/E9lM9uM4ct/getMaterialUrl',
     /*获取门店信息*/
     wxShopInfo_post: '/mall/E9lM9uM4ct/shopInfo',
+    /*获取主门店信息*/
+    selectMainShop_post: '/mall/E9lM9uM4ct/selectMainShop',
     /**
      * 店铺管理相关接口
      */

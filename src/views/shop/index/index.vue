@@ -363,27 +363,45 @@ export default {
      */
     authentication(certId, data) {
       let _this = this;
-      if (!certId) return _this.jumpRouter("shop/authentication/", data);
-      let msg = {
-        dialogType: "warn",
-        dialogTitle: "",
-        dialogMsg: "您的店铺已经通过认证，如果重新发起认证，您提交的店铺认证信息将失效！",
-        callback: {
-          btnOne: function() {
-            //认证信息设置失效
-            _this.ajaxRequest({
-              url: DFshop.activeAPI.mallStoreCertSetInvalid_post,
-              data: {
-                id: certId
-              },
-              success: function(data) {
-                _this.jumpRouter("shop/authentication/", data);
-              }
-            });           
+         
+      if(data.certCheckStatus==null){
+         _this.jumpRouter("shop/authentication/", data);
+      }else{
+        let msg1="";
+        if(data.certCheckStatus==0){
+          msg1="您的店铺认证信息已提交，平台正在审核中,请稍候！";
+        }else  if(data.certCheckStatus==1){
+          msg1="您的店铺已经通过认证，如果重新发起认证，您提交的店铺认证信息将失效！";
+        }else  if(data.certCheckStatus==-1){
+          let refuseReason="";
+          if(data.certRefuseReason!=null){
+              refuseReason=data.certRefuseReason;
           }
+          msg1="您的店铺认证平台审核不通过，原因是："+refuseReason+",请重新发起认证！";
         }
-      };
-      _this.$root.$refs.dialogWarn.showDialog(msg);
+        let msg = {
+          dialogType: "warn",
+          dialogTitle: "",
+          dialogMsg: msg1,
+          callback: {
+            btnOne: function() {
+              if(data.certCheckStatus != 0){
+                //认证信息设置失效
+                _this.ajaxRequest({
+                  url: DFshop.activeAPI.mallStoreCertSetInvalid_post,
+                  data: {
+                    id: certId
+                  },
+                  success: function(data) {
+                    _this.jumpRouter("shop/authentication/", data);
+                  }
+                }); 
+              }          
+            }
+          }
+        };
+        _this.$root.$refs.dialogWarn.showDialog(msg);
+      }
     },
     /**
      *链接--二维码(店铺)

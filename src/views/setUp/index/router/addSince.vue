@@ -328,17 +328,14 @@ export default {
       });
     },
     /**获取自提点信息 */
-    wxShopInfo(){
+    selectMainShop(){
       let _this = this;
       _this.ajaxRequest({
-          'url': DFshop.activeAPI.wxShopInfo_post,
-          'data':{
-            wxShopId :17 
-          },
+          'url': DFshop.activeAPI.selectMainShop_post,
           'success':function (data){
             _this.ruleForm.visitProvinceId = Number(data.data.province);
-            _this.ruleForm.visitAddress = data.data.adder;
-            _this.ruleForm.visitAddressDetail = data.data.address;
+            _this.ruleForm.visitAddress = data.data.address;
+            // _this.ruleForm.visitAddressDetail = data.data.address;
             _this.ruleForm.visitLongitude=data.data.longitude;
             _this.ruleForm.visitLatitude=data.data.latitude;
             _this.editCityId= Number(data.data.city);
@@ -387,7 +384,7 @@ export default {
     if(this.$route.params.id != 0 && this.$route.params.id !='undefined'){
       this.mallTakeInfo(this.$route.params.id);
     }else{
-      this.wxShopInfo();
+      this.selectMainShop();
     }
     let _this =this;
     _this.isMaterialUrl();
