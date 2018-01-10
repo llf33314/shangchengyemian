@@ -177,7 +177,7 @@
                             </div>
                             <span class="shop-prompt">该原价价格只作展示作用</span>
                         </el-form-item>
-                        <el-form-item label="商品图片 :" :rules="rules.imageList" prop="imageList">
+                        <el-form-item label="商品图片 :" :rules="rules.imageList" prop="imageList" required>
                             <div class="imgboxUP">
                                 <gt-material :path="imgUrl" 
                                             :imgLists="form.imageList" 
@@ -330,7 +330,7 @@
                         type="textarea"
                         :autosize="{ minRows: 3, maxRows: 4}"
                         placeholder="请输入商品信息"
-                        v-model="textarea3">
+                        v-model="form.detail.productMessage">
                     </el-input>
                 </div>
                 <div class="editor-goodsinfo">
@@ -339,12 +339,18 @@
                         type="textarea"
                         :autosize="{ minRows: 3, maxRows: 4}"
                         placeholder="请输入商品简介"
-                        v-model="textarea3">
+                        v-model="form.detail.productIntrodu">
                     </el-input>
                 </div>
                 <div class="editor-trigger">
-                    <span>商品详情：</span>
-                    <div id="editor-trigger" style="height: 320px;"></div>
+                    <span>商品详情：</span>{{form.detail.productIntrodu}}
+                    <!-- <div id="editor-trigger" style="height: 320px;"></div> -->
+                    <quill-editor v-model.trim="form.detail.productDetail"
+                          ref="myQuillEditor"
+                          class="editer"
+                          :options="editorOption"
+                          @change="onEditorReady($event)">
+                  </quill-editor>
                 </div>
             </div>
         </div>
@@ -423,6 +429,13 @@ export default {
                 proWeight:0,//商品重量
                 proCode:0,//商家编码
             },
+            detail:{
+                productDetail: null,        //商品详情
+                productIntrodu: null,       //商品简介 
+                productMessage: null,           //商品信息
+                pdata: null,                      //数据
+                pcss: null  
+            },
            imageList:[],
            proGroupList:[],
            invenList:[],
@@ -456,47 +469,23 @@ export default {
         cardReceiveList:[],//卡券包列表
         cardReceiveItem:{},//卡卷包选择模块
         flowList:[],//流量包列表
-        webPath:''//手机端域名
+        webPath:'',//手机端域名
+
+        editorOption:{}//编辑器参数
     }
   },
   watch:{
       active(a){
           if(a==2){
               this.$nextTick(()=>{
-                let editor = new wangEditor('editor-trigger');
-                console.log(editor,'editor.config')	
-                editor.config.pasteFilter = false;
-                editor.config.menus = [
-                    'source',
-                    'bold',
-                    'underline',
-                    'italic',
-                    'strikethrough',
-                    'eraser',
-                    'forecolor',
-                    'bgcolor',
-                    'quote',
-                    'fontfamily',
-                    'fontsize',
-                    'head',
-                    'unorderlist',
-                    'orderlist',
-                    'alignleft',
-                    'aligncenter',
-                    'alignright',
-                    'link',
-                    'unlink',
-                    'table',
-                    'emotion',
-                    'img',
-                    'video',
-                    'location',
-                    'insertcode',
-                    'undo',
-                    'redo',
-                    'fullscreen'
-                ];
-                editor.create();
+                let _this = this;
+                let ql_image = $('.ql-image').html();
+                let new_image = '<button type="button" class="ql-image2">'+ql_image+'</button>';
+                $(new_image).insertAfter('.ql-image');
+                $('.ql-image').remove();
+                $('.ql-image2').click(()=>{
+                    _this.material()
+                })
               })
           }
       }
@@ -590,11 +579,17 @@ export default {
                 id:_this.goodsId
             },
             'success':function (data){
-                console.log(data,'编辑请求数据');
                 _this.form = data.data;
                 //初始化处理数据
                 _this.invenAdd(_this.form.invenList,_this.form.specList);
                 _this.changeSpac(_this.form.specList);
+                if(!_this.form.detail){
+                    _this.form.detail={
+                        productDetail: null,        //商品详情
+                        productIntrodu: null,       //商品简介 
+                        productMessage: null,           //商品信息
+                    }
+                }
             }
         });
     },
@@ -742,19 +737,17 @@ export default {
             })
         })
 
-        //请求数据
         let  data={
             product:_this.form.pro,
             imageList: JSON.stringify(imageList),
             groupList:JSON.stringify(this.form.proGroupList),
-            detail:null,
+            detail:_this.form.detail,
             speList:JSON.stringify(specList),
             invenList:_this.form.invenList.length> 0?JSON.stringify(_this.form.invenList):null,
             paramsList:JSON.stringify(_this.form.paramList),
         };
-
         data.invenList == null ? data.product.isSpecifica = 0:data.product.isSpecifica = 1;
-        data.product=JSON.stringify(data.product);
+        data.product=JSON.stringify(data.product)
         console.log(data,'修改提交数据')
         this.dataAjax(type,data)
     },
@@ -930,6 +923,15 @@ export default {
      * 总库存
      */
     changeStock(val){
+        let _this = this;
+        // 流量包if(this.form.pro.proTypeId == 4){
+            _this.flowList.forEach((item,i)=>{
+                if(_this.form.pro.flowId == item.id && val>item.count){
+                    _this.$message.error('总库存超出了流量包数量');
+                }
+            })
+        //   if(val){}
+        // }
         this.form.pro.proStockTotal = val;
     },
     /** 
@@ -1009,7 +1011,37 @@ export default {
             item.specificaIds = item.specificaIds.toString()
         })
         this.form.invenList = val;
-    }
+    },
+    //编辑框发生变化
+    onEditorReady({ editor, html, text }) {
+    //   this.$refs['ruleForm'].validate('text');
+        console.log( html, text)
+    },
+    /** 
+     * 编辑器调用素材库
+     */
+    material(){
+        let _this = this;
+        parent.parent.parent.window.postMessage("openMask()", "*");
+        _this.$material({
+          imageboxUrl: DFshop.activeAPI.materialUrl,   //地址
+          modal: true,       //遮罩
+          selecType: this.selecType,   //是否多选
+          width: 820, //宽度
+          height: 500, //高度
+          lockScroll: false, //弹出框后是否锁定滚动轴
+          closeOnClickModal: true, //点击遮罩是否关闭
+          closeOnPressEscape: false
+        }).then(function (val) {
+            let imgUrl = '<img src="'+val[0].url+'">';
+            $('.ql-editor p:last').append(imgUrl);
+            //parent.parent.parent.window.postMessage("closeMask()", "*");
+          }).catch(function (error) {
+            //parent.parent.parent.window.postMessage("closeMask()", "*");
+          //取消
+        }) 
+
+      },
   },
   mounted(){
     if(this.$route.params.id === 'add'){

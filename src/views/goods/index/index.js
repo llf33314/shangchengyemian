@@ -1,18 +1,11 @@
 import Vuex from 'vuex';
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-Vue.use(Vuex);
+import quillEditor from 'vue-quill-editor'; //调用编辑器
 
-const  vuex_store = new Vuex.Store({
-    state:{
-        user_name:"aaa"
-    },
-    mutations:{
-        showUserName(state){
-            alert(state.user_name);
-        }
-    }
-})
+Vue.use(Vuex);
+Vue.use(quillEditor);
+
 //首页
 import Index from './index.vue'
 //我的商品
@@ -67,6 +60,5 @@ const router = new VueRouter({
 
 
 new Vue({
-  router: router,
-  store:vuex_store,
+  router: router
 }).$mount('#app')
