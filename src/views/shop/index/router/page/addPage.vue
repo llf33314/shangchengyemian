@@ -59,7 +59,7 @@
     </div>
     <div class="shop-addshop-tow scrollBar" v-if="active == 2">
         <div class="iframe-box scrollBar" >
-          <iframe :src="iframeULR" :height="iframeHeight" name="myFrame" class="scrollBar"></iframe>
+          <iframe :src="iframeULR" :height="iframeHeight" name="myFrame" class="scrollBar" id="myFrame"></iframe>
         </div>
     </div>
     <div class="shop-addshop-Three" v-if="active == 3">
@@ -128,6 +128,8 @@ export default {
             //_this.iframeULR= window.DFshop.api + '/mallPage/designPage.do?id='+_this.$route.params.pageId;
             _this.$nextTick(()=>{
               _this.iframeHeight = $(window).height()-$('.common-nav').outerHeight(true)-$('#shop1').outerHeight(true)-$('#shop2').outerHeight(true)-10;
+              let style = '<style>*{scrollbar-face-color:#9bc630; scrollbar-arrow-color:#C0C0C0;scrollbar-3dlight-color:#C0C0C0;scrollbar-highlight-color:#FFFFFF;scrollbar-shadow-color:#FFFFFF;scrollbar-darkshadow-color:#C0C0C0;scrollbar-track-color:#f3f3f3;}</style>'
+              $("#myFrame").contents().find("head").append(style);
             })
           } else {
             return false;
