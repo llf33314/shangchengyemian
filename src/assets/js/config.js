@@ -14,8 +14,8 @@
   /**
    * 生产build
    */
-  //DFshop.api ="";
-  //DFshop.face = '/images/activity/miniscene/phone/face/' 
+  // DFshop.api ="";
+  // DFshop.face = '/images/activity/miniscene/phone/face/' 
   /**
    * 开发dev
    */
@@ -30,17 +30,17 @@
     /*素材库地址*/
     materialUrl: '',
     /*判断是否是管理员*/
-    isAdminUser_post: '/mall/E9lM9uM4ct/isAdminUser',
+    isAdminUser_post: '/mallIndex/E9lM9uM4ct/isAdminUser',
     /*商城概况*/
-    mallCount_post: '/mall/E9lM9uM4ct/count',
+    mallCount_post: '/mallIndex/E9lM9uM4ct/count',
     /*获取商城营销地址*/
-    getMarketingUrl_post: '/mall/E9lM9uM4ct/getMarketingUrl',
+    getMarketingUrl_post: '/mallIndex/E9lM9uM4ct/getMarketingUrl',
      /*获取素材库地址*/
-    getMaterialUrl_post: '/mall/E9lM9uM4ct/getMaterialUrl',
+    getMaterialUrl_post: '/mallIndex/E9lM9uM4ct/getMaterialUrl',
     /*获取门店信息*/
-    wxShopInfo_post: '/mall/E9lM9uM4ct/shopInfo',
+    wxShopInfo_post: '/mallIndex/E9lM9uM4ct/shopInfo',
     /*获取主门店信息*/
-    selectMainShop_post: '/mall/E9lM9uM4ct/selectMainShop',
+    selectMainShop_post: '/mallIndex/E9lM9uM4ct/selectMainShop',
     /**
      * 店铺管理相关接口
      */
@@ -55,7 +55,7 @@
     /*店铺链接*/
     mallStoreLink_post: '/mallStore/E9lM9uM4ct/link',
     /*下载提取二维码*/
-    mallDownQr_get: DFshop.api+'/mall/E9lM9uM4ct/downQr',
+    mallDownQr_get: DFshop.api+'/mallIndex/E9lM9uM4ct/downQr',
     /*商家店铺请求*/
     mallStorestoreInfo_post: '/mallStore/E9lM9uM4ct/storeInfo',
     /*可新增店铺门店列表*/
@@ -91,7 +91,7 @@
     /*获取快递公司信息 */
     mallFreightExpressList_post: '/mallFreight/E9lM9uM4ct/expressList',
     /*获取地区列表 */
-    mallGetArea_post: '/mall/E9lM9uM4ct/getArea',
+    mallGetArea_post: '/mallIndex/E9lM9uM4ct/getArea',
     /*保存物流信息 */
     mallFreightSave_post: '/mallFreight/E9lM9uM4ct/save',
     /*上门自提列表 */
@@ -118,7 +118,7 @@
     /*判断是否加入担保 */
     mallIsSecuritytrade_post: '/mallSecuritytrade/E9lM9uM4ct/isSecuritytrade',
     /*判断商家是否有商户支付平台 */
-    mallIsWxPayUser_post: '/mall/E9lM9uM4ct/isWxPayUser',
+    mallIsWxPayUser_post: '/mallIndex/E9lM9uM4ct/isWxPayUser',
     /*获取退出担保理由列表 */
     mallQuitDanbaoReasonList_post: '/mallSecuritytrade/E9lM9uM4ct/quitReasonMap',
     /*保存退出担保原因 */
@@ -174,11 +174,11 @@
     /*根据店铺ID获取物流信息*/
     mallFreightGetFreightByShopId_post: '/mallFreight/E9lM9uM4ct/getFreightByShopId',
     /*获取会员卡列表*/
-    mallCardList_post: '/mall/E9lM9uM4ct/cardList',
+    mallCardList_post: '/mallIndex/E9lM9uM4ct/cardList',
     /*获取卡券包列表*/
-    mallCardReceiveList_post: '/mall/E9lM9uM4ct/cardReceiveList',
+    mallCardReceiveList_post: '/mallIndex/E9lM9uM4ct/cardReceiveList',
     /*获取商家流量列表*/
-    mallFlowList_post: '/mall/E9lM9uM4ct/flowList',
+    mallFlowList_post: '/mallIndex/E9lM9uM4ct/flowList',
 
 
     /*团购列表 */
