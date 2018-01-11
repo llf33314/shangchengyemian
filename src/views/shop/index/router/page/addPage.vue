@@ -80,6 +80,7 @@
       </div>
     </div>
     <div class="shade" id="shade"></div>
+    <div class="shade2" id="shade2"></div>
   </div>
 </template>
 
@@ -128,8 +129,12 @@ export default {
             //_this.iframeULR= window.DFshop.api + '/mallPage/designPage.do?id='+_this.$route.params.pageId;
             _this.$nextTick(()=>{
               _this.iframeHeight = $(window).height()-$('.common-nav').outerHeight(true)-$('#shop1').outerHeight(true)-$('#shop2').outerHeight(true)-10;
-              let style = '<style>*{scrollbar-face-color:#9bc630; scrollbar-arrow-color:#C0C0C0;scrollbar-3dlight-color:#C0C0C0;scrollbar-highlight-color:#FFFFFF;scrollbar-shadow-color:#FFFFFF;scrollbar-darkshadow-color:#C0C0C0;scrollbar-track-color:#f3f3f3;}</style>'
-              $("#myFrame").contents().find("head").append(style);
+              $('#shade2').css({
+                'height':_this.iframeHeight,
+                'top':  $('.common-nav').outerHeight(true)+$('#shop1').outerHeight(true),
+                //'background': '#fff'
+              })
+            
             })
           } else {
             return false;
@@ -237,13 +242,15 @@ export default {
       this.pageInfoAjax(this.$route.params.pageId);
     }
     $('#shade').hide();
+    $('#shade2').hide();
     window.shadeShow = function(){
        $('#shade').show();
+       $('#shade2').show();
     };
     window.shadeHide = function(){
        $('#shade').hide();
-    };
-  
+       $('#shade2').hide();
+    };     
   },
 }
 </script>
@@ -264,6 +271,15 @@ export default {
   position:fixed;
   top:0;
   left:0;
+}
+.shade2{
+  width: 20px;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  position:fixed;
+  top:0;
+  right:0;
+  z-index: 9999;
 }
 /* -------修改滚动条样式----------  */
 .scrollBar{
