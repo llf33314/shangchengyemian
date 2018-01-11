@@ -179,7 +179,7 @@
                 </div>
             </el-tab-pane>
             <el-tab-pane label="预售送礼设置" name="3">
-                <div class="common-content">
+                <div class="common-content" v-if="isPresaleGive">
                     <el-form :model="form" ref="form" :rules="rules" class="add_form" label-position="right" label-width="80px">
                         <div class="index-shopInfo">
                             <el-button type="primary" @click="addPresaleGift()">新建预售送礼</el-button>
@@ -281,6 +281,7 @@
                         </el-dialog>
                     </el-form>
                 </div>
+                 <content-no :show="contentNo1" v-else></content-no>
           </el-tab-pane>
         </el-tabs>
     </div>
@@ -298,11 +299,13 @@ export default {
   data() {
     return {
       contentNo: "ysgl",
+      contentNo1: "openPresaleGive",
       activeName: "3", //todo
       dialogVisible: false,
       dialogVisibleGift: false,
       presaleType: "",
       shopId: "",
+      isPresaleGive:'',
       presaleData: {
         isOpenPresale: "",
         videourl: "",
@@ -577,7 +580,7 @@ export default {
               this.payTime = Lib.M.format(oldPayTime);
             }
           });
-          console.log(_this.dingJinData, "dingJinData");
+          // console.log(_this.dingJinData, "dingJinData");
         }
       });
     },
@@ -590,12 +593,15 @@ export default {
           curPage: pageNum
         },
         success: function(data) {
-          let myData = data.data;
-          _this.presaleGiftsData.page.rowCount = myData.page.rowCount;
-          _this.presaleGiftsData = myData;
-          _this.form.presaleGiftsData = myData.page.subList;
-          _this.mallPresaleGiveDictList();
-          console.log(_this.form.presaleGiftsData, "presaleGiftsData");
+           _this.isPresaleGive=data.data.isPresaleGive;
+          if(_this.isPresaleGive){
+            let myData = data.data;
+            _this.presaleGiftsData.page.rowCount = myData.page.rowCount;
+            _this.presaleGiftsData = myData;
+            _this.form.presaleGiftsData = myData.page.subList;
+            _this.mallPresaleGiveDictList();
+            // console.log(_this.form.presaleGiftsData, "presaleGiftsData");
+          }
         }
       });
     },
@@ -660,10 +666,10 @@ export default {
       _this.ajaxRequest({
         url: DFshop.activeAPI.mallPresaleGiveDictList_post,
         success: function(data) {
-          _this.giftDictList = data.data;
-          $.each(_this.giftDictList, function(i) {
-            this.item_key = Number(this.item_key);
-          });
+            _this.giftDictList = data.data;
+            $.each(_this.giftDictList, function(i) {
+              this.item_key = Number(this.item_key);
+            });
         }
       });
     },

@@ -9,7 +9,7 @@
     <div class="common-main">
         <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
             <el-tab-pane label="批发管理" name="1" >
-                <div class="common-content">
+                <div class="common-content" v-if="isOpenPifa">
                 <div class="index-shopInfo">
                     <div class="index-input-box">
                     <div class="p-box">
@@ -99,6 +99,7 @@
                 </div>
                 <content-no :show="contentNo" v-if="goodsData.page.rowCount == 0"></content-no>
                 </div>
+                <content-no :show="contentNo1" v-else></content-no>
             </el-tab-pane>
             <el-tab-pane label="批发商管理" name="2">
                 <div class="common-content">
@@ -347,6 +348,8 @@ export default {
     };
     return {
       contentNo: "pifa",
+      contentNo1: "openPifa",
+      isOpenPifa:'',
       activeName: "1",
       type: "",
       shopId: "",
@@ -597,15 +600,18 @@ export default {
           shopId: _this.shopId
         },
         success: function(data) {
-          _this.goodsData = data.data;
-          _this.path = data.path;
-          _this.imgUrl = data.imgUrl;
-          _this.webPath = data.webPath;
-          _this.videourl = data.videourl;
-          $.each(_this.goodsData.page.subList, function(i) {
-            let oldTime = this.createTime;
-            this.createTime = Lib.M.format(oldTime);
-          });
+          _this.isOpenPifa=data.data.isOpenPifa;
+          if(_this.isOpenPifa){
+            _this.goodsData = data.data;
+            _this.path = data.path;
+            _this.imgUrl = data.imgUrl;
+            _this.webPath = data.webPath;
+            _this.videourl = data.videourl;
+            $.each(_this.goodsData.page.subList, function(i) {
+              let oldTime = this.createTime;
+              this.createTime = Lib.M.format(oldTime);
+            });
+          }
           //console.log(_this.goodsData,'_this.goodsData');
         }
       });

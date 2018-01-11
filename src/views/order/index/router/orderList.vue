@@ -433,7 +433,7 @@ export default {
         _this.dialogVisible=false;
         // console.log(val);
         if(val){
-            _this.searchData.curPage=1;
+            _this.searchData.curPage=_this.page.curPage;
             _this.mallOrderList( _this.searchData); 
         }
     },
@@ -451,6 +451,7 @@ export default {
       // console.log(`当前页: ${val}`);
       this.searchData.curPage=val;
       this.mallOrderList( this.searchData);
+      $(window).scrollTop(0);
     },
     /**批量导出 */
     exportTrade(){
