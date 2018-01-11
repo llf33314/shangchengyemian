@@ -261,6 +261,7 @@ export default {
     handleCurrentChange(val) {
       this.searchData.curPage=val;
       this.mallCommentList( this.searchData);
+      $(window).scrollTop(0);
       // console.log(`当前页: ${val}`);
     },
     /** 

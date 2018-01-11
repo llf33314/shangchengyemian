@@ -9,7 +9,7 @@
     <div class="common-main">
       <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
         <el-tab-pane label="基本规则设置" name="1">
-          <div class="common-content" style="padding: 40px 0;">
+          <div class="common-content" style="padding: 40px 0;" v-if="isOpenSeller">
             <el-form ref="setupForm" :model="setupForm"  :rules="rules"  label-width="90px">
               <el-form-item label="积分奖励 :" prop="integralReward">
                 每推荐1人关注商城公众号，可奖励
@@ -57,6 +57,7 @@
               </el-form-item>
             </el-form>
           </div>
+           <content-no :show="contentNo2" v-else></content-no>
         </el-tab-pane>
         <el-tab-pane label="商品佣金设置" name="2">
            <div class="common-content">
@@ -95,7 +96,7 @@
                 <el-table-column
                   label="活动状态">
                    <template scope="scope">
-                     <span v-if="scope.row.is_use === 1">已启动</span>
+                     <span v-if="scope.row.is_use === 1">已启用</span>
                      <span v-if="scope.row.is_use === 0">已禁用</span>
                    </template>
                 </el-table-column>
@@ -130,7 +131,7 @@
            </div>
         </el-tab-pane>
         <el-tab-pane label="推荐审核" name="3">
-          <div class="common-content">
+          <div class="common-content" v-if="isCheckSeller ==1">
             <div class="index-shopInfo">
               <!-- <el-autocomplete v-model="state4" :fetch-suggestions="querySearchAsync"
                 placeholder="销售员名字/手机" @select="handleSelect" icon="search" ></el-autocomplete> -->
@@ -183,6 +184,7 @@
             </div>
             <content-no v-if="examineData.page.rowCount == 0"></content-no>
           </div>
+           <content-no :show="contentNo1" v-else></content-no>
         </el-tab-pane>
         <el-tab-pane label="销售员管理" name="4">
           <div class="common-content">
@@ -335,6 +337,10 @@ export default {
     return {
       activeName: "1",
       contentNo: "commission",
+      contentNo1: "openCheckSeller",
+      contentNo2:"openSeller",
+      isCheckSeller:'',
+      isOpenSeller:'',
       cashDate: [],
       cashShop: "",
       keyWord_sellers: "",
@@ -576,7 +582,10 @@ export default {
       _this.ajaxRequest({
         url: DFshop.activeAPI.mallSellersGetSellerSet_post,
         success: function(data) {
-          _this.setupForm = data.data.sellerSet;
+          _this.isOpenSeller=data.data.isOpenSeller;
+          if(_this.isOpenSeller){
+            _this.setupForm = data.data.sellerSet;
+          }
           //console.log(_this.setupForm,'setupForm')
         }
       });
@@ -615,7 +624,12 @@ export default {
           keyWord: _this.keyWord
         },
         success: function(data) {
-          _this.examineData = data.data;
+          
+          _this.isCheckSeller=data.data.isCheckSeller;
+          if(data.data.isCheckSeller==1){
+            _this.examineData = data.data;
+          }
+         
         }
       });
     },
