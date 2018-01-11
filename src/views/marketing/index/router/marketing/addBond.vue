@@ -173,6 +173,11 @@ export default {
             commissionType: fname.commission_type,
             id: fname.id || null
           };
+
+          //防止多次点击重复提交数据
+          if(!Lib.C.ajax_manage) return false;
+          Lib.C.ajax_manage = false;
+          
           _this.ajaxRequest({
             url: DFshop.activeAPI.mallSellerSaveJoinProduct_post,
             data: {

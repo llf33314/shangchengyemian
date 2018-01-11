@@ -751,6 +751,11 @@ export default {
         _data.imageList = arr;
       }
       //console.log(_data,'提交认证数据');
+      
+      //防止多次点击重复提交数据
+      if(!Lib.C.ajax_manage) return false;
+      Lib.C.ajax_manage = false;
+      
       _this.$refs[formName].validate((valid) => {
         if (valid) {
           _this.ajaxRequest({

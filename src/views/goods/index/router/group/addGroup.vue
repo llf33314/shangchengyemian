@@ -262,7 +262,11 @@ export default {
       }else{
         _this.form.isFirstParents = 1;//是父级
       } 
-      console.log('提交内容',_this.form)    
+      console.log('提交内容',_this.form);
+      
+      if(!Lib.C.ajax_manage) return false;
+      Lib.C.ajax_manage = false;  
+
       _this.ajaxRequest({
           'url': DFshop.activeAPI.mallProductGroupSave_post,
           'data': _this.form,

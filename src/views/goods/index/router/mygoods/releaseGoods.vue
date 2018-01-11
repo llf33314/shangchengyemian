@@ -675,6 +675,11 @@ export default {
      */
     dataAjax(type,data){
         let _this = this;
+
+        //防止多次点击重复提交数据
+        if(!Lib.C.ajax_manage) return false;
+        Lib.C.ajax_manage = false;
+        
         if(this.$route.params.id === 'add'){
             //新增
             _this.ajaxRequest({

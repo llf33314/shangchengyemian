@@ -160,6 +160,7 @@ Vue.mixin({
             alert('请填写接口地址');
             return false;
         }
+        
         //配置请求头
         $.ajax({
             "type": 'post',
@@ -252,6 +253,7 @@ Vue.mixin({
             "timeout": opts.time || 10 * 1000,
             "responseType": opts.dataType || 'json'
         }).then(function (res) {
+            C.ajax_manage = true;
             if (res.status == 200) {
 
                 if (opts.success) {
@@ -280,7 +282,6 @@ Vue.mixin({
                 }
 
             } else {
-
                 if (data.error) {
                     opts.error(error);
                 } else {
@@ -290,6 +291,7 @@ Vue.mixin({
             }
 
         }).catch(function (error) {
+            C.ajax_manage = true;
             console.log(error);
             if (opts.error) {
                 opts.error(error);

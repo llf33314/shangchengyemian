@@ -123,6 +123,10 @@ export default {
       let _this= this;
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          //防止多次点击重复提交数据
+          if(!Lib.C.ajax_manage) return false;
+          Lib.C.ajax_manage = false;
+          
           _this.ajaxRequest({
             'url': DFshop.activeAPI.mallHtmlUpdate_post,
             'data':_this.modifyForm,
@@ -177,6 +181,11 @@ export default {
       }).then(function (val) {
  
         var img = val[0].url.split("/upload/")[1];
+
+        //防止多次点击重复提交数据
+          if(!Lib.C.ajax_manage) return false;
+          Lib.C.ajax_manage = false;
+        
         _this.ajaxRequest({
           url: DFshop.activeAPI.mallHtmlUpdateImage_post,
           data: {

@@ -142,7 +142,11 @@ export default {
                 stoSmsTelephone: arr, 
                 stoQqCustomer: _this.form.stoQqCustomer
             }
-            //console.log(sto,'sto')
+            
+            //防止多次点击重复提交数据
+            if(!Lib.C.ajax_manage) return false;
+            Lib.C.ajax_manage = false;
+
             _this.ajaxRequest({
                 'url': DFshop.activeAPI.mallStoreSave_post,
                 'data': {
@@ -153,7 +157,7 @@ export default {
                         message: '保存成功',
                         type: 'success'
                     });
-                    _this.jumpHtml('/shop')
+                    _this.jumpHtml('/shop');
                 }
             });
         },

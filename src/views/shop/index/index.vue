@@ -583,6 +583,9 @@ export default {
       let _this = this;
       //防止重复请求
       if(_this.ajaxStyle_key != null && _this.ajaxStyle_key ==  _this.style_key) return false;
+      if(!Lib.C.ajax_manage) return false;
+      Lib.C.ajax_manage = false;
+      
       _this.ajaxRequest({
         url: DFshop.activeAPI.mallStoreSaveStyle_post,
         data: {

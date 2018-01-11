@@ -287,6 +287,10 @@ export default {
           param.timeList = JSON.stringify(timeList);
           // console.log(param)
  
+          //防止多次点击重复提交数据
+          if(!Lib.C.ajax_manage) return false;
+          Lib.C.ajax_manage = false;
+          
           _this.ajaxRequest({
             'url': DFshop.activeAPI.mallFreightTakeSave_post,
             'data':param,

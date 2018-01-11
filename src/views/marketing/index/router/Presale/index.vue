@@ -685,6 +685,11 @@ export default {
     //保存预售送礼设置
     mallPresaleGiveSave(param) {
       let _this = this;
+
+      //防止多次点击重复提交数据
+      if(!Lib.C.ajax_manage) return false;
+      Lib.C.ajax_manage = false;
+
       _this.ajaxRequest({
         url: DFshop.activeAPI.mallPresaleGiveSave_post,
         data: {

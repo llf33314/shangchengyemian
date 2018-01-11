@@ -128,6 +128,9 @@ export default {
           if (_this.ruleForm.id != null || _this.ruleForm.id != "") {
             applet.id = _this.ruleForm.id || null;
           }
+          
+          if(!Lib.C.ajax_manage) return false;
+          Lib.C.ajax_manage = false;
 
           _this.ajaxRequest({
             url: DFshop.activeAPI.mallAppletSave_post,

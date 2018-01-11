@@ -508,6 +508,11 @@ export default {
           }
           let pfRemark = _this.form.paySet.pfRemark;
           let pfApplyRemark = _this.form.paySet.pfApplyRemark;
+
+          //防止多次点击重复提交数据
+          if(!Lib.C.ajax_manage) return false;
+          Lib.C.ajax_manage = false;
+          
           _this.ajaxRequest({
             url: DFshop.activeAPI.mallWholesaleSaveSet_post,
             data: {

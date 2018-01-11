@@ -171,6 +171,11 @@ export default {
           pagIsMain:_this.ruleForm.pagIsMain,//是否是主页 0不是主页 1 是主页
        };
        console.log(page,'page')
+       
+        //防止多次点击重复提交数据
+        if(!Lib.C.ajax_manage) return false;
+        Lib.C.ajax_manage = false;
+
         _this.ajaxRequest({
             'url': DFshop.activeAPI.mallPageSave_post,
             'data': {
