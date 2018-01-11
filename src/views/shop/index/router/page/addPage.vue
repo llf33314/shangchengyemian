@@ -57,9 +57,9 @@
         </el-form>
       </div>
     </div>
-    <div class="shop-addshop-tow" v-if="active == 2">
-        <div class="iframe-box">
-          <iframe :src="iframeULR" :height="iframeHeight" name="myFrame"></iframe>
+    <div class="shop-addshop-tow scrollBar" v-if="active == 2">
+        <div class="iframe-box scrollBar" >
+          <iframe :src="iframeULR" :height="iframeHeight" name="myFrame" class="scrollBar"></iframe>
         </div>
     </div>
     <div class="shop-addshop-Three" v-if="active == 3">
@@ -69,7 +69,7 @@
           <p v-else>修改页面成功</p>
       </div>
     </div>
-    <div class="shop-addpage-main" id="shop2">
+    <div class="shop-addpage-main" id="shop2" :class="{'shop-textc':active==2}">
       <el-button style="margin-top: 12px;" @click="next" v-if="active==1">下一步</el-button>
       <el-button type="primary" v-if="active==2" @click="save(1)">保存</el-button>
       <el-button type="primary" v-if="active==2" @click="save(2)">预览</el-button>
@@ -124,10 +124,10 @@ export default {
         this.$refs['ruleForm'].validate((valid) => {
           if (valid) {
             this.active =2;
-            //_this.iframeULR= 'http://192.168.2.118:8080/mallPage/designPage.do?id='+_this.$route.params.pageId;
-            _this.iframeULR= window.DFshop.api + '/mallPage/designPage.do?id='+_this.$route.params.pageId;
+            _this.iframeULR= 'http://192.168.2.118:8080/mallPage/designPage.do?id='+_this.$route.params.pageId;
+            //_this.iframeULR= window.DFshop.api + '/mallPage/designPage.do?id='+_this.$route.params.pageId;
             _this.$nextTick(()=>{
-              _this.iframeHeight = $(window).height()-$('.common-nav').outerHeight(true)-$('#shop1').outerHeight(true)-$('#shop2').outerHeight(true);
+              _this.iframeHeight = $(window).height()-$('.common-nav').outerHeight(true)-$('#shop1').outerHeight(true)-$('#shop2').outerHeight(true)-10;
             })
           } else {
             return false;
@@ -263,4 +263,60 @@ export default {
   top:0;
   left:0;
 }
+/* -------修改滚动条样式----------  */
+.scrollBar{
+	scrollbar-face-color:#9bc630;
+	/*面子*/  
+	scrollbar-arrow-color:#C0C0C0;
+	/*箭头*/  
+	scrollbar-3dlight-color:#C0C0C0;
+	/*最外左*/  
+	scrollbar-highlight-color:#FFFFFF;
+	/*左二*/  
+	scrollbar-shadow-color:#FFFFFF;
+	/*右二*/  
+	scrollbar-darkshadow-color:#C0C0C0;
+	/*右一*/  
+	scrollbar-track-color:#f3f3f3;
+	/*滑道*/  
+  }
+  /*滚动条整体*/  
+  .scrollBar::-webkit-scrollbar{
+	width:4px ;
+	/*滚动条宽度*/  
+  }
+  /*滚动条按钮*/  
+  .scrollBar::-webkit-scrollbar-track{
+	background-color:#fff;
+	/*滑道全部*/  
+  }
+  .scrollBar::-webkit-scrollbar-track-piece{
+	background-color:#fff;
+	/*滑道*/  
+	-webkit-border-radius:4px;
+	/*滑道圆角宽度*/  
+  }
+  .scrollBar::-webkit-scrollbar-thumb{
+	background-color:#C0C0C0;
+	/*滑动条表面*/  
+	border:solid 1px #C0C0C0;
+	/*滑动条边框*/ 
+	border-radius:4px;
+	/*滑动条圆角宽度*/  
+  }
+  /*横竖滚动条交角*/  
+  /*::-webkit-scrollbar-corner {
+	background-color: #9bc630;
+  }*/
+  /*横竖滚动条交角图案*/  
+  .scrollBar::-webkit-resizer {
+	/*background-image: url(/public/img/resizer-inactive.png);*/  
+	background-repeat: no-repeat;
+	background-position: bottom right;
+  }
+  /*鼠标滑过滑动条*/  
+  .scrollBar::-webkit-scrollbar-thumb:hover{
+	background-color:#eef1f6;
+  }
+
 </style>
