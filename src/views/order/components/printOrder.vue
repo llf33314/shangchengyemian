@@ -32,7 +32,7 @@
                     <td>{{item.subtotal}}</td>
                 </tr>
                 <tr>
-                    <td colspan="3" style="border-right: none;">买家留言：</td>
+                    <td colspan="3" style="border-right: none;text-align:left;">买家留言：</td>
                     <td colspan="3" style="border-left: none;">应收总额： ￥{{printData.totalAmount}}</td>
                 </tr>
             </tbody>
