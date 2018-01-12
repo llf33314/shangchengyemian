@@ -149,9 +149,10 @@
           closeOnClickModal: true, //点击遮罩是否关闭
           closeOnPressEscape: false
         }).then(function (val) {
-          //确认
+            parent.parent.parent.window.postMessage("closeMask()", "*");
+            //确认
             if(_this.imgLists != '0'){
-              //多个 tudo
+              //多个 
               let length = _this.imgdata.length;
               val.forEach((item,i) => {
                 let data = {
@@ -170,7 +171,6 @@
               _this.$emit('change',val[0].url)
               return
             }
-            parent.parent.parent.window.postMessage("closeMask()", "*");
           }).catch(function (error) {
             parent.parent.parent.window.postMessage("closeMask()", "*");
           //取消

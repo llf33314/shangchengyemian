@@ -31,9 +31,7 @@
         <el-form-item label="推送手机 :"
                     v-if="form.stoIsSms==1">
             <div class="telephone-box">
-                <div class="telephone-list" 
-                        v-for="(Telephone,index) in Telephones"
-                        :key="index">
+                <div class="telephone-list"  v-for="(Telephone,index) in Telephones" :key="index">
                         <!-- <el-input placeholder="请输入内容" v-model.number="Telephone.phone">
                             <el-select v-model="select" slot="prepend" placeholder="请选择">
                                 <el-option label="餐厅名" value="1"></el-option>
@@ -41,6 +39,9 @@
                                 <el-option label="用户电话" value="3"></el-option>
                             </el-select>
                         </el-input> -->
+                    <el-select v-model="Telephone.areacode" slot="prepend"  placeholder="国家区号"  style="width:80px;">
+                      <el-option  v-for="item in areaPhones" :key="item.areacode" :label="item.country+'+'+item.areacode" :value="item.areacode"></el-option>
+                    </el-select>
                     <el-input   class="el-telephone"
                             v-model="Telephone.phone" 
                             placeholder="请输入推送手机">
@@ -79,9 +80,11 @@ export default {
             dialogimg: false,
             dialogImageUrl:'',
             Telephones:[{
+                areacode:'86',
                 phone:''
             }],
-            imgUpload:''
+            imgUpload:'',
+            areaPhones:[],
         }
     },
     methods: {
@@ -105,9 +108,19 @@ export default {
                     if(!dataTelephones == " "){
                         _this.Telephones=[];
                         for(let i in dataTelephones){
-                            _this.Telephones.push({
-                                phone: dataTelephones[i]
-                            })
+                            let phone=dataTelephones[i].split(",");
+                            if(phone.length>1){
+                                _this.Telephones.push({
+                                    areacode:phone[0],
+                                    phone: phone[1]
+                                })
+                            }else{
+                                _this.Telephones.push({
+                                     areacode:'86',
+                                    phone: dataTelephones[i]
+                                })
+                            } 
+                          
                         }
                     }
                 }
@@ -128,12 +141,14 @@ export default {
             }
             let _imgUpload = '/image/'+_this.imgUpload.split('/image/')[1];
         　　for (let i in this.Telephones){
+                var areacode = this.Telephones[i].areacode
             　　var str = this.Telephones[i].phone
                 if(_this.form.stoIsSms){
-                   if(!_this.phone(str)) return;
-                     _this.phone(str);
+                    if(!_this.phone(str)) return;
+                    _this.phone(str);
+                    arr.push(areacode+","+str);
                 }
-            　　arr.push(str);
+            　
         　　}
             arr = arr.join(";")
             let sto = {
@@ -192,6 +207,7 @@ export default {
             console.log(this.phone(tel),'aaaaa')
             if(this.phone(tel)){
                 let newA ={
+                    areacode:'86',
                     phone: ''
                 }
                 this.Telephones.push(newA);
@@ -216,10 +232,23 @@ export default {
         newImgData(value){
             this.imgUpload = value;
             console.log(value);
+        },
+        areaPhoneList(){//获取国家区号列表
+            let _this = this;
+            _this.ajaxRequest({
+                'url': DFshop.activeAPI.areaPhoneList_post,
+                'success':function (data){
+                if(data.data!=null){
+                    _this.areaPhones=data.data;
+                }
+                
+                }
+            });
         }
     },
     mounted() {
         this.editAjax();
+        this.areaPhoneList();
     },
 }
 </script>

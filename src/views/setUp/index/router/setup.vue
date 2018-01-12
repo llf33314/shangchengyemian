@@ -115,6 +115,9 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="接收申请审核手机 :" prop="checkSellerPhone"  v-if="form.set.isCheckSeller == 1 && form.set.isSeller == 1">
+         <el-select v-model="areacode" placeholder="国家区号"  style="width:110px;">
+            <el-option  v-for="item in areaPhones" :key="item.areacode" :label="item.country+'+'+item.areacode" :value="item.areacode"></el-option>
+          </el-select>
         <el-input v-model.number="form.set.checkSellerPhone" style="width:180px;"></el-input>
         <p class="p-warn">
           该手机号码用于接收申请成为超级销售员的信息，请填写正确号码。
@@ -159,7 +162,7 @@
         }
       };
       var formCheckSellerPhone = (rule, value, callback) => {
-        console.log(this.form.set.checkSellerPhone);
+        // console.log(this.form.set.checkSellerPhone);
         if (this.form.set.checkSellerPhone  == '' ||this.form.set.checkSellerPhone  == undefined) {
           return callback(new Error('接收申请审核手机不能为空'));
         } else if(!Lib.M.validPhone(this.form.set.checkSellerPhone)){
@@ -173,7 +176,32 @@
                 {"giveType":1,"giveStatus":"0","num":0,"isEnable":true},
                 {"giveType":1,"giveStatus":"-1","num":0,"isEnable":true}
         ],
-        form: '',
+        form:{
+          foorerObj:{},
+          set:{
+            isComment:1,
+            isDeliveryPay:1,
+            isTakeTheir:1,
+            isDaifu:1,
+            isCommentCheck:0,
+            isCommentGive:0,
+            isMessage:0,
+            isPresale:1,
+            isPresaleGive:1,
+            messageJson:'',
+            isSmsMember:1,
+            smsMessage:'',
+            isPf:1,
+            isPfCheck:1,
+            isSeller:1,
+            isCheckSeller:0,
+            footerJson:'',
+            orderCancel:30,
+            busMessageJson:'',
+            isFooter:1,
+            checkSellerPhone:''
+          }
+        } ,
         rules:{
            orderCancel:[
               { validator: formOrderCancel, trigger: 'blur,change'},
@@ -184,13 +212,15 @@
             checkSellerPhone: [
              { validator: formCheckSellerPhone, trigger: 'blur'},
             ],
-          
-        }
+        },
+        areaPhones:[],
+        areacode:'86',
       }
     },
     mounted(){
       this.mallPaySetPaySetInfo();
       this.mallCommentGiveInfo();
+      this.areaPhoneList();
     },
     methods: {
       //评论送礼验证
@@ -284,11 +314,14 @@
             let smsMsg = {};
             smsMsg[1] = this.$refs.form.model.paySuccessText;
             let param = paramsForm;
+            if(param.isSeller ==1 && param.isCheckSeller ==1){
+              param.checkSellerPhone=this.areacode+","+paramsForm.checkSellerPhone;
+            }
             let footerMenu = {};
-            footerMenu.home = Number(f.home);
-            footerMenu.group = Number(f.group);
-            footerMenu.cart = Number(f.cart);
-            footerMenu.my = Number(f.my);
+            footerMenu.home = Number(f.home)||0;
+            footerMenu.group = Number(f.group)||0;
+            footerMenu.cart = Number(f.cart)||0;
+            footerMenu.my = Number(f.my)||0;
             param.footerJson = footerMenu;
             param.smsMessage = JSON.stringify(smsMsg);
             param.messageJson = paramsForm.messageJson;
@@ -302,7 +335,8 @@
              //防止多次点击重复提交数据
             if(!Lib.C.ajax_manage) return false;
             Lib.C.ajax_manage = false;
-          
+            // console.log(param,"3232423");
+            // return false;
             _this.ajaxRequest({
               'url': DFshop.activeAPI.mallPaySetSave_post,
               'data':param,
@@ -319,14 +353,22 @@
       },
       mallPaySetPaySetInfo(){//获取设置信息
         let _this = this;
-        _this.form = '';
+        // _this.form = '';
         _this.ajaxRequest({
           'url': DFshop.activeAPI.mallPaySetPaySetInfo_post,
           'success':function (data){
-            _this.form = data.data;
-            if(data.data.foorerObj ==null){
-              _this.form.foorerObj={};
-            }else{
+            if(data.data.set != null){
+              _this.form = data.data;
+              if(_this.form.set.checkSellerPhone!=null){
+                let phone=_this.form.set.checkSellerPhone.split(",");
+                if(phone.length>1){
+                  _this.form.set.checkSellerPhone=phone[1];
+                  _this.areacode=phone[0];
+                } 
+              }
+            }
+ 
+            if(data.data.foorerObj !=null){
               _this.form.foorerObj.home = !!data.data.foorerObj.home;
               _this.form.foorerObj.group = !!data.data.foorerObj.group;
               _this.form.foorerObj.cart = !!data.data.foorerObj.cart;
@@ -347,6 +389,18 @@
                 e.isEnable=!!e.isEnable;
               })
               
+            }
+           
+          }
+        });
+      },
+      areaPhoneList(){//获取国家区号列表
+        let _this = this;
+        _this.ajaxRequest({
+          'url': DFshop.activeAPI.areaPhoneList_post,
+          'success':function (data){
+            if(data.data!=null){
+              _this.areaPhones=data.data;
             }
            
           }
