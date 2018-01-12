@@ -593,6 +593,7 @@ export default {
             'success':function (data){
                 _this.form = data.data;
                 //初始化处理数据
+                console.log(data.data,'data.data编辑')
                 _this.invenAdd(_this.form.invenList,_this.form.specList);
                 _this.changeSpac(_this.form.specList);
                 if(!_this.form.detail){
@@ -623,7 +624,12 @@ export default {
                     //流量包
                     _this.ajaxRequest({
                         'url': DFshop.activeAPI.mallFlowList_post,
+                        'data':{
+                            productId: _this.form.pro.id,
+                            flowId: _this.form.pro.flowId
+                        },
                         'success':function (data){
+                            console.log(data.data,'流量包数据')
                             _this.flowList = data.data;
                         }
                     });
@@ -1107,6 +1113,7 @@ export default {
   mounted(){
     if(this.$route.params.id === 'add'){
         this.form.imageList=[];
+        this.flowListAjax();
     }else{
         this.title = '编辑'
         this.goodsId = this.$route.params.id;
@@ -1123,7 +1130,6 @@ export default {
             }
         }
     })
-    this.flowListAjax();
   }
 }
 </script>
