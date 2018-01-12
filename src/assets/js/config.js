@@ -179,7 +179,8 @@
     mallCardReceiveList_post: '/mallIndex/E9lM9uM4ct/cardReceiveList',
     /*获取商家流量列表*/
     mallFlowList_post: '/mallIndex/E9lM9uM4ct/flowList',
-
+    /*同步商品 */
+    mallProductCopyProduct_post: '/mallProduct/E9lM9uM4ct/copyProduct',
 
     /*团购列表 */
     mallGroupBuyList_post: '/mallGroupBuy/E9lM9uM4ct/list',

@@ -177,7 +177,7 @@
       <div class="allcloneGoods-box" v-if="isCloneGoods==1">
           <el-form :model="allcloneForm" ref="cloneForm" label-width="100px" class="demo-ruleForm">
           <el-form-item label="来源店铺" prop="oldShop">
-           <el-select v-model="allcloneForm.oldShop" placeholder="请选择">
+           <el-select v-model="allcloneForm.shopId" placeholder="请选择">
               <el-option
                 v-for="item in shopList"
                 :key="item.id"
@@ -187,12 +187,13 @@
             </el-select>
           </el-form-item>
          <el-form-item label="目标店铺" prop="newShop">
-           <el-select v-model="allcloneForm.newShop" placeholder="请选择">
+           <el-select v-model="allcloneForm.toShopId" placeholder="请选择">
               <el-option
-                v-for="item in shopList"
+                v-for="item in shopList2"
                 :key="item.id"
                 :label="item.sto_name"
-                :value="item.id">
+                :value="item.id"
+                :disabled="item.disabled">
               </el-option>
             </el-select>
           </el-form-item>
@@ -201,27 +202,31 @@
       <!--同步商品-->
       <div class="cloneGoods-box" v-else>
         <el-form :model="cloneForm" ref="cloneForm" label-width="100px" class="demo-ruleForm">
-          <el-form-item label="选择店铺" prop="shop">
+          <el-form-item label="选择店铺" required>
            <el-select v-model="cloneForm.shopId" placeholder="请选择">
               <el-option
                 v-for="item in shopList"
                 :key="item.id"
                 :label="item.sto_name"
-                :value="item.id">
+                :value="item.id"
+                :disabled="item.disabled">
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="商品分组" required>
             <gt-cascader  :width="'200px'"
                           @change="groupselected"
+                          :ids="{
+                              shopId: cloneForm.shopId,
+                          }"
                           ref="cascader">
             </gt-cascader>
           </el-form-item>
         </el-form>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="cloneGoodsdialog = false">确 定</el-button>
-        <el-button @click="cloneGoodsdialog = false">取 消</el-button>
+        <el-button type="primary" @click="cloneGoodsAjax()">确 定</el-button>
+        <el-button @click="closeCloneGoods()">取 消</el-button>
       </span>
     </el-dialog>
   </div>
@@ -243,6 +248,7 @@ export default {
       isStatus:1,//0:未审核；1:已上架，2：未上架
       contentNo:'good',//没有数据显示
       shopList:'',
+      shopList2:'',//一键同步对比数据
       subList:[],//列表数据
       page:{},//页面数据
       ids:'',
@@ -259,9 +265,38 @@ export default {
       isCloneGoods:1,//1是一键同步商品，2是同步商品
       cloneForm:{},//同步商品,
       allcloneForm:{
-        oldShop:'',
-        newShop:'',
+        shopId:'',
+        toShopId:'',
       },//一键同步商品
+    }
+  },
+  watch: {
+    'allcloneForm.shopId'(a,b){
+      let _this = this;
+      let flag = true;
+      _this.shopList2.forEach((item,i)=>{
+        if(item.id == a && flag){
+          flag = false;
+          item.disabled = true;
+          if(i==0){
+            _this.allcloneForm.toShopId= _this.shopList2[i+1].id;
+          }else{
+            _this.allcloneForm.toShopId = _this.shopList2[0].id;
+          }
+        }else{
+          item.disabled = false;
+        }
+      })
+    },
+    'cloneGoodsdialog'(a){
+      if(a){
+         parent.window.postMessage("openMask()", "*");
+      }else{
+        parent.window.postMessage("closeMask()", "*");
+        this.shopList.forEach((item,i)=>{
+          item.disabled = false;
+        })
+      }
     }
   },
   methods: {
@@ -291,7 +326,8 @@ export default {
     },
     handleCurrentChange(val) {
       this.screenData.curPage = val;
-      this.mallProductList(this.screenData)
+      this.mallProductList(this.screenData);
+      $(window).scrollTop(0);
     },
     /** 
      * 商品类型筛选  选中 type 0全部  1上架商品   2未上架  3审核不通过
@@ -463,6 +499,15 @@ export default {
       _this.$root.$refs.dialogQR.showDialog(msg);//调用方法
     },
     /** 
+     * 关闭同步弹框
+     */
+    closeCloneGoods(){
+      this.cloneGoodsdialog = false;
+      this.isCloneGoods = '';
+      this.cloneForm = '';
+      this.$refs.cascader.resetForm();
+    },
+    /** 
      * 同步商品
      * @param goods 选中商品
      * @param type 1是一键同步商品，2是同步商品
@@ -472,8 +517,69 @@ export default {
       this.isCloneGoods = type;
       this.cloneGoodsdialog = true;
       this.cloneForm = goods;
-      console.log(goods,'goods')
-    }
+
+      let data={};
+      //店铺同步商品
+      if(type==1){
+
+      }else{
+        //单个商品
+        let flag = true;
+        _this.shopList.forEach((item,i)=>{
+            if(item.id == goods.shopId && flag){
+              flag = false;
+              item.disabled = true;
+              if(i==0){
+                _this.cloneForm.shopId = _this.shopList[i+1].id;
+              }else{
+                _this.cloneForm.shopId = _this.shopList[0].id;
+              }
+              return
+            }
+        })
+      }
+    },
+    /** 
+     * 同步商品请求
+     * @param type 1是一键同步商品，2是同步商品
+     */
+    cloneGoodsAjax(){
+      let _this = this;
+      //防止多次点击重复提交数据
+      if(!Lib.C.ajax_manage) return false;
+      Lib.C.ajax_manage = false;
+
+      let data={};
+      if(this.isCloneGoods==1){
+        //店铺同步商品
+        data= _this.allcloneForm;
+      }else{
+        //单个同步商品
+         data={
+          shopId: _this.cloneForm.shopId,   //店铺ID 
+          id: _this.cloneForm.id,     //商品ID
+          groupList:_this.cloneForm.groupList
+        }
+      }
+      console.log(data,'同步数据保存');
+       _this.ajaxRequest({
+        'url':DFshop.activeAPI.mallProductCopyProduct_post,
+        'data':_data,
+        'success':function (data){
+          _this.$message({
+            message: '同步成功',
+            type: 'success'
+          });
+        }
+      });
+    },
+    /** 
+     * 分组传值
+     */
+    groupselected(val){
+      this.cloneForm.groupList = val;
+    },
+    
   },
   mounted(){
     let _this = this;
@@ -482,8 +588,8 @@ export default {
     this.storeList({
       'success'(data){
         _this.shopList = data.data;
-        _this.allcloneForm.oldShop = data.data[0].id;
-        _this.allcloneForm.newShop = data.data[0].id;
+        _this.shopList2 = data.data;
+        _this.allcloneForm.shopId = data.data[0].id;
       }
     })
   },
