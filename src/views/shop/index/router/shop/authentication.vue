@@ -735,6 +735,9 @@ export default {
       if(_this.imgs.busLicenseImg){//营业执照
         _data.busLicenseImg = '/image'+_this.imgs.busLicenseImg.split("image")[1];      
       }
+      if(_this.imgs.certImgUrl){
+        _data.certImgUrl = '/image'+_this.imgs.certImgUrl.split("image")[1];      
+      }
       if(_this.imgs.tradeMarkImg != ''){
         _data.tradeMarkImg = '/image'+_this.imgs.tradeMarkImg.split("image")[1];
       }
@@ -748,17 +751,17 @@ export default {
             assType : 6 
           });
         })
-        _data.imageList = arr;
+        _data.imageList =JSON.stringify(arr);
       }
-      //console.log(_data,'提交认证数据');
-      
+      // console.log(_data,'提交认证数据');
+ 
       //防止多次点击重复提交数据
       if(!Lib.C.ajax_manage) return false;
       Lib.C.ajax_manage = false;
       
       _this.$refs[formName].validate((valid) => {
         if (valid) {
-          _this.ajaxRequest({
+          _this.ajaxRequestJQ({
             'url': DFshop.activeAPI.mallStoreCertSave_post,
             'data': _data,
              'success':function (data){
@@ -794,6 +797,10 @@ export default {
       this.imgs.idCardFront = '';//身份证正面
       this.imgs.idCardBack = '' ;//身份证反面
       this.$refs[formName].resetFields();
+      if(this.stoType ==1 && this.isMapOne == ''){
+        this.isMapOne = this.shoptypes1[0].item_key;
+      }
+       
     },
     /**
      * 调用素材库
