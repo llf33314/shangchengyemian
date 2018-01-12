@@ -17,6 +17,7 @@
         </div>
         <div class="shopInfo-button">
           <el-button type="primary" @click="jumpRouter('releaseGoods/add')">发布商品</el-button>
+          <el-button type="primary" @click="cloneGoods('',1)">一键同步</el-button>
         </div>
       </div>
     </div>
@@ -91,7 +92,7 @@
          </el-table-column>
         <el-table-column
           label="操作"
-          width="300">
+          width="400">
           <template scope="scope">
             <el-button  size="small" 
                         class="buttonBlue" 
@@ -104,6 +105,11 @@
                         v-if=" scope.row.checkStatus == 1 && scope.row.isPublish == 1 && scope.row.isGroup == 0 && scope.row.isSeckill == 0"
                          @click="mallProductBatchProduct(scope.row.id,4)">
                 下架
+            </el-button>
+            <el-button  size="small" 
+                        class="buttonBlue" 
+                        @click="cloneGoods(scope.row,2)">
+                同步商品
             </el-button>
             <!-- <el-button  size="small" 
                         class="buttonBlue" 
@@ -163,6 +169,61 @@
       
     </div>
     <contentNo :show="contentNo" v-if="count.status_total ==  0"></contentNo>
+    <el-dialog
+      :title="isCloneGoods==1?'一键同步商品':'同步商品'"
+      :visible.sync="cloneGoodsdialog"
+      size="tiny">
+      <!--一键同步商品-->
+      <div class="allcloneGoods-box" v-if="isCloneGoods==1">
+          <el-form :model="allcloneForm" ref="cloneForm" label-width="100px" class="demo-ruleForm">
+          <el-form-item label="来源店铺" prop="oldShop">
+           <el-select v-model="allcloneForm.oldShop" placeholder="请选择">
+              <el-option
+                v-for="item in shopList"
+                :key="item.id"
+                :label="item.sto_name"
+                :value="item.id">
+              </el-option>
+            </el-select>
+          </el-form-item>
+         <el-form-item label="目标店铺" prop="newShop">
+           <el-select v-model="allcloneForm.newShop" placeholder="请选择">
+              <el-option
+                v-for="item in shopList"
+                :key="item.id"
+                :label="item.sto_name"
+                :value="item.id">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+      </div>
+      <!--同步商品-->
+      <div class="cloneGoods-box" v-else>
+        <el-form :model="cloneForm" ref="cloneForm" label-width="100px" class="demo-ruleForm">
+          <el-form-item label="选择店铺" prop="shop">
+           <el-select v-model="cloneForm.shopId" placeholder="请选择">
+              <el-option
+                v-for="item in shopList"
+                :key="item.id"
+                :label="item.sto_name"
+                :value="item.id">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="商品分组" required>
+            <gt-cascader  :width="'200px'"
+                          @change="groupselected"
+                          ref="cascader">
+            </gt-cascader>
+          </el-form-item>
+        </el-form>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="cloneGoodsdialog = false">确 定</el-button>
+        <el-button @click="cloneGoodsdialog = false">取 消</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -171,9 +232,10 @@
 import Lib from 'assets/js/Lib';
 import defaultImg from 'components/defaultImg';
 import contentNo from 'components/contentNo';
+import gtCascader from '../../../goods/index/router/mygoods/components/cascader';//多选分类多级联动下拉框
 export default {
   components: {
-    defaultImg,contentNo
+    defaultImg,contentNo,gtCascader
   },
    data() {
     return {
@@ -192,7 +254,14 @@ export default {
         proType: 0,  //商品名称0全部  1上架商品   2未上架  3审核不通过
         shopId : '',  //店铺ID
         proName: ''   //商品名称
-      }
+      },
+      cloneGoodsdialog:false,//同步商品弹出框
+      isCloneGoods:1,//1是一键同步商品，2是同步商品
+      cloneForm:{},//同步商品,
+      allcloneForm:{
+        oldShop:'',
+        newShop:'',
+      },//一键同步商品
     }
   },
   methods: {
@@ -392,6 +461,18 @@ export default {
         pageLink: _pageLink//页面链接
       };
       _this.$root.$refs.dialogQR.showDialog(msg);//调用方法
+    },
+    /** 
+     * 同步商品
+     * @param goods 选中商品
+     * @param type 1是一键同步商品，2是同步商品
+     */
+    cloneGoods(goods,type){
+      let _this = this;
+      this.isCloneGoods = type;
+      this.cloneGoodsdialog = true;
+      this.cloneForm = goods;
+      console.log(goods,'goods')
     }
   },
   mounted(){
@@ -401,12 +482,16 @@ export default {
     this.storeList({
       'success'(data){
         _this.shopList = data.data;
+        _this.allcloneForm.oldShop = data.data[0].id;
+        _this.allcloneForm.newShop = data.data[0].id;
       }
     })
   },
 }
 </script>
 
-<style lang="less">
-
+<style lang="less" scoped>
+.cloneGoods-box{
+  height: 300px;
+}
 </style>

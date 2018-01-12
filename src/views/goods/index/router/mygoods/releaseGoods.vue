@@ -47,7 +47,7 @@
                                 <el-radio :label="1" class="item-radio">虚拟商品（非会员卡，无需物流）</el-radio>
                                 <el-radio :label="2" class="item-radio">虚拟商品（会员卡，无需物流）</el-radio>
                                 <el-radio :label="3" class="item-radio">虚拟商品（卡券包，无需物流）</el-radio>
-                                <el-radio :label="4" class="item-radio">虚拟商品（流量包，无需物流）</el-radio>
+                                <el-radio :label="4" class="item-radio" v-if="isFlowList">虚拟商品（流量包，无需物流）</el-radio>
                             </el-radio-group>
                         </el-form-item>
                         <el-form-item 
@@ -469,6 +469,7 @@ export default {
         cardReceiveList:[],//卡券包列表
         cardReceiveItem:{},//卡卷包选择模块
         flowList:[],//流量包列表
+        isFlowList:true,//流量包显示
         webPath:'',//手机端域名
 
         editorOption:{}//编辑器参数
@@ -592,6 +593,7 @@ export default {
             'success':function (data){
                 _this.form = data.data;
                 //初始化处理数据
+                console.log(data.data,'data.data编辑')
                 _this.invenAdd(_this.form.invenList,_this.form.specList);
                 _this.changeSpac(_this.form.specList);
                 if(!_this.form.detail){
@@ -622,7 +624,12 @@ export default {
                     //流量包
                     _this.ajaxRequest({
                         'url': DFshop.activeAPI.mallFlowList_post,
+                        'data':{
+                            productId: _this.form.pro.id,
+                            flowId: _this.form.pro.flowId
+                        },
                         'success':function (data){
+                            console.log(data.data,'流量包数据')
                             _this.flowList = data.data;
                         }
                     });
@@ -858,27 +865,9 @@ export default {
             }
         }else if(type == 4){
         //流量包
-            if(this.flowList == ''){
-                _this.ajaxRequest({
-                    'url': DFshop.activeAPI.mallFlowList_post,
-                    'success':function (data){
-                        if(data.data.length == 0){
-                            _this.$message({
-                                message: '暂无流量包，请选择其他选项',
-                                type: 'warning'
-                            });
-                            _this.form.pro.proTypeId = 0;
-                            return false;
-                        }
-                        _this.flowList = data.data;
-                        _this.$nextTick(()=>{
-                            _this.$set(_this.form.pro,'flowId',data.data[0].id);
-                            _this.$set(_this.form.pro,'cardType',null);
-                            _this.$set(_this.form.pro,'memberType',null);
-                        })
-                    }
-                });
-            }
+            _this.$set(_this.form.pro,'cardType',_this.flowList[0].id);
+            _this.$set(_this.form.pro,'cardType',null);
+            _this.$set(_this.form.pro,'memberType',null);
         }
     },
     /** 
@@ -1102,12 +1091,29 @@ export default {
             parent.parent.window.postMessage("closeMask()", "*");
           //取消
         }) 
+    },
+    /** 
+     * 流量包请求
+     */
+    flowListAjax(){
+        let _this = this;
+        _this.ajaxRequest({
+            'url': DFshop.activeAPI.mallFlowList_post,
+            'success':function (data){
+                if(data.data.length == 0){
+                    _this.isFlowList = false;
+                    return false;
+                }
+                _this.flowList = data.data;
+            }
+        });
 
-      },
+    }
   },
   mounted(){
     if(this.$route.params.id === 'add'){
         this.form.imageList=[];
+        this.flowListAjax();
     }else{
         this.title = '编辑'
         this.goodsId = this.$route.params.id;
@@ -1124,7 +1130,6 @@ export default {
             }
         }
     })
-    
   }
 }
 </script>
