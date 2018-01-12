@@ -114,7 +114,7 @@ jQuery.fn.extend({
 			str = str.replace(/</g,'<；'); 
 			str = str.replace(/>/g,'>；'); 
 			str = str.replace(/>/g,'<；br/>'); 
-			str = str.replace(/\[em_([0-9]*)]/g,'<img src="'+DFshop.face+'$1.gif" border="0" style="width:24px;higth:24px;vertical-align: text-top"/>'); 
+			str = str.replace(/\[em_([0-9]*)]/g,'<img src="'+DFshop.face+'$1.gif" border="0" style="width:24px;vertical-align: text-top"/>'); 
 			return str; 
 		}
 	},

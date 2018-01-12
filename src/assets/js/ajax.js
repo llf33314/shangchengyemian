@@ -118,11 +118,7 @@ Vue.mixin({
         groupListAjax(opt){
             this.ajaxRequest({
                 'url': DFshop.activeAPI.mallProductGetGroups_post,
-                'data':{
-                    shopId: opt.shopId,
-                    proId: opt.proId,
-                    groups: opt.groups,
-                },
+                'data': opt.data,
                 'success':function (data){
                     if(typeof opt.success == 'function') opt.success(data);
                 }

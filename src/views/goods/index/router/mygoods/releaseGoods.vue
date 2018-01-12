@@ -25,7 +25,7 @@
                             <el-option
                                 v-for="item in shopList"
                                 :key="item.id"
-                                :label="item.address"
+                                :label="item.sto_name"
                                 :value="item.id">
                                 </el-option>
                             </el-select>
@@ -34,6 +34,9 @@
                             <gt-cascader    :width="'200px'"
                                             @change="groupselected"
                                             :value="form.proGroupList"
+                                            :ids="{
+                                               shopId: form.pro.shopId
+                                            }"
                                             ref="cascader">
                             </gt-cascader>
                             <router-link to="/grouping">
@@ -364,7 +367,7 @@
         <el-button type="primary" v-if="active == 2">保存</el-button>
         <el-button type="primary" v-if="active == 2" @click="changeData(2)">预览</el-button>
         <el-button style="margin-top: 12px;" v-if="active == 1 " @click="window.history.go(-1)">返回</el-button>
-        <el-button style="margin-top: 12px;" v-if="active == 2 " @click=" active=1 ">返回</el-button>
+        <el-button style="margin-top: 12px;" v-if="active == 2 " @click=" active=1">返回</el-button>
         <div class="shop-textc" v-if="active == 3" >
             <el-button type="primary" @click="to_add()">继续添加</el-button>
             <router-link to='/mygoods'>
@@ -596,8 +599,8 @@ export default {
                 console.log(data.data,'data.data编辑')
                 _this.invenAdd(_this.form.invenList,_this.form.specList);
                 _this.changeSpac(_this.form.specList);
-                if(!_this.form.detail){
-                    _this.form.detail={
+                if(typeof _this.form.detail == 'undefined'){
+                    _this.form.proDetail = {
                         productDetail: null,        //商品详情
                         productIntrodu: null,       //商品简介 
                         productMessage: null,           //商品信息
