@@ -176,7 +176,7 @@
       <!--一键同步商品-->
       <div class="allcloneGoods-box" v-if="isCloneGoods==1">
           <el-form :model="allcloneForm" ref="cloneForm" label-width="100px" class="demo-ruleForm">
-          <el-form-item label="来源店铺" prop="oldShop">
+          <el-form-item label="来源店铺" >
            <el-select v-model="allcloneForm.shopId" placeholder="请选择">
               <el-option
                 v-for="item in shopList"
@@ -186,7 +186,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-         <el-form-item label="目标店铺" prop="newShop">
+         <el-form-item label="目标店铺" >
            <el-select v-model="allcloneForm.toShopId" placeholder="请选择">
               <el-option
                 v-for="item in shopList2"
@@ -504,7 +504,7 @@ export default {
     closeCloneGoods(){
       this.cloneGoodsdialog = false;
       this.isCloneGoods = '';
-      this.cloneForm = '';
+      this.cloneForm = {};
       this.$refs.cascader.resetForm();
     },
     /** 
@@ -555,16 +555,17 @@ export default {
         data= _this.allcloneForm;
       }else{
         //单个同步商品
-         data={
+        data={
           shopId: _this.cloneForm.shopId,   //店铺ID 
           id: _this.cloneForm.id,     //商品ID
           groupList:_this.cloneForm.groupList
         }
+        if(!_this.$refs.cascader.submitForm()) return false;
       }
       console.log(data,'同步数据保存');
        _this.ajaxRequest({
         'url':DFshop.activeAPI.mallProductCopyProduct_post,
-        'data':_data,
+        'data':data,
         'success':function (data){
           _this.$message({
             message: '同步成功',

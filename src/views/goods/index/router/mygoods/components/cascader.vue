@@ -100,11 +100,14 @@ export default {
         'ids'(a,b){
             let _this = this;
             if(a.shopId==b.shopId) return false;
+            
             _this.groupListAjax({
                 'data':a,
                 'success'(data) {
                     _this.oneData = data.data.groupList;
-                    _this.selectedData = [];
+                     if(_this.$route.params.id === 'add' || typeof _this.$route.params.id == 'undefined'){
+                        _this.selectedData = []; 
+                     }
                 }
             })
         }

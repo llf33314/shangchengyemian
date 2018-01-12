@@ -253,7 +253,7 @@
                                 <span class="fontBlue" @click="addLogistics">新建</span>
                             </div>
                         </el-form-item>
-                        <el-form-item label="物流重量 :" v-if=" form.pro.proFreightSet == 2 && form.invenList.length>0">
+                        <el-form-item label="物流重量 :" v-if=" form.pro.proFreightSet == 2 && form.invenList.length>0 &&logisticsList.length>0">
                             <tableList :specList="form.specList" :invenList="form.invenList" :type="'logisticsList'"
                                         ref="logisticsForm"></tableList>
                         </el-form-item>
@@ -640,18 +640,21 @@ export default {
 
                 //物流
                 if(_this.form.pro.proFreightSet  == 2){
-                    _this.ajaxRequest({
-                        'url': DFshop.activeAPI.mallFreightGetFreightByShopId_post,
-                        'data':{
-                            shopId: _this.form.pro.shopId
-                        },
-                        'success':function (data){
-                            _this.logisticsList = data.data;
-                            _this.form.pro.proFreightTempId = data.data.id;
-                            
-                        }
-                    });
+                    _this.freightAjax(_this.form.pro.shopId)
                 }
+                // if(_this.form.pro.proFreightSet  == 2){
+                //     _this.ajaxRequest({
+                //         'url': DFshop.activeAPI.mallFreightGetFreightByShopId_post,
+                //         'data':{
+                //             shopId: _this.form.pro.shopId
+                //         },
+                //         'success':function (data){
+                //             _this.logisticsList = data.data;
+                //             _this.form.pro.proFreightTempId = data.data.id;
+                            
+                //         }
+                //     });
+                // }
             }
         });
     },
@@ -824,6 +827,7 @@ export default {
      */
     groupselected(data){
         this.form.proGroupList = data;
+        console.log(data,'proGroupList')
     },
     /** 
      * 修改商品类型
@@ -994,6 +998,10 @@ export default {
     proFreightSet(e){
         if(e==2){
             //物流模板id默认
+            if(this.logisticsList.length==0  && (this.form.pro.proFreightTempId == 0 || this.form.pro.proFreightTempId == null)){
+                this.$message.error('没有运费模板，请新增');
+                return
+            }
             this.form.pro.proFreightTempId = this.logisticsList.id;
             this.form.pro.proFreightPrice = null;
         }else{
@@ -1001,7 +1009,7 @@ export default {
         }
     },
     /** 
-     * 表单验证清楚
+     * 表单验证重置
      */
     resetForm(formName) {
         this.$refs[formName].resetFields();
@@ -1039,12 +1047,17 @@ export default {
             });
         }
         let _this = this;
+        
         _this.ajaxRequest({
             'url': DFshop.activeAPI.mallFreightGetFreightByShopId_post,
             'data':{
                 shopId: _this.form.pro.shopId
             },
             'success':function (data){
+                if(typeof data.data == 'undefined'){
+                    _this.logisticsList = [];
+                    return
+                }
                 _this.logisticsList = data.data;
                 if(_this.form.pro.proFreightSet == 1) {
                    _this.form.pro.proFreightTempId = null;
