@@ -48,6 +48,10 @@ export default {
         value:{
             type: [Array,String],
             default:'0'
+        },
+        ids:{
+            type: [Object,String],
+            default: '0'
         }
     },
     data() {
@@ -92,6 +96,17 @@ export default {
         'value'(a,b){
             if(a.length == b.length) return false;
             this.initialValue(a);
+        },
+        'ids'(a,b){
+            let _this = this;
+            if(a.shopId==b.shopId) return false;
+            _this.groupListAjax({
+                'data':a,
+                'success'(data) {
+                    _this.oneData = data.data.groupList;
+                    _this.selectedData = [];
+                }
+            })
         }
     },
     methods:{
@@ -199,17 +214,26 @@ export default {
             });
             return flag;
         },
+        /** 
+         * 重置
+         */
+        resetForm() {
+            this.$refs.ruleForm.resetFields();
+        }
     },
     mounted() {
         let _this = this;
         if(_this.value != '0'){
             _this.initialValue(_this.value);
         }
-        _this.groupListAjax({
-            'success'(data) {
-                _this.oneData = data.data.groupList;
-            }
-        })
+        if(_this.ids.shopId != ''){
+            _this.groupListAjax({
+                'data':_this.ids,
+                'success'(data) {
+                    _this.oneData = data.data.groupList;
+                }
+            })
+        }
         $('body').on('click',()=>{
             this.isShow = false;
             this.isSelect = false;

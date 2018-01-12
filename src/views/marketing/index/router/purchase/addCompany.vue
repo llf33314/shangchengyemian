@@ -14,7 +14,7 @@
                   <el-input v-model.trim="ruleForm.companyName" placeholder="请输入公司名称" class="max-input" ></el-input>
               </el-form-item>
               <el-form-item label="公司电话 :" prop="companyTel">
-                  <el-input v-model.trim="ruleForm.companyTel" placeholder="请输入公司官网" class="max-input" ></el-input>
+                  <el-input v-model.trim="ruleForm.companyTel" placeholder="请输入公司电话" class="max-input" ></el-input>
               </el-form-item>
               <el-form-item label="公司官网 :" prop="companyInternet">
                   <el-input v-model.trim="ruleForm.companyInternet" placeholder="请输入公司官网" class="max-input" ></el-input>

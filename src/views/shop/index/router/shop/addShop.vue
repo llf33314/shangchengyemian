@@ -58,14 +58,12 @@
           </el-form-item>
           <el-form-item label="推送手机 :"
                     v-if="stoIsSms==1">
-            <div class="telephone-box">
-                <div class="telephone-list" 
-                        v-for="(Telephone,index) in Telephones"
-                        :key="index">
-                    <el-input   class="el-telephone"
-                                v-model="Telephone.phone" 
-                                placeholder="请输入推送手机">
-                    </el-input>
+            <div class="telephone-box">   
+                <div class="telephone-list"  v-for="(Telephone,index) in Telephones" :key="index">
+                    <el-select v-model="Telephone.areacode" placeholder="国家区号"  style="width:80px;">
+                      <el-option  v-for="item in areaPhones" :key="item.areacode" :label="item.country+'+'+item.areacode" :value="item.areacode"></el-option>
+                    </el-select>
+                    <el-input class="el-telephone" v-model="Telephone.phone" placeholder="请输入推送手机"> </el-input>
                     <i class="el-i el-icon-circle-cross" v-show=" Telephones.length>1" @click="deleteTelephone(index,Telephones)"></i>
                     <a class="fontBlue" v-if="Telephones.length === index+1 &&Telephones.length < 5" @click="addTelephone(Telephone.phone)">新增</a>
                 </div>
@@ -118,9 +116,11 @@ export default {
        form:{},
        stoIsSms: false,
        Telephones:[{
+            areacode:'86',
             phone:''
         }],
-      addshopImg:''
+      addshopImg:'',
+      areaPhones:[],
     }
   },
   watch:{
@@ -209,12 +209,14 @@ export default {
       }
       let arr = [ ];
   　　for (let i in this.Telephones){
+    　    var areacode = this.Telephones[i].areacode
       　　var str = this.Telephones[i].phone
           if(_this.stoIsSms){
             if(!_this.phone(str)) return;
               _this.phone(str);
+              arr.push(areacode+","+str);
           }
-      　　arr.push(str);
+      　
   　　}
       arr = arr.join(";")
       let sto = {
@@ -230,7 +232,8 @@ export default {
           stoSmsTelephone: arr||'', 
           stoQqCustomer: _this.form.stoQqCustomer||''
       }
-
+        // console.log(sto,"11111");
+        // return false;
       //防止多次点击重复提交数据
       if(!Lib.C.ajax_manage) return false;
       Lib.C.ajax_manage = false;
@@ -272,6 +275,7 @@ export default {
     addTelephone(tel){
         if(this.phone(tel)){
             let newA ={
+                areacode: '86',
                 phone: ''
             }
             this.Telephones.push(newA);
@@ -288,11 +292,24 @@ export default {
     */
     newImgData(value){
       this.addshopImg = value;
+    },
+    areaPhoneList(){//获取国家区号列表
+      let _this = this;
+      _this.ajaxRequest({
+        'url': DFshop.activeAPI.areaPhoneList_post,
+        'success':function (data){
+          if(data.data!=null){
+            _this.areaPhones=data.data;
+          }
+          
+        }
+      });
     }
   },
   mounted() {
     this.isMaterialUrl();
     this.shopAjax();
+    this.areaPhoneList();
   },
 }
 </script>
