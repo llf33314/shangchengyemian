@@ -41,6 +41,8 @@
     wxShopInfo_post: '/mallIndex/E9lM9uM4ct/shopInfo',
     /*获取主门店信息*/
     selectMainShop_post: '/mallIndex/E9lM9uM4ct/selectMainShop',
+    /*获取所有国家区号列表*/
+    areaPhoneList_post: '/mallIndex/E9lM9uM4ct/areaPhoneList',
     /**
      * 店铺管理相关接口
      */
