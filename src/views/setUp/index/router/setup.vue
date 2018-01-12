@@ -324,12 +324,15 @@
           'url': DFshop.activeAPI.mallPaySetPaySetInfo_post,
           'success':function (data){
             _this.form = data.data;
-            
-            _this.form.foorerObj.home = !!data.data.foorerObj.home;
-            _this.form.foorerObj.group = !!data.data.foorerObj.group;
-            _this.form.foorerObj.cart = !!data.data.foorerObj.cart;
-            _this.form.foorerObj.my = !!data.data.foorerObj.my;
-            console.log(_this.form);
+            if(data.data.foorerObj ==null){
+              _this.form.foorerObj={};
+            }else{
+              _this.form.foorerObj.home = !!data.data.foorerObj.home;
+              _this.form.foorerObj.group = !!data.data.foorerObj.group;
+              _this.form.foorerObj.cart = !!data.data.foorerObj.cart;
+              _this.form.foorerObj.my = !!data.data.foorerObj.my;
+            }
+            // console.log(_this.form);
           }
         });
       },
