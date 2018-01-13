@@ -169,7 +169,7 @@ export default {
         width: 820, //宽度
         height: 500, //高度
         lockScroll: false, //弹出框后是否锁定滚动轴
-        closeOnClickModal: false, //点击遮罩是否关闭
+        closeOnClickModal: ture, //点击遮罩是否关闭
         closeOnPressEscape: false
       }).then(function (val) {
         _this.ruleForm.imageUrl =val[0].url;

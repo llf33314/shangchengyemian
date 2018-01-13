@@ -125,12 +125,13 @@ export default {
     },
     watch: {
         'row'(a,b){
+            debugger
             this.specList = a;
         },
     },
     mounted() {
         let _this = this;
-        if(this.row != '0'){
+        if(this.row != '0' && this.row.length>0){
             this.specList = this.row;
             this.specList[0].specValues.forEach((item,i) => {
                 if(item.specImage != null){

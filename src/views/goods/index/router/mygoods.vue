@@ -358,8 +358,10 @@ export default {
      * @param name  商品名字
     */
     search_goods(name){
-      this.screenData.curPage = 1;
-      this.mallProductList(this.screenData);
+      if(name != 'undefined ' ){
+        this.screenData.curPage = 1;
+        this.mallProductList(this.screenData);
+      }
     },
     /**
      * 商品列表 
@@ -562,7 +564,6 @@ export default {
         }
         if(!_this.$refs.cascader.submitForm()) return false;
       }
-      console.log(data,'同步数据保存');
        _this.ajaxRequest({
         'url':DFshop.activeAPI.mallProductCopyProduct_post,
         'data':data,
@@ -571,6 +572,7 @@ export default {
             message: '同步成功',
             type: 'success'
           });
+          _this.closeCloneGoods()
         }
       });
     },

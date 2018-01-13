@@ -366,7 +366,7 @@
         <el-button style="margin-top: 12px;" @click="next()" v-if="active == 1">下一步</el-button>
         <el-button type="primary" v-if="active == 2">保存</el-button>
         <el-button type="primary" v-if="active == 2" @click="changeData(2)">预览</el-button>
-        <el-button style="margin-top: 12px;" v-if="active == 1 " @click="window.history.go(-1)">返回</el-button>
+        <el-button style="margin-top: 12px;" v-if="active == 1 " @click="back_go()">返回</el-button>
         <el-button style="margin-top: 12px;" v-if="active == 2 " @click=" active=1">返回</el-button>
         <div class="shop-textc" v-if="active == 3" >
             <el-button type="primary" @click="to_add()">继续添加</el-button>
@@ -495,6 +495,9 @@ export default {
       }
   },
   methods: {
+      back_go(){
+          window.history.go(-1);
+      },
     /**
       下一页跳转
      */
@@ -596,7 +599,6 @@ export default {
             'success':function (data){
                 _this.form = data.data;
                 //初始化处理数据
-                console.log(data.data,'data.data编辑')
                 _this.invenAdd(_this.form.invenList,_this.form.specList);
                 _this.changeSpac(_this.form.specList);
                 if(typeof _this.form.detail == 'undefined'){
@@ -632,7 +634,6 @@ export default {
                             flowId: _this.form.pro.flowId
                         },
                         'success':function (data){
-                            console.log(data.data,'流量包数据')
                             _this.flowList = data.data;
                         }
                     });
@@ -787,26 +788,27 @@ export default {
             })
         }
         let specList=[];
-        _this.form.specList.forEach((item,i)=>{
-            item.specValues.forEach((test,j)=>{
-                let _item ={
-                    productId: item.productId || null,
-                    specificaNameId: item.specNameId,
-                    specificaName: item.specName,
-                    specificaImgUrl: test.newSpecImage == null?null:'image'+test.newSpecImage.split('/image')[1],
-                    specificaValue: test.specValue,
-                    specificaValueId: test.specValueId
-                }
-                specList.push(_item);
+        if(typeof _this.form.specList != 'undefined'){
+            _this.form.specList.forEach((item,i)=>{
+                item.specValues.forEach((test,j)=>{
+                    let _item ={
+                        productId: item.productId || null,
+                        specificaNameId: item.specNameId,
+                        specificaName: item.specName,
+                        specificaImgUrl: test.newSpecImage == null?null:'image'+test.newSpecImage.split('/image')[1],
+                        specificaValue: test.specValue,
+                        specificaValueId: test.specValueId
+                    }
+                    specList.push(_item);
+                })
             })
-        })
-
+        }
         let  data={
             product:_this.form.pro,
             imageList: JSON.stringify(imageList),
             groupList:JSON.stringify(this.form.proGroupList),
             detail:JSON.stringify(this.form.proDetail),
-            speList:JSON.stringify(specList),
+            speList:specList.length==0?null:JSON.stringify(specList),
             invenList:_this.form.invenList.length> 0?JSON.stringify(_this.form.invenList):null,
             paramsList:JSON.stringify(_this.form.paramList),
         };

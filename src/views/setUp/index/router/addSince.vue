@@ -8,7 +8,7 @@
     </el-breadcrumb>
   </div>
   <div class="addLogistics-main">
-  <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="135px" class="demo-ruleForm">
+  <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="190px" class="demo-ruleForm">
     <el-form-item label="自提点名称 :" prop="visitName">
       <el-input v-model.trim="ruleForm.visitName" placeholder="请输入自提点名称" class="add-input"></el-input>
     </el-form-item>
@@ -201,7 +201,7 @@ export default {
         width: 820, //宽度
         height: 500, //高度
         lockScroll: false, //弹出框后是否锁定滚动轴
-        closeOnClickModal: false, //点击遮罩是否关闭
+        closeOnClickModal: true, //点击遮罩是否关闭
         closeOnPressEscape: false
       }).then(function (val) {
           let _add = true;//重复排除条件

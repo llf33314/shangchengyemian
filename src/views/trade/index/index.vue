@@ -42,7 +42,8 @@
                 <el-input v-model.trim="searchData.orderNo" placeholder="订单号"></el-input>
               </el-form-item>
               <el-form-item label="订单状态 :">
-                <el-select v-model="searchData.status" placeholder="全部">
+                <!--todo 选中了状态 没有点击筛选 再点下一页 列表数据是筛选选的状态列表-->
+                <el-select v-model="searchData.status" placeholder="全部" >
                   <el-option label="全部" value="0"></el-option>
                   <el-option label="成功" value="1"></el-option>
                   <el-option label="进行中" value="2"></el-option>

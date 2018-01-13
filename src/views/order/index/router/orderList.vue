@@ -111,6 +111,7 @@
               </el-form-item>
             </el-form-item >
           </div>
+           <!--todo 选中了状态 没有点击筛选 再点下一页 列表数据是筛选选的状态列表-->
             <el-button type="primary" @click="search()">筛选</el-button>
             <el-button type="primary" @click="exportTrade()">批量导出</el-button>
             <a v-if="videourl != '' &&videourl != undefined" :href="videourl">
