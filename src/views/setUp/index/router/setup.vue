@@ -162,7 +162,6 @@
         }
       };
       var formCheckSellerPhone = (rule, value, callback) => {
-        console.log(this.form.set.checkSellerPhone,"32423432");
         if (this.form.set.checkSellerPhone  == "" ||this.form.set.checkSellerPhone  == undefined) {
           return callback(new Error('接收申请审核手机不能为空'));
         } else if(!Lib.M.validPhone(this.form.set.checkSellerPhone)){
@@ -211,7 +210,6 @@
             ],
             checkSellerPhone: [
               { validator: formCheckSellerPhone, trigger: 'blur,change'},
-             
             ],
         },
         areaPhones:[],
@@ -332,8 +330,7 @@
              if(_this.form.set.isComment == 1 && _this.form.set.isCommentGive == 1){
               _this.saveGive(2);
              }
-             console.log("提交 ");
-              return false;
+
              //防止多次点击重复提交数据
             if(!Lib.C.ajax_manage) return false;
             Lib.C.ajax_manage = false;
