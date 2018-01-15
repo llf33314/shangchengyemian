@@ -97,19 +97,16 @@
             <el-button  size="small" 
                         class="buttonBlue" 
                         v-if=" scope.row.checkStatus == 1 && scope.row.isPublish != 1 && scope.row.isGroup == 0 && scope.row.isSeckill == 0 "
-                        @click="mallProductBatchProduct(scope.row.id,3)">
-                上架
+                        @click="mallProductBatchProduct(scope.row.id,3)">上架
             </el-button>
             <el-button  size="small" 
                         class="buttonBlue" 
                         v-if=" scope.row.checkStatus == 1 && scope.row.isPublish == 1 && scope.row.isGroup == 0 && scope.row.isSeckill == 0"
-                         @click="mallProductBatchProduct(scope.row.id,4)">
-                下架
+                         @click="mallProductBatchProduct(scope.row.id,4)">下架
             </el-button>
             <el-button  size="small" 
                         class="buttonBlue" 
-                        @click="cloneGoods(scope.row,2)">
-                同步商品
+                        @click="cloneGoods(scope.row,2)">同步商品
             </el-button>
             <!-- <el-button  size="small" 
                         class="buttonBlue" 
@@ -120,25 +117,21 @@
             <el-button  size="small" 
                         class="buttonBlue" 
                         v-if=" scope.row.checkStatus == 1 && scope.row.isPublish == 1"
-                        @click="shopQR(scope.row,1)">
-              链接
+                        @click="shopQR(scope.row,1)">链接
             </el-button>
             <el-button  size="small" 
                         class="buttonBlue" 
                         v-if="scope.row.checkStatus != 0 && scope.row.isSeckill != 1"
-                        @click="jumpRouter('releaseGoods/'+scope.row.id)">
-              编辑
+                        @click="jumpRouter('releaseGoods/'+scope.row.id)">编辑
             </el-button>
             <el-button  size="small" 
                         class="buttonBlue" 
                         v-if=" scope.row.checkStatus == 1 && scope.row.isPublish == 1"
-                        @click="shopQR(scope.row,2)">
-              到店购买
+                        @click="shopQR(scope.row,2)">到店购买
             </el-button>
             <el-button  size="small" 
                         v-if=" scope.row.isPublish !=1 && scope.row.isGroup != 1 && scope.row.isSeckill != 1" 
-                        @click="mallProductBatchProduct(scope.row.id,1)">
-              删除
+                        @click="mallProductBatchProduct(scope.row.id,1)">删除
             </el-button>
           </template>
         </el-table-column>

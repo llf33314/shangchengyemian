@@ -53,30 +53,25 @@
               size="small"
               class="buttonBlue"
               v-if="scope.row.lDelete==null ||scope.row.lDelete"
-              @click="recommend(scope.row)">
-              搜索推荐
+              @click="recommend(scope.row)">搜索推荐
             </el-button>
             <el-button  
               size="small"
               class="buttonBlue"
               @click="recommend(scope.row)"
-              v-else>
-              取消推荐
+              v-else>取消推荐
             </el-button>
             <el-button  
               size="small"
               class="buttonBlue"
-              @click="jumpRouter('childlist/'+scope.row.id)">
-              子类列表
+              @click="jumpRouter('childlist/'+scope.row.id)">子类列表
             </el-button>
             <el-button 
               class="buttonBlue"
-              size="small" @click="jumpRouter('addGroup/edit/'+scope.row.id)">
-              编辑
+              size="small" @click="jumpRouter('addGroup/edit/'+scope.row.id)">编辑
             </el-button>
             <el-button  
-              size="small" @click="handleDelete(scope.row.id)">
-              删除
+              size="small" @click="handleDelete(scope.row.id)">删除
             </el-button>
           </template>
         </el-table-column>
