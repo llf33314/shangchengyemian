@@ -69,10 +69,10 @@
                             @click="shopLink(scope.row)">
                             链接
                 </el-button>
-                <el-button  size="small"
+                <!-- <el-button  size="small"
                             class="buttonBlue"
                             @click="authentication(scope.row.certId,scope.row)"
-                >认证</el-button>
+                >认证</el-button> -->
                 <el-button  size="small"
                 @click="handleDelete(scope.row.id,'shop')">删除</el-button>
               </template>

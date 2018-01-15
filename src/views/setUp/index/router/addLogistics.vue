@@ -237,7 +237,7 @@ export default {
     };
     //验证公司名称
     var formExpress = (rule, value, callback) => {
-      if (this.ruleForm.express == null) {
+      if (this.ruleForm.expressId == "") {
         return callback(new Error("请选快递公司"));
       } else {
         callback();
@@ -311,7 +311,7 @@ export default {
       rules: {
         name: [{ validator: formName, trigger: "blur" }],
         expressId: [
-          { type: "object", validator: formExpress, trigger: "change" }
+          { type: "object", validator: formExpress, trigger: "change,blur" }
         ],
         shopId: [
           {
@@ -589,9 +589,9 @@ export default {
         url: DFshop.activeAPI.mallFreightExpressList_post,
         success: function(data) {
           _this.options = data.data;
-          let express = _this.ruleForm.express;
-          if (express == "") {
-            _this.ruleForm.express = _this.options[0].item_key;
+          let expressId = _this.ruleForm.expressId;
+          if (expressId == "") {
+            _this.ruleForm.expressId = _this.options[0].item_key;
           }
         }
       });
