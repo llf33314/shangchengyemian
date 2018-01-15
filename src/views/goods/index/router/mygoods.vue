@@ -560,7 +560,7 @@ export default {
         data={
           shopId: _this.cloneForm.shopId,   //店铺ID 
           id: _this.cloneForm.id,     //商品ID
-          groupList:_this.cloneForm.groupList
+          groupList:JSON.stringify(_this.cloneForm.groupList)
         }
         if(!_this.$refs.cascader.submitForm()) return false;
       }

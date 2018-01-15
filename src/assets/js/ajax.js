@@ -288,11 +288,11 @@ Vue.mixin({
 
         }).catch(function (error) {
             C.ajax_manage = true;
-            console.log(error);
             if (opts.error) {
                 opts.error(error);
             } else {
                 console.log('catch');
+                vm.$message.error('请求超时请联系客服');;
             }
         });
 
