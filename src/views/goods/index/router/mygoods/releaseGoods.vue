@@ -49,7 +49,7 @@
                                 <el-radio :label="0" class="item-radio">实物商品</el-radio>
                                 <el-radio :label="1" class="item-radio">虚拟商品（非会员卡，无需物流）</el-radio>
                                 <el-radio :label="2" class="item-radio">虚拟商品（会员卡，无需物流）</el-radio>
-                                <el-radio :label="3" class="item-radio">虚拟商品（卡券包，无需物流）</el-radio>
+                                <!-- <el-radio :label="3" class="item-radio">虚拟商品（卡券包，无需物流）</el-radio> -->
                                 <el-radio :label="4" class="item-radio" v-if="isFlowList">虚拟商品（流量包，无需物流）</el-radio>
                             </el-radio-group>
                         </el-form-item>
@@ -199,15 +199,6 @@
                             </div>
                             <span class="shop-prompt">商品标签最多输入2个字符</span>
                         </el-form-item>
-                        <el-form-item label="商品重量 ：">
-                            <div class="item-inline">
-                                <el-input v-model="form.pro.proWeight"></el-input>
-                            </div>
-                            <span>g</span>
-                            <span class="shop-prompt">
-                                商品重量最多只能输入大于0的六位小数，如：30.00
-                            </span> 
-                        </el-form-item>
                     </div>
                 </div>
                 <div class="mygoods-item">
@@ -236,16 +227,16 @@
                                 </el-radio-group>
                             </div>
                             <div class="item-inline" style="width:220px">
-                                <el-select v-model="form.pro.proFreightTempId" placeholder="请选择运费模板">
-                                    <!-- <el-option  v-for="log in this.logisticsList " 
+                                <el-select v-model="form.pro.proFreightTempId" placeholder="请选择运费模板" @change="selectFreight">
+                                    <el-option  v-for="log in logisticsList " 
                                                 :key="log.id"
                                                 :label="log.name"
                                                 :value="log.id">
-                                    </el-option> -->
-                                    <el-option  :key="logisticsList.id"
+                                    </el-option>
+                                    <!-- <el-option  :key="logisticsList.id"
                                                 :label="logisticsList.name"
                                                 :value="logisticsList.id">
-                                    </el-option>
+                                    </el-option> -->
                                 </el-select>
                             </div>
                             <div class="item-inline" style="width:auto">
@@ -253,9 +244,18 @@
                                 <span class="fontBlue" @click="addLogistics">新建</span>
                             </div>
                         </el-form-item>
-                        <el-form-item label="物流重量 :" v-if=" form.pro.proFreightSet == 2 && form.invenList.length>0 &&logisticsList.length>0">
+                        <el-form-item label="物流重量 :" v-if=" form.pro.proFreightSet == 2 && selectFreightType == 2 && form.invenList.length>0 &&logisticsList.length>0">
                             <tableList :specList="form.specList" :invenList="form.invenList" :type="'logisticsList'"
                                         ref="logisticsForm"></tableList>
+                        </el-form-item>
+                        <el-form-item label="物流重量 ：" v-else-if=" form.pro.proFreightSet == 2 && selectFreightType == 2 && (form.invenList.length == 0 || logisticsList.length == 0)">
+                            <div class="item-inline">
+                                <el-input v-model="form.pro.proWeight"></el-input>
+                            </div>
+                            <span>g</span>
+                            <span class="shop-prompt">
+                                商品重量最多只能输入大于0的六位小数，如：30.00
+                            </span> 
                         </el-form-item>
                     </div>
                 </div>
@@ -443,7 +443,7 @@ export default {
            proGroupList:[],
            invenList:[],
         },//保存填充数据
-
+        selectFreightType:null,
         paramList:[],//参数列表
         imgUrl:'',//图片域名
         isImgno:false,//图片验证
@@ -1004,7 +1004,8 @@ export default {
                 this.$message.error('没有运费模板，请新增');
                 return
             }
-            this.form.pro.proFreightTempId = this.logisticsList.id;
+            console.log(this.logisticsList.id,"this.logisticsList.id")
+            this.form.pro.proFreightTempId = this.logisticsList[0].id;
             this.form.pro.proFreightPrice = null;
         }else{
             this.form.pro.proFreightTempId = null;
@@ -1126,6 +1127,15 @@ export default {
             }
         });
 
+    },
+    selectFreight(data){
+        for(let i = 0; i< this.logisticsList.length; i++){
+            let _item = this.logisticsList[i];
+             if(_item.id == data){
+                this.selectFreightType = _item.priceType;
+                break;
+            }
+        }
     }
   },
   mounted(){
