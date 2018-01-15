@@ -503,48 +503,50 @@ export default {
      */
     next(){
         let _this = this;
-      if(this.active == 1){
-        let submit = this.submitForm('ruleForm');                   //商品信息验证结果
-        let cascaderSubmit = this.$refs.cascader.submitForm();      //分组验证结果
-        let imgSubmit= this.IMGRules();                            //上传图片验证结果
-        
+        if(this.active == 1){
+            let submit = this.submitForm('ruleForm');                   //商品信息验证结果
+            let cascaderSubmit = this.$refs.cascader.submitForm();      //分组验证结果
+            let imgSubmit= this.IMGRules();              //上传图片验证结果
+            if(this.form.pro.proStockTotal == null && _this.form.invenList.length > 0){
+                _this.$refs.invenForm.allRules()
+            }
         //基本信息验证
-        if(submit && cascaderSubmit && imgSubmit){
-            //有规格验证和库存验证
-            if(_this.form.invenList.length>0  && _this.form.specList.length>0){
-                let specListSubmit = this.$refs.specForm.allRules()    //规格选择列表
-                let invenSubmit = this.$refs.invenForm.allRules();//规格库存列表验证结果
-                if(specListSubmit && invenSubmit){
-                    if(this.form.pro.proFreightSet == 2)  {
-                        let logisticsSubmit = this.$refs.logisticsForm.allRules();  //运费物流列表验证结果
-                        if(invenSubmit && logisticsSubmit ){
+            if(submit && cascaderSubmit && imgSubmit){
+                //有规格验证和库存验证
+                if(_this.form.invenList.length>0  && _this.form.specList.length>0){
+                    let specListSubmit = this.$refs.specForm.allRules()    //规格选择列表
+                    let invenSubmit = this.$refs.invenForm.allRules();//规格库存列表验证结果
+                    if(specListSubmit && invenSubmit){
+                        if(this.form.pro.proFreightSet == 2)  {
+                            let logisticsSubmit = this.$refs.logisticsForm.allRules();  //运费物流列表验证结果
+                            if(invenSubmit && logisticsSubmit ){
+                                this.active = 2;
+                            }
+                        }else{
                             this.active = 2;
-                        }
+                        }   
                     }else{
-                        this.active = 2;
-                    }   
+                        this.$message({
+                            message: '请完善商品的基本信息',
+                            type: 'warning'
+                        });
+                    }
                 }else{
-                    this.$message({
-                        message: '请完善商品的基本信息',
-                        type: 'warning'
-                    });
+                    this.active = 2;
                 }
             }else{
-                this.active = 2;
+                this.$message({
+                    message: '请完善商品的基本信息',
+                    type: 'warning'
+                });
             }
-        }else{
-            this.$message({
-                message: '请完善商品的基本信息',
-                type: 'warning'
-            });
+            return
         }
-        return
-      }
-      if(this.active == 2){
-        this.changeData(1);
-        return
-      }
-      if(this.active++ > 2) this.active = 1;
+        if(this.active == 2){
+            this.changeData(1);
+            return
+        }
+        if(this.active++ > 2) this.active = 1;
     },
     /**
      * 继续添加
