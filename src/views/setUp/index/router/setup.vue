@@ -162,8 +162,8 @@
         }
       };
       var formCheckSellerPhone = (rule, value, callback) => {
-        // console.log(this.form.set.checkSellerPhone);
-        if (this.form.set.checkSellerPhone  == '' ||this.form.set.checkSellerPhone  == undefined) {
+        console.log(this.form.set.checkSellerPhone,"32423432");
+        if (this.form.set.checkSellerPhone  == "" ||this.form.set.checkSellerPhone  == undefined) {
           return callback(new Error('接收申请审核手机不能为空'));
         } else if(!Lib.M.validPhone(this.form.set.checkSellerPhone)){
            return callback(new Error('审核手机格式不正确'));
@@ -194,7 +194,7 @@
             isPf:1,
             isPfCheck:1,
             isSeller:1,
-            isCheckSeller:0,
+            isCheckSeller:1,
             footerJson:'',
             orderCancel:30,
             busMessageJson:'',
@@ -210,7 +210,8 @@
               { required: true, message: '支付成功提醒内容不能为空', trigger: 'blur' }
             ],
             checkSellerPhone: [
-             { validator: formCheckSellerPhone, trigger: 'blur'},
+              { validator: formCheckSellerPhone, trigger: 'blur,change'},
+             
             ],
         },
         areaPhones:[],
@@ -331,7 +332,8 @@
              if(_this.form.set.isComment == 1 && _this.form.set.isCommentGive == 1){
               _this.saveGive(2);
              }
-
+             console.log("提交 ");
+              return false;
              //防止多次点击重复提交数据
             if(!Lib.C.ajax_manage) return false;
             Lib.C.ajax_manage = false;
