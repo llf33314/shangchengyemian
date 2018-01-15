@@ -120,7 +120,7 @@ export default {
     };
     var formProductId = (rule, value, callback) => {
       console.log(value, "values",this.boxData,"boxData");
-     if (this.boxData != null) {
+     if (this.boxData != null && this.boxData.id > 0) {
         return callback();
       }
       callback(new Error("请选择活动商品"));
@@ -279,7 +279,7 @@ export default {
       },
       rules: {
         shopId: [{ validator: formShopId, trigger: "change" }],
-        productId: [{ validator: formProductId, trigger: "blur" }],
+        productId: [{ validator: formProductId, trigger: "change,blur" }],
         aucStartPrice: [{ validator: formAucStartPrice, trigger: "blur" }],
         aucStartTime: [{ validator: formAucStartTime, trigger: "change,blur" }],
         aucTime: [{ validator: formAucStartTime, trigger: "change,blur" }],

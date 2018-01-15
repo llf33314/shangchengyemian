@@ -122,7 +122,10 @@
                 <el-table-column
                   label="操作">
                   <template scope="scope">
-                     <a :href="path+'views/order/index.html#/detail/'+scope.row.id">查看</a>
+                    <a @click="link('?url=detail/'+scope.row.id,path+'views/order/index.html#/allOrder')">
+                      查看
+                    </a>
+                    
                   </template>
                 </el-table-column>
               </el-table>
@@ -206,6 +209,11 @@ export default {
     }
   },
   methods: {
+    link(params,url){
+      console.log(url,params,"changeMenus(url)");
+      parent.window.postMessage("changeMenus('"+url+"','"+params+"')", "*");
+      // window.location.href=url;
+    },
     /**获取统计数据 */
     getTurnoverCount(){
       let _this = this;

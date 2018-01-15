@@ -146,7 +146,7 @@
             <div class="table-th col-2">下单时间</div>
             <div class="table-th col-1">订单状态</div>
             <div class="table-th col-1">实付金额</div>
-            <div class="table-th col-1">订单来源</div>
+            <div class="table-th col-1">订单类型</div>
           </div>
           <div class="table-content-box" v-for="order in subList" :key="order.id">
             <div class="table-content">
@@ -288,7 +288,7 @@ export default {
         isShow: true,
         isTable: true,//是否有数据
         isPage: true,//列表页数多页
-        loading: true,
+        loading: false,
         pickerOptions2: {
           disabledDate(time) {
             return time.getTime() > Date.now();

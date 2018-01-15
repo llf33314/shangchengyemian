@@ -25,7 +25,7 @@
             </el-form-item>
             <el-form-item label="批发类型 :" required>
                <el-radio-group v-model="ruleForm.pf_type" :disabled="ruleForm.id !=null">
-                    <el-radio :label="1">手批</el-radio>
+                    <el-radio :label="1" :disabled="ruleForm.isSpecifica == 0 && ruleForm.productId!=''">手批</el-radio>
                     <el-radio :label="2">混批</el-radio>
                 </el-radio-group>
             </el-form-item>
@@ -263,6 +263,8 @@ export default {
       this.$refs.ruleForm.validate(valid => {});
       if (this.ruleForm.isSpecifica == 1) {
         this.getSpecificaByProId(data.id);
+      }else{
+         this.ruleForm.pf_type = 2;
       }
     },
     //返回上一页

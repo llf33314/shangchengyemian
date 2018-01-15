@@ -91,8 +91,8 @@ export default {
       shopList: [],
       // startDate:new Date(new Date().setTime(new Date().getTime() - 3600 * 1000 * 24 * 30)),
       // endDate:new Date(),
-      value6: [new Date(new Date().setTime(new Date().getTime() - 3600 * 1000 * 24 * 30)),
-              new Date(new Date().setTime(new Date().setDate(new Date().getDate()-1)))
+      value6: [new Date(new Date().setTime(Date.now() - 3600 * 1000 * 24 * 30)),
+              new Date(new Date().setTime( Date.now() - 8.64e7))
               ],
       chart: null,
       isTotal: true,
@@ -149,31 +149,30 @@ export default {
           
       }else{
        that.defaultDate();
-        that.getCountList(this.shopSelect);
+       that.getCountList(this.shopSelect);
       }     
    },
    /**生成默认日期 */
    defaultDate(){
       let that=this;
-      var start = new Date(new Date().setTime(new Date().getTime() - 3600 * 1000 * 24 * 30));
-      let startDate = new Date(start.getFullYear() + '-' + (start.getMonth() + 1) + '-'+ start.getDate());
-      var end =new Date(new Date().setTime(new Date().setDate(new Date().getDate()-1)));
-      let endDate = new Date(end.getFullYear() + '-' + (end.getMonth() + 1) + '-' + end.getDate());
-    
+      var start = new Date(new Date().setTime(Date.now()- 3600 * 1000 * 24 * 30));
+      var end =new Date(new Date().setTime(  Date.now() - 8.64e7));
+      
+      let startDate = new Date(start.getFullYear() + '-' + (start.getMonth() + 1) + '-'+ start.getDate()+' 00:00:00');
+      let endDate = new Date(end.getFullYear() + '-' + (end.getMonth() + 1) + '-' + end.getDate()+' 00:00:00');
       this.loopGenerateDate(startDate,endDate);
    },
    /**遍历生成日期列表 */
    loopGenerateDate(startTime,endTime){
        this.chartDate=[];
         let i=0;
-        while((endTime.getTime()-startTime.getTime())>=0){
-          // let year = startTime.getFullYear();
+        while(endTime.getTime()-startTime.getTime()>=0){
+          // let year = startTime.getFullYear();1515888000000 1515859200000 
           // let month = startTime.getMonth().toString().length==1?"0"+startTime.getMonth().toString():startTime.getMonth();
           let day = startTime.getDate().toString().length==1? startTime.getDate():startTime.getDate();
- 
+
           this.chartDate[i]=day;
-          i++;
-          //  console.log( this.date1, this.date2,"date221");
+          i++;       
           startTime.setDate(startTime.getDate()+1);
         }
    },

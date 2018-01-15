@@ -25,6 +25,10 @@ export default {
     }
   },
   mounted(){
+    let url=Lib.M.getUrlQuery("url");
+    if(url !=''){
+      this.$router.push({ path: "/" + url});
+    }
     const _this = this;
     let _href = window.location.hash.split('/')[1];
     _this.activeName = _href;

@@ -225,7 +225,7 @@
             </el-tab-pane>
             <el-tab-pane label="批发设置" name="3">
                 <div class="common-content">
-                    <el-form ref="form" :rules="rules" :model="form" label-width="140px">
+                    <el-form ref="form" :rules="rules" :model="form" label-width="140px"  v-if="form.paySet!=''">
                         <el-form-item label="混批条件：">
                           <p style="margin-bottom:20px;">
                             <el-form-item prop="hpMoney" >
@@ -367,8 +367,18 @@ export default {
         }
       },
       form: {
-        pfSet: {},
-        paySet: {}
+        pfSet: {
+          isHpMoney:false,
+          hpMoney:0,
+          isHpNum:false,
+          hpNum:0,
+          isSpHand:false,
+          spHand:0,
+        },
+        paySet: {
+          pfRemark:'',
+          pfApplyRemark:''
+        }
       },
       rules: {
         isHpNum: [{ validator: formHpNum, trigger: "blur" }],
@@ -676,10 +686,21 @@ export default {
       _this.ajaxRequest({
         url: DFshop.activeAPI.mallSetWholesale_post,
         success: function(data) {
-          _this.form = data.data;
-          _this.form.pfSet.isHpMoney = !!data.data.pfSet.isHpMoney;
-          _this.form.pfSet.isHpNum = !!data.data.pfSet.isHpNum;
-          _this.form.pfSet.isSpHand = !!data.data.pfSet.isSpHand;
+          // _this.form = data.data;
+          if(data.data.paySet!=null){
+            if(data.data.paySet.pfRemark !=null){
+              _this.form.paySet.pfRemark = data.data.paySet.pfRemark;
+            }
+            if(data.data.paySet.pfApplyRemark !=null){
+              _this.form.paySet.pfApplyRemark = data.data.paySet.pfApplyRemark;
+            }
+          }
+          if(data.data.pfSet != null){
+            _this.form.pfSet = data.data.pfSet;
+            _this.form.pfSet.isHpMoney = !!data.data.pfSet.isHpMoney;
+            _this.form.pfSet.isHpNum = !!data.data.pfSet.isHpNum;
+            _this.form.pfSet.isSpHand = !!data.data.pfSet.isSpHand;
+          } 
           console.log(_this.form, "_this.form");
         }
       });
