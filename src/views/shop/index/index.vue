@@ -36,7 +36,7 @@
                          <span v-else>企业</span>认证
                       </div>
                       <div :class="{'pass':isSecuritytrade}">
-                        <i class="iconfont icon-renzheng"></i> 担保交易
+                        <i class="iconfont icon-renzheng"></i>担保交易
                       </div>
                       <div class="pass">
                           <i class="iconfont icon-renzheng "></i >线下店铺
@@ -61,13 +61,11 @@
               <template scope="scope">
                 <el-button  size="small" 
                             class="buttonBlue"
-                            @click="jumpRouter('shop/edit/'+scope.row.id)">
-                            编辑
+                            @click="jumpRouter('shop/edit/'+scope.row.id)">编辑
                 </el-button>
                 <el-button  size="small"
                             class="buttonBlue"
-                            @click="shopLink(scope.row)">
-                            链接
+                            @click="shopLink(scope.row)">链接
                 </el-button>
                 <!-- <el-button  size="small"
                             class="buttonBlue"
