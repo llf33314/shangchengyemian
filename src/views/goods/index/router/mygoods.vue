@@ -572,7 +572,8 @@ export default {
             message: '同步成功',
             type: 'success'
           });
-          _this.closeCloneGoods()
+          _this.closeCloneGoods();
+          _this.mallProductList(_this.screenData);
         }
       });
     },

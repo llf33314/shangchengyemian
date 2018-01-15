@@ -395,7 +395,7 @@ export default {
     var formMoney = (rule, value, callback) => {
         let reg =/^[0-9]{1}\d{0,5}(\.\d{1,2})?$/;
         if(this.form.pro.proFreightSet != 1) return callback();
-        if(!value){
+        if(typeof value != 'number'){
             return callback(new Error('请输入统一邮费价'));
         }else if(!reg.test(value)){
             return callback(new Error('价格最多只能输入六位整数+两位小数,如：300000.00'));

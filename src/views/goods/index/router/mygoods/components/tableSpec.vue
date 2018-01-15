@@ -125,7 +125,6 @@ export default {
     },
     watch: {
         'row'(a,b){
-            debugger
             this.specList = a;
         },
     },

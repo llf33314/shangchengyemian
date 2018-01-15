@@ -57,13 +57,13 @@
 
                 <td v-if="isSpec" class="td-input-box">
                     <input v-model.trim="item.invPrice" placeholder="请输入内容" @blur="itemRules(item,index,1)" 
-                    :class="{'input-warning':item.errorMsg.Price != null && item.invPrice == 0}"/>
-                    <span class="p-warning" v-if="item.errorMsg.Price != null && item.invPrice == 0">{{item.errorMsg.Price}}</span>
+                    :class="{'input-warning':item.errorMsg.Price != null && item.invPrice == null}"/>
+                    <span class="p-warning" v-if="item.errorMsg.Price != null && item.invPrice == null">{{item.errorMsg.Price}}</span>
                 </td>
                 <td v-if="isSpec" class="td-input-box">
                     <input v-model.trim="item.invNum" placeholder="请输入内容" @blur="itemRules(item,index,2)" 
-                    :class="{'input-warning':item.errorMsg.invNum != null && item.invNum==0}"/>
-                    <span class="p-warning" v-if="item.errorMsg.invNum != null && item.invNum==0">{{item.errorMsg.invNum}}</span>
+                    :class="{'input-warning':item.errorMsg.invNum != null && item.invNum==null}"/>
+                    <span class="p-warning" v-if="item.errorMsg.invNum != null && item.invNum==null">{{item.errorMsg.invNum}}</span>
                 </td >
                 <td v-if="isSpec">
                     <el-input v-model.trim="item.invCode" placeholder="请输入内容"></el-input>
@@ -82,7 +82,7 @@
                     <div style="width:120px">
                         <input v-model.number="item.logisticsWeight" placeholder="请输入内容" @blur="itemRules(item,index,3)" 
                     :class="{'input-warning':item.errorMsg.logistics != null}"/>
-                        <span class="p-warning" v-if="item.errorMsg.logistics != null && item.logisticsWeight==0" >{{item.errorMsg.logistics}}</span>
+                        <span class="p-warning" v-if="item.errorMsg.logistics != null && item.logisticsWeight==null" >{{item.errorMsg.logistics}}</span>
                     </div>
                 </td>
             </tr>
@@ -270,6 +270,7 @@ export default {
            let _this = this;
            let isRules = true;
            let rules = true;
+           debugger
            _this.invenData.forEach((item,i)=>{
                 if(this.isSpec){
                     let a = _this.itemRules(item,i,1);
