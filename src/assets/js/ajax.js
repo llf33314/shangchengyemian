@@ -25,26 +25,31 @@ Vue.mixin({
             }
         });
     }, 
-    /**
-     * 判断营销地址是否存在
-     */    
-    isMarketingUrl(){
-        if(this.$store.state.marketingUrl == ''){
-            this.getMarketingUrl();
-        }
-    },   
-    /**
-     * 获取商城营销地址
-     */
-    getMarketingUrl(){
-        let _this=this;
-        this.ajaxRequest({
-            'url': DFshop.activeAPI.getMarketingUrl_post,
-            'success':function (data){
-                _this.$store.commit('marketingData',data.data);
-            }
-        });
-    }, 
+    //返回本菜单
+    reFreshpage(){
+        console.log("返回本菜单parent.window.postMessage");
+        parent.window.postMessage("reFreshpage()", "*");
+    },
+    // /**
+    //  * 判断营销地址是否存在
+    //  */    
+    // isMarketingUrl(){
+    //     if(this.$store.state.marketingUrl == ''){
+    //         this.getMarketingUrl();
+    //     }
+    // },   
+    // /**
+    //  * 获取商城营销地址
+    //  */
+    // getMarketingUrl(){
+    //     let _this=this;
+    //     this.ajaxRequest({
+    //         'url': DFshop.activeAPI.getMarketingUrl_post,
+    //         'success':function (data){
+    //             _this.$store.commit('marketingData',data.data);
+    //         }
+    //     });
+    // }, 
     /**
      * isAdminUser
      * @param success  //强求后执行方法

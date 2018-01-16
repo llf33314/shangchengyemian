@@ -2,7 +2,7 @@
 <div class="addGruop-wrapper">
     <div class="common-nav">
         <el-breadcrumb separator="/">
-             <el-breadcrumb-item ><a :href="$store.state.marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
+             <el-breadcrumb-item ><a @click="reFreshpage" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
             <el-breadcrumb-item :to="{ path: '/group' }">团购管理</el-breadcrumb-item>
             <el-breadcrumb-item v-if="ruleForm.id == null">新建团购</el-breadcrumb-item>
             <el-breadcrumb-item v-else>修改团购</el-breadcrumb-item>

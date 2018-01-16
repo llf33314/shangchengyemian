@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-import store from 'store';
+// import store from 'store';
 import Vuex from 'vuex' ;// 引入vue-amap
 import AMap from 'vue-amap';
 
@@ -185,21 +185,21 @@ const router = new VueRouter({
   routes:routes
 })
 
-const _state = {
-  marketingUrl :''
-}
-const _mutations = {
-  marketingData:(state,URL) => {
-      state.marketingUrl =  URL ||state.marketingUrl
-  }
-}
-const VStore = new Vuex.Store({
-  state:_state,
-  mutations:_mutations
-})
+// const _state = {
+//   marketingUrl :''
+// }
+// const _mutations = {
+//   marketingData:(state,URL) => {
+//       state.marketingUrl =  URL ||state.marketingUrl
+//   }
+// }
+// const VStore = new Vuex.Store({
+//   state:_state,
+//   mutations:_mutations
+// })
 
 new Vue({
   router: router,
-  store: VStore,
+  // store: VStore,
 }).$mount('#app')
 

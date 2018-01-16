@@ -92,6 +92,7 @@ export default {
       active: 1,  //选项卡
       imgUrl: '',
       path: '',
+      webPath:'',
       ruleForm:{   //参数
         pagIsMain:0,
         pagStoId:'',
@@ -210,6 +211,7 @@ export default {
               console.log(data);
               _this.imgUrl = data.imgUrl;
               _this.path = data.path;
+              _this.webPath = data.webPath;
               _this.ruleForm = data.data;
           }
       });

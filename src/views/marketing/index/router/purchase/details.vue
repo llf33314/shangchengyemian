@@ -2,7 +2,7 @@
   <div class="integralmall-wrapper" >
      <div class="common-nav">
         <el-breadcrumb separator="/">
-             <el-breadcrumb-item ><a :href="$store.state.marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
+             <el-breadcrumb-item ><a @click="reFreshpage" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
             <el-breadcrumb-item :to="{ path: '/purchase/1' }">对外报价 </el-breadcrumb-item>
             <el-breadcrumb-item >报价单状态</el-breadcrumb-item>
         </el-breadcrumb>

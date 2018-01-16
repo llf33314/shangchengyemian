@@ -23,7 +23,6 @@ export default {
       }
     });
     this.isMaterialUrl();
-    this.isMarketingUrl();
   },
   destroyed () {
     //  $('body').removeClass('bg');

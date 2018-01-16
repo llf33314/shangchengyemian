@@ -2,7 +2,7 @@
 <div class="addBond-wrapper">
     <div class="common-nav">
         <el-breadcrumb separator="/">
-             <el-breadcrumb-item ><a :href="$store.state.marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
+             <el-breadcrumb-item ><a @click="reFreshpage" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
             <el-breadcrumb-item :to="{ path: '/pifa/1' }">批发管理</el-breadcrumb-item>
             <el-breadcrumb-item v-if="ruleForm.id== null ">新建批发</el-breadcrumb-item>
             <el-breadcrumb-item v-else>修改批发</el-breadcrumb-item>

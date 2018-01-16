@@ -2,7 +2,7 @@
   <div class="common-wrapper">
     <div class="common-nav">
       <el-breadcrumb separator="/">
-         <el-breadcrumb-item ><a :href="$store.state.marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
+         <el-breadcrumb-item ><a @click="reFreshpage" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
         <el-breadcrumb-item></el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -245,7 +245,6 @@ export default {
   },
   
   mounted(){
-    this.isMarketingUrl();
     this.activeName = this.$route.params.activeName;
     this.restaurants = this.loadAll();
   },

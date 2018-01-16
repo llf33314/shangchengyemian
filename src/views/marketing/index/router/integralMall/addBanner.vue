@@ -2,7 +2,7 @@
 <div class="addbanner-wrapper">
     <div class="common-nav">
         <el-breadcrumb separator="/">
-             <el-breadcrumb-item ><a :href="$store.state.marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
+             <el-breadcrumb-item ><a @click="reFreshpage" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
             <el-breadcrumb-item :to="{ path: '/mallIntegral/2' }">积分商品</el-breadcrumb-item>
             <el-breadcrumb-item v-if="ruleForm.id == ''">新建横幅图</el-breadcrumb-item>
              <el-breadcrumb-item v-else>修改横幅图</el-breadcrumb-item>

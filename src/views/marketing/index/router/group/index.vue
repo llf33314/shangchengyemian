@@ -2,7 +2,7 @@
   <div class="group-wrapper">
     <div class="common-nav">
       <el-breadcrumb separator="/">
-         <el-breadcrumb-item ><a :href="$store.state.marketingUrl" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
+         <el-breadcrumb-item ><a @click="reFreshpage" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
         <el-breadcrumb-item>团购管理</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
