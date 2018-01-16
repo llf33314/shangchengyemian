@@ -104,8 +104,9 @@ export default {
         //打印订单
         printOrder(){
             let _myData = this.myData;
-            // console.log(this.printData,"this.printData")
+            console.log(_myData.hardwareDomain,"_myData.hardwareDomain")
             // 指定host地址
+
             Lib.PrintAPI.HOSTNAME = _myData.hardwareDomain;
             Lib.PrintAPI.init('mall', 'scddmb', _myData.wxShopId, _myData.busId);
 
