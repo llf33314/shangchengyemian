@@ -35,7 +35,7 @@
                             </span>
                         </div>
                      <span v-if="videourl != null">
-                        <a :href="videourl">
+                        <a :href="videourl"  target="_blank">
                           <el-button type="warning"><i class="iconfont icon-cplay1"></i>视频教程</el-button>
                         </a>
                     </span> 

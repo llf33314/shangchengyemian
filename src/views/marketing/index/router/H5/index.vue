@@ -13,7 +13,9 @@
                   <div class="p-box">
                       <el-button type="primary" :disabled="iscreat==1" @click="jumpRouter('/h5/addH5')">新 增</el-button>
                       <span>
-                        <el-button v-if="videourl != null" :href="videourl" type="warning" ><i class="iconfont icon-cplay1"></i> 视频教程</el-button>
+                        <a :href="videourl" target="_blank">
+                            <el-button type="warning"><i class="iconfont icon-cplay1"></i>视频教程</el-button>
+                        </a>
                       </span>
                   </div>
               </div>

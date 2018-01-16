@@ -6,7 +6,9 @@
         <div class="index-shopInfo">
           <p class="shop-box">
             <el-button type="primary" @click="jumpRouter('/addlogistics/0')" >新建物流</el-button>
-             <a v-if="logisticsData.videourl != null" :href="logisticsData.videourl"><el-button type="warning"><i class="iconfont icon-cplay1"></i>视频教程</el-button></a>
+             <a v-if="logisticsData.videourl != null" :href="logisticsData.videourl"  target="_blank">
+               <el-button type="warning"><i class="iconfont icon-cplay1"></i>视频教程</el-button>
+              </a>
           </p>
         </div>
         <div class="logistics-content" v-if="logisticsData.page.pageCount > 0">

@@ -108,8 +108,10 @@
                       </el-option>
                     </el-select>
                   </span>
-                  <span v-if="videourl !=''">
-                    <el-button  type="warning"><i class="iconfont icon-cplay1"></i>视频教程</el-button>
+                  <span v-if="videourl !=''" >
+                    <a :href="videourl"  target="_blank">
+                      <el-button type="warning"><i class="iconfont icon-cplay1"></i>视频教程</el-button>
+                    </a> 
                   </span>
                   </p>
                 </div>

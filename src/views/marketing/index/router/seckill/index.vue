@@ -20,7 +20,7 @@
             </el-select>
           </el-col>
           <el-col :span="12" class="shop-textr" v-if="tableData.videourl != null">
-            <a :href="tableData.videourl">
+            <a :href="tableData.videourl"  target="_blank">
               <el-button type="warning"><i class="iconfont icon-cplay1"></i>视频教程</el-button>
             </a>
           </el-col>
