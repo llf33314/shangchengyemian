@@ -212,6 +212,7 @@ export default {
             let ErrorText = data.errorMsg;
             let rules = false;
             //错误文本
+            
             if(type === 1){
                 //价钱
                 let regPrice =/^[0-9]{1}\d{0,5}(\.\d{1,2})?$/;
