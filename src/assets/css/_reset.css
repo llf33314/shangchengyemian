@@ -88,7 +88,7 @@ a img {
 }
 
 img {
-  width: 100%;
+  /* width: 100%; //注释是因为对打印订单的样式有影响 */
   height: auto;
   vertical-align: middle;
 }
