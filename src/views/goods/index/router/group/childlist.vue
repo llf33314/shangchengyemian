@@ -113,6 +113,7 @@ export default {
      contentNo:'page',
      subList:[],//列表数据,
      page:{},//分页数据
+     ids:[],//批量选中
     }
   },
   methods: {
@@ -179,18 +180,34 @@ export default {
      * 单选
      */
     handleSelectionChange(val) {
-      this.multipleSelection = val;
+      let ids = [];
+      $.each(val,function(i){
+        ids.push(this.id)
+      });
+      this.ids = ids.toString();
+ 
     },
     /**
      * 删除
      */
     handleDelete(id){
-    let _this = this;
+      let _this = this;
+      if(id == null && _this.ids==""){
+        this.$message({
+          message: '请先选择需删除的分组',
+          type: 'warning'
+        });
+        return false;
+      }
       let msg ={
         dialogTitle:'删除提醒',//文本标题
         callback: {
             btnOne:()=>{
-              _this.deleteAjax(id);
+              if(id !=null){
+                _this.deleteAjax(id);
+              }else{
+                _this.deleteAjax(_this.ids);
+              }
             }
         },
       }

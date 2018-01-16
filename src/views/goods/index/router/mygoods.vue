@@ -244,7 +244,7 @@ export default {
       shopList2:'',//一键同步对比数据
       subList:[],//列表数据
       page:{},//页面数据
-      ids:'',
+      ids:[],
       count:2,
       imgUrl:'',
       webPath:'',
@@ -313,9 +313,9 @@ export default {
       let _this = this;
       let ids = [];
       $.each(val,function(i){
-        ids.push(this.id)
+        ids.push(this)
       });
-      _this.ids = ids.toString();
+      _this.ids = ids;
     },
     handleCurrentChange(val) {
       this.screenData.curPage = val;
@@ -398,6 +398,37 @@ export default {
       let _message = '';//提示文本
       let _dialogMsg = '';//提示内容
 
+      if(ids == '' ){
+        _this.$message({
+          message:'请选择需要'+_message+'的商品',
+          type: 'warning'
+        });
+        return
+      }
+ 
+      if(ids.length>0){
+        let idlist=[];
+        $.each(ids,function(i){
+          if(type ==1){//删除
+            //未上架商品
+            if(this.isPublish != 1){
+              idlist.push(this.id);
+            }
+          }else if(type == 3){//上架
+            //审核通过的 且 未上架
+            if(this.checkStatus == 1 && this.isPublish != 1){
+              idlist.push(this.id);
+            }
+          }else if(type == 4){//下架
+          //审核通过的 且 已上架
+            if(this.checkStatus == 1 && this.isPublish == 1){
+              idlist.push(this.id);
+            }
+          }
+        });
+        ids=idlist.toString();
+      }
+      // console.log(ids,"选中的商品ID");
       if(ids == '' ){
         _this.$message({
           message:'请选择需要'+_message+'的商品',

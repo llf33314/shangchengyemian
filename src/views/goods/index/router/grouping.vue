@@ -154,12 +154,24 @@ export default {
      * @param id 删除id
      */
     handleDelete(id){
+      if(id == null && this.ids==""){
+        this.$message({
+          message: '请先选择需删除的分组',
+          type: 'warning'
+        });
+        return false;
+      }
+
       let _this = this;
       let msg ={
         dialogTitle:'删除提醒',//文本标题
         callback: {
             btnOne:()=>{
-              _this.deleteAjax(id);
+              if(id !=null){
+                _this.deleteAjax(id);
+              }else{
+                _this.deleteAjax(_this.ids);
+              }
             }
         },
       }

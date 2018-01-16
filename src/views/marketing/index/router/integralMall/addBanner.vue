@@ -60,13 +60,24 @@ export default {
     imgUpload
   },
   data() {
-     var formShopId = (rule, value, callback) => {
+    var formShopId = (rule, value, callback) => {
       if (value == '') {
         return callback(new Error('请选择店铺'));
       }else {
           callback();
       }
     };
+    var formReturnUrl = (rule, value, callback) => {
+      if (value == '') {
+        return callback(new Error('跳转链接不能为空'));
+      }else if (value != "" && !Lib.M.validURL(value)) {
+         return callback(new Error('跳转链接格式有误'));
+      }else{
+          callback();
+      }
+    };
+
+     
     return {
       ruleForm: {
         id:'',
@@ -80,7 +91,7 @@ export default {
           { validator: formShopId, trigger: 'change' }
         ],
         returnUrl: [
-          { required: true, message: '跳转链接不能为空', trigger: 'blur' },
+         { validator: formReturnUrl, trigger: 'blur' }
         ],
         imageUrl: [
           { required: true, message: '图片链接未选择', trigger: 'blur' }

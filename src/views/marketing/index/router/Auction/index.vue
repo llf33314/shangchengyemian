@@ -158,8 +158,8 @@
                             layout="prev, pager, next, jumper"
                             :total="baozhengjinData.page.rowCount">
                         </el-pagination>
-                        <content-no v-if="baozhengjinData.page.rowCount == 0"></content-no>
                     </div>
+                     <content-no v-if="baozhengjinData.page.rowCount == 0"></content-no>
                     <el-dialog title="退保证金" :visible.sync="dialogViewDetails"
                         size="tiny">
                         <div class="pifa-dialog-ul">
