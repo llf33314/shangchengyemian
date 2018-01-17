@@ -38,10 +38,7 @@
                         :prop="'rowList.'+index+'.carouselUrl'"
                         label-width="0"
                         inline
-                        class="newgroup"
-                        :rules="[
-                            { required: true, message: '请输入跳转链接'}
-                        ]">
+                        class="newgroup">
                         <el-input class="addGruop-input" placeholder="请输入跳转链接" v-model.trim="row.carouselUrl" @blur="changeData" >
                         </el-input>
                     </el-form-item>
@@ -185,7 +182,7 @@ export default {
       for (let i = 0; i < list.length; i++) {
         let obj = list[i];
         let url=obj.carouselUrl;
-        if (url != "" && !Lib.M.validURL(url)) {
+        if (url != null && url != "" && !Lib.M.validURL(url)) {
           this.$message({
             showClose: true,
              message: "第"+(i+1)+"个轮播图跳转链接格式有误",
@@ -213,7 +210,7 @@ export default {
           for (let i = 0; i < list.length; i++) {
             let obj = list[i];
             let url=obj.carouselUrl;
-            if (url != "" && !Lib.M.validURL(url)) {
+            if (url != null && url != "" && !Lib.M.validURL(url)) {
               this.$message({
                 showClose: true,
                 message: "第"+(i+1)+"个轮播图跳转链接格式有误",
