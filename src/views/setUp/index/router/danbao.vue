@@ -213,6 +213,7 @@ export default {
   mounted(){
      this.mallIsSecuritytrade();
      //this.isColor = '#34d063';
+     this.$parent.activeName = "danbao";
   }
 }
 </script>

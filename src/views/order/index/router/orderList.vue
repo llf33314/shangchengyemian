@@ -498,6 +498,7 @@ export default {
     }
   },
   mounted(){
+    this.$parent.activeName = "allOrder";
     // console.log(this.$route.path,"tab.name");
     let _this = this;
      //所有订单,维权订单切换时  改变初始数据
