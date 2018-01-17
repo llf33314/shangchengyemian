@@ -108,14 +108,14 @@ export default {
             // 指定host地址
 
             Lib.PrintAPI.HOSTNAME = _myData.hardwareDomain;
-            Lib.PrintAPI.init('mall', 'scddmb', _myData.wxShopId, _myData.busId);
+            Lib.PrintAPI.init('mall', 'scddmb', _myData.wxShopId + '', _myData.busId);
             LodopApi.ready(function(LODOP) {
                 Lib.PrintAPI.getMacAddress();
             });
-
-
-            Lib.PrintAPI.print(this.printData);
-            console.log(Lib.PrintAPI,"Lib.PrintAPI")
+            let json = JSON.stringify(this.printData);
+            Lib.PrintAPI.print(json);
+            console.log(Lib.PrintAPI,"Lib.PrintAPI");
+            console.log(this.printData,"(this.printData");
             // console.log(_myData.wxShopId,"_myData.wxShopId")
             // console.log(_myData.busId,"_myData.busId")
         }
