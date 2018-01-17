@@ -13,7 +13,7 @@
             <el-option :key="0" label="全部店铺" :value="''"></el-option>
             <el-option v-for="item in shopList" :key="item.id" :label="item.sto_name" :value="item.id"></el-option>
           </el-select>
-          <el-input class="shopInfo-input" placeholder="请输入商品名称" icon="search" v-model="screenData.proName" @blur="search_goods()"></el-input>
+          <el-input class="shopInfo-input" placeholder="请输入商品名称" icon="search" v-model.trim="screenData.proName" :on-icon-click="search_goods" @keyup.enter.native="search_goods"></el-input>
         </div>
         <div class="shopInfo-button">
           <el-button type="primary" @click="jumpRouter('releaseGoods/add')">发布商品</el-button>
@@ -350,7 +350,8 @@ export default {
      * 商品
      * @param name  商品名字
     */
-    search_goods(name){
+    search_goods(){
+      let name = this.screenData.proName;
       if(name != 'undefined ' ){
         this.screenData.curPage = 1;
         this.mallProductList(this.screenData);

@@ -76,6 +76,7 @@
         if (!this.transition) {
           this.doAfterClose();
         }
+        parent.parent.parent.parent.window.postMessage("closeMask()", "*");
       },
       handleAction(action) {
         var callback = this.callback;

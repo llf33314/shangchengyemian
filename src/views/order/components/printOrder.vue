@@ -109,11 +109,15 @@ export default {
 
             Lib.PrintAPI.HOSTNAME = _myData.hardwareDomain;
             Lib.PrintAPI.init('mall', 'scddmb', _myData.wxShopId, _myData.busId);
+            LodopApi.ready(function(LODOP) {
+                Lib.PrintAPI.getMacAddress();
+            });
+
 
             Lib.PrintAPI.print(this.printData);
             console.log(Lib.PrintAPI,"Lib.PrintAPI")
-            console.log(_myData.wxShopId,"_myData.wxShopId")
-            console.log(_myData.busId,"_myData.busId")
+            // console.log(_myData.wxShopId,"_myData.wxShopId")
+            // console.log(_myData.busId,"_myData.busId")
         }
 
     },
@@ -121,7 +125,6 @@ export default {
         this.loadPrintOrders(this.id,1);
 
         // console.log(Lib,"Lib.PrintAPI")
-
     }
 }
 </script>
