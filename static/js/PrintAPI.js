@@ -543,18 +543,18 @@ let PrintAPI = {
      */
     init: function (busType, moduleType, shopId, currentUid) {
         // mac 缓存
-//        if (isEmpty(macAddress)) {
-//            let mac = localStorage.getItem("mac");
-//            if (isEmpty(mac)) {
-//                // 等待CLODOP 加载完执行
-//                window.On_CLodop_Opened = function () {
-//                    // 获取硬件信息 mac
-//                    PrintAPI.getMacAddress();
-//                }
-//            } else {
-//                macAddress = mac;
-//            }
-//        }
+        if (isEmpty(macAddress)) {
+            let mac = localStorage.getItem("mac");
+            if (isEmpty(mac)) {
+                // 等待CLODOP 加载完执行
+                window.On_CLodop_Opened = function () {
+                    // 获取硬件信息 mac
+                    PrintAPI.getMacAddress();
+                }
+            } else {
+                macAddress = mac;
+            }
+        }
         if (isEmpty(busType) || isEmpty(moduleType) || isEmpty(shopId) || isEmpty(currentUid)) {
             alert("初始化打印配置失败");
             let msg = `busType: ${busType}, moduleType: ${moduleType}, shopId: ${shopId},currentUid: ${currentUid}`;
@@ -631,11 +631,11 @@ let PrintAPI = {
      * @param reqData 模板数据包
      */
     print: function (reqData) {
-//        if (isEmpty(PrintAPI.macAddress)) {
-//            alert("打印参数缺失，请刷新页面后尝试!");
-//            console.warn("macAddress : " + PrintAPI.macAddress);
-//            return;
-//        }
+        if (isEmpty(PrintAPI.macAddress)) {
+            alert("打印参数缺失，请刷新页面后尝试!");
+            console.warn("macAddress : " + PrintAPI.macAddress);
+            return;
+        }
         // 获取打印机配置并打印
         if (!PrintAPI.initFlag) {
             alert("打印机初始化失败，请刷新页面后重试或联系我们");
@@ -687,10 +687,10 @@ let PrintAPI = {
         // alert("LODOP 驱动未安装或启动");
         // return;
         // }
-//        if (isEmpty(macAddress)) {
-//            PrintAPI.getMacAddress();
-//            return;
-//        }
+        if (isEmpty(macAddress)) {
+            PrintAPI.getMacAddress();
+            return;
+        }
         macAddress = 1;
         // 获取打印机配置并打印
         if (!PrintAPI.initFlag /*||isEmpty(reqData)*/) {

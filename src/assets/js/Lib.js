@@ -38,11 +38,11 @@ import Clipboard from 'clipboard';
 
 import vueFilter from './vueFilter';
 import jq from './jquery-2.2.2.min';
-import PrintAPI from './PrintAPI';
+// import PrintAPI from './PrintAPI';
 	
 
 export default{
-	M,C,Clipboard,Ajax,PrintAPI
+	M,C,Clipboard,Ajax
 }
 
 Vue.mixin({
