@@ -15,12 +15,9 @@
               </el-form-item>
               <el-form-item label="合同内容 :" prop="contractContent">
                 <div class="edit_container">
-                  <quill-editor v-model.trim="ruleForm.contractContent"
-                          ref="myQuillEditor"
-                          class="editer"
-                          :options="editorOption"
-                          @change="onEditorReady($event)">
-                  </quill-editor>
+                  <div id="editor" v-html="ruleForm.contractContent" 
+                        style="min-height:200px">
+                  </div>
                 </div>
               </el-form-item>
               <el-form-item>
@@ -53,26 +50,20 @@ export default {
     }
   },
  computed: {
-   editor() {
-    return this.$refs.myQuillEditor.quill
-   }
   },
   methods: {
-    //编辑框发生变化
-    onEditorReady({ editor, html, text }) {
-      this.$refs['ruleForm'].validate('text');
-    },
     submitForm(formName) {
       let _this = this;
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          //防止多次点击重复提交数据
+          let editorText =  $('#editor').html();
+          _this.ruleForm.contractContent = editorText;
           console.log(_this.ruleForm,"_this.ruleForm.");
 
-          //防止多次点击重复提交数据
           if(!Lib.C.ajax_manage) return false;
           Lib.C.ajax_manage = false;
 
-          
           _this.ajaxRequest({
               'url': DFshop.activeAPI.purchaseContractSave_post,
               'data':_this.ruleForm,
@@ -109,31 +100,6 @@ export default {
         }
         });
     },
-    /** 
-     * 编辑器调用素材库
-     */
-    material(){
-        let _this = this;
-        parent.window.postMessage("openMask()", "*");
-        _this.$material({
-          imageboxUrl: DFshop.activeAPI.materialUrl,   //地址
-          modal: true,       //遮罩
-          selecType: this.selecType,   //是否多选
-          width: 820, //宽度
-          height: 500, //高度
-          lockScroll: false, //弹出框后是否锁定滚动轴
-          closeOnClickModal: true, //点击遮罩是否关闭
-          closeOnPressEscape: false
-        }).then(function (val) {
-            let imgUrl = '<img src="'+val[0].url+'">';
-            $('.ql-editor p:last').append(imgUrl);
-            parent.window.postMessage("closeMask()", "*");
-          }).catch(function (error) {
-            parent.window.postMessage("closeMask()", "*");
-          //取消
-        }) 
-
-      },
   },
   mounted() {
     let _this = this;
@@ -143,13 +109,11 @@ export default {
       _this.purchaseContractInfo(this.$route.params.id);
     }
     _this.$nextTick(()=>{
-      let _this = this;
-      let ql_image = $('.ql-image').html();
-      let new_image = '<button type="button" class="ql-image2">'+ql_image+'</button>';
-      $(new_image).insertAfter('.ql-image');
-      $('.ql-image').remove();
-      $('.ql-image2').click(()=>{
-          _this.material()
+      let E = window.wangEditor;
+      let editor2 = new E('editor');
+      editor2.create();
+      $('#editor').css({
+        height:'auto'
       })
     })
   }   

@@ -176,7 +176,7 @@
                             </div>
                             <div class="item-inline" style="width:168px;color:#999;">
                                  <el-input v-model.number="form.pro.proCostPrice" placeholder="99.99">
-                                    <template slot="prepend">原价：¥ todo验证</template>
+                                    <template slot="prepend">原价：¥ </template>
                                 </el-input>
                             </div>
                             <span class="shop-prompt">该原价价格只作展示作用</span>
@@ -349,13 +349,9 @@
                 </div>
                 <div class="editor-trigger">
                     <span>商品详情：</span>
-                    <!-- <div id="editor-trigger" style="height: 320px;"></div> -->
-                    <quill-editor v-model.trim="form.proDetail.productDetail"
-                          ref="myQuillEditor"
-                          class="editer"
-                          :options="editorOption"
-                          @change="onEditorReady($event)">
-                  </quill-editor>
+                    <div id="editor" v-html="form.proDetail.productDetail" 
+                        style="min-height:200px">
+                    </div>
                 </div>
             </div>
         </div>
@@ -382,12 +378,12 @@
 <script>
 
 import Lib from 'assets/js/Lib';
-//import E from 'wangeditor'
+import gtMaterial from 'components/material/material' //素材库
 import gtParam from './components/param';//选择参数模块
 import tableList from './components/tableList' ;//规格列表
 import tableSpec from './components/tableSpec';//选择规格
 import gtCascader from './components/cascader';//多选分类多级联动下拉框
-import gtMaterial from 'components/material/material' 
+
 //import param
 export default {
   components: {
@@ -484,13 +480,11 @@ export default {
       active(a){
           if(a==2){
               this.$nextTick(()=>{
-                let _this = this;
-                let ql_image = $('.ql-image').html();
-                let new_image = '<button type="button" class="ql-image2">'+ql_image+'</button>';
-                $(new_image).insertAfter('.ql-image');
-                $('.ql-image').remove();
-                $('.ql-image2').click(()=>{
-                    _this.material()
+                let E = window.wangEditor;
+                let editor2 = new E('editor')
+                editor2.create()
+                $('#editor').css({
+                    height:'auto'
                 })
               })
           }
@@ -606,7 +600,7 @@ export default {
                 //初始化处理数据
                 _this.invenAdd(_this.form.invenList,_this.form.specList);
                 _this.changeSpac(_this.form.specList);
-                if(typeof _this.form.detail == 'undefined'){
+                if(typeof _this.form.proDetail.id == 'undefined'){
                     _this.form.proDetail = {
                         productDetail: null,        //商品详情
                         productIntrodu: null,       //商品简介 
@@ -809,6 +803,10 @@ export default {
                 })
             })
         }
+
+        let editorText =  $('#editor').html();
+        this.form.proDetail.productDetail = editorText;
+
         let  data={
             product:_this.form.pro,
             imageList: JSON.stringify(imageList),
@@ -819,7 +817,7 @@ export default {
             paramsList:JSON.stringify(_this.form.paramList),
         };
         data.invenList == null ? data.product.isSpecifica = 0:data.product.isSpecifica = 1;
-        data.product=JSON.stringify(data.product);
+        data.product= JSON.stringify(data.product);
         console.log(data,'修改提交数据')
         this.dataAjax(type,data)
     },
@@ -1063,7 +1061,6 @@ export default {
                 shopId: _this.form.pro.shopId
             },
             'success':function (data){
-                console.log(data.data,'freightAjax')
                 if(typeof data.data == 'undefined'){
                     _this.logisticsList = [];
                     return
@@ -1088,35 +1085,6 @@ export default {
             item.specificaIds = item.specificaIds.toString()
         })
         this.form.invenList = val;
-    },
-    //编辑框发生变化
-    onEditorReady({ editor, html, text }) {
-    //   this.$refs['ruleForm'].validate('text');
-        console.log( html, text)
-    },
-    /** 
-     * 编辑器调用素材库
-     */
-    material(){
-        let _this = this;
-        parent.parent.window.postMessage("openMask()", "*");
-        _this.$material({
-          imageboxUrl: DFshop.activeAPI.materialUrl,   //地址
-          modal: true,       //遮罩
-          selecType: this.selecType,   //是否多选
-          width: 820, //宽度
-          height: 500, //高度
-          lockScroll: false, //弹出框后是否锁定滚动轴
-          closeOnClickModal: true, //点击遮罩是否关闭
-          closeOnPressEscape: false
-        }).then(function (val) {
-            let imgUrl = '<img src="'+val[0].url+'">';
-            $('.ql-editor p:last').append(imgUrl);
-            parent.parent.window.postMessage("closeMask()", "*");
-          }).catch(function (error) {
-            parent.parent.window.postMessage("closeMask()", "*");
-          //取消
-        }) 
     },
     /** 
      * 流量包请求
@@ -1171,6 +1139,4 @@ export default {
 
 <style lang="less" scoped>
 @import '../../../less/mygoods.less';
-@import '/static/wangEditor/wangEditor.min.css';
-@import '/static/wangEditor/layui.css';
 </style>

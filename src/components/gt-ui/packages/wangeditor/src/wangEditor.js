@@ -966,7 +966,7 @@ _e(function (E, $) {
     // 初始化
     MenuContainer.fn.init = function () {
         var self = this;
-        var $menuContainer = $('<div class="wangEditor-menu-container clearfix"></div>');
+        var $menuContainer = $('<div class="wangEditor-menu-container we-clearfix"></div>');
 
         self.$menuContainer = $menuContainer;
 
@@ -1019,7 +1019,7 @@ _e(function (E, $) {
         var $menuContainer = this.$menuContainer;
         var $menuGroup;
         if (!this.$currentGroup || this.currentGroupIdx !== groupIdx) {
-            $menuGroup = $('<div class="menu-group clearfix"></div>');
+            $menuGroup = $('<div class="menu-group we-clearfix"></div>');
             $menuContainer.append($menuGroup);
 
             this.$currentGroup = $menuGroup;
@@ -1031,7 +1031,7 @@ _e(function (E, $) {
         var $menuSelected = menu.$domSelected;
 
         var $menuGroup = this.$currentGroup;
-        var $item = $('<div class="menu-item clearfix"></div>');
+        var $item = $('<div class="menu-item we-clearfix"></div>');
         $menuSelected.hide();
         $item.append($menuNormal).append($menuSelected);
         $menuGroup.append($item);
@@ -1428,7 +1428,7 @@ _e(function (E, $) {
         var self = this;
         var data = self.data;
         var tpl = self.tpl || '<span>{#title}</span>';
-        var $list = $('<div class="wangEditor-drop-list clearfix"></div>');
+        var $list = $('<div class="wangEditor-drop-list we-clearfix"></div>');
 
         var itemContent;
         var $item;
@@ -1671,7 +1671,7 @@ _e(function (E, $) {
         var $content = self.$content;
         var width = self.width;
         var height = self.height;
-        var $panel = $('<div class="wangEditor-drop-panel clearfix"></div>');
+        var $panel = $('<div class="wangEditor-drop-panel we-clearfix"></div>');
         var $triangle = $('<div class="tip-triangle"></div>');
 
         $panel.css({
@@ -3057,70 +3057,70 @@ _e(function (E, $) {
             title: '默认',
             size: 18,
             imgs: [
-                '../static/emotions/default/1.gif',
-                '../static/emotions/default/2.gif',
-                '../static/emotions/default/3.gif',
-                '../static/emotions/default/4.gif',
-                '../static/emotions/default/5.gif',
-                '../static/emotions/default/6.gif',
-                '../static/emotions/default/7.gif',
-                '../static/emotions/default/8.gif',
-                '../static/emotions/default/9.gif',
-                '../static/emotions/default/10.gif',
-                '../static/emotions/default/11.gif',
-                '../static/emotions/default/12.gif',
-                '../static/emotions/default/13.gif',
-                '../static/emotions/default/14.gif',
-                '../static/emotions/default/15.gif',
-                '../static/emotions/default/16.gif',
-                '../static/emotions/default/17.gif',
-                '../static/emotions/default/18.gif',
-                '../static/emotions/default/19.gif',
-                '../static/emotions/default/20.gif',
-                '../static/emotions/default/21.gif',
-                '../static/emotions/default/22.gif',
-                '../static/emotions/default/23.gif',
-                '../static/emotions/default/24.gif',
-                '../static/emotions/default/25.gif',
-                '../static/emotions/default/26.gif',
-                '../static/emotions/default/27.gif',
-                '../static/emotions/default/28.gif',
-                '../static/emotions/default/29.gif',
-                '../static/emotions/default/30.gif',
-                '../static/emotions/default/31.gif',
-                '../static/emotions/default/32.gif',
-                '../static/emotions/default/33.gif',
-                '../static/emotions/default/34.gif',
-                '../static/emotions/default/35.gif',
-                '../static/emotions/default/36.gif',
-                '../static/emotions/default/37.gif',
-                '../static/emotions/default/38.gif',
-                '../static/emotions/default/39.gif',
-                '../static/emotions/default/40.gif',
-                '../static/emotions/default/41.gif',
-                '../static/emotions/default/42.gif',
-                '../static/emotions/default/43.gif',
-                '../static/emotions/default/44.gif',
-                '../static/emotions/default/45.gif',
-                '../static/emotions/default/46.gif',
-                '../static/emotions/default/47.gif',
-                '../static/emotions/default/48.gif',
-                '../static/emotions/default/49.gif',
-                '../static/emotions/default/50.gif'
+                '/images/activity/miniscene/phone/face/1.gif',
+                '/images/activity/miniscene/phone/face/2.gif',
+                '/images/activity/miniscene/phone/face/3.gif',
+                '/images/activity/miniscene/phone/face/4.gif',
+                '/images/activity/miniscene/phone/face/5.gif',
+                '/images/activity/miniscene/phone/face/6.gif',
+                '/images/activity/miniscene/phone/face/7.gif',
+                '/images/activity/miniscene/phone/face/8.gif',
+                '/images/activity/miniscene/phone/face/9.gif',
+                '/images/activity/miniscene/phone/face/10.gif',
+                '/images/activity/miniscene/phone/face/11.gif',
+                '/images/activity/miniscene/phone/face/12.gif',
+                '/images/activity/miniscene/phone/face/13.gif',
+                '/images/activity/miniscene/phone/face/14.gif',
+                '/images/activity/miniscene/phone/face/15.gif',
+                '/images/activity/miniscene/phone/face/16.gif',
+                '/images/activity/miniscene/phone/face/17.gif',
+                '/images/activity/miniscene/phone/face/18.gif',
+                '/images/activity/miniscene/phone/face/19.gif',
+                '/images/activity/miniscene/phone/face/20.gif',
+                '/images/activity/miniscene/phone/face/21.gif',
+                '/images/activity/miniscene/phone/face/22.gif',
+                '/images/activity/miniscene/phone/face/23.gif',
+                '/images/activity/miniscene/phone/face/24.gif',
+                '/images/activity/miniscene/phone/face/25.gif',
+                '/images/activity/miniscene/phone/face/26.gif',
+                '/images/activity/miniscene/phone/face/27.gif',
+                '/images/activity/miniscene/phone/face/28.gif',
+                '/images/activity/miniscene/phone/face/29.gif',
+                '/images/activity/miniscene/phone/face/30.gif',
+                '/images/activity/miniscene/phone/face/31.gif',
+                '/images/activity/miniscene/phone/face/32.gif',
+                '/images/activity/miniscene/phone/face/33.gif',
+                '/images/activity/miniscene/phone/face/34.gif',
+                '/images/activity/miniscene/phone/face/35.gif',
+                '/images/activity/miniscene/phone/face/36.gif',
+                '/images/activity/miniscene/phone/face/37.gif',
+                '/images/activity/miniscene/phone/face/38.gif',
+                '/images/activity/miniscene/phone/face/39.gif',
+                '/images/activity/miniscene/phone/face/40.gif',
+                '/images/activity/miniscene/phone/face/41.gif',
+                '/images/activity/miniscene/phone/face/42.gif',
+                '/images/activity/miniscene/phone/face/43.gif',
+                '/images/activity/miniscene/phone/face/44.gif',
+                '/images/activity/miniscene/phone/face/45.gif',
+                '/images/activity/miniscene/phone/face/46.gif',
+                '/images/activity/miniscene/phone/face/47.gif',
+                '/images/activity/miniscene/phone/face/48.gif',
+                '/images/activity/miniscene/phone/face/49.gif',
+                '/images/activity/miniscene/phone/face/50.gif'
             ]
         },
-        'jinxing': {
-            title: '金星',
-            size: 50,
-            imgs: [
-                '../static/emotions/jinxing/1.gif',
-                '../static/emotions/jinxing/2.gif',
-                '../static/emotions/jinxing/3.gif',
-                '../static/emotions/jinxing/4.gif',
-                '../static/emotions/jinxing/5.gif',
-                '../static/emotions/jinxing/6.gif'
-            ]
-        }
+        // 'jinxing': {
+        //     title: '金星',
+        //     size: 50,
+        //     imgs: [
+        //         '../static/emotions/jinxing/1.gif',
+        //         '../static/emotions/jinxing/2.gif',
+        //         '../static/emotions/jinxing/3.gif',
+        //         '../static/emotions/jinxing/4.gif',
+        //         '../static/emotions/jinxing/5.gif',
+        //         '../static/emotions/jinxing/6.gif'
+        //     ]
+        // }
     };
 
     // 百度地图的key
@@ -4421,7 +4421,7 @@ _e(function (E, $) {
 
         // 创建 dropPanel
         var $content = $('<div></div>');
-        var $div1 = $('<div style="margin:20px 10px;" class="clearfix"></div>');
+        var $div1 = $('<div style="margin:20px 10px;" class="we-clearfix"></div>');
         var $div2 = $div1.clone();
         var $div3 = $div1.clone().css('margin', '0 10px');
         var $textInput = $('<input type="text" class="block" placeholder="' + lang.text + '"/>');
