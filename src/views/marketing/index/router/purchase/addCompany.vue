@@ -23,8 +23,8 @@
                 <input class="max-input"  placeholder="请输入公司地址" autocomplete="false" @change="searchAddress"
                   v-model.trim="ruleForm.companyAddress" id="tipinput"/>
               </el-form-item>
-              <el-form-item style="height:400px;">
-                   <div id="container" style="height:400px; width:80%;border: 1px solid #bfcbd9;"></div>
+              <el-form-item style="height:300px;">
+                   <div id="container" style="height:300px; width:70%;border: 1px solid #bfcbd9;"></div>
               </el-form-item>
               <el-form-item>
                   <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>

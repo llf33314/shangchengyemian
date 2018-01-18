@@ -27,8 +27,8 @@
   <!-- <el-input v-model.trim="ruleForm.visitAddress" :readonly="true" placeholder="请点击选择自提地址" class="add-input"></el-input>
       <img  @click="dialogVisible = true" title="点击选择地址" style="width:20px;cursor: pointer;" alt="" :src="png1"  >   -->
     </el-form-item>
-    <el-form-item style="height:400px;">
-          <div id="container" style="height:400px; width:80%;border: 1px solid #bfcbd9;"></div>
+    <el-form-item style="height:300px;">
+          <div id="container" style="height:300px; width:80%;border: 1px solid #bfcbd9;"></div>
     </el-form-item>
     <el-form-item label="联系电话 ：" prop="visitContactNumber">
         <el-input v-model.trim="ruleForm.visitContactNumber" placeholder="请输入联系电话"   class="add-input"></el-input>
