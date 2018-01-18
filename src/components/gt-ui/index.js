@@ -1,13 +1,9 @@
-import Vue from 'vue'
-import picker from './picker-custom/index.js';
-import comment from './comment-grade/index.js';
-import map from './map/src/index';
-import material from './source-material/index.js'
+import material from './packages/source-material/index.js'
+import transfer from './packages/transfer/index.js'
+import wangEditor from './packages/wangEditor/index.js'
 
 const components = [
-  picker,
-  comment,
-  material
+	transfer,
 ];
 
 const install = function(Vue, opts = {}) {
@@ -16,9 +12,9 @@ const install = function(Vue, opts = {}) {
     Vue.component(component.name, component);
   });
 
-  Vue.prototype.$map = map.show;
   Vue.prototype.$material = material.show;
 
+  window.wangEditor = wangEditor;
 };
 
 /* istanbul ignore if */
@@ -26,7 +22,12 @@ if (typeof window !== 'undefined' && window.Vue) {
   install(window.Vue);
 }
 
+const version = '1.0.0';
+
+export {
+	transfer,
+}
 export default {
-  version: '1.0.0',
-  install,
-};
+    version,
+    install,
+}

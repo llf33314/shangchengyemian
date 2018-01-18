@@ -27,32 +27,17 @@ var defaults = {
 };
 
 import Vue from 'vue';
-import map from './map.vue';
+import source from './source-material.vue';
+import merge from '../../../util/merge';
 
-var merge = function(target) {
-  for (var i = 1, j = arguments.length; i < j; i++) {
-    var source = arguments[i];
-    for (var prop in source) {
-      if (source.hasOwnProperty(prop)) {
-        var value = source[prop];
-        if (value !== undefined) {
-          target[prop] = value;
-        }
-      }
-    }
-  }
-
-  return target;
-};
-
-var MapConstructor = Vue.extend(map);
+var sourceConstructor = Vue.extend(source);
 
 var currentMsg,   // 传递参数的copy对象
     instance;    //  map 组件实例化
 var msgQueue = []; //传递的参数
 
 var initInstance = function() {
-  instance = new MapConstructor({
+  instance = new sourceConstructor({
     el: document.createElement('div')
   });
   instance.callback = defaultCallback;
@@ -69,7 +54,12 @@ const defaultCallback = action => {
       }
     }
     if (currentMsg.resolve) {
-      currentMsg.resolve(action);
+      if(action=='cancel'){
+        currentMsg.reject('cancel');
+      }else{
+        currentMsg.resolve(action);
+      }
+
     }
   }
 };
@@ -78,7 +68,6 @@ var showNextMsg = function() {
   if (!instance) {
     initInstance();
   }
-  if(instance.location)instance.location='';
   if (!instance.value || instance.closeTimer) {
     if (msgQueue.length > 0) {
       currentMsg = msgQueue.shift();
@@ -88,6 +77,8 @@ var showNextMsg = function() {
           instance[prop] = options[prop];
         }
       }
+      if(instance.selecType)instance.materialUrl = instance.imageboxUrl + "?selectType=" + instance.selecType + "&retUrl=" + window.location.href;
+      else instance.materialUrl = instance.imageboxUrl + "?retUrl=" + window.location.href;
       if (options.callback === undefined) {
         instance.callback = defaultCallback;
       }
@@ -103,9 +94,9 @@ var showNextMsg = function() {
       });
     }
   }
-};
+}
 
-var MapBox = function(options, callback) {
+var Material = function(options, callback) {
   if (typeof options === 'string') {
     options = {
       title: options
@@ -121,9 +112,9 @@ var MapBox = function(options, callback) {
   }
 
   if (typeof Promise !== 'undefined') {
-    return new Promise(function(resolve, reject) { // eslint-disable-line
+    return new Promise(function(resolve, reject) {
       msgQueue.push({
-        options: merge({}, defaults, MapBox.defaults || {}, options),
+        options: merge({}, defaults, Material.defaults || {}, options),
         callback: callback,
         resolve: resolve,
         reject: reject
@@ -133,7 +124,7 @@ var MapBox = function(options, callback) {
     });
   } else {
     msgQueue.push({
-      options: merge({}, defaults, MapBox.defaults || {}, options),
+      options: merge({}, defaults, Material.defaults || {}, options),
       callback: callback
     });
 
@@ -141,12 +132,11 @@ var MapBox = function(options, callback) {
   }
 };
 
-MapBox.setDefaults = function(defaults) {
-  MapBox.defaults = defaults;
+Material.setDefaults = function(defaults) {
+  source.defaults = defaults;
 };
 
-MapBox.show = function(message, title, options) {
-
+Material.show = function(message, title, options) {
   if (typeof message === 'object') {
     options = message;
     message = '';
@@ -154,22 +144,27 @@ MapBox.show = function(message, title, options) {
     options = title;
     title = '';
   }
-  return MapBox(merge({
-    title: title,
-    message: message,
-    $type: 'map',
-    closeOnPressEscape: false,
-    closeOnClickModal: false
+  return Material(merge({
+    $type: 'material',
   }, options));
 };
+Material.close = function() {
+  if (!instance) return;
+  instance.value = false;
+  msgQueue = [];
+  currentMsg = null;
+};
 
-!Vue.prototype.$isServer && window.addEventListener('message', function(event) {
-  // 接收位置信息，用户选择确认位置点后选点组件会触发该事件，回传用户的位置信息
-  if(!instance)return;
-  var loc = event.data;
-  if (loc && loc.module == 'locationPicker') {//防止其他应用也会向该页面post信息，需判断module是否为'locationPicker'
-    instance.location = loc;
-  }
-}, false);
+!Vue.prototype.$isServer && window.addEventListener("message", function (e) {
+  if(typeof e.data != 'string')return;
+  if(instance&&!instance.value)return;
+  if(!window.image)window.image = function(e,i){
+    instance.selecType?instance.handleAction(JSON.parse(e)):instance.handleAction([{'imagesid':e,'url':i}])
+  };
+  if(!window.go_back)window.go_back = function(){
+    instance.handleAction('cancel')
+  };
+  eval(e.data)
+});
 
-export default MapBox;
+export default Material;

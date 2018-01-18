@@ -143,7 +143,7 @@
                             </el-form-item>
                             <el-form-item label="总库存 :" :rules="rules.proStockTotal" prop="pro.proStockTotal" required>
                                 <div class="item-inline">
-                                    <el-input v-model.number="form.pro.proStockTotal" :disabled=" form.invenList != '' && form.invenList.length>0" placeholder="0"></el-input>
+                                    <el-input v-model.number="form.pro.proStockTotal" :disabled=" form.invenList != '' && form.invenList.length>0" placeholder="请输入总库存"></el-input>
                                 </div>
                                 <span>
                                     <el-checkbox v-model="form.pro.isShowStock">页面不显示商品库存</el-checkbox>
@@ -152,7 +152,7 @@
                             </el-form-item>
                             <el-form-item label="商品编码 ：">
                                 <div style="width:220px">
-                                    <el-input v-model="form.pro.proCode"></el-input>
+                                    <el-input v-model="form.pro.proCode" placeholder="请输入商品编码"></el-input>
                                 </div>
                             </el-form-item>
                     </div>
@@ -162,21 +162,22 @@
                     <div class="item-content">
                         <el-form-item label="商品名称 :"  :rules="rules.name" prop="pro.proName" required>
                             <div style="width:460px;" class="item-inline">
-                                <el-input v-model="form.pro.proName" ></el-input>
+                                <el-input v-model="form.pro.proName" placeholder="请输入商品名称"></el-input>
                             </div>
                             <span class="shop-prompt">
                                 商品名称最多输入100位字符串
                             </span>
                         </el-form-item>
                         <el-form-item label="价格 :" prop="pro.proPrice" :inline="true" :rules="rules.proPrice">
-                            <div class="item-inline">
-                                <el-input v-model.number="form.pro.proPrice">
+                            <div class="item-inline" style="width:130px">
+                                <el-input v-model.number="form.pro.proPrice" placeholder="请输入价格">
                                     <template slot="prepend">¥</template>
                                 </el-input>
                             </div>
-                            <div class="item-inline" style="width:135px;color:#999;">
-                                <p style="width:100%">原价：￥99.99</p>
-                            
+                            <div class="item-inline" style="width:168px;color:#999;">
+                                 <el-input v-model.number="form.pro.proCostPrice" placeholder="99.99">
+                                    <template slot="prepend">原价：¥ todo验证</template>
+                                </el-input>
                             </div>
                             <span class="shop-prompt">该原价价格只作展示作用</span>
                         </el-form-item>
@@ -195,7 +196,7 @@
                         </el-form-item>
                         <el-form-item label="商品标签 ：" >
                             <div class="item-inline">
-                                <el-input v-model="form.pro.proLabel"></el-input>
+                                <el-input v-model="form.pro.proLabel"  placeholder="请输入商品标签"></el-input>
                             </div>
                             <span class="shop-prompt">商品标签最多输入2个字符</span>
                         </el-form-item>
@@ -213,7 +214,7 @@
                                 </el-radio-group>
                             </div>
                             <div class="item-inline">
-                                <el-input v-model.number="form.pro.proFreightPrice">
+                                <el-input v-model.number="form.pro.proFreightPrice" placeholder="统一邮费">
                                     <template slot="prepend">¥</template>
                                 </el-input>
                             </div>
@@ -227,11 +228,12 @@
                                 </el-radio-group>
                             </div>
                             <div class="item-inline" style="width:220px">
-                                <el-select v-model="form.pro.proFreightTempId" placeholder="请选择运费模板" @change="selectFreight">
+                                <el-select v-model.number="form.pro.proFreightTempId" placeholder="请选择运费模板" @change="selectFreight">
                                     <el-option  v-for="log in logisticsList " 
                                                 :key="log.id"
                                                 :label="log.name"
                                                 :value="log.id">
+                                                {{log.name}}
                                     </el-option>
                                     <!-- <el-option  :key="logisticsList.id"
                                                 :label="logisticsList.name"
@@ -244,9 +246,9 @@
                                 <span class="fontBlue" @click="addLogistics">新建</span>
                             </div>
                         </el-form-item>
-                        <el-form-item label="物流重量 :" v-if=" form.pro.proFreightSet == 2 && selectFreightType == 2 && form.invenList.length>0 &&logisticsList.length>0">
+                        <el-form-item label="物流重量 :" v-if=" form.pro.proFreightSet == 2 && selectFreightType == 2 && form.invenList.length>0 && logisticsList.length>0">
                             <tableList :specList="form.specList" :invenList="form.invenList" :type="'logisticsList'"
-                                        ref="logisticsForm"></tableList>
+                                        ref="logisticsForm" ></tableList>
                         </el-form-item>
                         <el-form-item label="物流重量 ：" v-else-if=" form.pro.proFreightSet == 2 && selectFreightType == 2 && (form.invenList.length == 0 || logisticsList.length == 0)">
                             <div class="item-inline">
@@ -264,7 +266,7 @@
                     <div class="item-content">
                         <el-form-item label="每人限购 :" >
                             <div  class="item-inline">
-                                <el-input v-model="form.pro.proRestrictionNum"></el-input>
+                                <el-input v-model="form.pro.proRestrictionNum" placeholder="请输入限购数"></el-input>
                             </div>
                             <span class="shop-prompt">0代表不限购</span>
                         </el-form-item>
@@ -430,7 +432,7 @@ export default {
                 flowRecordId: 0, //流量冻结id，用于流量购买
                 isSpecifica:0,//是否有规格
                 proWeight:0,//商品重量
-                proCode:0,//商家编码
+                proCode:null,//商家编码
             },
             proDetail:{
                 productDetail: null,        //商品详情
@@ -517,7 +519,7 @@ export default {
                     let specListSubmit = this.$refs.specForm.allRules()    //规格选择列表
                     let invenSubmit = this.$refs.invenForm.allRules();//规格库存列表验证结果
                     if(specListSubmit && invenSubmit){
-                        if(this.form.pro.proFreightSet == 2)  {
+                        if(this.form.pro.proFreightSet == 2 && this.selectFreightType == 2)  {
                             let logisticsSubmit = this.$refs.logisticsForm.allRules();  //运费物流列表验证结果
                             if(invenSubmit && logisticsSubmit ){
                                 this.active = 2;
@@ -599,6 +601,7 @@ export default {
                 id:_this.goodsId
             },
             'success':function (data){
+                console.log(data.data,'aaaaaa')
                 _this.form = data.data;
                 //初始化处理数据
                 _this.invenAdd(_this.form.invenList,_this.form.specList);
@@ -643,7 +646,8 @@ export default {
 
                 //物流
                 if(_this.form.pro.proFreightSet  == 2){
-                    _this.freightAjax(_this.form.pro.shopId)
+                    _this.freightAjax(_this.form.pro.proFreightTempId);
+                    
                 }
                 // if(_this.form.pro.proFreightSet  == 2){
                 //     _this.ajaxRequest({
@@ -1059,6 +1063,7 @@ export default {
                 shopId: _this.form.pro.shopId
             },
             'success':function (data){
+                console.log(data.data,'freightAjax')
                 if(typeof data.data == 'undefined'){
                     _this.logisticsList = [];
                     return

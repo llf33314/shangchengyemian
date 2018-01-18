@@ -125,17 +125,16 @@ export default {
       if(this.active ==1){
         this.$refs['ruleForm'].validate((valid) => {
           if (valid) {
-            this.active =2;
-            //_this.iframeULR= 'http://192.168.2.118:8080/mallPage/designPage.do?id='+_this.$route.params.pageId;
-            _this.iframeULR= window.DFshop.api + '/mallPage/designPage.do?id='+_this.$route.params.pageId;
-            _this.$nextTick(()=>{
-              _this.iframeHeight = $(window).height()-$('.common-nav').outerHeight(true)-$('#shop1').outerHeight(true)-$('#shop2').outerHeight(true)-10;
-              $('#shade2').css({
-                'height':_this.iframeHeight,
-                'top':  $('.common-nav').outerHeight(true)+$('#shop1').outerHeight(true),
-                //'background': '#fff'
-              })
-            
+              _this.save(1);
+              //_this.iframeULR= 'http://192.168.2.118:8080/mallPage/designPage.do?id='+_this.$route.params.pageId;
+              _this.iframeULR= window.DFshop.api + '/mallPage/designPage.do?id='+_this.$route.params.pageId;
+              _this.$nextTick(()=>{
+                _this.iframeHeight = $(window).height()-$('.common-nav').outerHeight(true)-$('#shop1').outerHeight(true)-$('#shop2').outerHeight(true)-10;
+                $('#shade2').css({
+                  'height':_this.iframeHeight,
+                  'top':  $('.common-nav').outerHeight(true)+$('#shop1').outerHeight(true),
+                  //'background': '#fff'
+                })
             })
           } else {
             return false;
@@ -166,11 +165,13 @@ export default {
           pagName:_this.ruleForm.pagName,//页面名称
           pagDescript:_this.ruleForm.pagDescript,//页面描述
           pagTypeId:_this.ruleForm.pagTypeId,//页面分类
-          pagCss:JSON.stringify(myFrame.dataJson),//样式
-          pagData:JSON.stringify(myFrame.picJson),//数据
           pagStoId:_this.ruleForm.pagStoId,//店铺id
           pagIsMain:_this.ruleForm.pagIsMain,//是否是主页 0不是主页 1 是主页
        };
+       if(_this.active == 2){
+         page.pagCss = JSON.stringify(myFrame.dataJson) || null;//样式
+         page.pagData = JSON.stringify(myFrame.picJson) || null;//数据
+       }
        console.log(page,'page')
        
         //防止多次点击重复提交数据
@@ -184,7 +185,7 @@ export default {
             },
             'success':function (data){
                 if(type==1){
-                   _this.active =3;
+                   _this.active = _this.active+1;
                 }else if(type==2){
                    let msg ={
                       title: '页面预览',

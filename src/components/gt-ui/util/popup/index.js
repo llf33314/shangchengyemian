@@ -20,7 +20,6 @@ const hookTransition = (transition) => {
   };
   Vue.transition(transition, {
     afterEnter(el) {
-      debugger
       const instance = getVueInstance(el);
 
       if (instance) {
@@ -28,7 +27,6 @@ const hookTransition = (transition) => {
       }
     },
     afterLeave(el) {
-      debugger
       const instance = getVueInstance(el);
 
       if (instance) {

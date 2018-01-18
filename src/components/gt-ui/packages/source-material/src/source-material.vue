@@ -8,7 +8,7 @@
   </section>
 </template>
 <script>
-  import Popup from '../../util/popup';
+  import Popup from '../../../util/popup';
   export default {
     mixins: [ Popup ],
     data() {
@@ -18,7 +18,8 @@
     },
     props: {
       imageboxUrl:{
-        type: String
+        type: String,
+        default: 'https://suc.deeptel.com.cn/common/material.do'
       },
       modal: {
         default: true
@@ -34,7 +35,7 @@
       },
       url: {
         type: String,
-        default: ''
+        default: '',
       },
       showClose: {
         type: Boolean,
@@ -76,13 +77,15 @@
         if (!this.transition) {
           this.doAfterClose();
         }
-        parent.parent.parent.parent.window.postMessage("closeMask()", "*");
       },
       handleAction(action) {
         var callback = this.callback;
         this.value = false;
         callback(action);
       },
+      onClose(){
+        this.callback('cancel')
+      }
     },
   }
 
