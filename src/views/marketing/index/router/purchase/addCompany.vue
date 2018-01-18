@@ -20,34 +20,26 @@
                   <el-input v-model.trim="ruleForm.companyInternet" placeholder="请输入公司官网" class="max-input" ></el-input>
               </el-form-item>
               <el-form-item label="公司地址 :" prop="companyAddress">
-                <el-input class="max-input" type="textarea" :rows="4" placeholder="请输入公司地址" v-model.trim="ruleForm.companyAddress"></el-input>
-                <img  @click="dialogVisible = true" title="点击选择地址" style="width:20px;cursor: pointer;" alt="" :src="png1"  >
+                <input class="max-input"  placeholder="请输入公司地址" autocomplete="false"
+                  v-model.trim="ruleForm.companyAddress" id="tipinput"/>
+              </el-form-item>
+              <el-form-item style="height:400px;">
+                   <div id="container" style="height:400px; width:80%;border: 1px solid #bfcbd9;"></div>
               </el-form-item>
               <el-form-item>
                   <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
                   <el-button @click="resetForm('ruleForm')">取消</el-button>
-              </el-form-item>
+ 
+              </el-form-item>             
           </el-form>
       </div>
-      <el-dialog title="我的位置"  :visible.sync="dialogVisible"  >
-       <template>
-           <my-map :longitude.sync="ruleForm.longitude" :latitude.sync="ruleForm.latitude" :address.sync="ruleForm.companyAddress"  ></my-map>
-        </template>
-        <span slot="footer" class="dialog-footer">
-            <el-button @click="dialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-        </span>
-       </el-dialog>
   </div>
 </template>
 <script>
 import Lib from 'assets/js/Lib';
-import myMap from 'components/myMap'
+ 
 import addressPng from '../../../../../assets/img/address.png' //地址图标
 export default {
-  components:{
-    myMap
-  },
   data() {
     var companyTel = (rule, value, callback) => {
       if (value == '') {
@@ -68,8 +60,10 @@ export default {
       }
     };
     var companyAddress = (rule, value, callback) => {
-      if (value == ''|| this.ruleForm.longitude === '' || this.ruleForm.latitude === '') {
+      if (value == '') {
         return callback(new Error('公司地址不能为空'));
+      }else if( this.ruleForm.longitude === '' || this.ruleForm.latitude === ''){
+         return callback(new Error('公司地址经纬度不能为空'));
       }else{
          callback();
       }
@@ -178,14 +172,67 @@ export default {
         },
         'success':function (data){
             if(data.code == 0){
-                _this.ruleForm = data.data;
+                _this.ruleForm = data.data;      
+                _this.$nextTick(function(){
+                  _this.loadAMap(_this.ruleForm.companyAddress);
+                });
             }
         }
         });
     },
-  },
+    //高德地图加载
+    loadAMap(address){
+      let _this = this;
+      //地图加载
+      var map = new AMap.Map("container", {
+          resizeEnable: true
+      });
+      //输入提示
+      var autoOptions = {
+          input: "tipinput"
+      };
+      var auto = new AMap.Autocomplete(autoOptions);
+      var placeSearch = new AMap.PlaceSearch({
+          map: map
+      });  //构造地点查询类
+      AMap.event.addListener(auto, "select", function(e) {
+          placeSearch.setCity(e.poi.adcode);
+          placeSearch.search(e.poi.name);  //关键字查询查询
+          // console.log(e.poi,"54654546");
+          if(e.poi.location!=null){
+            _this.ruleForm.longitude=e.poi.location.lng;
+            _this.ruleForm.latitude=e.poi.location.lat;
+          }else{
+            _this.ruleForm.longitude="";
+            _this.ruleForm.latitude="";
+          }
+          _this.ruleForm.companyAddress=e.poi.district+e.poi.name;
+         
+      });//注册监听，当选中某条记录时会触发
+      if(address !=null){
+         placeSearch.search(address);
+      }
+       var geocoder = new AMap.Geocoder({
+          radius: 1000,
+          extensions: "all"
+      });        
+      // map.on('click', function(e) {
+      //     // console.log('您在[ '+e.lnglat.getLng()+','+e.lnglat.getLat()+' ]的位置点击了地图！');
+      //     var  lnglatXY = [e.lnglat.getLng(), e.lnglat.getLat()]; //已知点坐标
+      //      geocoder.getAddress(lnglatXY, function(status, result) {
+      //     if (status === 'complete' && result.info === 'OK') {
+      //           var address = result.regeocode.formattedAddress; //返回地址描述
+      //           _this.ruleForm.companyAddress=address; 
+      //           _this.ruleForm.longitude=e.lnglat.getLng();
+      //           _this.ruleForm.latitude=e.lnglat.getLat(); 
+      //     }
+      // });
+      // });
+    }
+    },
   mounted() {
     let _this = this;
+    this.loadAMap();
     //修改模板时
     if(_this.$route.params.id != undefined && _this.$route.params.id != ''){
     //   console.log(this.$route.params.id);
@@ -198,6 +245,26 @@ export default {
 
 <style lang="less" scoped>
 @import '../../../less/style.less';
+.max-input{
+  width:360px;
+}
+#tipinput{
+  -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: #fff;
+    background-image: none;
+    border-radius: 4px;
+    border: 1px solid #bfcbd9;
+    box-sizing: border-box;
+    color: #1f2d3d;
+    font-size: inherit;
+    height: 36px;
+    line-height: 1;
+    outline: 0;
+    padding: 3px 10px;
+    transition: border-color .2s cubic-bezier(.645,.045,.355,1);
+}
 .addBond-main{
     padding:40px 4%;
     .addBond-input{

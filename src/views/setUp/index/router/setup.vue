@@ -312,7 +312,7 @@
             let paramsForm = this.$refs.form.model.set;
             let smsMsg = {};
             smsMsg[1] = this.$refs.form.model.paySuccessText;
-            let param = paramsForm;
+            let param =JSON.parse(JSON.stringify(paramsForm));
             if(param.isSeller ==1 && param.isCheckSeller ==1){
               param.checkSellerPhone=this.areacode+","+paramsForm.checkSellerPhone;
             }

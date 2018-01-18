@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 
 // import store from 'store';
 import Vuex from 'vuex' ;// 引入vue-amap
-import AMap from 'vue-amap';
+// import AMap from 'vue-amap';
 
 
 //首页
@@ -171,15 +171,15 @@ Vue.use(VueRouter)
 Vue.use(quillEditor)
 Vue.use(Vuex)
 
-// 初始化vue-amap
-AMap.initAMapApiLoader({
-  // 申请的高德key
-  key: '3b73726ac868e5fcf8e26513ce6860d1',
-  // 插件集合
-  plugin: ['AMap.Autocomplete', 'AMap.PlaceSearch', 'AMap.Scale', 'AMap.OverView', 'AMap.ToolBar',
-  'AMap.MapType', 'AMap.PolyEditor', 'AMap.CircleEditor','AMap.Geolocation','AMap.Geocoder','AMap.LngLat']
-});
-Vue.use(AMap);
+// // 初始化vue-amap
+// AMap.initAMapApiLoader({
+//   // 申请的高德key
+//   key: '3b73726ac868e5fcf8e26513ce6860d1',
+//   // 插件集合
+//   plugin: ['AMap.Autocomplete', 'AMap.PlaceSearch', 'AMap.Scale', 'AMap.OverView', 'AMap.ToolBar',
+//   'AMap.MapType', 'AMap.PolyEditor', 'AMap.CircleEditor','AMap.Geolocation','AMap.Geocoder','AMap.LngLat']
+// });
+// Vue.use(AMap);
 
 const router = new VueRouter({
   routes:routes
