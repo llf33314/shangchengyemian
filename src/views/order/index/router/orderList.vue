@@ -146,7 +146,7 @@
             <div class="table-th col-2">下单时间</div>
             <div class="table-th col-1">订单状态</div>
             <div class="table-th col-1">实付金额</div>
-            <div class="table-th col-1">订单类型</div>
+            <div class="table-th col-1">订单来源</div>
           </div>
           <div class="table-content-box" v-for="order in subList" :key="order.id">
             <div class="table-content">
@@ -161,6 +161,7 @@
                   <span v-else-if="order.orderPayWay ==7">找人代付</span>
                   <span v-else-if="order.orderPayWay ==8">粉币支付</span>
                   <span v-else-if="order.orderPayWay ==9">支付宝支付</span> 
+                  <span> —— {{order.orderTypeName}}</span>
                 </p>
                 <p>
                   <a @click="jumpRouter('detail/'+order.id)">订单详情</a>
@@ -236,7 +237,7 @@
                       <el-button type="primary" size="small" v-if="order.isShowUpdatePriceButton == 1" @click="openDialog(2,order)">修改价格</el-button>
                     </p>
                 </div>
-                <div class="table-td border-r col-1">{{order.orderTypeName}}
+                <div class="table-td border-r col-1">{{order.typeName}}
                 </div>
               </div>
               <div class="table-tr shop-box-justify table-footer">买家留言：{{order.orderSellerRemark}}
@@ -497,6 +498,7 @@ export default {
     }
   },
   mounted(){
+    this.$parent.activeName = "allOrder";
     // console.log(this.$route.path,"tab.name");
     let _this = this;
      //所有订单,维权订单切换时  改变初始数据

@@ -16,12 +16,12 @@
             <table border="1" cellspacing="0" cellpadding="0" width="100%" class="order_tab">
             <tbody>
                 <tr>
-                    <th width="130">商品条形码</th>
-                    <th width="265">商品名称</th>
-                    <th width="80">原价</th>
-                    <th width="46">数量</th>
-                    <th width="80">优惠</th>
-                    <th width="80">小计</th>
+                    <th width="20%">商品条形码</th>
+                    <th width="40%">商品名称</th>
+                    <th width="11%">原价</th>
+                    <th width="6%">数量</th>
+                    <th width="11%">优惠</th>
+                    <th width="11%">小计</th>
                 </tr>
                 <tr v-for="(item,index) in printData.content.plist"  :key="index">
                     <td>{{item.productBarCode}}</td>
@@ -103,18 +103,20 @@ export default {
         },
         //打印订单
         printOrder(){
+
+
             let _myData = this.myData;
             console.log(_myData.hardwareDomain,"_myData.hardwareDomain")
             // 指定host地址
 
-            Lib.PrintAPI.HOSTNAME = _myData.hardwareDomain;
-            Lib.PrintAPI.init('mall', 'scddmb', _myData.wxShopId + '', _myData.busId);
+            PrintAPI.HOSTNAME = _myData.hardwareDomain;
+            PrintAPI.init('mall', 'scddmb', _myData.wxShopId + '', _myData.busId);
             LodopApi.ready(function(LODOP) {
-                Lib.PrintAPI.getMacAddress();
+                PrintAPI.getMacAddress();
             });
             let json = JSON.stringify(this.printData);
-            Lib.PrintAPI.print(json);
-            console.log(Lib.PrintAPI,"Lib.PrintAPI");
+            PrintAPI.print(json);
+            console.log(PrintAPI,"PrintAPI");
             console.log(this.printData,"(this.printData");
             // console.log(_myData.wxShopId,"_myData.wxShopId")
             // console.log(_myData.busId,"_myData.busId")
@@ -123,8 +125,6 @@ export default {
     },
     mounted() {
         this.loadPrintOrders(this.id,1);
-
-        // console.log(Lib,"Lib.PrintAPI")
     }
 }
 </script>

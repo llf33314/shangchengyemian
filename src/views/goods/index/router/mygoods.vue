@@ -620,7 +620,8 @@ export default {
         _this.shopList2 = data.data;
         _this.allcloneForm.shopId = data.data[0].id;
       }
-    })
+    });
+    this.$parent.activeName = "mygoods";
   },
 }
 </script>
