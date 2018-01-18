@@ -4,7 +4,7 @@
         <table border="1" cellspacing="0" cellpadding="0" width="100%" class="order_tab">
             <tbody>
             <tr class="order_tab_header">
-                <th width="20%">商品图片</th>
+                <th width="16%">商品图片</th>
                 <th width="10%">原价(元)</th>
                 <th width="10%">优惠价(元)</th>
                 <th width="10%">数量</th>
@@ -16,11 +16,11 @@
             </tr>
             <tr v-for="(row , index) in ruleForm.rowList" :key="index">
                 <td class="text-overflow">
-                    <div class="p-box" style="margin:10px 0;">
+                    <div class="p-box" style="margin:10px 40px 0;">
                       <div class="addbj-min-img">
                         <default-img :background="row.productImg"></default-img>
                       </div>
-                      <p style="width: 65%; padding-left: 15px;">{{row.productName}}</p>
+                      <div class="addbj-img-text">{{row.productName}}</div>
                     </div>
                 </td>
                 <td>{{row.money}}</td>
@@ -218,6 +218,9 @@ export default {
     .addbj-min-img{
         width: 60px;
         height: 60px;
+    }
+    .addbj-img-text{
+      width:160px; padding-left:5px;text-align: left;white-space: normal; word-break: normal;    line-height: 21px;
     }
     .table-footer{
         width: 100%;

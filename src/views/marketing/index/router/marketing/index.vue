@@ -219,6 +219,7 @@
               </el-table-column>
               <el-table-column
                 prop="add_time"
+                width="175"
                 label="加入时间">
               </el-table-column>
               <el-table-column

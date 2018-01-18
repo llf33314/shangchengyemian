@@ -19,11 +19,16 @@
       <el-select v-model="ruleForm.visitCityId" placeholder="城市" style="width:100px" @change="getCityOrArea('area')">
         <el-option :label="option.city_name" :value="option.id" :key="option.id" v-for="option in citys" ></el-option>
       </el-select>
-      <el-select v-model="ruleForm.visitAreaId" placeholder="区县" style="width:100px">
+      <el-select v-model="ruleForm.visitAreaId" placeholder="区县" style="width:100px" >
         <el-option :label="option.city_name" :value="option.id" :key="option.id" v-for="option in areas" ></el-option>
       </el-select> 
-      <el-input v-model.trim="ruleForm.visitAddress" :readonly="true" placeholder="请点击选择自提地址" class="add-input"></el-input>
-      <img  @click="dialogVisible = true" title="点击选择地址" style="width:20px;cursor: pointer;" alt="" :src="png1"  >
+       <input class="add-input"  placeholder="请点击选择自提地址" autocomplete="false" @change="searchAddress()" 
+                  v-model.trim="ruleForm.visitAddress" id="tipinput" />
+  <!-- <el-input v-model.trim="ruleForm.visitAddress" :readonly="true" placeholder="请点击选择自提地址" class="add-input"></el-input>
+      <img  @click="dialogVisible = true" title="点击选择地址" style="width:20px;cursor: pointer;" alt="" :src="png1"  >   -->
+    </el-form-item>
+    <el-form-item style="height:300px;">
+          <div id="container" style="height:300px; width:80%;border: 1px solid #bfcbd9;"></div>
     </el-form-item>
     <el-form-item label="联系电话 ：" prop="visitContactNumber">
         <el-input v-model.trim="ruleForm.visitContactNumber" placeholder="请输入联系电话"   class="add-input"></el-input>
@@ -80,33 +85,25 @@
         <img width="100%" :src="largeSrc" alt="" class="img">
     </el-dialog>
   </div>
-  <el-dialog title="我的位置"  :visible.sync="dialogVisible">
-    <template>
-        <my-map :longitude.sync="ruleForm.visitLongitude" :latitude.sync="ruleForm.visitLatitude" :address.sync="ruleForm.visitAddress"  ></my-map>
-    </template>
-    <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-    </span>
-  </el-dialog>
 </div>
 </template>
 
 <script>
  import imgUpload from 'components/imgUpload.vue';
  import timeList from "../../components/timeList";
- import myMap from 'components/myMap';
  import addressPng from '../../../../assets/img/address.png' //地址图标
  import Lib from 'assets/js/Lib';
 export default {
   components:{
-      imgUpload,timeList,myMap
+      imgUpload,timeList
   },
   data() {
     var formVisit = (rule, value, callback) => {
       if (this.ruleForm.visitProvinceId  == '' || this.ruleForm.visitCityId  == ''||
         this.ruleForm.visitAreaId  == ''|| this.ruleForm.visitAddress  == '') {
         return callback(new Error('请输入自提点地址'));
+      }else if( this.ruleForm.visitLongitude === '' || this.ruleForm.visitLatitude === ''){
+         return callback(new Error('详细地址太过模糊,请重新输入!'));
       } else{
         callback();
       }
@@ -163,11 +160,11 @@ export default {
       citys:"", //城市列表
       areas:"",//区县列表
       editCityId:'', //修改时 存放选中城市id
+      editCityName:'',
       editAreaId:'',//修改时 存放选中区县ID
+      editAreaName:'',
       materialLargeSrcVisible: false,//查看大图
-      largeSrc: '',//查看大图的图片
-      dialogVisible:false
-
+      largeSrc: '',//查看大图的图片     
     }
   },
   watch: {
@@ -181,13 +178,76 @@ export default {
         parent.window.postMessage("closeMask()", "*");
       }
     },
-    'dialogVisible'(a){
-      if(a){
-        parent.window.postMessage("openMask()", "*");
-      }else{
-        parent.window.postMessage("closeMask()", "*");
+    "citys"(a, b) {
+      let  _this = this;
+      // console.log("citys加载");
+      if(a.length>0){
+        if(_this.editCityId != ""){
+          _this.ruleForm.visitCityId = _this.editCityId;
+          _this.editCityId="";
+        }
+        if(_this.editCityName !=""){
+          for(let i = 0; i < _this.citys.length; i++){
+            let obj = _this.citys[i];
+            if(obj.city_name == _this.editCityName){ 
+              _this.ruleForm.visitCityId=obj.id; 
+              _this.editCityName="";
+              break;
+            }
+          }
+        }
+
       }
-    }
+      
+    },
+    "areas"(a, b) {
+      let  _this = this;
+      // console.log("areas加载");
+      if(a.length>0){
+        if(_this.editAreaId !=""&& _this.editAreaId !=null){
+          _this.ruleForm.visitAreaId = _this.editAreaId;
+          _this.editAreaId="";
+        }
+        if(_this.editAreaName !=""){
+          for(let i = 0; i < _this.areas.length; i++){
+            let obj = _this.areas[i];
+            if(obj.city_name == _this.editAreaName){ 
+              _this.ruleForm.visitAreaId=obj.id; 
+              _this.editAreaName="";
+              break;
+            }
+          }
+        }
+      }
+    },
+    "editCityName"(a, b) {
+      let  _this = this;
+      // console.log("editCityName加载");
+      if(_this.editCityName !=""){
+        for(let i = 0; i < _this.citys.length; i++){
+          let obj = _this.citys[i];
+          if(obj.city_name == _this.editCityName){ 
+            _this.ruleForm.visitCityId=obj.id; 
+            _this.editCityName="";
+            break;
+          }
+        }
+      }
+    },
+    "editAreaName"(a, b) {
+      let  _this = this;
+      // console.log("editAreaName加载");
+      if(_this.editAreaName !=""){
+        for(let i = 0; i < _this.areas.length; i++){
+          let obj = _this.areas[i];
+          if(obj.city_name == _this.editAreaName){ 
+            _this.ruleForm.visitAreaId=obj.id; 
+            _this.editAreaName="";
+            break;
+          }
+        }
+      }
+    },
   },
   methods: {
      /**调用素材库 */
@@ -260,7 +320,7 @@ export default {
     submitForm(formName) {
       let _this = this;
       let timeValid = this.$refs.timeComp.validateData();
-    console.log(this.$refs[formName].model);
+      console.log(this.$refs[formName].model);
       this.$refs[formName].validate((valid) => {
         if (valid&& timeValid) {
           let paramsForm = this.$refs[formName].model;
@@ -328,6 +388,9 @@ export default {
             _this.ruleForm.imageList.forEach((image,m)=>{
               image.imageUrl=data.imgUrl+image.imageUrl;
             });
+            _this.$nextTick(function(){
+              _this.loadAMap(_this.ruleForm.visitAddress);
+            });
           }
       });
     },
@@ -344,8 +407,10 @@ export default {
             _this.ruleForm.visitLatitude=data.data.latitude;
             _this.editCityId= Number(data.data.city);
             _this.editAreaId= Number(data.data.district);
-
-     
+             console.log(_this.editAreaId,"1222");
+             _this.$nextTick(function(){
+              _this.loadAMap(_this.ruleForm.visitAddress);
+            });
           }
       });
     },
@@ -357,12 +422,12 @@ export default {
         id = _this.ruleForm.visitProvinceId;
         _this.ruleForm.visitCityId='';
         _this.ruleForm.visitAreaId='';
-          _this.citys=[];
-          _this.areas=[];
+        _this.citys=[];
+        _this.areas=[];
       }else{
         id = _this.ruleForm.visitCityId;
-          _this.ruleForm.visitAreaId='';
-          _this.areas=[];
+        _this.ruleForm.visitAreaId='';
+        _this.areas=[];
       }
       this.$refs.ruleForm.validate(valid => {});
       _this.getAreaList({
@@ -371,24 +436,158 @@ export default {
           let options = data.data;
           if(name === 'city'){
             _this.citys = options;
-             if(_this.editCityId != ""){
-              _this.ruleForm.visitCityId = _this.editCityId;
-             }
           }else{
             _this.areas = options;
-            if(_this.editAreaId !=""){
-              _this.ruleForm.visitAreaId = _this.editAreaId;
-            }
+
           }
         }
       })
+    },
+
+    //输入地址后进行搜索
+    searchAddress(){
+       let _this = this;
+      _this.ruleForm.visitLongitude="";
+      _this.ruleForm.visitLatitude=""; 
+    },
+     
+     //高德地图加载
+    loadAMap(address){
+      let _this = this;
+      //地图加载
+      var map = new AMap.Map("container", {
+          resizeEnable: true
+      });
+      //输入提示
+      var autoOptions = {
+          input: "tipinput"
+      };
+      var auto = new AMap.Autocomplete(autoOptions);
+      var placeSearch = new AMap.PlaceSearch({
+          map: map,
+      });  //构造地点查询类
+      var marker= new AMap.Marker({
+            map: map
+        })
+      //选择关键字查询 注册监听，当选中某条记录时会触发
+      AMap.event.addListener(auto, "select", function(e) {
+        placeSearch.setCity(e.poi.adcode);
+        placeSearch.search(e.poi.name);  //关键字查询查询
+        // console.log(e,"关键字查询");
+        if(e.poi.location!=null){
+          var  lnglatXY = [e.poi.location.lng, e.poi.location.lat]; //已知点坐标
+          _this.getAddressByCode(lnglatXY,map,false); 
+        }else{
+          _this.ruleForm.visitLongitude="";
+          _this.ruleForm.visitLatitude="";
+        }
+        _this.ruleForm.visitAddress=e.poi.name;     
+    });
+     
+    ///搜索文字进行查询
+    if(address !=null){
+      placeSearch.search(address,function(status, result){
+            //TODO : 按照自己需求处理查询结果
+        // console.log(status,result,"查询结果");
+        if (status === 'complete' && result.info === 'OK') {
+          // console.log(result.poiList,"54654546");
+          var pois=result.poiList.pois[0];
+          var province=pois.pname;
+          var city=pois.cityname;
+          var district=pois.adname;
+          var lnglatXY = [pois.location.lng, pois.location.Lat]; //已知点坐标
+          _this.relatedCity(province,city,district,map,lnglatXY);
+          _this.$refs.ruleForm.validate(valid => {});
+        }else{
+          _this.ruleForm.visitLongitude="";
+          _this.ruleForm.visitLatitude="";
+          _this.$refs.ruleForm.validate(valid => {});
+        }
+      })
+    }
+
+      //点击事件
+      map.on('click', function(e) {
+        // console.log('您在[ '+e.lnglat.getLng()+','+e.lnglat.getLat()+' ]的位置点击了地图！'); 
+        marker.setMap(null);
+        marker = null;
+        marker = new AMap.Marker({
+            icon: "http://webapi.amap.com/theme/v1.3/markers/n/mark_b.png",
+            position:e.lnglat
+        });
+        marker.setMap(map); 
+        var  lnglatXY = [e.lnglat.getLng(), e.lnglat.getLat()]; //已知点坐标
+        _this.getAddressByCode(lnglatXY,map,true);  
+        
+      });
+    },
+    //逆转编码
+    getAddressByCode(lnglatXY,map,isSaveAddress){
+     let _this =this;
+     var geocoder = new AMap.Geocoder({
+        radius: 1000,
+        extensions: "all"
+      });  
+      geocoder.getAddress(lnglatXY, function(status, result) {
+        if (status === 'complete' && result.info === 'OK') {
+          // console.log(result);
+          var province=result.regeocode.addressComponent.province;
+          var city=result.regeocode.addressComponent.city;
+          var district=result.regeocode.addressComponent.district;
+
+          _this.relatedCity(province,city,district,map,lnglatXY);
+          var address = result.regeocode.formattedAddress; //返回地址描述
+          if(isSaveAddress){
+            // if(address.indexOf("自治区")>0){
+            //   address=address.substr(address.indexOf("自治区")+3,address.length)
+            // }
+            // var str =address.substr(address.indexOf("区")+1,address.length)
+            var str =address.replace(province+city+district,"");
+            _this.ruleForm.visitAddress=str;   
+          }
+          var info = [];          
+          info.push("地址 :"+address+"</div></div>");
+          var infoWindow = new AMap.InfoWindow({
+              content:  info.join("<br/>"), //使用默认信息窗体框样式，显示信息内容
+                // offset: new AMap.Pixel(0, -10)
+          });
+          infoWindow.open(map, lnglatXY);
+          
+        }
+      });
+    },
+    //关连区配省市区
+    relatedCity(province,city,district,map,lnglatXY){
+        // console.log(province,city,district,map,lnglatXY);
+      let _this =this;
+      var pro_last=province.lastIndexOf("市");
+      // console.log(pro_last);
+      if(pro_last>0){
+        _this.editCityName=province;
+        province=province.substr(0,pro_last);
+        _this.editAreaName=district;
+      }else{
+        _this.editCityName=city;
+        _this.editAreaName=district
+      }
+      for(let i = 0; i < _this.provinces.length; i++){
+        let obj = _this.provinces[i];
+        if(obj.city_name == province){ 
+          _this.ruleForm.visitProvinceId=obj.id; 
+          break;
+        }
+      } 
+      _this.ruleForm.visitLongitude=lnglatXY[0];
+      _this.ruleForm.visitLatitude=lnglatXY[1]; 
     }
   },
   mounted(){
+    
     if(this.$route.params.id != 0 && this.$route.params.id !='undefined'){
       this.mallTakeInfo(this.$route.params.id);
     }else{
       this.selectMainShop();
+      this.loadAMap();
     }
     let _this =this;
     _this.isMaterialUrl();
@@ -408,6 +607,23 @@ export default {
 
 <style lang="less" scoped>
 @import '../../less/addLogistics.less';
+#tipinput{
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: #fff;
+  background-image: none;
+  border-radius: 4px;
+  border: 1px solid #bfcbd9;
+  box-sizing: border-box;
+  color: #1f2d3d;
+  font-size: inherit;
+  height: 36px;
+  line-height: 1;
+  outline: 0;
+  padding: 3px 10px;
+  transition: border-color .2s cubic-bezier(.645,.045,.355,1);
+}
 .el-checkbox-button__inner,.el-checkbox-button__inner{
  border-left: 1px solid #bfcbd9;
 }
