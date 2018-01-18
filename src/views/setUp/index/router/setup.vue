@@ -161,6 +161,15 @@
           callback();
         }
       };
+      var formPaySuccessText = (rule, value, callback) => {
+        if (value  == '' || value  == undefined) {
+          return callback(new Error('支付成功提醒内容不能为空'));
+        } else if(value.length>70){
+           return callback(new Error('支付成功提醒内容不能超过70字'));
+        }else{
+          callback();
+        }
+      };
       var formCheckSellerPhone = (rule, value, callback) => {
         if (this.form.set.checkSellerPhone  == "" ||this.form.set.checkSellerPhone  == undefined) {
           return callback(new Error('接收申请审核手机不能为空'));
@@ -206,7 +215,7 @@
               { validator: formOrderCancel, trigger: 'blur,change'},
             ],
             paySuccessText: [
-              { required: true, message: '支付成功提醒内容不能为空', trigger: 'blur' }
+               { validator: formPaySuccessText, trigger: 'blur,change'}
             ],
             checkSellerPhone: [
               { validator: formCheckSellerPhone, trigger: 'blur,change'},

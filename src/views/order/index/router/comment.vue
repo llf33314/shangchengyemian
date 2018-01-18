@@ -4,10 +4,10 @@
       <div class="index-shopInfo">
         <el-form :inline="true" :model="searchData" class="demo-form-inline">
           <el-form-item class="input-all">
-            <el-input v-model.trim="searchData.queryName" placeholder="订单号/商品名称" @blur="search()"  @keyup.enter.native="search"></el-input>
+            <el-input v-model.trim="searchData.queryName" placeholder="订单号/商品名称" @blur="search"  @keyup.enter.native="search"></el-input>
           </el-form-item>         
           <el-form-item label="选择店铺 :">
-            <el-select v-model="searchData.shopId" placeholder="选择店铺"  @change="search()">
+            <el-select v-model="searchData.shopId" placeholder="选择店铺"  @change="search">
               <el-option label="全部" value=""></el-option>
               <el-option class="max-input" v-for="item in shopList"
                 :key="item.id" :label="item.sto_name" :value="item.id">
@@ -15,7 +15,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="选择状态 :">
-            <el-select v-model="searchData.feel" placeholder="全部" @change="search()">
+            <el-select v-model="searchData.feel" placeholder="全部" @change="search">
               <el-option label="全部" value="all"></el-option>
               <el-option label="好评" value="1"></el-option>
               <el-option label="中评" value="0"></el-option>
@@ -122,6 +122,7 @@ export default {
         activeName2: 'all',
         subList:[],//列表数据
         page:{},//页面数据
+        imgUrl:'',
         shopList:[],
         searchData:{//筛选数据
           curPage:'',
@@ -171,10 +172,8 @@ export default {
     search(name){
       this.activeName2=this.searchData.feel;
       this.searchData.curPage=1;
-      if(name){
-        this.mallCommentList(this.searchData);
-      }
-      
+      this.mallCommentList(this.searchData);
+ 
     },
  
      /**时间筛选查询 */
@@ -212,6 +211,7 @@ export default {
         'data':data,
         'success':function (data){
            _this.isComment=data.data.isComment;
+           _this.imgUrl = data.imgUrl;
           _this.count=data.data.count;
           if( _this.isComment == 0){//不开启
              _this.contentShow="openComment";

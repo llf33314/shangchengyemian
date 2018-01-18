@@ -39,7 +39,7 @@
           <div class="index-shopInfo">
             <el-form :inline="true" :model="searchData" class="demo-form-inline">
               <el-form-item >
-                <el-input v-model.trim="searchData.orderNo" placeholder="订单号"></el-input>
+                <el-input v-model.trim="searchData.orderNo" icon="search" placeholder="订单号" @blur="search"  @keyup.enter.native="search"></el-input>
               </el-form-item>
               <el-form-item label="订单状态 :">
                 <!--todo 选中了状态 没有点击筛选 再点下一页 列表数据是筛选选的状态列表-->
