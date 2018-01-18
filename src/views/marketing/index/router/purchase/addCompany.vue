@@ -20,7 +20,7 @@
                   <el-input v-model.trim="ruleForm.companyInternet" placeholder="请输入公司官网" class="max-input" ></el-input>
               </el-form-item>
               <el-form-item label="公司地址 :" prop="companyAddress">
-                <input class="max-input"  placeholder="请输入公司地址" autocomplete="false"
+                <input class="max-input"  placeholder="请输入公司地址" autocomplete="false" @change="searchAddress"
                   v-model.trim="ruleForm.companyAddress" id="tipinput"/>
               </el-form-item>
               <el-form-item style="height:400px;">
@@ -179,6 +179,12 @@ export default {
             }
         }
         });
+    },
+    //输入地址后进行搜索
+    searchAddress(){
+       let _this = this;
+      _this.ruleForm.longitude="";
+      _this.ruleForm.latitude=""; 
     },
     //高德地图加载
     loadAMap(address){
