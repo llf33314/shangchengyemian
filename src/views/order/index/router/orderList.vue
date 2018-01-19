@@ -346,10 +346,12 @@ export default {
        _this.searchData.orderType ='0';
        _this.searchData.status ='0';
        _this.searchData.returnStatus ='';
+       this.$parent.activeName ="allOrder";
      }else{
        _this.searchData.orderType ='-1';
        _this.searchData.status ='7';
        _this.searchData.orderSource ='';
+       this.$parent.activeName ="returnOrder";
      }
      _this.isAdminUser({
         success: function(data) {
@@ -498,8 +500,7 @@ export default {
     }
   },
   mounted(){
-    this.$parent.activeName = "allOrder";
-    // console.log(this.$route.path,"tab.name");
+     // console.log(this.$route.path,"tab.name");
     let _this = this;
      //所有订单,维权订单切换时  改变初始数据
      _this.tabActive=this.$route.path;
@@ -507,10 +508,12 @@ export default {
        _this.searchData.orderType ='0';
        _this.searchData.status ='0';
        _this.searchData.returnStatus ='';
+       this.$parent.activeName ="allOrder";
      }else{
        _this.searchData.orderType ='-1';
        _this.searchData.status ='7';
        _this.searchData.orderSource ='';
+       this.$parent.activeName ="returnOrder";
      }
   
     _this.storeList({
