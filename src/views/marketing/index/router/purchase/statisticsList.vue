@@ -123,8 +123,8 @@ export default {
 <style lang="less" scoped>
 @import '../../../less/style.less';
  .goods-img{
-     width: 100px;
-    height: 60px;
+     width: 62px;
+    height: 62px;
     margin: 10px 0;
  }
 .addBond-main{
