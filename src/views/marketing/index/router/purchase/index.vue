@@ -252,8 +252,10 @@ export default {
   methods: {
     /**报价单筛选查询 */
     search(name){
-      this.searchData.curPage=1;
-      this.purchaseOrderList( this.searchData);
+        //if(this.searchData.search){
+        this.searchData.curPage=1;
+        this.purchaseOrderList( this.searchData);
+        //}
     },
     /**报价单时间筛选查询 */
     search_date(value){

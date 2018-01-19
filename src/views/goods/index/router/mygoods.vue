@@ -165,7 +165,7 @@
     <el-dialog
       :title="isCloneGoods==1?'一键同步商品':'同步商品'"
       :visible.sync="cloneGoodsdialog"
-      size="tiny">
+      size="small">
       <!--一键同步商品-->
       <div class="allcloneGoods-box" v-if="isCloneGoods==1">
           <el-form :model="allcloneForm" ref="cloneForm" label-width="100px" class="demo-ruleForm">

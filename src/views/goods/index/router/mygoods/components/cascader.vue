@@ -5,7 +5,9 @@
             @click.stop=" isShow = !isShow">
             <p v-if="selectedData.length == 0" 
                 class="group-placeholder">请选择商品分组</p>
-            <em class="down" :class="{'is-reverse':isShow}"></em>
+            <div class="embox" @click.stop=" isShow = !isShow">
+                <em class="down" :class="{'is-reverse':isShow}"></em>
+            </div>
             <span class="item" v-for=" (item,i) in selectedData" :key="i">
                 <em>{{item.groupName}}</em>
                 <i class="el-icon-circle-close"  @click.stop="deleteData(item.groupId)"></i>
@@ -22,16 +24,17 @@
             <li v-for="(item,index) in oneData"
                 :key="index" 
                 class="shop-box-justify"
-                @click="selectedItem(item)"
+                @click="selectedItem(item,1)"
                 @mouseenter="listHover(item)">
+                <!-- @mouseleave="listHover(1)"> -->
                 <span>{{item.groupName}}</span>
-                <i class="el-icon-arrow-right" v-if="item.isChild>0"></i>
+                <i class="el-icon-arrow-right" v-if="item.isChild>0 && item.childGroupList"></i>
             </li>
         </ul>
         <ul class="option2" v-if="isSelect">
-            <li v-for="(test,i) in towData"
+            <li v-for="(test,i) in towData.childGroupList"
                 :key="i"
-                @click="selectedItem(test)">
+                @click="selectedItem(test,2)">
                 <span>{{test.groupName}}</span>
             </li>
         </ul>
@@ -63,7 +66,7 @@ export default {
         return {
             oneData:[],//第一级
             towData:[],//第二级
-            Width:'200px',
+            Width:'194px',
             isShow: false,
             isSelect: false,
             selectedData:[],//选中选项
@@ -114,11 +117,14 @@ export default {
     },
     methods:{
         /** 
-         * 一级选择
+         * 选择
+         * @param data 选择数据
+         * @param type 选择数据
          */
-        selectedItem(data){
+        selectedItem(data,type){
             let _this = this;
-             let _add = true;//重复排除条件
+            let _add = true;//重复排除条件
+            let newData = {};//父级数据
              _this.selectedData.forEach((item,i)=>{
                  if(data.id == item.groupPId || data.id == item.groupId){
                     if(_add){
@@ -131,32 +137,54 @@ export default {
                  }
              })
             if(!_add) return;//重复不添加
-            if(data.isChild){
+            //一级选择
+            if(type == 1){
+                newData = {
+                    groupName: data.groupName,
+                    groupPId: 0,
+                    groupId: data.id,
+                    shopId: data.shopId,
+                }
+                this.selectedData.push(newData);
                 //有子集
-                data.childGroupList.forEach((item,i) => {
-                    //if(_this.deleteData(item.id)){
-                        let newData = {
-                        // groupName: data.groupName+'/'+item.groupName,
-                            groupName: item.groupName,
-                            groupPId: item.groupPId,
-                            groupId: item.id,
-                            shopId: item.shopId,
-                        }
-                        this.selectedData.push(newData);
-                    //}
-                });
-                
-            }else{
-                //无子集
-                //if(_this.deleteData(data.id)){
-                    let newData = {
-                        groupName: data.groupName,
-                        groupPId: 0,
-                        groupId: data.id,
-                        shopId: data.shopId,
+                if(data.isChild){
+                    data.childGroupList.forEach((item,i) => {
+                            let newChildData = {
+                                groupName: item.groupName,
+                                groupPId: item.groupPId,
+                                groupId: item.id,
+                                shopId: item.shopId,
+                            }
+                        _this.selectedData.push(newChildData);
+                    });
+                    
+                }
+            }
+            //二级选择
+            if(type == 2){
+                //父级排重
+                let flag = true;
+                _this.selectedData.forEach((item,i)=>{
+                    if(item.groupId == _this.towData.id && flag){
+                        flag = false;
                     }
-                    this.selectedData.push(newData);
-                //}
+                })
+                if(flag){
+                    newData = {
+                        groupName: this.towData.groupName,
+                        groupPId: 0,
+                        groupId: this.towData.id,
+                        shopId: this.towData.shopId,
+                    }
+                    _this.selectedData.push(newData);
+                }
+                let newChildData = {
+                    groupName: data.groupName,
+                    groupPId: data.groupPId,
+                    groupId: data.id,
+                    shopId: data.shopId,
+                }
+                _this.selectedData.push(newChildData);
             }
             this.isShow = false;
             this.isSelect = false;
@@ -166,10 +194,15 @@ export default {
          */
         listHover(data){
             let _this = this;
-            if(data.isChild == 1 ){
-                this.towData = data.childGroupList;
+            if( data == 1 || !data.childGroupList || !data.isChild){
+                this.isSelect = false;
+                return false;
+            }
+            if(data.isChild == 1 && data.childGroupList){
+                this.towData = data;
                 this.isSelect = true;
             }
+            
         },
         /** 
          * 删除
@@ -250,11 +283,14 @@ export default {
 .group-box{
     position: relative;
     display: inline-block;
+    border: 1px solid #bfcbd9;
+    padding-right: 30px; 
+    .border-radius(5px);
     .group-selected{
         width: 100%;
         min-height: 35px;
-        border: 1px solid #bfcbd9;
-        .border-radius(5px);
+        border: 0;
+        // .border-radius(5px);
         span.item{
             background: #dfe4ed;
             padding: 5px 8px;
@@ -273,17 +309,24 @@ export default {
         color:#bfcbd9;
         padding-left: 10px; 
     }
+    .embox{
+        position: absolute;
+        top: 0;
+        width: 30px;
+        height: 100%;
+        right:0;
+    }
     .down{
         position: absolute;
         top:45%;
         margin-top: -3px; 
-        right:5%;
+        right:36%;
         content:'';
         width: 0;
         height: 0;
-        border-left: 6px solid transparent;
-        border-right: 6px solid transparent;
-        border-top: 6px solid #bfcbd9;
+        border-left: 7px solid transparent;
+        border-right: 7px solid transparent;
+        border-top: 8px solid #bfcbd9;
         transform: rotate(0deg);
         transition: transform .3s;
     }
@@ -298,7 +341,7 @@ export default {
     .option1,.option2{
         position: absolute;
         top: 3px;
-        width: 100%;
+        width: 190px;
         background: #fff;
         margin-bottom: -17px;
         margin-right: -17px;
@@ -323,7 +366,7 @@ export default {
         left: 0;
     }
     .option2{
-        left: 200px;
+        left: 190px;
     }
 }
 </style>
