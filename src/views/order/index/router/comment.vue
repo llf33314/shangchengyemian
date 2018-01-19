@@ -78,7 +78,7 @@
                   </div>
                 </div>
                 <div class="table-tr" v-if="comment.imageList">
-                  <div class="comment-img" v-for="image in comment.imageList" :key="image.id">
+                  <div class="comment-img" v-for="image in comment.imageList" :key="image.id" @click="showBigImg(imgUrl+image.imageUrl)">
                     <defaultImg :background="imgUrl+image.imageUrl"></defaultImg>
                   </div>
                 </div>
@@ -103,6 +103,9 @@
       </div>   
     </div> 
     <content-no :show="contentShow" v-if="isComment != 1" style="width:92%"></content-no>
+     <el-dialog v-model="materialLargeSrcVisible" size="small">
+        <img width="100%" :src="largeSrc" alt="" class="img">
+    </el-dialog>
   </div>
 </template>
  <script>
@@ -160,6 +163,8 @@ export default {
         },
         value7: '',
         loading:true,
+        materialLargeSrcVisible:false,
+        largeSrc:''
     }
   },
   watch:{
@@ -168,6 +173,13 @@ export default {
     }
   },
   methods: {
+    /** 
+     * 查看大图
+    */
+    showBigImg(img){
+      this.materialLargeSrcVisible = true;
+      this.largeSrc = img;
+    },
     /**筛选查询 */
     search(name){
       this.activeName2=this.searchData.feel;
@@ -290,6 +302,8 @@ export default {
 </script>
 
 <style lang="less" >
-
+.comment-img{
+  cursor: pointer;
+}
 </style>
 

@@ -389,7 +389,12 @@ export default {
               image.imageUrl=data.imgUrl+image.imageUrl;
             });
             _this.$nextTick(function(){
-              _this.loadAMap(_this.ruleForm.visitAddress);
+              if(data.data.visitLongitude!=null){
+                var  lnglatXY = [data.data.visitLongitude, data.data.visitLatitude]; //已知点坐标
+                _this.loadAMap(null,lnglatXY);
+              }else{
+                _this.loadAMap(_this.ruleForm.visitAddress);
+              }
             });
           }
       });
@@ -401,15 +406,21 @@ export default {
           'url': DFshop.activeAPI.selectMainShop_post,
           'success':function (data){
             _this.ruleForm.visitProvinceId = Number(data.data.province);
-            _this.ruleForm.visitAddress = data.data.address;
+            _this.ruleForm.visitAddress = data.data.address
             // _this.ruleForm.visitAddressDetail = data.data.address;
             _this.ruleForm.visitLongitude=data.data.longitude;
             _this.ruleForm.visitLatitude=data.data.latitude;
             _this.editCityId= Number(data.data.city);
             _this.editAreaId= Number(data.data.district);
-             console.log(_this.editAreaId,"1222");
+            //  console.log(_this.editAreaId,"1222");
              _this.$nextTick(function(){
-              _this.loadAMap(_this.ruleForm.visitAddress);
+               if(data.data.longitude!=null){
+                var  lnglatXY = [data.data.longitude, data.data.latitude]; //已知点坐标
+                _this.loadAMap(null,lnglatXY);
+              }else{
+                _this.loadAMap(data.data.address);
+              }
+              
             });
           }
       });
@@ -452,10 +463,11 @@ export default {
     },
      
      //高德地图加载
-    loadAMap(address){
+    loadAMap(address,XY){
       let _this = this;
       //地图加载
       var map = new AMap.Map("container", {
+          zoom:17,
           resizeEnable: true
       });
       //输入提示
@@ -483,7 +495,17 @@ export default {
         }
         _this.ruleForm.visitAddress=e.poi.name;     
     });
-     
+     if(XY !=null ){  
+       console.log("111111111111");
+        marker.setMap(null);
+        marker = null;
+        marker = new AMap.Marker({
+            icon: "http://webapi.amap.com/theme/v1.3/markers/n/mark_b.png",
+            position:XY
+        });
+        map.setCenter(XY); 
+        marker.setMap(map); 
+     }
     ///搜索文字进行查询
     if(address !=null){
       placeSearch.search(address,function(status, result){
@@ -515,6 +537,7 @@ export default {
             icon: "http://webapi.amap.com/theme/v1.3/markers/n/mark_b.png",
             position:e.lnglat
         });
+        map.setCenter(e.lnglat); 
         marker.setMap(map); 
         var  lnglatXY = [e.lnglat.getLng(), e.lnglat.getLat()]; //已知点坐标
         _this.getAddressByCode(lnglatXY,map,true);  
