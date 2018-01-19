@@ -168,16 +168,20 @@
                                 商品名称最多输入100位字符串
                             </span>
                         </el-form-item>
-                        <el-form-item label="价格 :" prop="pro.proPrice" :inline="true" :rules="rules.proPrice">
-                            <div class="item-inline" style="width:130px">
-                                <el-input v-model.number="form.pro.proPrice" placeholder="请输入价格">
-                                    <template slot="prepend">¥</template>
-                                </el-input>
+                        <el-form-item label="价格 :" required>
+                            <div class="item-inline" prop="pro.proPrice" style="width:130px">
+                                <el-form-item prop="pro.proPrice" :inline="true" :rules="rules.proPrice">
+                                    <el-input v-model.number="form.pro.proPrice" placeholder="请输入价格">
+                                        <template slot="prepend">¥</template>
+                                    </el-input>
+                                </el-form-item>
                             </div>
-                            <div class="item-inline" style="width:168px;color:#999;">
-                                 <el-input v-model.number="form.pro.proCostPrice" placeholder="99.99">
-                                    <template slot="prepend">原价：¥ </template>
-                                </el-input>
+                            <div class="item-inline" style="width:140px;color:#999;">
+                                <el-form-item prop="pro.proCostPrice" :inline="true" :rules="rules.proCostPrice">
+                                    <el-input v-model.number="form.pro.proCostPrice" placeholder="99.99">
+                                        <template slot="prepend">原价：¥ </template>
+                                    </el-input>
+                                </el-form-item>
                             </div>
                             <span class="shop-prompt">该原价价格只作展示作用</span>
                         </el-form-item>
@@ -392,11 +396,20 @@ export default {
   data () {
     var formMoney = (rule, value, callback) => {
         let reg =/^[0-9]{1}\d{0,5}(\.\d{1,2})?$/;
+        if(value == 0){
+            return callback(new Error('商品价格不能为0'));
+        }else if(!reg.test(value)){
+            return callback(new Error('价格最多只能输入六位整数+两位小数,如：300000.00'));
+        }
+        callback()
+    }
+    var formFreight = (rule, value, callback) => {
+        let reg =/^[0-9]{1}\d{0,5}(\.\d{1,2})?$/;
         if(this.form.pro.proFreightSet != 1) return callback();
         if(typeof value != 'number'){
             return callback(new Error('请输入统一邮费价'));
         }else if(!reg.test(value)){
-            return callback(new Error('价格最多只能输入六位整数+两位小数,如：300000.00'));
+            return callback(new Error('费价最多只能输入六位整数+两位小数,如：300000.00'));
         }
         callback()
     };
@@ -460,7 +473,11 @@ export default {
                 { type: 'number' , required: true, message: '请输入总库存(整数)', trigger: 'blur' }
             ],
             proFreightPrice: [
-               { validator: formMoney, trigger: 'blur'}
+                { validator: formFreight, trigger: 'blur'}
+            ],
+            proCostPrice:[
+                { type: 'number',required: true, message: '请输入商品原价', trigger: 'blur' },
+                { validator: formMoney, trigger: 'blur'}
             ]
         },
         newSpecList:[],//暂存新列表
