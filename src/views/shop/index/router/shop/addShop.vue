@@ -86,7 +86,7 @@
     <el-button type="primary" v-if="active == 2" @click="Submit()">保存</el-button>
     <el-button style="margin-top: 12px;" v-if="active !== 3" @click="Back">返回</el-button>
     <div class="shop-textc" v-if="active == 3" >
-      <el-button type="primary" v-if="data.length >1"  @click="next">继续添加</el-button>
+      <el-button type="primary" v-if="data.data.length >1"  @click="next">继续添加</el-button>
       <el-button style="margin-top: 12px;" @click="jumpRouter('/shop')">返回</el-button>
     </div>
      <el-dialog v-model="dialogimg" size="small">

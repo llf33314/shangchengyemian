@@ -32,6 +32,20 @@
 import Lib from 'assets/js/Lib';
 export default {
   data() {
+    var contractContent = (rule, value, callback) => {
+      this.ruleForm.contractContent="";
+      if($('#editor').text() ==""){
+        if($('#editor').html().length > 11){
+          this.ruleForm.contractContent=$('#editor').html();
+           callback();
+        }else{
+          return callback(new Error('合同内容不能为空')); 
+        }
+      }else{
+        this.ruleForm.contractContent=$('#editor').html();
+        callback();
+      }
+    };
     return {
       ruleForm: {
         id:'',
@@ -43,9 +57,9 @@ export default {
         contractTitle:[
           { required: true, message: '标题不能为空', trigger: 'blur' },
         ],
-        contractContent: [
-          { required: true, message: '请输入内容', trigger: 'blur' },
-        ]
+         contractContent: [
+           { validator: contractContent, trigger: 'blur' },
+        ],
       },
     }
   },
@@ -57,14 +71,13 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           //防止多次点击重复提交数据
-          let editorText =  $('#editor').html();
-          _this.ruleForm.contractContent = editorText;
+          // _this.ruleForm.contractContent = text;
           console.log(_this.ruleForm,"_this.ruleForm.");
 
           if(!Lib.C.ajax_manage) return false;
           Lib.C.ajax_manage = false;
 
-          _this.ajaxRequest({
+          _this.ajaxRequestJQ({
               'url': DFshop.activeAPI.purchaseContractSave_post,
               'data':_this.ruleForm,
               'success':function (data){

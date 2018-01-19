@@ -10,16 +10,16 @@
       </div>
       <div class="addBond-main">
           <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-              <el-form-item label="公司名称 :" prop="companyName">
+              <el-form-item label="公司名称 :" prop="companyName" required>
                   <el-input v-model.trim="ruleForm.companyName" placeholder="请输入公司名称" class="max-input" ></el-input>
               </el-form-item>
-              <el-form-item label="公司电话 :" prop="companyTel">
+              <el-form-item label="公司电话 :" prop="companyTel" required>
                   <el-input v-model.trim="ruleForm.companyTel" placeholder="请输入公司电话" class="max-input" ></el-input>
               </el-form-item>
-              <el-form-item label="公司官网 :" prop="companyInternet">
+              <el-form-item label="公司官网 :" prop="companyInternet" required>
                   <el-input v-model.trim="ruleForm.companyInternet" placeholder="请输入公司官网" class="max-input" ></el-input>
               </el-form-item>
-              <el-form-item label="公司地址 :" prop="companyAddress">
+              <el-form-item label="公司地址 :" prop="companyAddress" required>
                 <input class="max-input"  placeholder="请输入公司地址" autocomplete="false" @change="searchAddress"
                   v-model.trim="ruleForm.companyAddress" id="tipinput"/>
               </el-form-item>
@@ -83,16 +83,16 @@ export default {
       editorOption: {},
       rules: {
         companyName:[
-           { required: true, message: '公司名称不能为空', trigger: 'blur' },
+           { required: true, message: '公司名称不能为空', trigger: 'blur,change' },
         ],
         companyTel: [
-           { validator: companyTel, trigger: 'blur' },
+           { validator: companyTel, trigger: 'blur,change' },
         ],
         companyInternet: [
-         { validator: companyInternet, trigger: 'blur' },
+         { validator: companyInternet, trigger: 'blur,change' },
         ],
         companyAddress: [
-            { validator: companyAddress, trigger: 'blur' }, 
+            { validator: companyAddress, trigger: 'blur,change' }, 
         ]
       },
     }
@@ -191,6 +191,7 @@ export default {
       let _this = this;
       //地图加载
       var map = new AMap.Map("container", {
+          zoom:17,
           resizeEnable: true
       });
       //输入提示

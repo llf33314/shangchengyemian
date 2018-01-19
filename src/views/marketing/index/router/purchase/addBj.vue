@@ -13,12 +13,12 @@
             <el-form-item label="标题 :" prop="orderTitle">
                <el-input v-model.trim="ruleForm.orderTitle" class="addbj-input" placeholder="请输入报价单标题" ></el-input>
             </el-form-item>
-            <el-form-item label="所属公司 :" prop="companyId">
+            <el-form-item label="所属公司 :" prop="companyId" required>
                 <el-select v-model="ruleForm.companyId" placeholder="请选择公司模板" class="addbj-input">
                     <el-option :label="option.company_name" :value="option.id" :key="option.id" v-for="option in allCompany"> </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="付款方式 :" prop="orderType">
+            <el-form-item label="付款方式 :" prop="orderType" required>
                  <el-radio-group v-model="ruleForm.orderType">
                     <el-radio label="0">全款</el-radio>
                     <el-radio label="1">分期</el-radio>
@@ -27,18 +27,18 @@
                       <time-list :rowList.sync="timeList" ref="timeComp"></time-list>
                 </div>
             </el-form-item>
-            <el-form-item label="是否在线签合同 :" prop="haveContract">
+            <el-form-item label="是否在线签合同 :" prop="haveContract" required>
                 <el-radio-group v-model="ruleForm.haveContract">
                     <el-radio label="0">签</el-radio>
                     <el-radio label="1">不签</el-radio>
                 </el-radio-group>
             </el-form-item>
-            <el-form-item label="合同 :" prop="contractId" v-if="ruleForm.haveContract == 0">
+            <el-form-item label="合同 :" prop="contractId" v-if="ruleForm.haveContract == 0" required>
                 <el-select v-model="ruleForm.contractId" placeholder="请选择合同" class="addbj-input">
                     <el-option  :label="option.contract_title" :value="option.id" :key="option.id" v-for="option in allContract"> </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="对外报价是否含税 :" prop="haveTax">
+            <el-form-item label="对外报价是否含税 :" prop="haveTax" required>
                 <el-radio-group v-model="ruleForm.haveTax">
                     <el-radio label="0">含</el-radio>
                     <el-radio label="1">不含</el-radio>
@@ -53,7 +53,7 @@
              <el-form-item label="报价单备注 :" prop="orderRemarks">
                 <el-input  v-model.trim="ruleForm.orderRemarks" class="addbj-input" type="textarea" :rows="2" placeholder="请输入内容" ></el-input>
             </el-form-item>
-            <el-form-item  label="底部二维码 :" prop="orderQrcode" style="width:40%;height:40%">
+            <el-form-item  label="底部二维码 :" prop="orderQrcode" style="width:40%;height:40%" required>
                 <div class="addbj-img" :class="ruleForm.orderQrcode == '' ? 'border':''">
                     <div class="material-square" @click="materiallayer(1)" >
                         <i class="el-icon-plus"></i>
@@ -67,10 +67,10 @@
                  <p class="p-warn ">建议尺寸：300*300px<br/>
                 （可上传公众号二维码或小程序体验码）</p>
             </el-form-item>
-            <el-form-item label="轮播图设置 :">
+            <el-form-item label="轮播图设置 :" required>
              <carousel-list :rowList.sync="carouselList" ref="carouselComp"></carousel-list>
             </el-form-item>
-            <el-form-item label="商品设置 :" prop="orderDetailLength">
+            <el-form-item label="商品设置 :" prop="orderDetailLength" required>
                 <el-button type="primary" @click="showDialog">添加商品</el-button>
                 <details-list :rowList.sync="orderDetailsList" ref="detailsComp"></details-list>           
                 <div class="table-footer">
@@ -153,13 +153,13 @@ export default {
           { validator: contractId, trigger: 'change' },
         ],
         orderDetailLength:[
-          { validator: orderDetailLength, trigger: 'blur' },
+          { validator: orderDetailLength, trigger: 'blur,change' },
         ],
         orderTitle: [
-          { required: true, message: '标题不能为空', trigger: 'blur' },
+          { required: true, message: '标题不能为空', trigger: 'blur,change' },
         ],
         orderQrcode: [
-          { required: true, message: '底部二维码不能为空', trigger: 'blur' }
+          { required: true, message: '底部二维码不能为空', trigger: 'blur,change' }
         ],
         carouselList: [
           {  type: 'array', required: true, message: '轮播图不能为空', trigger: 'change' }
