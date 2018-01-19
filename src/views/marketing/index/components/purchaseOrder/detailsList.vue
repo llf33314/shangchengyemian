@@ -220,7 +220,7 @@ export default {
         height: 60px;
     }
     .addbj-img-text{
-      width:160px; padding-left:5px;text-align: left;white-space: normal; word-break: normal;    line-height: 21px;
+      width:160px; padding-left:20px;text-align: left;white-space: normal; word-break: normal;    line-height: 21px;
     }
     .table-footer{
         width: 100%;
