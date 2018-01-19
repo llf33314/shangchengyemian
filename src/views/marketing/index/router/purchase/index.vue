@@ -316,7 +316,7 @@ export default {
         urlQR: "",
         path: _this.path,
         status: 1,
-        pageLink:"purchasePhone/79B4DE7C/getMemberPower.do?busId="+obj.bus_id+"&orderId="+obj.id
+        pageLink:"purchasePhone/79B4DE7C/"+obj.bus_id+"/"+obj.id+"/getMemberPower.do" 
       };
       _this.$root.$refs.dialogQR.showDialog(msg);
     },
