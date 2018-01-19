@@ -7,7 +7,7 @@
       <el-breadcrumb-item v-else>修改微页面</el-breadcrumb-item>
     </el-breadcrumb>
   </div>
-  <div class="shop-addpage-main" id="shop1">
+  <div class="shop-addpage-main" id="shop1" v-if="active !=2 ">
     <div class="shop-steps">
       <el-steps :active="active"  center  >
       <el-step title="编辑页面信息">
@@ -108,6 +108,8 @@ export default {
       iframeULR:'',//微页编辑地址
       iframeHeight:'',//微页高度
       isShade:false,
+
+      pageId:''//页面id
     }
   },
   methods: {
@@ -126,16 +128,6 @@ export default {
         this.$refs['ruleForm'].validate((valid) => {
           if (valid) {
               _this.save(1);
-              //_this.iframeULR= 'http://192.168.2.118:8080/mallPage/designPage.do?id='+_this.$route.params.pageId;
-              _this.iframeULR= window.DFshop.api + '/mallPage/designPage.do?id='+_this.$route.params.pageId;
-              _this.$nextTick(()=>{
-                _this.iframeHeight = $(window).height()-$('.common-nav').outerHeight(true)-$('#shop1').outerHeight(true)-$('#shop2').outerHeight(true)-10;
-                $('#shade2').css({
-                  'height':_this.iframeHeight,
-                  'top':  $('.common-nav').outerHeight(true)+$('#shop1').outerHeight(true),
-                  //'background': '#fff'
-                })
-            })
           } else {
             return false;
           }
@@ -161,7 +153,7 @@ export default {
     save(type){
        let _this = this;
        let page={
-          id:_this.ruleForm.id || null,//页面id//有ID则修改，无则新增
+          id: _this.pageId || null,//页面id//有ID则修改，无则新增
           pagName:_this.ruleForm.pagName,//页面名称
           pagDescript:_this.ruleForm.pagDescript,//页面描述
           pagTypeId:_this.ruleForm.pagTypeId,//页面分类
@@ -185,7 +177,26 @@ export default {
             },
             'success':function (data){
                 if(type==1){
-                   _this.active = _this.active+1;
+                   if(_this.active == 1){
+                    //iframe嵌入
+                    let pageId = '';
+                      if(_this.$route.params.pageId ==='0'){
+                        pageId = data.data.id;
+                        _this.pageId = data.data.id
+                      }else{
+                        pageId = _this.$route.params.pageId
+                      }
+                      //_this.iframeULR= 'http://192.168.2.118:8080/mallPage/designPage.do?id='+pageId;
+                      _this.iframeULR= window.DFshop.api + '/mallPage/designPage.do?id='+ pageId;
+                      _this.$nextTick(()=>{
+                        _this.iframeHeight = $(window).height()-$('.common-nav').outerHeight(true)-$('#shop2').outerHeight(true)-10;
+                        $('#shade2').css({
+                          'height':_this.iframeHeight,
+                          'top':  $('.common-nav').outerHeight(true),
+                        })
+                      })
+                   }
+                  _this.active = _this.active+1;
                 }else if(type==2){
                    let msg ={
                       title: '页面预览',
@@ -209,7 +220,6 @@ export default {
               id: id
           },
           'success':function (data){
-              console.log(data);
               _this.imgUrl = data.imgUrl;
               _this.path = data.path;
               _this.webPath = data.webPath;
@@ -247,6 +257,7 @@ export default {
     if(this.$route.params.pageId ==='0'){
  
     }else{
+      this.pageId = this.$route.params.pageId;
       this.pageInfoAjax(this.$route.params.pageId);
     }
     $('#shade').hide();
