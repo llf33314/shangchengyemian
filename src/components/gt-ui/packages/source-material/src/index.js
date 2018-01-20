@@ -65,9 +65,7 @@ const defaultCallback = action => {
 };
 
 var showNextMsg = function() {
-  if (!instance) {
-    initInstance();
-  }
+  initInstance();
   if (!instance.value || instance.closeTimer) {
     if (msgQueue.length > 0) {
       currentMsg = msgQueue.shift();
@@ -150,6 +148,7 @@ Material.show = function(message, title, options) {
 };
 Material.close = function() {
   if (!instance) return;
+
   instance.value = false;
   msgQueue = [];
   currentMsg = null;

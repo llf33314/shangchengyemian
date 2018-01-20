@@ -346,7 +346,7 @@
             </el-form>
 
         </div>
-        <div class="mygoods-content" v-show="active == 2">
+        <div class="mygoods-content" v-if="active == 2">
             <div class="editor-box">
                 <div class="editor-goodsinfo">
                     商品信息：
@@ -515,22 +515,24 @@ export default {
         isFlowList:true,//流量包显示
         webPath:'',//手机端域名
 
-        editorOption:{}//编辑器参数
+        editorOption:{},//编辑器参数
+        editor2:'',
     }
   },
   watch:{
       active(a){
         $(window).scrollTop(0);
-        //   if(a==2){
-        //       this.$nextTick(()=>{
-        //         let E = window.wangEditor;
-        //         let editor2 = new E('editor')
-        //         editor2.create()
-        //         $('#editor').css({
-        //             height:'auto'
-        //         })
-        //       })
-        //   }
+          if(a==2){
+              this.$nextTick(()=>{
+                let E = window.wangEditor;
+                this.editor2 = new E('editor');
+                this.editor2.config.mapIndex = 1;
+                this.editor2.create();
+                $('#editor').css({
+                    height:'auto'
+                })
+              })
+          }
       }
   },
   methods: {
@@ -1155,14 +1157,15 @@ export default {
             }
         }
     })
-    _this.$nextTick(()=>{
-        let E = window.wangEditor;
-        let editor2 = new E('editor')
-        editor2.create()
-            $('#editor').css({
-                height:'auto'
-            })
-        })
+    // _this.$nextTick(()=>{
+    //     console.log($('#editor'),'#editor')
+    //     let E = window.wangEditor;
+    //     let editor2 = new E('editor')
+    //     editor2.create()
+    //         $('#editor').css({
+    //             height:'auto'
+    //         })
+    //     })
     }
 }
 </script>

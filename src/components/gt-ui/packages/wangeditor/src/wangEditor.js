@@ -1,4 +1,4 @@
-import jq from '../../../../../assets/js/jquery-2.2.2.min';
+import iq from '../../../../../assets/js/jquery-2.2.2.min'
 import '../../../style/wangEditor.css';
 
 import material from '../../source-material/index.js'
@@ -50,7 +50,7 @@ var _e = function (fn) {
     E.hostname = location.hostname.toLowerCase();
     E.websiteHost = 'wangeditor.github.io';
     E.isOnWebsite = E.hostname === E.websiteHost;
-    E.docsite = 'https://www.kancloud.cn/wangfupeng/wangeditor2/113961';
+    E.docsite = 'http://www.kancloud.cn/wangfupeng/wangeditor2/113961';
 
     // 暴露给全局对象
     wangEditor = E;
@@ -3057,70 +3057,70 @@ _e(function (E, $) {
             title: '默认',
             size: 18,
             imgs: [
-                '/images/activity/miniscene/phone/face/1.gif',
-                '/images/activity/miniscene/phone/face/2.gif',
-                '/images/activity/miniscene/phone/face/3.gif',
-                '/images/activity/miniscene/phone/face/4.gif',
-                '/images/activity/miniscene/phone/face/5.gif',
-                '/images/activity/miniscene/phone/face/6.gif',
-                '/images/activity/miniscene/phone/face/7.gif',
-                '/images/activity/miniscene/phone/face/8.gif',
-                '/images/activity/miniscene/phone/face/9.gif',
-                '/images/activity/miniscene/phone/face/10.gif',
-                '/images/activity/miniscene/phone/face/11.gif',
-                '/images/activity/miniscene/phone/face/12.gif',
-                '/images/activity/miniscene/phone/face/13.gif',
-                '/images/activity/miniscene/phone/face/14.gif',
-                '/images/activity/miniscene/phone/face/15.gif',
-                '/images/activity/miniscene/phone/face/16.gif',
-                '/images/activity/miniscene/phone/face/17.gif',
-                '/images/activity/miniscene/phone/face/18.gif',
-                '/images/activity/miniscene/phone/face/19.gif',
-                '/images/activity/miniscene/phone/face/20.gif',
-                '/images/activity/miniscene/phone/face/21.gif',
-                '/images/activity/miniscene/phone/face/22.gif',
-                '/images/activity/miniscene/phone/face/23.gif',
-                '/images/activity/miniscene/phone/face/24.gif',
-                '/images/activity/miniscene/phone/face/25.gif',
-                '/images/activity/miniscene/phone/face/26.gif',
-                '/images/activity/miniscene/phone/face/27.gif',
-                '/images/activity/miniscene/phone/face/28.gif',
-                '/images/activity/miniscene/phone/face/29.gif',
-                '/images/activity/miniscene/phone/face/30.gif',
-                '/images/activity/miniscene/phone/face/31.gif',
-                '/images/activity/miniscene/phone/face/32.gif',
-                '/images/activity/miniscene/phone/face/33.gif',
-                '/images/activity/miniscene/phone/face/34.gif',
-                '/images/activity/miniscene/phone/face/35.gif',
-                '/images/activity/miniscene/phone/face/36.gif',
-                '/images/activity/miniscene/phone/face/37.gif',
-                '/images/activity/miniscene/phone/face/38.gif',
-                '/images/activity/miniscene/phone/face/39.gif',
-                '/images/activity/miniscene/phone/face/40.gif',
-                '/images/activity/miniscene/phone/face/41.gif',
-                '/images/activity/miniscene/phone/face/42.gif',
-                '/images/activity/miniscene/phone/face/43.gif',
-                '/images/activity/miniscene/phone/face/44.gif',
-                '/images/activity/miniscene/phone/face/45.gif',
-                '/images/activity/miniscene/phone/face/46.gif',
-                '/images/activity/miniscene/phone/face/47.gif',
-                '/images/activity/miniscene/phone/face/48.gif',
-                '/images/activity/miniscene/phone/face/49.gif',
-                '/images/activity/miniscene/phone/face/50.gif'
+                '../static/emotions/default/1.gif',
+                '../static/emotions/default/2.gif',
+                '../static/emotions/default/3.gif',
+                '../static/emotions/default/4.gif',
+                '../static/emotions/default/5.gif',
+                '../static/emotions/default/6.gif',
+                '../static/emotions/default/7.gif',
+                '../static/emotions/default/8.gif',
+                '../static/emotions/default/9.gif',
+                '../static/emotions/default/10.gif',
+                '../static/emotions/default/11.gif',
+                '../static/emotions/default/12.gif',
+                '../static/emotions/default/13.gif',
+                '../static/emotions/default/14.gif',
+                '../static/emotions/default/15.gif',
+                '../static/emotions/default/16.gif',
+                '../static/emotions/default/17.gif',
+                '../static/emotions/default/18.gif',
+                '../static/emotions/default/19.gif',
+                '../static/emotions/default/20.gif',
+                '../static/emotions/default/21.gif',
+                '../static/emotions/default/22.gif',
+                '../static/emotions/default/23.gif',
+                '../static/emotions/default/24.gif',
+                '../static/emotions/default/25.gif',
+                '../static/emotions/default/26.gif',
+                '../static/emotions/default/27.gif',
+                '../static/emotions/default/28.gif',
+                '../static/emotions/default/29.gif',
+                '../static/emotions/default/30.gif',
+                '../static/emotions/default/31.gif',
+                '../static/emotions/default/32.gif',
+                '../static/emotions/default/33.gif',
+                '../static/emotions/default/34.gif',
+                '../static/emotions/default/35.gif',
+                '../static/emotions/default/36.gif',
+                '../static/emotions/default/37.gif',
+                '../static/emotions/default/38.gif',
+                '../static/emotions/default/39.gif',
+                '../static/emotions/default/40.gif',
+                '../static/emotions/default/41.gif',
+                '../static/emotions/default/42.gif',
+                '../static/emotions/default/43.gif',
+                '../static/emotions/default/44.gif',
+                '../static/emotions/default/45.gif',
+                '../static/emotions/default/46.gif',
+                '../static/emotions/default/47.gif',
+                '../static/emotions/default/48.gif',
+                '../static/emotions/default/49.gif',
+                '../static/emotions/default/50.gif'
             ]
         },
-        // 'jinxing': {
-        //     title: '金星',
-        //     size: 50,
-        //     imgs: [
-        //         '../static/emotions/jinxing/1.gif',
-        //         '../static/emotions/jinxing/2.gif',
-        //         '../static/emotions/jinxing/3.gif',
-        //         '../static/emotions/jinxing/4.gif',
-        //         '../static/emotions/jinxing/5.gif',
-        //         '../static/emotions/jinxing/6.gif'
-        //     ]
-        // }
+        'jinxing': {
+            title: '金星',
+            size: 50,
+            imgs: [
+                '../static/emotions/jinxing/1.gif',
+                '../static/emotions/jinxing/2.gif',
+                '../static/emotions/jinxing/3.gif',
+                '../static/emotions/jinxing/4.gif',
+                '../static/emotions/jinxing/5.gif',
+                '../static/emotions/jinxing/6.gif'
+            ]
+        }
     };
 
     // 百度地图的key
@@ -5168,12 +5168,13 @@ _e(function (E, $) {
             return;
         }
 
-        if (index++ > 1) {
+        var editor = this;
+
+        if(typeof editor.config.mapIndex != 'undefined'?editor.config.mapIndex ++ >1 : index++ > 1){
             E.error('目前不支持在一个页面多个编辑器上同时使用地图，可通过自定义菜单配置去掉地图菜单');
             return;
         }
 
-        var editor = this;
         var config = editor.config;
         var lang = config.lang;
         var ak = config.mapAk;
@@ -5550,7 +5551,7 @@ _e(function (E, $) {
         }
         var script = document.createElement("script");
         script.type = "text/javascript";
-        script.src = "https://apps.bdimg.com/libs/highlight.js/9.1.0/highlight.min.js";
+        script.src = "http://apps.bdimg.com/libs/highlight.js/9.1.0/highlight.min.js";
         document.body.appendChild(script);
     }
 

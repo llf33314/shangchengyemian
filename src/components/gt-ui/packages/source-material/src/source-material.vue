@@ -1,14 +1,12 @@
 <template>
-  <section>
-    <transition name="msgbox-bounce">
+  <section class="source-material" v-if="value">
       <div class="mint-msgbox" v-show="value" :style="{width:width+'px',height:height+'px'}">
         <iframe :src="materialUrl"  :width="width" :height="height" class="material"></iframe>
       </div>
-    </transition>
   </section>
 </template>
 <script>
-  import Popup from '../../../util/popup';
+  import Popup from '../../../util/popup/index';
   export default {
     mixins: [ Popup ],
     data() {

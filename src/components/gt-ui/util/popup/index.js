@@ -115,6 +115,7 @@ export default {
   beforeMount() {
     this._popupId = 'popup-' + idSeed++;
     PopupManager.register(this._popupId, this);
+
   },
 
   beforeDestroy() {

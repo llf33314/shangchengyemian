@@ -41,6 +41,7 @@ const PopupManager = {
     if (id && instance) {
       instances[id] = instance;
     }
+    console.log(instances)
   },
 
   deregister: function(id) {
