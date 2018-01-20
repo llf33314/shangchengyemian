@@ -553,11 +553,13 @@ export default {
       });  
       geocoder.getAddress(lnglatXY, function(status, result) {
         if (status === 'complete' && result.info === 'OK') {
-          // console.log(result);
+          console.log(result);
           var province=result.regeocode.addressComponent.province;
           var city=result.regeocode.addressComponent.city;
           var district=result.regeocode.addressComponent.district;
-
+          if(district==null || district==""){
+            district=result.regeocode.addressComponent.township;
+          }
           _this.relatedCity(province,city,district,map,lnglatXY);
           var address = result.regeocode.formattedAddress; //返回地址描述
           if(isSaveAddress){
