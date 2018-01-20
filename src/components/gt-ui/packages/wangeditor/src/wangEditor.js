@@ -50,7 +50,7 @@ var _e = function (fn) {
     E.hostname = location.hostname.toLowerCase();
     E.websiteHost = 'wangeditor.github.io';
     E.isOnWebsite = E.hostname === E.websiteHost;
-    E.docsite = 'http://www.kancloud.cn/wangfupeng/wangeditor2/113961';
+    E.docsite = 'https://www.kancloud.cn/wangfupeng/wangeditor2/113961';
 
     // 暴露给全局对象
     wangEditor = E;
