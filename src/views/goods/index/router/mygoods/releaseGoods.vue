@@ -520,6 +520,7 @@ export default {
   },
   watch:{
       active(a){
+        $(window).scrollTop(0);
           if(a==2){
               this.$nextTick(()=>{
                 let E = window.wangEditor;
