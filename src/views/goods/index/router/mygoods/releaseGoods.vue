@@ -738,10 +738,8 @@ export default {
 
         let url = '';//请求接口
         if(_this.$route.params.id === 'add'){
-            console.log(1)
             url = DFshop.activeAPI.mallProductAdd_post
         }else{
-            console.log(2)
             url = DFshop.activeAPI.mallProductUpdatet_post;
         }
         _this.ajaxSave({
