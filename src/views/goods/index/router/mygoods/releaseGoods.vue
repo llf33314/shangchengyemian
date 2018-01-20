@@ -736,55 +736,28 @@ export default {
         if(!Lib.C.ajax_manage) return false;
         Lib.C.ajax_manage = false;
         
-        if(this.$route.params.id === 'add'){
-            //新增
-            _this.ajaxRequest({
-                'url':  DFshop.activeAPI.mallProductAdd_post,
-                'data':data,
-                'success':function (data){
-                    if(type==1){
-                        _this.active = 3;
+        _this.ajaxSave({
+            'url':  DFshop.activeAPI.mallProductAdd_post,
+            'data':data,
+            'success':function (data){
+                if(type==1){
+                    _this.active = 3;
+                }else{
+                    let _pageLink='';
+                    if(_this.$route.params.id === 'add'){
+                        _pageLink = 'goods/details/'+_this.form.pro.shopId+'/'+data.data.userId+'/0/'+data.data.id+'/0';
                     }else{
-                        let _pageLink='';
-                        if(_this.$route.params.id === 'add'){
-                            _pageLink = 'goods/details/'+_this.form.pro.shopId+'/'+data.data.userId+'/0/'+data.data.id+'/0';
-                        }else{
-                            _pageLink = 'goods/details/'+_this.form.pro.shopId+'/'+_this.form.pro.userId+'/0/'+_this.form.pro.id+'/0';
-                        }
-                        let msg ={
-                            title: '商品预览',
-                            path: _this.webPath,
-                            pageLink: _pageLink//页面链接
-                        };
-                        _this.$root.$refs.dialogQR.showDialog(msg);
+                        _pageLink = 'goods/details/'+_this.form.pro.shopId+'/'+_this.form.pro.userId+'/0/'+_this.form.pro.id+'/0';
                     }
+                    let msg ={
+                        title: '商品预览',
+                        path: _this.webPath,
+                        pageLink: _pageLink//页面链接
+                    };
+                    _this.$root.$refs.dialogQR.showDialog(msg);
                 }
-            });
-        }else{
-            //修改
-            _this.ajaxRequestJQ({
-                'url':  DFshop.activeAPI.mallProductUpdatet_post,
-                'data':data,
-                'success':function (data){
-                    if(type==1){
-                        _this.active = 3;
-                    }else{
-                        let _pageLink='';
-                        if(_this.$route.params.id === 'add'){
-                            _pageLink = 'goods/details/'+_this.form.pro.shopId+'/'+data.data.userId+'/0/'+data.data.id+'/0';
-                        }else{
-                            _pageLink = 'goods/details/'+_this.form.pro.shopId+'/'+_this.form.pro.userId+'/0/'+_this.form.pro.id+'/0';
-                        }
-                        let msg ={
-                            title: '商品预览',
-                            path: _this.webPath,
-                            pageLink: _pageLink//页面链接
-                        };
-                        _this.$root.$refs.dialogQR.showDialog(msg);
-                    }
-                }
-            });
-        }
+            }
+        });
     },
     /** 
      * 数据请求 --  整理数据

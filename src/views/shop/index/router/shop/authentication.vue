@@ -761,7 +761,7 @@ export default {
       
       _this.$refs[formName].validate((valid) => {
         if (valid) {
-          _this.ajaxRequestJQ({
+          _this.ajaxSave({
             'url': DFshop.activeAPI.mallStoreCertSave_post,
             'data': _data,
              'success':function (data){
