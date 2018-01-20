@@ -69,7 +69,7 @@
           <p v-else>修改页面成功</p>
       </div>
     </div>
-    <div class="shop-addpage-main">
+    <div class="shop-addpage-main" v-if="active!=2">
       <el-button style="margin-top: 12px;" @click="next" v-if="active==1">下一步</el-button>
       <!-- <el-button type="primary" v-if="active==2" @click="save(1)">保存</el-button>
       <el-button type="primary" v-if="active==2" @click="save(2)">预览</el-button> -->
