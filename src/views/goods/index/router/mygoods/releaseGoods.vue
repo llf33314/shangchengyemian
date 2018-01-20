@@ -381,7 +381,7 @@
             </div>
         </div>
         <el-button style="margin-top: 12px;" @click="next()" v-if="active == 1">下一步</el-button>
-        <el-button type="primary" v-if="active == 2">保存</el-button>
+        <el-button type="primary" v-if="active == 2" @click="next()">保存</el-button>
         <el-button type="primary" v-if="active == 2" @click="changeData(2)">预览</el-button>
         <el-button style="margin-top: 12px;" v-if="active == 1 " @click="back_go()">返回</el-button>
         <el-button style="margin-top: 12px;" v-if="active == 2 " @click=" active=1">返回</el-button>
