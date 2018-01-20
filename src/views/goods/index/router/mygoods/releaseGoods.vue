@@ -346,7 +346,7 @@
             </el-form>
 
         </div>
-        <div class="mygoods-content" v-if="active == 2">
+        <div class="mygoods-content" v-show="active == 2">
             <div class="editor-box">
                 <div class="editor-goodsinfo">
                     商品信息：
@@ -381,7 +381,7 @@
             </div>
         </div>
         <el-button style="margin-top: 12px;" @click="next()" v-if="active == 1">下一步</el-button>
-        <el-button type="primary" v-if="active == 2">保存</el-button>
+        <el-button type="primary" v-if="active == 2" @click="next()">保存</el-button>
         <el-button type="primary" v-if="active == 2" @click="changeData(2)">预览</el-button>
         <el-button style="margin-top: 12px;" v-if="active == 1 " @click="back_go()">返回</el-button>
         <el-button style="margin-top: 12px;" v-if="active == 2 " @click=" active=1">返回</el-button>
@@ -520,16 +520,17 @@ export default {
   },
   watch:{
       active(a){
-          if(a==2){
-              this.$nextTick(()=>{
-                let E = window.wangEditor;
-                let editor2 = new E('editor')
-                editor2.create()
-                $('#editor').css({
-                    height:'auto'
-                })
-              })
-          }
+        $(window).scrollTop(0);
+        //   if(a==2){
+        //       this.$nextTick(()=>{
+        //         let E = window.wangEditor;
+        //         let editor2 = new E('editor')
+        //         editor2.create()
+        //         $('#editor').css({
+        //             height:'auto'
+        //         })
+        //       })
+        //   }
       }
   },
   methods: {
@@ -727,7 +728,7 @@ export default {
     /** 
      * 保存请求
      * @param data  数据
-     * @param type  1新增保存，2新增预览
+     * @param type  1保存，2预览
      */
     dataAjax(type,data){
         let _this = this;
@@ -735,56 +736,35 @@ export default {
         //防止多次点击重复提交数据
         if(!Lib.C.ajax_manage) return false;
         Lib.C.ajax_manage = false;
-        
-        if(this.$route.params.id === 'add'){
-            //新增
-            _this.ajaxRequest({
-                'url':  DFshop.activeAPI.mallProductAdd_post,
-                'data':data,
-                'success':function (data){
-                    if(type==1){
-                        _this.active = 3;
-                    }else{
-                        let _pageLink='';
-                        if(_this.$route.params.id === 'add'){
-                            _pageLink = 'goods/details/'+_this.form.pro.shopId+'/'+data.data.userId+'/0/'+data.data.id+'/0';
-                        }else{
-                            _pageLink = 'goods/details/'+_this.form.pro.shopId+'/'+_this.form.pro.userId+'/0/'+_this.form.pro.id+'/0';
-                        }
-                        let msg ={
-                            title: '商品预览',
-                            path: _this.webPath,
-                            pageLink: _pageLink//页面链接
-                        };
-                        _this.$root.$refs.dialogQR.showDialog(msg);
-                    }
-                }
-            });
+
+        let url = '';//请求接口
+        if(_this.$route.params.id === 'add'){
+            url = DFshop.activeAPI.mallProductAdd_post
         }else{
-            //修改
-            _this.ajaxRequestJQ({
-                'url':  DFshop.activeAPI.mallProductUpdatet_post,
-                'data':data,
-                'success':function (data){
-                    if(type==1){
-                        _this.active = 3;
-                    }else{
-                        let _pageLink='';
-                        if(_this.$route.params.id === 'add'){
-                            _pageLink = 'goods/details/'+_this.form.pro.shopId+'/'+data.data.userId+'/0/'+data.data.id+'/0';
-                        }else{
-                            _pageLink = 'goods/details/'+_this.form.pro.shopId+'/'+_this.form.pro.userId+'/0/'+_this.form.pro.id+'/0';
-                        }
-                        let msg ={
-                            title: '商品预览',
-                            path: _this.webPath,
-                            pageLink: _pageLink//页面链接
-                        };
-                        _this.$root.$refs.dialogQR.showDialog(msg);
-                    }
-                }
-            });
+            url = DFshop.activeAPI.mallProductUpdatet_post;
         }
+        _this.ajaxSave({
+            'url':  url,
+            'data':data,
+            'success':function (data){
+                if(type==1){
+                    _this.active = 3;
+                }else{
+                    let _pageLink='';
+                    if(_this.$route.params.id === 'add'){
+                        _pageLink = 'goods/details/'+_this.form.pro.shopId+'/'+data.data.userId+'/0/'+data.data.id+'/0';
+                    }else{
+                        _pageLink = 'goods/details/'+_this.form.pro.shopId+'/'+_this.form.pro.userId+'/0/'+_this.form.pro.id+'/0';
+                    }
+                    let msg ={
+                        title: '商品预览',
+                        path: _this.webPath,
+                        pageLink: _pageLink//页面链接
+                    };
+                    _this.$root.$refs.dialogQR.showDialog(msg);
+                }
+            }
+        });
     },
     /** 
      * 数据请求 --  整理数据
@@ -1175,7 +1155,15 @@ export default {
             }
         }
     })
-  }
+    _this.$nextTick(()=>{
+        let E = window.wangEditor;
+        let editor2 = new E('editor')
+        editor2.create()
+            $('#editor').css({
+                height:'auto'
+            })
+        })
+    }
 }
 </script>
 

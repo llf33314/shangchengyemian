@@ -153,7 +153,8 @@ Vue.mixin({
       * @param {Booleans} status		判断是否执行公用错误请求提示 false不使用 true使用  默认true使用
 	  * @param return 
 	*/
-    ajaxRequestJQ(opt){
+    //ajaxRequestJQ(opt){
+    ajaxSave(opt){
         let vm = this;
         let opts = opt || {};
         let status = opt.status || true;
@@ -170,8 +171,10 @@ Vue.mixin({
             "data": opts.data || {},
             "dataType": opts.dataType || 'json',
             'maxPostSize': 0,
+            // "contentType": "application/json",
             success: function (res) {//成功
                 console.log(res)
+                C.ajax_manage = true;
                     if (opts.success) {
                         //需要登陆（需要跳转）todo
                         if(res.code == 1001){
@@ -209,6 +212,7 @@ Vue.mixin({
                 }
             },
             error: function (xhr, textStatus) {//失败
+                C.ajax_manage = true;
                 if (opts.error) {
                     opts.error(error);
                 } else {
@@ -216,7 +220,7 @@ Vue.mixin({
                 }
             },
             complete: function () {
-                
+                C.ajax_manage = true;
             }
         });
     },
