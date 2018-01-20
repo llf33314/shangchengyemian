@@ -1,13 +1,13 @@
 <template>
 <div class="shop-wrapper">
-  <div class="common-nav" >
+  <div class="common-nav"  v-if="active !=2 ">
     <el-breadcrumb separator="/">
       <el-breadcrumb-item :to="{ path: '/page' }">页面管理</el-breadcrumb-item>
       <el-breadcrumb-item v-if="ruleForm.id ==null">新增微页面</el-breadcrumb-item>
       <el-breadcrumb-item v-else>修改微页面</el-breadcrumb-item>
     </el-breadcrumb>
   </div>
-  <div class="shop-addpage-main" id="shop1" v-if="active !=2 ">
+  <div class="shop-addpage-main"  v-if="active !=2 ">
     <div class="shop-steps">
       <el-steps :active="active"  center  >
       <el-step title="编辑页面信息">
@@ -69,11 +69,11 @@
           <p v-else>修改页面成功</p>
       </div>
     </div>
-    <div class="shop-addpage-main" id="shop2" :class="{'shop-textc':active==2}">
+    <div class="shop-addpage-main">
       <el-button style="margin-top: 12px;" @click="next" v-if="active==1">下一步</el-button>
-      <el-button type="primary" v-if="active==2" @click="save(1)">保存</el-button>
-      <el-button type="primary" v-if="active==2" @click="save(2)">预览</el-button>
-      <el-button style="margin-top: 12px;" v-if="active !=3"  @click="Back">返回</el-button>
+      <!-- <el-button type="primary" v-if="active==2" @click="save(1)">保存</el-button>
+      <el-button type="primary" v-if="active==2" @click="save(2)">预览</el-button> -->
+      <el-button style="margin-top: 12px;" v-if="active == 1"  @click="Back">返回</el-button>
       <div class="shop-textc" v-if="active ==3" >
         <el-button type="primary" @click="next" >继续添加</el-button>
         <el-button style="margin-top: 12px;" @click="jumpRouter('/page')">返回</el-button>
@@ -149,8 +149,10 @@ export default {
     /**
      * 保存 
      * @param type 1保存 2预览
-     **/
-    save(type){
+     * @param datacss iframe 传回来的数据css
+     * @param datajosn iframe 传回来的数据css
+     **/ 
+    save(type,datacss,datajosn){
        let _this = this;
        let page={
           id: _this.pageId || null,//页面id//有ID则修改，无则新增
@@ -161,8 +163,8 @@ export default {
           pagIsMain:_this.ruleForm.pagIsMain,//是否是主页 0不是主页 1 是主页
        };
        if(_this.active == 2){
-         page.pagCss = JSON.stringify(myFrame.dataJson) || null;//样式
-         page.pagData = JSON.stringify(myFrame.picJson) || null;//数据
+         page.pagCss = datacss;//样式
+         page.pagData = datajosn;//数据
        }
        console.log(page,'page')
        
@@ -189,10 +191,10 @@ export default {
                       //_this.iframeULR= 'http://192.168.2.118:8080/mallPage/designPage.do?id='+pageId;
                       _this.iframeULR= window.DFshop.api + '/mallPage/designPage.do?id='+ pageId;
                       _this.$nextTick(()=>{
-                        _this.iframeHeight = $(window).height()-$('.common-nav').outerHeight(true)-$('#shop2').outerHeight(true)-10;
+                        _this.iframeHeight = $(window).height()-60;
                         $('#shade2').css({
                           'height':_this.iframeHeight,
-                          'top':  $('.common-nav').outerHeight(true),
+                          'top':  '0',
                         })
                       })
                    }
@@ -260,8 +262,10 @@ export default {
       this.pageId = this.$route.params.pageId;
       this.pageInfoAjax(this.$route.params.pageId);
     }
+
     $('#shade').hide();
     $('#shade2').hide();
+
     window.shadeShow = function(){
        $('#shade').show();
        $('#shade2').show();
@@ -269,7 +273,25 @@ export default {
     window.shadeHide = function(){
        $('#shade').hide();
        $('#shade2').hide();
-    };     
+    };
+    /** 
+     * 保存和预览
+     * @param type 1保存 2预览
+     */
+    window.addPageSave = function(type,datacss,datajosn){
+      _this.save(type,datacss,datajosn);
+    };
+    /** 
+     *返回 
+     *@param type 1返回页面管理 2预览
+     **/
+    window.addPageBack=function(type){
+      if(type == 1){
+        _this.jumpRouter('/page');
+      }else{
+        _this.Back();
+      }
+    };
   },
 }
 </script>
