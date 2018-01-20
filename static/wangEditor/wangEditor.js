@@ -5574,7 +5574,7 @@ _e(function (E, $) {
         }
         var script = document.createElement("script");
         script.type = "text/javascript";
-        script.src = "http://apps.bdimg.com/libs/highlight.js/9.1.0/highlight.min.js";
+        script.src = "https://apps.bdimg.com/libs/highlight.js/9.1.0/highlight.min.js";
         document.body.appendChild(script);
     }
     

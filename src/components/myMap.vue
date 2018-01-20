@@ -83,7 +83,7 @@
           position:[0,0],
           offset: new AMap.Pixel(-5,-30),
           icon: new AMap.Icon({
-            image: "http://api.amap.com/Public/images/js/mark.png",
+            image: "https://api.amap.com/Public/images/js/mark.png",
             size:new AMap.Size(58,30),
             imageOffset: new AMap.Pixel(-32, -0)
            }),
