@@ -121,7 +121,7 @@ export default {
       _this.$material({
         imageboxUrl: DFshop.activeAPI.materialUrl,   //地址
         modal: true,       //遮罩
-        selecType: true,   //是否多选
+        selecType: false,   //是否多选
         width: 820, //宽度
         height: 500, //高度
         lockScroll: false, //弹出框后是否锁定滚动轴

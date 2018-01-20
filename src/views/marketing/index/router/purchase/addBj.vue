@@ -115,7 +115,7 @@ export default {
     };
      var contractId = (rule, value, callback) => {
         if (value == '') {
-        return callback(new Error('合同不能为空'));
+            return callback(new Error('合同不能为空'));
         }else {
             callback();
         }
@@ -150,7 +150,7 @@ export default {
              { validator: companyId, trigger: 'change' },
         ],
         contractId:[
-          { validator: contractId, trigger: 'change' },
+          { validator: contractId, trigger: 'blur,change' },
         ],
         orderDetailLength:[
           { validator: orderDetailLength, trigger: 'blur,change' },
@@ -244,7 +244,7 @@ export default {
       _this.$material({
         imageboxUrl: DFshop.activeAPI.materialUrl,   //地址
         modal: true,       //遮罩
-        selecType: true,   //是否多选
+        selecType: false,   //是否多选
         width: 820, //宽度
         height: 500, //高度
         lockScroll: false, //弹出框后是否锁定滚动轴
@@ -369,9 +369,11 @@ export default {
             if(data.code == 0){
                 _this.carouselList = data.data.carouselList;
                 _this.orderDetailsList = data.data.orderdetails;
-                 _this.ruleForm = data.data.order; 
-                if(_this.ruleForm.haveContract == 0){
-                  _this.ruleForm.contractId=data.data.orderContract.contract_id;
+                _this.ruleForm = data.data.order; 
+                if(_this.ruleForm.contractId !=null){
+                    _this.ruleForm.contractId=Number(_this.ruleForm.contractId);
+                }else{
+                    _this.ruleForm.contractId='';
                 }
                 if(_this.ruleForm.orderType ==1){
                    _this.timeList = data.data.termList;
