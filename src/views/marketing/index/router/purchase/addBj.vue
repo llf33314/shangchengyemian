@@ -322,7 +322,7 @@ export default {
                   _this.ruleForm.contractId='';
                 }
                 let param = {};
-                param["order"] = _this.ruleForm;
+                param["order"] = JSON.stringify(_this.ruleForm);
                 param["orderDetailsList"] = JSON.stringify(_this.orderDetailsList);
                 param["carouselList"] = JSON.stringify(_this.carouselList);
                 if(_this.ruleForm.orderType ==1){
@@ -335,7 +335,7 @@ export default {
                 if(!Lib.C.ajax_manage) return false;
                 Lib.C.ajax_manage = false;
 
-                _this.ajaxRequest({
+                _this.ajaxRequestJQ({
                     url: DFshop.activeAPI.purchaseOrderSave_post,
                     data: param,
                     success: function(data) {
