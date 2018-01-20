@@ -126,7 +126,7 @@
         </tbody>
       </table>
       <div class="table-footer">
-          总运费 :{{order.freight}}
+          总运费：{{order.freight}}
           <span>合计：&#65509;{{order.allMoney}}</span>
       </div>
       <div style="margin-top:50px;">
