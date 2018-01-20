@@ -727,7 +727,7 @@ export default {
     /** 
      * 保存请求
      * @param data  数据
-     * @param type  1新增保存，2新增预览
+     * @param type  1保存，2预览
      */
     dataAjax(type,data){
         let _this = this;
@@ -735,9 +735,17 @@ export default {
         //防止多次点击重复提交数据
         if(!Lib.C.ajax_manage) return false;
         Lib.C.ajax_manage = false;
-        
+
+        let url = '';//请求接口
+        if(_this.$route.params.id === 'add'){
+            console.log(1)
+            url = DFshop.activeAPI.mallProductAdd_post
+        }else{
+            console.log(2)
+            url = DFshop.activeAPI.mallProductUpdatet_post;
+        }
         _this.ajaxSave({
-            'url':  DFshop.activeAPI.mallProductAdd_post,
+            'url':  url,
             'data':data,
             'success':function (data){
                 if(type==1){
