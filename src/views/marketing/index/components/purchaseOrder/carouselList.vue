@@ -131,6 +131,7 @@ export default {
           //确认
           _this.ruleForm.rowList[index].carouselImg = val[0].url; 
           _this.validateData();
+          _this.changeData();
          parent.parent.window.postMessage("closeMask()", "*");
         }).catch(function (error) {
           parent.parent.window.postMessage("closeMask()", "*");
@@ -194,7 +195,7 @@ export default {
       }
       if (isTrue) {
         //更新值
-        this.$emit("update:rowList", list);
+        this.$emit("update:rowList", list); 
       }
     },
     /**
