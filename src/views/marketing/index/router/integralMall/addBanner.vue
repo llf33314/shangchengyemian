@@ -118,12 +118,13 @@ export default {
       let _this = this;
       this.$refs[formName].validate((valid) => {
         if (valid) {
+            let param =JSON.parse(JSON.stringify(_this.ruleForm));
           // alert('submit!');
-          if(_this.ruleForm.type == 0){
-            _this.ruleForm.returnUrl='';
+          if(param.type == 0){
+            param.returnUrl='';
           }
-          var img = _this.ruleForm.imageUrl.split("/upload/")[1];
-          _this.ruleForm.imageUrl=img;
+          var img = param.imageUrl.split("/upload/")[1];
+          param.imageUrl=img;
           
           //防止多次点击重复提交数据
           if(!Lib.C.ajax_manage) return false;
@@ -131,7 +132,7 @@ export default {
 
           _this.ajaxRequest({
             url: DFshop.activeAPI.mallIntegralImageSave_post,
-            data: _this.ruleForm,
+            data: param,
             success: function(data) {
               _this.$message({
                 message: "保存成功",
@@ -180,7 +181,7 @@ export default {
         width: 820, //宽度
         height: 500, //高度
         lockScroll: false, //弹出框后是否锁定滚动轴
-        closeOnClickModal: ture, //点击遮罩是否关闭
+        closeOnClickModal: true, //点击遮罩是否关闭
         closeOnPressEscape: false
       }).then(function (val) {
         _this.ruleForm.imageUrl =val[0].url;

@@ -112,7 +112,7 @@ export default {
             if(_this.orderData.orderPayWay== 9 && (_this.type==1 ||_this.type == 3)){
                 _this.isZhifubao=1;
             }
-             console.log( _this.isZhifubao," _this.isZhifubao");
+            //  console.log( _this.isZhifubao," _this.isZhifubao");
         },
         /**提交维权信息 */
         submitForm(){
