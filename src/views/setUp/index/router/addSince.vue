@@ -500,7 +500,7 @@ export default {
         marker.setMap(null);
         marker = null;
         marker = new AMap.Marker({
-            icon: "http://webapi.amap.com/theme/v1.3/markers/n/mark_b.png",
+            icon: "https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png",
             position:XY
         });
         map.setCenter(XY); 
