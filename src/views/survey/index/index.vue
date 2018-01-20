@@ -117,7 +117,7 @@ export default {
     }
   },
   mounted(){
-     let _this = this;
+    let _this = this;
     this.ajax();
     let href = window.location.href;
     _this.path = href.split('views')[0];  
@@ -128,6 +128,12 @@ export default {
 <style lang="less">
 @import './survey.less';
 .col1{
-    cursor: pointer;
+    padding:0;
+    a{
+      display: block;
+      width: 100%;
+      cursor: pointer;
+      padding: 18px 20px;
+    }
 }
 </style>

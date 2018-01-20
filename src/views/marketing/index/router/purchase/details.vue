@@ -91,10 +91,10 @@
           <tr v-for="(row , index) in orderDetailsList" :key="index">
               <td class="text-overflow">
                  <div class="addbj-min-img">
-                    <default-img :background="imgUrl+row.productImg"></default-img>
+                    <default-img :background="row.productImg"></default-img>
                   </div>
               </td>
-               <td>{{row.productName}}</td>
+               <td style="text-align: left; padding: 0 15px;">{{row.productName}}</td>
               <td>{{row.money}}</td>
               <td>{{row.discountMoney}}</td>
              <td class="text-overflow">{{row.count}}</td>
@@ -126,7 +126,7 @@
         </tbody>
       </table>
       <div class="table-footer">
-          总运费 :{{order.freight}}
+          总运费：{{order.freight}}
           <span>合计：&#65509;{{order.allMoney}}</span>
       </div>
       <div style="margin-top:50px;">
