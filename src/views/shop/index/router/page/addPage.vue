@@ -59,7 +59,7 @@
     </div>
     <div class="shop-addshop-tow scrollBar" v-if="active == 2">
         <div class="iframe-box scrollBar" >
-          <iframe :src="iframeULR" :height="iframeHeight" name="myFrame" class="scrollBar" id="myFrame"></iframe>
+          <iframe :src="iframeULR" :height="iframeHeight" :width="iframeWidth" name="myFrame" class="scrollBar" id="myFrame"></iframe>
         </div>
     </div>
     <div class="shop-addshop-Three" v-if="active == 3">
@@ -107,6 +107,7 @@ export default {
       },
       iframeULR:'',//微页编辑地址
       iframeHeight:'',//微页高度
+      iframeWidth:'',//微页宽度
       isShade:false,
 
       pageId:''//页面id
@@ -191,7 +192,8 @@ export default {
                       //_this.iframeULR= 'http://192.168.2.118:8080/mallPage/designPage.do?id='+pageId;
                       _this.iframeULR= window.DFshop.api + '/mallPage/designPage.do?id='+ pageId;
                       _this.$nextTick(()=>{
-                        _this.iframeHeight = $(window).height()-60;
+                        _this.iframeHeight = $(window).height();
+                        _this.iframeWidth = $(window).width()-180;
                         $('#shade2').css({
                           'height':_this.iframeHeight,
                           'top':  '0',
