@@ -335,11 +335,7 @@ export default {
                 if(!Lib.C.ajax_manage) return false;
                 Lib.C.ajax_manage = false;
 
-<<<<<<< HEAD
                 _this.ajaxSave({
-=======
-                _this.ajaxRequestJQ({
->>>>>>> c5223e788fbb4d9fdbcb5aace6310dbf5ea8ab9f
                     url: DFshop.activeAPI.purchaseOrderSave_post,
                     data: param,
                     success: function(data) {
