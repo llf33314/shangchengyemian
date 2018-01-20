@@ -324,7 +324,7 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid&& timeValid) {
           let paramsForm = this.$refs[formName].model;
-          let imageList =_this.ruleForm.imageList;
+          let imageList =JSON.parse(JSON.stringify(_this.ruleForm.imageList));
           let timeList = _this.ruleForm.timeList;
           //将接待天数数组转成字符串
           timeList.forEach((time,j)=>{
@@ -345,8 +345,8 @@ export default {
           param.take.imagesUrl=imageList[0].imageUrl;
           param.imageList =JSON.stringify(imageList);
           param.timeList = JSON.stringify(timeList);
-          // console.log(param)
- 
+        //  console.log(param)
+          // return false
           //防止多次点击重复提交数据
           if(!Lib.C.ajax_manage) return false;
           Lib.C.ajax_manage = false;
