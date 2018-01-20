@@ -91,10 +91,10 @@
           <tr v-for="(row , index) in orderDetailsList" :key="index">
               <td class="text-overflow">
                  <div class="addbj-min-img">
-                    <default-img :background="imgUrl+row.productImg"></default-img>
+                    <default-img :background="row.productImg"></default-img>
                   </div>
               </td>
-               <td>{{row.productName}}</td>
+               <td style="text-align: left; padding: 0 15px;">{{row.productName}}</td>
               <td>{{row.money}}</td>
               <td>{{row.discountMoney}}</td>
              <td class="text-overflow">{{row.count}}</td>
