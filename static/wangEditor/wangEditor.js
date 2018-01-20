@@ -80,7 +80,7 @@
     E.hostname = location.hostname.toLowerCase();
     E.websiteHost = 'wangeditor.github.io';
     E.isOnWebsite = E.hostname === E.websiteHost;
-    E.docsite = 'http://www.kancloud.cn/wangfupeng/wangeditor2/113961';
+    E.docsite = 'https://www.kancloud.cn/wangfupeng/wangeditor2/113961';
 
     // 暴露给全局对象
     window.wangEditor = E;
@@ -5064,7 +5064,7 @@ _e(function (E, $) {
         // 视频代码模板 - flash
         var videoTplFlash = [
             '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" ',
-            '        codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,0,0" ',
+            '        codebase="https://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,0,0" ',
             '        width="#{width}" ',
             '        height="#{height}" >',
             '   <param name="movie" ',
@@ -5079,7 +5079,7 @@ _e(function (E, $) {
             '          allowFullScreen="true" ',
             '          wmode="transparent" ',
             '          allowScriptAccess="always" ',
-            '          pluginspage="http://www.macromedia.com/go/getflashplayer" ',
+            '          pluginspage="https://www.macromedia.com/go/getflashplayer" ',
             '          type="application/x-shockwave-flash"/>',
             '</object>',
             '<p><br></p>'
@@ -5350,7 +5350,7 @@ _e(function (E, $) {
         mapData.loadMapScript = function () {
             var script = document.createElement("script");
             script.type = "text/javascript";
-            script.src = "http://api.map.baidu.com/api?v=2.0&ak=" + ak + "&callback=baiduMapCallBack";  // baiduMapCallBack是一个本地函数
+            script.src = "https://api.map.baidu.com/api?v=2.0&ak=" + ak + "&callback=baiduMapCallBack";  // baiduMapCallBack是一个本地函数
             try {
                 // IE10- 报错
                 document.body.appendChild(script);
@@ -5478,10 +5478,10 @@ _e(function (E, $) {
 
             if(isDynamic){
                 //动态地址
-                src = 'http://ueditor.baidu.com/ueditor/dialogs/map/show.html#';
+                src = 'https://ueditor.baidu.com/ueditor/dialogs/map/show.html#';
             }else{
                 //静态地址
-                src = 'http://api.map.baidu.com/staticimage?';
+                src = 'https://api.map.baidu.com/staticimage?';
             }
 
             //src参数
@@ -7795,7 +7795,7 @@ _e(function (E, $) {
 });
 // // 版权提示
 // _e(function (E, $) {
-//     E.info('本页面富文本编辑器由 wangEditor 提供 http://wangeditor.github.io/ ');
+//     E.info('本页面富文本编辑器由 wangEditor 提供 https://wangeditor.github.io/ ');
 // });
     
     // 最终返回wangEditor构造函数
