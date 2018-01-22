@@ -196,7 +196,7 @@
       <div class="cloneGoods-box" v-else>
         <el-form :model="cloneForm" ref="cloneForm" label-width="100px" class="demo-ruleForm">
           <el-form-item label="选择店铺" required>
-           <el-select v-model="cloneForm.shopId" placeholder="请选择">
+           <el-select v-model="cloneshopId" placeholder="请选择">
               <el-option
                 v-for="item in shopList"
                 :key="item.id"
@@ -210,7 +210,7 @@
             <gt-cascader  :width="'200px'"
                           @change="groupselected"
                           :ids="{
-                              shopId: cloneForm.shopId,
+                              shopId: cloneshopId,
                           }"
                           ref="cascader">
             </gt-cascader>
@@ -257,6 +257,7 @@ export default {
       cloneGoodsdialog:false,//同步商品弹出框
       isCloneGoods:1,//1是一键同步商品，2是同步商品
       cloneForm:{},//同步商品,
+      cloneshopId:'',//选择同步商品id
       allcloneForm:{
         shopId:'',
         toShopId:'',
@@ -532,6 +533,7 @@ export default {
       this.cloneGoodsdialog = false;
       this.isCloneGoods = '';
       this.cloneForm = {};
+      this.cloneshopId = '';
       this.$refs.cascader.resetForm();
     },
     /** 
@@ -544,22 +546,23 @@ export default {
       this.isCloneGoods = type;
       this.cloneGoodsdialog = true;
       this.cloneForm = goods;
+      this.cloneshopId = goods.shopId;
 
       let data={};
       //店铺同步商品
-      if(type==1){
-
-      }else{
+      if(type==2){
         //单个商品
         let flag = true;
+        debugger
         _this.shopList.forEach((item,i)=>{
-            if(item.id == goods.shopId && flag){
+            item.disabled = false;
+            if(item.id == _this.cloneshopId && flag){
               flag = false;
               item.disabled = true;
               if(i==0){
-                _this.cloneForm.shopId = _this.shopList[i+1].id;
+                _this.cloneshopId = _this.shopList[i+1].id;
               }else{
-                _this.cloneForm.shopId = _this.shopList[0].id;
+                _this.cloneshopId = _this.shopList[0].id;
               }
               return
             }
@@ -572,23 +575,26 @@ export default {
      */
     cloneGoodsAjax(){
       let _this = this;
-      //防止多次点击重复提交数据
-      if(!Lib.C.ajax_manage) return false;
-      Lib.C.ajax_manage = false;
+      
 
       let data={};
+      debugger
       if(this.isCloneGoods==1){
         //店铺同步商品
         data= _this.allcloneForm;
       }else{
         //单个同步商品
         data={
-          shopId: _this.cloneForm.shopId,   //店铺ID 
+          shopId: _this.cloneshopId,   //店铺ID 
           id: _this.cloneForm.id,     //商品ID
           groupList:JSON.stringify(_this.cloneForm.groupList)
         }
         if(!_this.$refs.cascader.submitForm()) return false;
       }
+      //防止多次点击重复提交数据
+      // if(!Lib.C.ajax_manage) return false;
+      // Lib.C.ajax_manage = false;
+
        _this.ajaxRequest({
         'url':DFshop.activeAPI.mallProductCopyProduct_post,
         'data':data,
