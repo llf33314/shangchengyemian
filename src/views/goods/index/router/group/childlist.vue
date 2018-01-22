@@ -152,7 +152,7 @@ export default {
      */
     recommendAjax(data){
       let _this = this;
-      _this.ajaxRequest({
+      _this.ajaxSave({
           'url': DFshop.activeAPI.mallProductGroupRecommend_post,
           'data': data,
           'success':function (data){

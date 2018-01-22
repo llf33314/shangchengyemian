@@ -33,7 +33,7 @@ export default {
         submitRemark(){
             let _this = this;
             // console.log(_this.remarkData,"_this.remarkData");
-            _this.ajaxRequest({
+            _this.ajaxSave({
                 'url': DFshop.activeAPI.updateStatus_post,
                 'data':_this.remarkData,
                 'success':function (data){

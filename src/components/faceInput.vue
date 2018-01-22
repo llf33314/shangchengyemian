@@ -58,7 +58,7 @@ export default {
         _this.showText = true;
         return;
       }
-      _this.ajaxRequest({
+      _this.ajaxSave({
         'url': DFshop.activeAPI.mallCommentReply_post,
         'data':{
           "id":_this.comment.id,

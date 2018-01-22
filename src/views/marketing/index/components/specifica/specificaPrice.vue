@@ -14,7 +14,7 @@
                 <td class="text-overflow" v-for="(value,index2) in row.specList" :key="index2">{{value.specificaValue}}</td>
                 <td class="text-overflow" >{{row.invPrice}}</td>
                 <td>
-                    <el-form-item 
+                    <el-form-item v-if="row.isJoin"
                         :prop="'rowList.'+index+'.activityPrice'"
                         label-width="0"
                         inline
@@ -23,6 +23,15 @@
                             { required: true, message: '请输入价格'},
                             { type: 'number',min:0.01,max:99999.99, message: '价格最多只能是大于0的5位小数'}
                         ]">
+                        <el-input class="addGruop-input" style="width:130px" v-model.number="row.activityPrice" @blur="changeData" >
+                            <template slot="prepend">¥</template>
+                        </el-input>
+                    </el-form-item>
+                    <el-form-item v-if="!row.isJoin"
+                        :prop="'rowList.'+index+'.activityPrice'"
+                        label-width="0"
+                        inline
+                        class="newgroup">
                         <el-input class="addGruop-input" style="width:130px" v-model.number="row.activityPrice" @blur="changeData" >
                             <template slot="prepend">¥</template>
                         </el-input>
@@ -85,6 +94,9 @@ export default {
   mounted() {},
   methods: {
     changeData(obj, index) {
+       let  _this = this;
+     this.validateData();
+     
       this.$set(this.ruleForm.rowList, index, obj);
 
       let list = this.ruleForm.rowList;
@@ -98,7 +110,13 @@ export default {
             isTrue = false;
             break;
           }
-        }
+        }else{
+          let reg = /^[0-9]{1,5}(\.\d{1,2})?$/;
+          let value = obj.activityPrice;
+          if (value === "" || !reg.test(value) || value == 0) {
+             obj.activityPrice="";
+          }
+        } 
       }
       if (isTrue) {
         //更新值

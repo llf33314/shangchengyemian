@@ -343,15 +343,17 @@ export default {
           let param = {};
           param.take = paramsForm;
           param.take.imagesUrl=imageList[0].imageUrl;
+          
           param.imageList =JSON.stringify(imageList);
           param.timeList = JSON.stringify(timeList);
+          param.take=JSON.stringify(param.take);
         //  console.log(param)
           // return false
           //防止多次点击重复提交数据
           if(!Lib.C.ajax_manage) return false;
           Lib.C.ajax_manage = false;
           
-          _this.ajaxRequest({
+          _this.ajaxSave({
             'url': DFshop.activeAPI.mallFreightTakeSave_post,
             'data':param,
             'success':function (data){

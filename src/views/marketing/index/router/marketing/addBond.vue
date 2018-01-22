@@ -178,10 +178,10 @@ export default {
           if(!Lib.C.ajax_manage) return false;
           Lib.C.ajax_manage = false;
           
-          _this.ajaxRequest({
+          _this.ajaxSave({
             url: DFshop.activeAPI.mallSellerSaveJoinProduct_post,
             data: {
-              joinProduct: joinProduct
+              joinProduct: JSON.stringify(joinProduct)
             },
             success: function(data) {
               _this.$message({

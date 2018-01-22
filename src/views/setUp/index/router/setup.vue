@@ -296,7 +296,7 @@
         }
         let give = {};
         give.giveList=JSON.stringify(_giveList);
-        _this.ajaxRequest({
+        _this.ajaxSave({
           'url': DFshop.activeAPI.mallCommentSaveGive_post,
           'data':give,
           'success':function (data){
@@ -330,7 +330,7 @@
             footerMenu.group = Number(f.group)||0;
             footerMenu.cart = Number(f.cart)||0;
             footerMenu.my = Number(f.my)||0;
-            param.footerJson = footerMenu;
+            param.footerJson = JSON.stringify(footerMenu);
             param.smsMessage = JSON.stringify(smsMsg);
             param.messageJson = paramsForm.messageJson;
             param.pfRemark = paramsForm.pfRemark;
@@ -345,7 +345,7 @@
             Lib.C.ajax_manage = false;
             // console.log(param,"3232423");
             // return false;
-            _this.ajaxRequest({
+            _this.ajaxSave({
               'url': DFshop.activeAPI.mallPaySetSave_post,
               'data':param,
               'success':function (data){

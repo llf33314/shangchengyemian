@@ -165,7 +165,7 @@ export default {
           }
  
           let param = {};
-          param["integral"] = integral;
+          param["integral"] =JSON.stringify(integral);
 
           //防止多次点击重复提交数据
           if(!Lib.C.ajax_manage) return false;

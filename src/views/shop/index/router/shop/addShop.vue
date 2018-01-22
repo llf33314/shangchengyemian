@@ -238,7 +238,7 @@ export default {
       if(!Lib.C.ajax_manage) return false;
       Lib.C.ajax_manage = false;
       
-      _this.ajaxRequest({
+      _this.ajaxSave({
           'url': DFshop.activeAPI.mallStoreSave_post,
           'data': {
               obj: JSON.stringify(sto)

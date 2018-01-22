@@ -183,7 +183,7 @@ export default {
             // console.log(returnOrder,"returnOrder");
             // console.log(order,"order");
              
-            _this.ajaxRequest({
+            _this.ajaxSave({
                 'url': DFshop.activeAPI.updateReturn_post,
                 'data':{
                     "order": JSON.stringify(order),
