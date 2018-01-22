@@ -369,7 +369,7 @@
                 <div class="editor-trigger">
                     <span>商品详情：</span>
                     <div id="editor" v-html="form.proDetail.productDetail" 
-                        style="min-height:200px">
+                        style="max-height:500px;min-height:300px">
                     </div>
                 </div>
             </div>
@@ -390,7 +390,7 @@
             <router-link to='/mygoods'>
                 <el-button style="margin-top: 12px;" >返回 </el-button>
             </router-link>
-        </div> 
+        </div>
     </div>
   </div>
 </template>
@@ -528,9 +528,9 @@ export default {
                 this.editor2 = new E('editor');
                 this.editor2.config.mapIndex = 1;
                 this.editor2.create();
-                $('#editor').css({
-                    height:'auto'
-                })
+                // $('#editor').css({
+                //     height:'auto'
+                // })
               })
           }
       }
