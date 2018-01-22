@@ -112,7 +112,7 @@ export default {
                 "detailObj":JSON.stringify(detailObj)
             }
             // console.log(updateMoneyData,"updateMoneyData");
-            _this.ajaxRequest({
+            _this.ajaxSave({
                 'url': DFshop.activeAPI.updateStatus_post,
                 'data':updateMoneyData,
                 'success':function (data){

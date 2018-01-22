@@ -468,7 +468,7 @@ export default {
      */
     productAJAX(ids,type){
       let _this = this;
-      _this.ajaxRequest({
+      _this.ajaxSave({
         'url':DFshop.activeAPI.mallProductBatchProduct_post,
         'data':{
           ids: ids,

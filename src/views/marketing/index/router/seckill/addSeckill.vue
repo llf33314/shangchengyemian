@@ -331,7 +331,7 @@ export default {
           // console.log(_speciList, "2223333");
           //   return;
           let param = {};
-          param["seckill"] = seckill;
+          param["seckill"] = JSON.stringify(seckill);
           param["specArr"] = JSON.stringify(_speciList);
           console.log(param, "speac");
           // return;
@@ -340,7 +340,7 @@ export default {
           if(!Lib.C.ajax_manage) return false;
           Lib.C.ajax_manage = false;
 
-          _this.ajaxRequest({
+          _this.ajaxSave({
             url: DFshop.activeAPI.mallSeckillSave_post,
             data: param,
             success: function(data) {

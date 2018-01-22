@@ -346,14 +346,14 @@ export default {
             }
           }
           let param = {};
-          param["groupBuy"] = groupBuy;
+          param["groupBuy"] = JSON.stringify(groupBuy);
           param["specArr"] = JSON.stringify(_speciList);
 
           //防止多次点击重复提交数据
           if(!Lib.C.ajax_manage) return false;
           Lib.C.ajax_manage = false;
           
-          _this.ajaxRequest({
+          _this.ajaxSave({
             url: DFshop.activeAPI.mallGroupBuySave_post,
             data: param,
             success: function(data) {

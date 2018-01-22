@@ -372,10 +372,10 @@ export default {
           if(!Lib.C.ajax_manage) return false;
           Lib.C.ajax_manage = false;
           
-          _this.ajaxRequest({
+          _this.ajaxSave({
             url: DFshop.activeAPI.mallAuctionSave_post,
             data: {
-              auction: auction
+              auction: JSON.stringify(auction)
             },
             success: function(data) {
               _this.$message({

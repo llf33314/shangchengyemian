@@ -225,10 +225,10 @@ export default {
           if(!Lib.C.ajax_manage) return false;
           Lib.C.ajax_manage = false;
 
-          _this.ajaxRequest({
+          _this.ajaxSave({
             url: DFshop.activeAPI.mallWholesaleSave_post,
             data: {
-              pifa: pifa,
+              pifa: JSON.stringify(pifa),
               specArr: JSON.stringify(specArr)
             },
             success: function(data) {
