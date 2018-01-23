@@ -1,4 +1,4 @@
-import iq from '../../../../../assets/js/jquery-2.2.2.min'
+import jq from '../../../../../assets/js/jquery-2.2.2.min'
 import '../../../style/wangEditor.css';
 
 import material from '../../source-material/index.js'
@@ -1243,12 +1243,17 @@ _e(function (E, $) {
                   lockScroll: false,  //弹出框后是否锁定滚动轴
                   closeOnClickModal: true, //点击遮罩是否关闭
                   closeOnPressEscape: true, //esc是否关闭
+                  beforeOpen: function(){
+                    self.editor.beforeOpen && self.editor.beforeOpen();
+                  }
                 }).then(function (val) {
                   //确认
                   var imgHtml = '<img style="max-width:100%;" src="' + val[0].url + '"/>';
                   self.editor.command(e, 'insertHtml', imgHtml);
+                  self.editor.confirm && self.editor.confirm();
                 }).catch(function (error) {
                   //取消
+                  self.editor.close && self.editor.close();
                 });
             		return false;
             	}
@@ -3109,18 +3114,18 @@ _e(function (E, $) {
                 '../static/emotions/default/50.gif'
             ]
         },
-        'jinxing': {
-            title: '金星',
-            size: 50,
-            imgs: [
-                '../static/emotions/jinxing/1.gif',
-                '../static/emotions/jinxing/2.gif',
-                '../static/emotions/jinxing/3.gif',
-                '../static/emotions/jinxing/4.gif',
-                '../static/emotions/jinxing/5.gif',
-                '../static/emotions/jinxing/6.gif'
-            ]
-        }
+        // 'jinxing': {
+        //     title: '金星',
+        //     size: 50,
+        //     imgs: [
+        //         '../static/emotions/jinxing/1.gif',
+        //         '../static/emotions/jinxing/2.gif',
+        //         '../static/emotions/jinxing/3.gif',
+        //         '../static/emotions/jinxing/4.gif',
+        //         '../static/emotions/jinxing/5.gif',
+        //         '../static/emotions/jinxing/6.gif'
+        //     ]
+        // }
     };
 
     // 百度地图的key
@@ -5170,7 +5175,7 @@ _e(function (E, $) {
 
         var editor = this;
 
-        if(typeof editor.config.mapIndex != 'undefined'?editor.config.mapIndex ++ >1 : index++ > 1){
+        if(typeof editor.config.mapIndex!='undefined'?editor.config.mapIndex++ >1:index++ > 1){
             E.error('目前不支持在一个页面多个编辑器上同时使用地图，可通过自定义菜单配置去掉地图菜单');
             return;
         }

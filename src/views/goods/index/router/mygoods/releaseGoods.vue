@@ -226,7 +226,7 @@
                     <div class="item-content">
                         <el-form-item label="运费设置 :" prop="pro.proFreightPrice" :rules="rules.proFreightPrice">
                             <div class="item-inline" style="width:auto">
-                                <el-radio-group v-model.number="form.pro.proFreightSet" >
+                                <el-radio-group v-model.number="form.pro.proFreightSet" @change="proFreightSet(form.pro.proFreightSet)">
                                     <el-radio class="radio" :label="1"
                                         >统一邮费
                                     </el-radio>
@@ -368,8 +368,7 @@
                 </div>
                 <div class="editor-trigger">
                     <span>商品详情：</span>
-                    <div id="editor" v-html="form.proDetail.productDetail" 
-                        style="max-height:500px;min-height:300px">
+                    <div id="editor" v-html="form.proDetail.productDetail" style="min-height:320px">
                     </div>
                 </div>
             </div>
@@ -382,7 +381,7 @@
         </div>
         <el-button style="margin-top: 12px;" @click="next()" v-if="active == 1">下一步</el-button>
         <el-button type="primary" v-if="active == 2" @click="next()">保存</el-button>
-        <el-button type="primary" v-if="active == 2" @click="changeData(2)">预览</el-button>
+        <el-button type="primary" v-if="active == 2" @click="changeData(2)">保存并预览</el-button>
         <el-button style="margin-top: 12px;" v-if="active == 1 " @click="back_go()">返回</el-button>
         <el-button style="margin-top: 12px;" v-if="active == 2 " @click=" active=1">返回</el-button>
         <div class="shop-textc" v-if="active == 3" >
@@ -527,10 +526,19 @@ export default {
                 let E = window.wangEditor;
                 this.editor2 = new E('editor');
                 this.editor2.config.mapIndex = 1;
+                editor.beforeOpen = function(){
+                //开启素材库之前
+                    parent.window.postMessage("openMask()", "*");
+                }
+                editor.confirm = function(){
+                //开启素材库确认后
+                    parent.window.postMessage("closeMask()", "*");
+                }
+                editor.close = function(){
+                //开启素材库取消后
+                    parent.window.postMessage("closeMask()", "*");
+                }
                 this.editor2.create();
-                // $('#editor').css({
-                //     height:'auto'
-                // })
               })
           }
       }
@@ -640,18 +648,21 @@ export default {
                 id:_this.goodsId
             },
             'success':function (data){
-                console.log(data.data,'aaaaaa')
+                console.log(data.data,'editAjaxaaaaaa')
+                
                 _this.form = data.data;
                 //初始化处理数据
                 _this.invenAdd(_this.form.invenList,_this.form.specList);
                 _this.changeSpac(_this.form.specList);
-                if(typeof _this.form.proDetail.id == 'undefined'){
+
+                if( _this.form.proDetail == null || typeof _this.form.proDetail.id == 'undefined'){
                     _this.form.proDetail = {
                         productDetail: null,        //商品详情
                         productIntrodu: null,       //商品简介 
                         productMessage: null,           //商品信息
                     }
                 }
+                
                 //商品类型会员卡
                 if(_this.form.pro.proTypeId == 2){
                     //会员卡
@@ -682,12 +693,12 @@ export default {
                         }
                     });
                 }
-
                 //物流
-                if(_this.form.pro.proFreightSet  == 2){
-                    _this.freightAjax(_this.form.pro.proFreightTempId);
-                    
-                }
+
+                //if(_this.form.pro.proFreightSet  == 2){
+                    _this.freightAjax(_this.form.pro.shopId);
+                    // _this.selectFreight(_this.form.pro.proFreightTempId);
+                //}
                 // if(_this.form.pro.proFreightSet  == 2){
                 //     _this.ajaxRequest({
                 //         'url': DFshop.activeAPI.mallFreightGetFreightByShopId_post,
@@ -701,6 +712,8 @@ export default {
                 //         }
                 //     });
                 // }
+
+                console.log(111111)
             }
         });
     },
@@ -749,12 +762,13 @@ export default {
             'url':  url,
             'data':data,
             'success':function (data){
+                debugger
                 if(type==1){
                     _this.active = 3;
                 }else{
                     let _pageLink='';
                     if(_this.$route.params.id === 'add'){
-                        _pageLink = 'goods/details/'+_this.form.pro.shopId+'/'+data.data.userId+'/0/'+data.data.id+'/0';
+                        _pageLink = 'goods/details/'+_this.form.pro.shopId+'/'+data.userId+'/0/'+data.id+'/0';
                     }else{
                         _pageLink = 'goods/details/'+_this.form.pro.shopId+'/'+_this.form.pro.userId+'/0/'+_this.form.pro.id+'/0';
                     }
@@ -1032,11 +1046,13 @@ export default {
                 this.$message.error('没有运费模板，请新增');
                 return
             }
-            console.log(this.logisticsList.id,"this.logisticsList.id")
             this.form.pro.proFreightTempId = this.logisticsList[0].id;
             this.form.pro.proFreightPrice = null;
         }else{
             this.form.pro.proFreightTempId = null;
+            this.form.invenList.forEach((item,i)=>{
+                item.logisticsWeight = null;
+            })
         }
     },
     /** 
@@ -1085,15 +1101,19 @@ export default {
                 shopId: _this.form.pro.shopId
             },
             'success':function (data){
+
                 if(typeof data.data == 'undefined'){
                     _this.logisticsList = [];
                     return
                 }
                 _this.logisticsList = data.data;
+                console.log(_this.logisticsList,'_this.logisticsList')
                 if(_this.form.pro.proFreightSet == 1) {
                    _this.form.pro.proFreightTempId = null;
                     return
                 }
+                //todo
+                _this.selectFreight(_this.form.pro.proFreightTempId);
             }
         });
     },
@@ -1128,6 +1148,7 @@ export default {
 
     },
     selectFreight(data){
+        console.log(data,'aaaaaaaaaaaaa',this.logisticsLis);
         for(let i = 0; i< this.logisticsList.length; i++){
             let _item = this.logisticsList[i];
              if(_item.id == data){

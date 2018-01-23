@@ -1,5 +1,5 @@
 <template>
-  <section class="source-material" v-if="value">
+  <section class="source-material">
       <div class="mint-msgbox" v-show="value" :style="{width:width+'px',height:height+'px'}">
         <iframe :src="materialUrl"  :width="width" :height="height" class="material"></iframe>
       </div>

@@ -124,10 +124,20 @@ export default {
     _this.$nextTick(()=>{
       let E = window.wangEditor;
       let editor2 = new E('editor');
+      editor2.config.mapIndex = 1;
+      editor.beforeOpen = function(){
+      //开启素材库之前
+          parent.window.postMessage("openMask()", "*");
+      }
+      editor.confirm = function(){
+      //开启素材库确认后
+          parent.window.postMessage("closeMask()", "*");
+      }
+      editor.close = function(){
+      //开启素材库取消后
+          parent.window.postMessage("closeMask()", "*");
+      }
       editor2.create();
-      $('#editor').css({
-        height:'auto'
-      })
     })
   }   
 }

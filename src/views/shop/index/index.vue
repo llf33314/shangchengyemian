@@ -183,7 +183,10 @@
                   <i class="iconfont icon-yinhang"></i>
                   <p>购物车</p>
                 </div>
-                <div :style="{background:isColor[1]}">
+                <div :style="{background:isColor[1],color:isColor[0]}" v-if="lightColour">
+                  加入购物车
+                </div>
+                <div :style="{background:isColor[1]}" v-else>
                   加入购物车
                 </div>
                 <div :style="{background:isColor[0]}">
@@ -203,7 +206,10 @@
                 256G
               </div>
               <div class="module4">
-                <div :style="{background:isColor[1]}">
+                <div :style="{background:isColor[1],color:isColor[0]}" v-if="lightColour">
+                  加入购物车
+                </div>
+                <div :style="{background:isColor[1]}" v-else>
                   加入购物车
                 </div>
                 <div :style="{background:isColor[0]}">
@@ -293,7 +299,8 @@ export default {
       bgimg1: bgimg1, //全站风格背景图
       bgimg2: bgimg2,
       bgimg3: bgimg3,
-      webPath: ""
+      webPath: "",
+      lightColour:false,//是否是浅色
     };
   },
   watch: {
@@ -313,7 +320,6 @@ export default {
       let _this = this;
       _this.$router.push({ path: tab.name });
       this.switchAjax(tab.name);
-      //_this.contentNo = tab.name;
     },
     /**
      * 请求判断
@@ -558,6 +564,7 @@ export default {
           _this.styleSelect = data.data.styleKey - 1;
           _this.styles = data.data.styleList;
           _this.isColor = data.data.styleList[_this.styleSelect].style;
+          _this.isLightColour();
         }
       });
     },
@@ -566,13 +573,26 @@ export default {
      * @param colors     颜色组
      */
     styleSelected(colors, styleKey, index) {
-      index === this.styleSelect
-        ? (this.styleSelect = false)
-        : (this.styleSelect = index);
+      index === this.styleSelect?(this.styleSelect = false):(this.styleSelect = index);
       let _this = this;
       _this.styleSelect = index;
       _this.isColor = colors;
       _this.style_key = styleKey;
+      _this.isLightColour(colors);
+    },
+    /** 
+     * 是否是浅色
+     */
+    isLightColour(){
+      let _this =  this;
+      let flag = false;
+      let lightColours = ['#ffe6e9','#f8f0db','#c4eff6'];//浅色
+      lightColours.forEach((item,i)=>{
+        if(_this.isColor[1] == item && !flag){
+          flag = true;
+        }
+      })
+      _this.lightColour = flag;
     },
     /**
      *保存店铺风格 

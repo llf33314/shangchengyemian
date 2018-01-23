@@ -59,17 +59,20 @@ const defaultCallback = action => {
       }else{
         currentMsg.resolve(action);
       }
-
     }
   }
 };
 
 var showNextMsg = function() {
-  initInstance();
+  if(!instance){
+    initInstance();
+  }
   if (!instance.value || instance.closeTimer) {
     if (msgQueue.length > 0) {
       currentMsg = msgQueue.shift();
       var options = currentMsg.options;
+
+      options.beforeOpen && options.beforeOpen();
       for (var prop in options) {
         if (options.hasOwnProperty(prop)) {
           instance[prop] = options[prop];
@@ -148,7 +151,6 @@ Material.show = function(message, title, options) {
 };
 Material.close = function() {
   if (!instance) return;
-
   instance.value = false;
   msgQueue = [];
   currentMsg = null;

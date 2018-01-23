@@ -222,7 +222,6 @@ export default {
         }
       }
 
-
       if (getComputedStyle(dom).position === 'static') {
         dom.style.position = 'absolute';
       }

@@ -284,7 +284,7 @@ export default {
     },
     'cloneGoodsdialog'(a){
       if(a){
-         parent.window.postMessage("openMask()", "*");
+        parent.window.postMessage("openMask()", "*");
       }else{
         parent.window.postMessage("closeMask()", "*");
         this.shopList.forEach((item,i)=>{
