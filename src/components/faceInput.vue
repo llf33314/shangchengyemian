@@ -147,7 +147,7 @@ export default {
     }
     .face-input-textarea{
       p{
-        height: 36px;
+        height: 37px;
         padding:6px 8px; 
         width:100%;
         border:0;

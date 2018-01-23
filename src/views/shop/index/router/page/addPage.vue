@@ -173,10 +173,10 @@ export default {
         if(!Lib.C.ajax_manage) return false;
         Lib.C.ajax_manage = false;
 
-        _this.ajaxRequest({
+        _this.ajaxSave({
             'url': DFshop.activeAPI.mallPageSave_post,
             'data': {
-                page: page
+                page: JSON.stringify(page)
             },
             'success':function (data){
                 if(type==1){

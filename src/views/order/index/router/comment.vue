@@ -170,6 +170,13 @@ export default {
   watch:{
     '$route'(a,b){
       //this.$router.push({path:b.path})
+    },
+    'materialLargeSrcVisible'(a){
+      if(a){
+        parent.window.postMessage("openMask()", "*");
+      }else{
+        parent.window.postMessage("closeMask()", "*");
+      }
     }
   },
   methods: {

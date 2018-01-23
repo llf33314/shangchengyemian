@@ -161,7 +161,7 @@
                   <span v-else-if="order.orderPayWay ==7">找人代付</span>
                   <span v-else-if="order.orderPayWay ==8">粉币支付</span>
                   <span v-else-if="order.orderPayWay ==9">支付宝支付</span> 
-                  <span> —— {{order.orderTypeName}}</span>
+                  <span> —— &nbsp;&nbsp;{{order.orderTypeName}}</span>
                 </p>
                 <p>
                   <a @click="jumpRouter('detail/'+order.id)">订单详情</a>
@@ -240,7 +240,7 @@
                 <div class="table-td border-r col-1">{{order.typeName}}
                 </div>
               </div>
-              <div class="table-tr shop-box-justify table-footer">买家留言：{{order.orderSellerRemark}}
+              <div class="table-tr shop-box-justify table-footer">买家留言：{{order.orderBuyerMessage}}
               </div>
             </div>
           </div>

@@ -165,8 +165,8 @@ export default {
         dataCount:{//营业额统计数据
           yesterCount:'',
           sevenCount:'',
-          settlementCount:'',
-          usableBalance:''
+          // settlementCount:'',
+          // usableBalance:''
         },
         subList:[],//列表数据
         page:{},//页面数据
@@ -224,8 +224,8 @@ export default {
           _this.dataCount = data.data;
           _this.dataCount.yesterCount = '¥ '+data.data.yesterCount;
           _this.dataCount.sevenCount = '¥ '+data.data.sevenCount;
-          _this.dataCount.settlementCount = '¥ '+data.data.settlementCount;
-          _this.dataCount.usableBalance = '¥ '+data.data.usableBalance;
+          // _this.dataCount.settlementCount = '¥ '+data.data.settlementCount;
+          // _this.dataCount.usableBalance = '¥ '+data.data.usableBalance;
         }
       });
     },
