@@ -17,8 +17,9 @@ Vue.mixin({
           * @param {*} type 弹出框类型
           * @param {*} id    订单ID 维权方法传的是退款信息
           * @param {*} returnType  维权类型
+          * @param {*} order 订单信息 用于订单列表页传值 退款使用
           */
-        openDialog(type,id,returnType){
+        openDialog(type,id,returnType,order){
             let _this = this;
             _this.dialogType=type;
             if(type ==1 ){
@@ -39,6 +40,9 @@ Vue.mixin({
             _this.dialogTitle="订单打印";
             _this.orderId=id;
             }else if(type ==6){
+                if(order!=null){
+                    _this.orderData=order;
+                }
                 _this.returnData=id;
                 _this.returnType=returnType;
                 if(returnType ==1){

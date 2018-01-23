@@ -187,7 +187,7 @@
                         <el-button @click="checkExamine(1)">通过</el-button>
                         <el-button @click="checkExamine(-1)">不通过</el-button>
                     </div>
-                    <div class="shop-textr" v-if="pifaData.page.rowCount > 0">
+                    <div class="shop-textr" v-if="pifaData.page.pageCount > 1">
                         <el-pagination
                             @size-change="handleSizeChange1"
                             @current-change="handleCurrentChange1"

@@ -91,7 +91,7 @@
                         </template>
                     </el-table-column>
                 </el-table>
-                <div class="shop-textr" v-if="goodsData.page.rowCount > 0">
+                <div class="shop-textr" v-if="goodsData.page.pageCount > 1">
                     <el-pagination
                         @size-change="handleSizeChange"
                         @current-change="handleCurrentChange"
@@ -149,7 +149,7 @@
                             </template>
                         </el-table-column>
                     </el-table>
-                    <div class="shop-textr" v-if="baozhengjinData.page.rowCount > 0"> 
+                    <div class="shop-textr" v-if="baozhengjinData.page.pageCount > 1"> 
                         <el-pagination
                             @size-change="handleSizeChange1"
                             @current-change="handleCurrentChange1"

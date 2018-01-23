@@ -110,7 +110,7 @@
           </div>
         </div>
       </div>
-      <div class="block shop-textr" v-if="tableData.page.pageCount > 0">
+      <div class="block shop-textr" v-if="tableData.page.pageCount > 1">
         <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"

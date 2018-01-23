@@ -85,7 +85,7 @@
                         </template>
                     </el-table-column>
                 </el-table>
-                <div class="shop-textr" v-if="presaleData.isOpenPresale && presaleData.page.rowCount > 0">
+                <div class="shop-textr" v-if="presaleData.isOpenPresale && presaleData.page.pageCount > 1">
                     <el-pagination
                         @size-change="handleSizeChange"
                         @current-change="handleCurrentChange"
@@ -151,7 +151,7 @@
                         </template>
                         </el-table-column>
                     </el-table>
-                    <div class="shop-textr" v-if="dingJinData.page.rowCount > 0">
+                    <div class="shop-textr" v-if="dingJinData.page.pageCount > 1">
                         <el-pagination
                             @size-change="handleSizeChange1"
                             @current-change="handleCurrentChange1"

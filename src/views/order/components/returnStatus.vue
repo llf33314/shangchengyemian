@@ -54,7 +54,7 @@
                 <span>{{returnInfo.wlRemark}}</span>
                 </div>
             </div>
-            <div style="color:red;margin-left: 38px" v-if="isZhifubao">*建议您复制退款链接并用IE浏览器打开进行退款</div>
+            <div class="dialog-list clearfix" style="color:red;" v-if="isZhifubao">*建议您复制退款链接并用IE浏览器打开进行退款</div>
         </div>
         <div class="dialog-list shop-textr dialog-footer" style="margin-top:40px;">
             <a v-if="isZhifubao" :href="returnInfo.refundUrl" target="_blank">复制链接</a>
@@ -103,7 +103,6 @@ export default {
         /**打开退款 弹出框 */
         dialogReturn(){
             let _this = this;
-    
             _this.payName="微信安全支付";
             if(_this.orderData.orderPayWay== 9){
                 _this.payName="支付宝安全支付";
