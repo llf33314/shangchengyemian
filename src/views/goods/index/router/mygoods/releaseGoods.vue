@@ -526,17 +526,17 @@ export default {
                 let E = window.wangEditor;
                 this.editor2 = new E('editor');
                 this.editor2.config.mapIndex = 1;
-                editor.beforeOpen = function(){
-                //开启素材库之前
-                    parent.window.postMessage("openMask()", "*");
+                editor2.beforeOpen = function(){
+                    //开启素材库之前
+                    parent.parent.parent.window.postMessage("openMask()", "*");
                 }
-                editor.confirm = function(){
-                //开启素材库确认后
-                    parent.window.postMessage("closeMask()", "*");
+                editor2.confirm = function(){
+                    //开启素材库确认后
+                    parent.parent.parent.window.postMessage("closeMask()", "*");
                 }
-                editor.close = function(){
-                //开启素材库取消后
-                    parent.window.postMessage("closeMask()", "*");
+                editor2.close = function(){
+                    //开启素材库取消后
+                    parent.parent.parent.window.postMessage("closeMask()", "*");
                 }
                 this.editor2.create();
               })

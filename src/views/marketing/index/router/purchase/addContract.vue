@@ -123,8 +123,8 @@ export default {
     }
     _this.$nextTick(()=>{
       let E = window.wangEditor;
-      let editor2 = new E('editor');
-      editor2.config.mapIndex = 1;
+      let editor = new E('editor');
+      editor.config.mapIndex = 1;
       editor.beforeOpen = function(){
       //开启素材库之前
           parent.window.postMessage("openMask()", "*");
@@ -137,7 +137,7 @@ export default {
       //开启素材库取消后
           parent.window.postMessage("closeMask()", "*");
       }
-      editor2.create();
+      editor.create();
     })
   }   
 }
