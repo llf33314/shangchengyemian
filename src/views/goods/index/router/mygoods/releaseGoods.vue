@@ -515,7 +515,6 @@ export default {
         webPath:'',//手机端域名
 
         editorOption:{},//编辑器参数
-        editor2:'',
     }
   },
   watch:{
@@ -524,21 +523,21 @@ export default {
           if(a==2){
               this.$nextTick(()=>{
                 let E = window.wangEditor;
-                this.editor2 = new E('editor');
-                this.editor2.config.mapIndex = 1;
-                editor2.beforeOpen = function(){
-                    //开启素材库之前
-                    parent.parent.parent.window.postMessage("openMask()", "*");
+                let editor = new E('editor');
+                editor.config.mapIndex = 1;
+                editor.beforeOpen = function(){
+                //开启素材库之前
+                    parent.parent.window.postMessage("openMask()", "*");
                 }
-                editor2.confirm = function(){
-                    //开启素材库确认后
-                    parent.parent.parent.window.postMessage("closeMask()", "*");
+                editor.confirm = function(){
+                //开启素材库确认后
+                    parent.parent.window.postMessage("closeMask()", "*");
                 }
-                editor2.close = function(){
-                    //开启素材库取消后
-                    parent.parent.parent.window.postMessage("closeMask()", "*");
+                editor.close = function(){
+                //开启素材库取消后
+                    parent.parent.window.postMessage("closeMask()", "*");
                 }
-                this.editor2.create();
+                editor.create();
               })
           }
       }
@@ -1178,16 +1177,7 @@ export default {
             }
         }
     })
-    // _this.$nextTick(()=>{
-    //     console.log($('#editor'),'#editor')
-    //     let E = window.wangEditor;
-    //     let editor2 = new E('editor')
-    //     editor2.create()
-    //         $('#editor').css({
-    //             height:'auto'
-    //         })
-    //     })
-    }
+  }
 }
 </script>
 
