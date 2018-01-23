@@ -233,7 +233,7 @@
               <div class="module2" :style="{color:isColor[0]}">￥<span>7,199.</span>00
               </div>
               <div class="module3" :style="{color:isColor[0]}">
-                ￥<span>14,398.</span>00
+                合计：  ￥<span>14,398.</span>00
               </div>
               <div class="module4" :style="{background:isColor[0]}">
                 去结算(2)
@@ -267,7 +267,7 @@ import contentNo from "components/contentNo";
 
 import bgimg1 from "../img/style1.png";
 import bgimg2 from "../img/style2.png";
-import bgimg3 from "../img/style3.png";
+import bgimg3 from "../img/style4.jpg";
 export default {
   components: {
     defaultImg,
