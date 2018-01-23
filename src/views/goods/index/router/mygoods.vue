@@ -18,6 +18,9 @@
         <div class="shopInfo-button">
           <el-button type="primary" @click="jumpRouter('releaseGoods/add')">发布商品</el-button>
           <el-button type="primary" @click="cloneGoods('',1)">一键同步</el-button>
+          <a :href="videourl" target="_blank" v-if="videourl!=null">
+            <el-button type="warning"><i class="iconfont icon-cplay1"></i>视频教程</el-button>
+          </a>
         </div>
       </div>
     </div>
@@ -248,6 +251,7 @@ export default {
       count:2,
       imgUrl:'',
       webPath:'',
+      videourl:'',
       screenData:{//筛选数据
         curPage: 1,  //页数
         proType: 0,  //商品名称0全部  1上架商品   2未上架  3审核不通过
@@ -386,6 +390,7 @@ export default {
           }
           _this.imgUrl = data.imgUrl;
           _this.webPath = data.webPath;
+          _this.videourl=data.data.videourl;
         }
       
       });
