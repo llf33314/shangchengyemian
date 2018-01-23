@@ -10,25 +10,25 @@
     </div>
     <div class="common-main">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
-            <el-form-item label="所属店铺 :" prop="shopId">
+            <el-form-item label="所属店铺 :" prop="shopId" required>
                 <el-select v-model="ruleForm.shopId" placeholder="请选择活动区域" class="addGruop-input" v-bind:disabled="disabledShop" >
                     <el-option class="max-input" v-for="item in shopList"
                         :key="item.id" :label="item.sto_name" :value="item.id">
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="图片链接跳转 :" prop="type">
+            <el-form-item label="图片链接跳转 :" prop="type" required>
                 <el-radio-group v-model="ruleForm.type">
                     <el-radio :label="1">跳转</el-radio>
                     <el-radio :label="0">不跳转</el-radio>
                 </el-radio-group>
             </el-form-item>
-            <el-form-item label="链接地址 :" prop="returnUrl" v-if="ruleForm.type == 1">
+            <el-form-item label="链接地址 :" prop="returnUrl" required v-if="ruleForm.type == 1">
                 <el-input v-model.trim="ruleForm.returnUrl" style="width:300px;">
                      <template slot="prepend">Http://</template>
                 </el-input>
             </el-form-item>
-            <el-form-item label="上传图片 :" prop="imageUrl">
+            <el-form-item label="上传图片 :" prop="imageUrl" required>
               <div class="addBanner-img" :class="ruleForm.imageUrl == '' ? 'border':''">
                   <div class="material-square" @click="materiallayer()" >
                       <i class="el-icon-plus"></i>
@@ -91,10 +91,10 @@ export default {
           { validator: formShopId, trigger: 'change' }
         ],
         returnUrl: [
-         { validator: formReturnUrl, trigger: 'blur' }
+         { validator: formReturnUrl, trigger: 'blur,change' }
         ],
         imageUrl: [
-          { required: true, message: '图片链接未选择', trigger: 'blur' }
+          { required: true, message: '图片链接未选择', trigger: 'blur,change' }
         ],
       },
       shopList:[],

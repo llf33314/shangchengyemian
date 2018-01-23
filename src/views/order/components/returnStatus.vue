@@ -1,58 +1,62 @@
 <template>
-    <div class="order_tab_main">
-        <div class="dialog-list dialog-warn" v-if=" type== -1 ">
+    <div>
+        <div class="dialog-list dialog-warn" v-if=" type== -1 " style="margin:0">
             建议您与买家协商后，再确定是否拒绝退款。如您拒绝退款后，买家可修改退款申请协议重新发起退款。 也可直接发起维权申请。
         </div>
-        <div class="dialog-list dialog-warn" v-if=" type != -1 ">
-        该笔订单通过 “{{payName}}－代销” 付款， 需您同意退款申请，买家才能退货给您； 买家退货后您需再次确认收货后，退款将自动原路退回至买家付款账户；
+        <div class="dialog-list dialog-warn" v-if=" type != -1 " style="margin:0">
+            该笔订单通过 “{{payName}}－代销” 付款， 需您同意退款申请，买家才能退货给您； 买家退货后您需再次确认收货后，退款将自动原路退回至买家付款账户；
         </div>
-        <div class="dialog-list clearfix">
-        <span class="dialog-title">处理方式 :</span>
-        <span v-if="orderData.orderPayWay !=2 && orderData.orderPayWay !=6">
-            <span class="dialog-text" v-if="returnInfo.retHandlingWay == 1">我要退款，但不退货</span>
-            <span class="dialog-text" v-if="returnInfo.retHandlingWay == 2">我要退款退货</span>
-        </span>
-        <span v-if="orderData.orderPayWay ==2 || orderData.orderPayWay ==6">
-            <span class="dialog-text" v-if="returnInfo.retHandlingWay == 1">我要退货</span>
-            <span class="dialog-text" v-if="returnInfo.retHandlingWay == 2">我要退货</span>
-        </span>
-        </div>
-        <div class="dialog-list clearfix">
-        <span class="dialog-title">退款金额 :</span>
-        <span class="dialog-text">&#65509;<span style="color:blue;">{{returnInfo.retMoney}}</span></span>
-        </div>
-        <div class="dialog-list clearfix" v-if="type == -1">
-        <span class="dialog-title">拒绝理由 :</span>
-        <p class="dialog-text"><el-input type="textarea" v-model.trim="noReturnReason" placeholder="请输入拒绝理由"></el-input></p>
-        </div>
-        <div class="dialog-list clearfix" v-if="type == 2 || type == 5">
-        <span class="dialog-title">退货地址 :</span>
-        <p class="dialog-text">
-            <el-input type="textarea" v-model.trim="returnAddress" :value="returnInfo.returnAddress"
-            placeholder="填写您的完整收货地址信息，以便买家可退货给您!如，浙江省杭州市有赞区致富路888号，张三，13588888888 ，由买家承担寄回运费。"></el-input>
-        </p>
-        </div>
+        <div class="order_tab_main" style=" padding: 0 30px;">
+            <div class="dialog-list clearfix">
+            <span class="dialog-title">处理方式 :</span>
+            <span v-if="orderData.orderPayWay !=2 && orderData.orderPayWay !=6">
+                <span class="dialog-text" v-if="returnInfo.retHandlingWay == 1">我要退款，但不退货</span>
+                <span class="dialog-text" v-if="returnInfo.retHandlingWay == 2">我要退款退货</span>
+            </span>
+            <span v-if="orderData.orderPayWay ==2 || orderData.orderPayWay ==6">
+                <span class="dialog-text" v-if="returnInfo.retHandlingWay == 1">我要退货</span>
+                <span class="dialog-text" v-if="returnInfo.retHandlingWay == 2">我要退货</span>
+            </span>
+            </div>
+            <div class="dialog-list clearfix">
+            <span class="dialog-title">退款金额 :</span>
+            <span class="dialog-text">&#65509;<span style="color:#20a0ff;">{{returnInfo.retMoney}}</span></span>
+            </div>
+            <div class="dialog-list clearfix" v-if="type == -1">
+            <span class="dialog-title" style="vertical-align: top;">拒绝理由 :</span>
+            <span class="dialog-text">
+                <el-input type="textarea" v-model.trim="noReturnReason" placeholder="请输入拒绝理由" style="width:80%"></el-input>
+            </span>
+            </div>
+            <div class="dialog-list clearfix" v-if="type == 2 || type == 5">
+            <span class="dialog-title" style="vertical-align: top;">退货地址 :</span>
+            <span class="dialog-text">
+                <el-input type="textarea" v-model.trim="returnAddress" :value="returnInfo.returnAddress" style="width:80%"
+                placeholder="填写您的完整收货地址信息，以便买家可退货给您!如，浙江省杭州市有赞区致富路888号，张三，13588888888 ，由买家承担寄回运费。"></el-input>
+            </span>
+            </div>
 
-        <div v-if="type == 3 || type ==4 ">
-            <div class="dialog-list clearfix">
-            <span class="dialog-title">退货地址 :</span>
-            <span>{{returnInfo.returnAddress}}</span>
+            <div v-if="type == 3 || type ==4 ">
+                <div class="dialog-list clearfix">
+                <span class="dialog-title">退货地址 :</span>
+                <span>{{returnInfo.returnAddress}}</span>
+                </div>
+                <div class="dialog-list clearfix">
+                <span class="dialog-title">物流公司 :</span>
+                <span>{{returnInfo.wlCompany}}</span>
+                </div>
+                <div class="dialog-list clearfix">
+                <span class="dialog-title">物流单号 :</span>
+                <span>{{returnInfo.wlNo}}</span>
+                </div>
+                <div class="dialog-list clearfix">
+                <span class="dialog-title">备注信息 :</span>
+                <span>{{returnInfo.wlRemark}}</span>
+                </div>
             </div>
-            <div class="dialog-list clearfix">
-            <span class="dialog-title">物流公司 :</span>
-            <span>{{returnInfo.wlCompany}}</span>
-            </div>
-            <div class="dialog-list clearfix">
-            <span class="dialog-title">物流单号 :</span>
-            <span>{{returnInfo.wlNo}}</span>
-            </div>
-            <div class="dialog-list clearfix">
-            <span class="dialog-title">备注信息 :</span>
-            <span>{{returnInfo.wlRemark}}</span>
-            </div>
+            <div style="color:red;margin-left: 38px" v-if="isZhifubao">*建议您复制退款链接并用IE浏览器打开进行退款</div>
         </div>
-        <div style="color:red;margin-left: 38px" v-if="isZhifubao">*建议您复制退款链接并用IE浏览器打开进行退款</div>
-        <div class="dialog-list shop-textr dialog-footer">
+        <div class="dialog-list shop-textr dialog-footer" style="margin-top:40px;">
             <a v-if="isZhifubao" :href="returnInfo.refundUrl" target="_blank">复制链接</a>
             <el-button type="primary" @click="submitForm()">确定</el-button>
             <el-button @click="resetForm()">取消</el-button>
@@ -227,6 +231,10 @@ export default {
         margin-right: 28px;
     }
 
+}
+.dialog-warn{
+    background: #f1f1f1;
+    padding: 10px 20px;  
 }
     
 </style>

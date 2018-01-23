@@ -409,7 +409,7 @@ export default {
             rowCount: data.data.page.rowCount
           }
           _this.imgUrl = data.imgUrl;
-          _this.videourl = data.videourl;
+          _this.videourl = data.data.videourl;
           if(searchData.curPage == 1){
             _this.count=data.data.count;
           }

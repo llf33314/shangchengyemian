@@ -10,19 +10,19 @@
     </div>
     <div class="addGruop-main">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-            <el-form-item label="所属店铺 :" prop="shopId">
+            <el-form-item label="所属店铺 :" prop="shopId" required>
                 <el-select v-model="ruleForm.shopId" placeholder="请选择店铺" v-bind:disabled="disabledShop" class="addGruop-input" @change="changeShop">
                     <el-option class="max-input" v-for="item in shopList"
                         :key="item.id" :label="item.sto_name" :value="item.id">
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="活动商品 :" prop="name">
+            <el-form-item label="活动商品 :" prop="productId" required>
                <el-button type="primary" @click="showDialog" v-if="isChoicePro">选择商品</el-button>
                 <goods-box :boxdata="boxData" v-if="isReplacePro"></goods-box>
                 <el-button type="primary" @click="showDialog" v-if="isReplacePro">替换商品</el-button>
             </el-form-item>
-            <el-form-item label="积分 :" prop="money">
+            <el-form-item label="积分 :" prop="money" required>
                 <el-input v-model="ruleForm.money" class="addGruop-input"></el-input>
                 <!-- <p class="p-warn">0/8</p> -->
             </el-form-item>
@@ -64,7 +64,8 @@ export default {
       }
     };
     var formStartTime = (rule, value, callback) => {
-      if (value =="") {
+      console.log(value,"1111111");
+      if (value ==""||value[0] ==null||value[1] ==null) {
         return callback(new Error('请选择时间'));
       }else {
           callback();
@@ -93,20 +94,16 @@ export default {
         startTime:"",
         endTime: "",
         shopId: '',
-        name:''
       },
       rules: {
         shopId:[
           { validator: formShopId, trigger: 'change' }
         ],
-        name: [
-          { validator: formName, trigger: 'blur' },
-        ],
         productId: [
-          { required: true, message: '商品不能为空', trigger: 'blur' },
+           { validator: formName, trigger: 'blur,change' },
         ],
         money: [
-          { validator: formMoney, trigger: "blur" }  
+          { validator: formMoney, trigger: "blur,change" }  
         ],
         startTime: [
            { validator: formStartTime, trigger: 'change,blur', message: "请选择活动时间", }

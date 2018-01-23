@@ -54,6 +54,9 @@
               </el-form-item>
               <el-form-item>
                 <el-button type="primary" @click="onSubmit('setupForm')">保存</el-button>
+                <a :href="videourl" target="_blank" v-if="videourl!=null">
+                  <el-button type="warning"><i class="iconfont icon-cplay1"></i>视频教程</el-button>
+                </a>
               </el-form-item>
             </el-form>
           </div>
@@ -347,6 +350,7 @@ export default {
       keyWord_sellers: "",
       keyWord_tixian: "",
       keyWord: "",
+      videourl:'',
       setupForm: {
         integralReward: "", //积分
         consumeMoney: "", //销售员
@@ -591,6 +595,7 @@ export default {
           _this.isOpenSeller=data.data.isOpenSeller;
           if(_this.isOpenSeller){
             _this.setupForm = data.data.sellerSet;
+            _this.videourl=data.data.videourl;
           }
           //console.log(_this.setupForm,'setupForm')
         }

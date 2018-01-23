@@ -108,7 +108,7 @@
                       </el-option>
                     </el-select>
                   </span>
-                  <span v-if="videourl !=''" >
+                  <span v-if="videourl !=null" >
                     <a :href="videourl"  target="_blank">
                       <el-button type="warning"><i class="iconfont icon-cplay1"></i>视频教程</el-button>
                     </a> 
@@ -410,6 +410,7 @@ export default {
               _this.contentNo="";
           }
           _this.imagePath=data.imgUrl;
+          _this.videourl=data.data.videourl;
           // console.log(data.imgUrl);
           _this.imageData = data.data.page.subList;
           _this.page = {
