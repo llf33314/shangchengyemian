@@ -7,7 +7,7 @@
           <div class="shopInfo-img">
             <defaultImg :background="imgUrl+tabelData.userLogo"></defaultImg>
           </div>
-          <div class="shopInfo-content">
+          <div class="shopInfo-content" style="width: 92%;">
             <p class="shopInfo-name" v-text="tabelData.userName">商家名称</p>
             <div class="shopInfo-button">
               <el-button type="primary" 
@@ -15,9 +15,11 @@
                 @click="jumpRouter('shop/addShop')" >新增店铺</el-button>
               <el-button type="primary"
                 @click="jumpRouter('shop/addPage/0')">新建微页面</el-button>
-              <a :href="tabelData.videourl" target="_blank" v-if="tabelData.videourl!=null">
-                <el-button type="warning"><i class="iconfont icon-cplay1"></i>视频教程</el-button>
-              </a>
+                <span style="float: right;">
+                  <a :href="tabelData.videourl" target="_blank" v-if="tabelData.videourl!=null">
+                    <el-button type="warning"><i class="iconfont icon-cplay1"></i>视频教程</el-button>
+                  </a>
+                </span>
             </div>
           </div>
         </div>
@@ -97,7 +99,7 @@
           </el-select>
           <div class="page-button">
             <el-button type="primary" @click="jumpRouter('/shop/addPage/0')">新增微页面</el-button>
-            <a :href="tabelData.videourl" target="_blank" v-if="tabelData.videourl!=null">
+            <a :href="tabelData.videourl" target="_blank" v-if="tabelData.videourl!=null"  style="float: right;">
               <el-button type="warning"><i class="iconfont icon-cplay1"></i>视频教程</el-button>
             </a>
           </div>

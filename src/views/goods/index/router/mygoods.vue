@@ -1,7 +1,7 @@
 <template>
   <div class="index-mygoods">
     <div class="index-shopInfo clearfix">
-      <div class="shopInfo-content">
+      <div class="shopInfo-content" style="width: 100%;">
         <div class="shopInfo-selectbox" v-if="count.status_total>0">
            <el-select v-model="screenData.proType" placeholder="请选择" class="shopInfo-select" @change="search_type(1)">
             <el-option label="全部商品" :value="0"></el-option>
@@ -18,7 +18,7 @@
         <div class="shopInfo-button">
           <el-button type="primary" @click="jumpRouter('releaseGoods/add')">发布商品</el-button>
           <el-button type="primary" @click="cloneGoods('',1)">一键同步</el-button>
-          <a :href="videourl" target="_blank" v-if="videourl!=null">
+          <a :href="videourl" target="_blank" v-if="videourl!=null"  style="float: right;">
             <el-button type="warning"><i class="iconfont icon-cplay1"></i>视频教程</el-button>
           </a>
         </div>

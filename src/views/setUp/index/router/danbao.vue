@@ -44,10 +44,14 @@
             要求没有自有微信支付平台账户的商家必须参加担保交易，否则多粉平台不予提供支持
          </el-row>
       </div>
-      <div>
+      <div >
         <el-button type="primary" v-if="!isSecuritytrade" @click="mallSecuritytradeAdd()">立即加入担保交易</el-button>
-        <el-button  v-else-if="isSecuritytrade && securitytradeQuit !=null" disabled>退出担保审核中</el-button>
+        <el-button  v-else-if="isSecuritytrade && securitytradeQuit !=null &&securitytradeQuit.checkStatus==0" disabled>退出担保审核中</el-button>
         <el-button @click="exitGuarantee()"  v-else-if="isSecuritytrade">退出担保交易</el-button>
+        <div class="tooltip-box" v-if="securitytradeQuit.checkStatus==-1 &&securitytradeQuit.refuseReason!=''">
+          <i class="el-icon-information"></i>
+          <div class="tooltip-content">审核不通过<p class="text-not-wrap">不通过理由：{{securitytradeQuit.refuseReason}}</p></div>
+        </div>
       </div>
     </div>
 
@@ -95,7 +99,7 @@ export default {
         reasonList: [],//退出理由列表
         formLabelWidth: '120px',
         isSecuritytrade:'', //是否加入担保交易 true 已加入 false未加入
-        securitytradeQuit:{}, //退出担保交易信息
+        securitytradeQuit:{}, //上次退出担保交易信息
         ruleForm:{
           quitReasonId:'',
           remark:'',
@@ -127,6 +131,9 @@ export default {
           if(data.data.isSecuritytrade){
             _this.isColor = '#34d063';//已加入状态--颜色
             _this.securitytradeQuit=data.data.securitytradeQuit;
+            if(data.data.securitytradeQuit.refuseReason ==null){
+               _this.securitytradeQuit.refuseReason="";
+            }
           }else{
             _this.isColor = '#cacaca';//待加入状态--颜色
           }
@@ -220,4 +227,63 @@ export default {
 
 <style lang="less" scoped>
 @import '../../less/danbao.less';
+
+.tooltip-box{
+  position: relative;
+  display: inline-block;
+  width: 38px;
+  i.el-icon-information{
+    color:#F7BA2A;
+    margin-left: 9px;
+  }
+  .tooltip-content{
+    display: none;
+    position: absolute;
+    line-height: 18px;
+    color:#999;
+    border:1px solid #e1e1e1;
+    border-radius: 5px;
+    box-shadow: 0px 0px 1px 1px #e1e1e1;
+    min-width:50px;
+    padding: 8px 16px;
+    font-size: 12px;
+    z-index: 2;
+    background: #fff;
+    left: 100%;
+    top: -85%;
+    &::after{
+      content: '';
+      width: 10px;
+      height: 10px;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-right-color: transparent;
+      border-top-color: transparent;
+      transform: rotate(45deg);
+      position: absolute;
+      left: -5px;
+      top: 42%;
+      z-index: 1;
+    }
+  }
+  &:hover{
+    .tooltip-content{
+      display: block;
+    }
+  }
+}
+.el-tooltip__popper.is-light{
+  line-height: 18px;
+  color:#999;
+  border:1px solid #e1e1e1;
+  box-shadow: 0px 0px 1px 1px #e1e1e1;
+  
+}
+.el-tooltip__popper .popper__arrow, .el-tooltip__popper .popper__arrow::after{
+  width: 8px;
+  height: 8px;
+  background: #fff;
+  border: 1px solid #333;
+  transform: rotate(45deg);
+}
 </style>
