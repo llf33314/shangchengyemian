@@ -19,7 +19,7 @@
           <el-button type="primary" @click="jumpRouter('releaseGoods/add')">发布商品</el-button>
           <el-button type="primary" @click="cloneGoods('',1)">一键同步</el-button>
           <a :href="videourl" target="_blank" v-if="videourl!=null"  style="float: right;">
-            <el-button type="warning"><i class="iconfont icon-cplay1"></i>视频教程</el-button>
+            <el-button type="warning" class="video-button"><i class="iconfont icon-cplay1"></i>视频教程</el-button>
           </a>
         </div>
       </div>
@@ -79,18 +79,23 @@
           label="商品状态"
           show-overflow-tooltip>
           <template scope="scope">
-            <span v-if="scope.row.isPublish == 1 && scope.row.checkStatus == 1">
-              已上架
-            </span>
-            <span  v-if="(scope.row.isPublish == -1 || scope.row.isPublish == 0) && scope.row.checkStatus == 1">
-              未上架
-            </span>
-            <span class="shop-red" v-if="scope.row.checkStatus == -1">
-              审核不通过
-            </span>
-            <span class="shop-red" v-if="scope.row.checkStatus == -2">
-              还未审核
-            </span>
+            <div  v-if="scope.row.proTypeId == 3">
+              已下架
+            </div>
+            <div v-else>
+              <span v-if="scope.row.isPublish == 1 && scope.row.checkStatus == 1">
+                已上架
+              </span>
+              <span  v-if="(scope.row.isPublish == -1 || scope.row.isPublish == 0) && scope.row.checkStatus == 1">
+                未上架
+              </span>
+              <span class="shop-red" v-if="scope.row.checkStatus == -1">
+                审核不通过
+              </span>
+              <span class="shop-red" v-if="scope.row.checkStatus == -2">
+                还未审核
+              </span>
+            </div>
           </template>
          </el-table-column>
         <el-table-column
@@ -99,12 +104,12 @@
           <template scope="scope">
             <el-button  size="small" 
                         class="buttonBlue" 
-                        v-if=" scope.row.checkStatus == 1 && scope.row.isPublish != 1 && scope.row.isGroup == 0 && scope.row.isSeckill == 0 "
+                        v-if=" scope.row.checkStatus == 1 && scope.row.isPublish != 1 && scope.row.isGroup == 0 && scope.row.isSeckill == 0 && scope.row.proTypeId != 3 "
                         @click="mallProductBatchProduct(scope.row.id,3)">上架
             </el-button>
             <el-button  size="small" 
                         class="buttonBlue" 
-                        v-if=" scope.row.checkStatus == 1 && scope.row.isPublish == 1 && scope.row.isGroup == 0 && scope.row.isSeckill == 0"
+                        v-if=" scope.row.checkStatus == 1 && scope.row.isPublish == 1 && scope.row.isGroup == 0 && scope.row.isSeckill == 0 && scope.row.proTypeId != 3 "
                          @click="mallProductBatchProduct(scope.row.id,4)">下架
             </el-button>
             <el-button  size="small" 
@@ -119,7 +124,7 @@
             </el-button> -->
             <el-button  size="small" 
                         class="buttonBlue" 
-                        v-if=" scope.row.checkStatus == 1 && scope.row.isPublish == 1"
+                        v-if=" scope.row.checkStatus == 1 && scope.row.isPublish == 1 "
                         @click="shopQR(scope.row,1)">链接
             </el-button>
             <el-button  size="small" 
@@ -129,7 +134,7 @@
             </el-button>
             <el-button  size="small" 
                         class="buttonBlue" 
-                        v-if=" scope.row.checkStatus == 1 && scope.row.isPublish == 1"
+                        v-if=" scope.row.checkStatus == 1 && scope.row.isPublish == 1 && scope.row.proTypeId == 0 "
                         @click="shopQR(scope.row,2)">到店购买
             </el-button>
             <el-button  size="small" 

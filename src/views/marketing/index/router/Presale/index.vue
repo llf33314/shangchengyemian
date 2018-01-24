@@ -35,7 +35,7 @@
                         </div>
                     <span>
                         <a :href="presaleData.videourl" target="_blank" v-if="presaleData.videourl != null">
-                            <el-button type="warning" v-if="presaleData.isOpenPresale">
+                            <el-button type="warning" class="video-button" v-if="presaleData.isOpenPresale">
                                 <i class="iconfont icon-cplay1"></i>视频教程
                             </el-button>
                         </a>
