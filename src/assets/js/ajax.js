@@ -189,7 +189,7 @@ Vue.mixin({
                         if(status){
                             if(res.code != 0 ){
                                 vm.$message({
-                                    message: res.data.msg,
+                                    message: res.msg,
                                     type: 'warning'
                                 });
                                 return
