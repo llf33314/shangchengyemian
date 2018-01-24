@@ -200,8 +200,7 @@
                   <div class="table-item" v-else >1</div> 
                 </div>
                 <div class="border-r col-3">
-                   <div class="table-item order-ret-but"  v-for="orderDetail in order.mallOrderDetail" :key="orderDetail.id">
-                     {{orderDetail.statusName}}
+                   <div class="table-item order-ret-but"  v-for="orderDetail in order.mallOrderDetail" :key="orderDetail.id">{{orderDetail.statusName}}
                      <p v-if="orderDetail.returnResult && order.orderPayWay !=5">
                         <el-button type="primary" size="small" v-if="orderDetail.returnResult.isShowAgreeApplyButton == 1" @click="openDialog(6,orderDetail.returnResult,1,order)">同意退款</el-button>
                         <el-button type="primary" size="small" v-if="orderDetail.returnResult.isShowAgreeRetGoodsApplyButton == 1" @click="openDialog(6,orderDetail.returnResult,2,order)">同意退货退款</el-button>
