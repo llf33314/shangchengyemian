@@ -224,7 +224,7 @@
                 <div class="mygoods-item">
                     <div class="item-title">物流</div>
                     <div class="item-content">
-                        <el-form-item label="运费设置 :" prop="pro.proFreightPrice" :rules="rules.proFreightPrice">
+                        <el-form-item label="运费设置 :" prop="pro.proFreightPrice" :rules="rules.proFreightPrice" required>
                             <div class="item-inline" style="width:auto">
                                 <el-radio-group v-model.number="form.pro.proFreightSet" @change="proFreightSet(form.pro.proFreightSet)">
                                     <el-radio class="radio" :label="1"
@@ -466,6 +466,9 @@ export default {
                 isSpecifica:0,//是否有规格
                 proWeight:0,//商品重量
                 proCode:null,//商家编码
+                proFreightPrice: 0 ,//统一运费
+                userId: null,//用户ID
+                id: null//商品ID
             },
             proDetail:{
                 productDetail: null,        //商品详情
@@ -647,9 +650,9 @@ export default {
                 id:_this.goodsId
             },
             'success':function (data){
-                console.log(data.data,'editAjaxaaaaaa')
-                
+                console.log(data.data,'编辑数据')
                 _this.form = data.data;
+
                 //初始化处理数据
                 _this.invenAdd(_this.form.invenList,_this.form.specList);
                 _this.changeSpac(_this.form.specList);
@@ -752,8 +755,8 @@ export default {
         Lib.C.ajax_manage = false;
 
         let url = '';//请求接口
-        if(_this.$route.params.id === 'add'){
-            url = DFshop.activeAPI.mallProductAdd_post
+        if(_this.$route.params.id === 'add' && _this.form.pro.userId == null && _this.form.pro.id == null){
+            url = DFshop.activeAPI.mallProductAdd_post;
         }else{
             url = DFshop.activeAPI.mallProductUpdatet_post;
         }
@@ -761,16 +764,17 @@ export default {
             'url':  url,
             'data':data,
             'success':function (data){
-                debugger
+
                 if(type==1){
                     _this.active = 3;
                 }else{
-                    let _pageLink='';
-                    if(_this.$route.params.id === 'add'){
-                        _pageLink = 'goods/details/'+_this.form.pro.shopId+'/'+data.userId+'/0/'+data.id+'/0';
-                    }else{
-                        _pageLink = 'goods/details/'+_this.form.pro.shopId+'/'+_this.form.pro.userId+'/0/'+_this.form.pro.id+'/0';
+                    //新增
+                    if(_this.$route.params.id === 'add' && _this.form.pro.userId == null && _this.form.pro.id == null){
+                        _this.form.pro.userId = data.userId;
+                        _this.form.pro.id = data.id;
                     }
+                    //预览链接
+                    let _pageLink = 'goods/details/'+_this.form.pro.shopId+'/'+_this.form.pro.userId+'/0/'+_this.form.pro.id+'/0';
                     let msg ={
                         title: '商品预览',
                         path: _this.webPath,
@@ -1042,7 +1046,10 @@ export default {
         if(e==2){
             //物流模板id默认
             if(this.logisticsList.length==0  && (this.form.pro.proFreightTempId == 0 || this.form.pro.proFreightTempId == null)){
-                this.$message.error('没有运费模板，请新增');
+                this.$message({
+                    message: '没有运费模板，请新增',
+                    type: 'warning'
+                });
                 return
             }
             this.form.pro.proFreightTempId = this.logisticsList[0].id;
