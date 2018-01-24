@@ -43,6 +43,7 @@
               label="冻结佣金（元）">
             </el-table-column>
             <el-table-column
+              width="175"
               label="加入时间">
                 <template scope="scope">
                     <div>{{scope.row.add_time|format}}</div>

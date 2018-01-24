@@ -48,7 +48,7 @@
         <el-button type="primary" v-if="!isSecuritytrade" @click="mallSecuritytradeAdd()">立即加入担保交易</el-button>
         <el-button  v-else-if="isSecuritytrade && securitytradeQuit !=null &&securitytradeQuit.checkStatus==0" disabled>退出担保审核中</el-button>
         <el-button @click="exitGuarantee()"  v-else-if="isSecuritytrade">退出担保交易</el-button>
-        <div class="tooltip-box" v-if="securitytradeQuit.checkStatus==-1 &&securitytradeQuit.refuseReason!=''">
+        <div class="tooltip-box" v-if="isSecuritytrade && securitytradeQuit !=null && securitytradeQuit.checkStatus==-1 &&securitytradeQuit.refuseReason!=''">
           <i class="el-icon-information"></i>
           <div class="tooltip-content">审核不通过<p class="text-not-wrap">不通过理由：{{securitytradeQuit.refuseReason}}</p></div>
         </div>
@@ -106,7 +106,7 @@ export default {
         },
         rules: {
           quitReasonId:[
-            { type: 'number',required: true, message: '退出理由不能为空', trigger: 'blur,change' }
+            {required: true, message: '退出理由不能为空', trigger: 'blur,change' }
           ],
         },
     }
@@ -131,7 +131,7 @@ export default {
           if(data.data.isSecuritytrade){
             _this.isColor = '#34d063';//已加入状态--颜色
             _this.securitytradeQuit=data.data.securitytradeQuit;
-            if(data.data.securitytradeQuit.refuseReason ==null){
+            if(data.data.securitytradeQuit!=null && data.data.securitytradeQuit.refuseReason ==null){
                _this.securitytradeQuit.refuseReason="";
             }
           }else{
