@@ -49,7 +49,9 @@
                                 <el-radio :label="0" class="item-radio">实物商品</el-radio>
                                 <el-radio :label="1" class="item-radio">虚拟商品（非会员卡，无需物流）</el-radio>
                                 <el-radio :label="2" class="item-radio">虚拟商品（会员卡，无需物流）</el-radio>
-                                <!-- <el-radio :label="3" class="item-radio">虚拟商品（卡券包，无需物流）</el-radio> -->
+                                <el-radio :label="3" class="item-radio" >虚拟商品（卡券包，无需物流）
+                                    <span style="font-size: 12px;color: #bbbbbb;">此功能开发中,请等待</span>
+                                </el-radio>
                                 <el-radio :label="4" class="item-radio" v-if="isFlowList">虚拟商品（流量包，无需物流）</el-radio>
                             </el-radio-group>
                         </el-form-item>
@@ -74,6 +76,7 @@
                                                 :label="card.id" 
                                                 class="item-radio"
                                                 :key="card.id"
+                                                disabled
                                     >{{card.cardsName}}</el-radio>
                                 </el-radio-group>
                                  <el-table :data="cardReceiveItem.messageList"
@@ -99,7 +102,7 @@
                                     prop="id"
                                     width="80">
                                         <template scope="scope">
-                                            <el-radio class="radio" 
+                                            <el-radio class="radio"
                                                 v-model.number="form.pro.flowId" 
                                                 :label="Number(scope.row.id)">
                                                 &nbsp
@@ -904,6 +907,10 @@ export default {
             }
         }else if(type == 3){
         //卡券包
+            _this.$message({
+                message: '此功能开发中,不可选,请等待',
+                type: 'warning'
+            });
             if(this.cardReceiveList == ''){
                 _this.ajaxRequest({
                     'url': DFshop.activeAPI.mallCardReceiveList_post,

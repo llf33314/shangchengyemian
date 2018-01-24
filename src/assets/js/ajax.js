@@ -300,8 +300,9 @@ Vue.mixin({
             if (opts.error) {
                 opts.error(error);
             } else {
-                console.log('catch');
-                vm.$message.error('请求超时请联系客服');;
+                console.log('catch',opt.url);
+
+                vm.$message.error('请求超时请联系客服');
             }
         });
 
