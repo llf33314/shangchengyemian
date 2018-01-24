@@ -344,7 +344,14 @@ export default {
         data: {
           id: _this.auctionId
         },
-        success: function(data) {}
+        success: function(data) {
+          _this.dialogViewDetails=false;
+          _this.$message({
+            message: '退定金成功',
+            type: "success"
+          });
+          _this.mallAuctionMarginList(baozhengjinData.page.curPage);
+        }
       });
     },
     copyLink() {

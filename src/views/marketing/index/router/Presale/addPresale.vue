@@ -146,7 +146,7 @@ export default {
       return callback(new Error("请选择活动商品"));
     };
     var formSaleStartTime = (rule, value, callback) => {
-      if (value === "") {
+      if (value ==""||value[0] ==null||value[1] ==null) {
         return callback(new Error("请选择预售时间"));
       }
       callback();

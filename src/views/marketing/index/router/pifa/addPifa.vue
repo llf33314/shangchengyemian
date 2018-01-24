@@ -89,7 +89,7 @@ export default {
       }
     };
     var formPfStartTime = (rule, value, callback) => {
-      if (value == "") {
+      if (value ==""||value[0] ==null||value[1] ==null) {
         return callback(new Error("请选择活动时间"));
       } else {
         callback();

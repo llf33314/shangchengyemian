@@ -98,7 +98,7 @@
                 <p>
                    {{orderDetail.orderBuyerMessage}}
                 </p>
-                <el-button type="primary" v-if="orderDetail.orderStatus >=3 && orderDetail.orderStatus !=5 && orderDetail.expressNumber !='' ">查看物流信息</el-button>
+                <!-- <el-button type="primary" v-if="orderDetail.orderStatus >=3 && orderDetail.orderStatus !=5 && orderDetail.expressNumber !='' ">查看物流信息</el-button> -->
               </div>
             </div>
           </div>
