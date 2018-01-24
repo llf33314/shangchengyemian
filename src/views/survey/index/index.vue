@@ -1,7 +1,7 @@
 <template >
   <div class="survey-wrapper" v-cloak>
     <div class="survey-item statistics-main">
-      <p class="item-title">统计概况</p>
+      <p class="item-title">统计概况1</p>
       <div class="item-content">
         <div class="col1" >
           <p style="color:#fa4c54" v-text="dataCount.unfilled_orders_num"></p>

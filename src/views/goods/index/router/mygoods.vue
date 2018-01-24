@@ -19,7 +19,7 @@
           <el-button type="primary" @click="jumpRouter('releaseGoods/add')">发布商品</el-button>
           <el-button type="primary" @click="cloneGoods('',1)">一键同步</el-button>
           <a :href="videourl" target="_blank" v-if="videourl!=null"  style="float: right;">
-            <el-button type="warning"><i class="iconfont icon-cplay1"></i>视频教程</el-button>
+            <el-button type="warning" class="video-button"><i class="iconfont icon-cplay1"></i>视频教程</el-button>
           </a>
         </div>
       </div>

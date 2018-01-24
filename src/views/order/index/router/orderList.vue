@@ -115,7 +115,7 @@
             <el-button type="primary" @click="search()">筛选</el-button>
             <el-button type="primary" @click="exportTrade()">批量导出</el-button>
             <a v-if="videourl != '' &&videourl != undefined" :href="videourl"  target="_blank" style="float: right;">
-                  <el-button type="warning"><i class="iconfont icon-cplay1"></i>视频教程</el-button>
+                  <el-button type="warning" class="video-button" ><i class="iconfont icon-cplay1"></i>视频教程</el-button>
               </a>
         </el-form>
       </div>

@@ -55,7 +55,7 @@
               <el-form-item>
                 <el-button type="primary" @click="onSubmit('setupForm')">保存</el-button>
                 <a :href="videourl" target="_blank" v-if="videourl!=null">
-                  <el-button type="warning"><i class="iconfont icon-cplay1"></i>视频教程</el-button>
+                  <el-button type="warning" class="video-button"><i class="iconfont icon-cplay1"></i>视频教程</el-button>
                 </a>
               </el-form-item>
             </el-form>

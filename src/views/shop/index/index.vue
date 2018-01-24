@@ -17,7 +17,7 @@
                 @click="jumpRouter('shop/addPage/0')">新建微页面</el-button>
                 <span style="float: right;">
                   <a :href="tabelData.videourl" target="_blank" v-if="tabelData.videourl!=null">
-                    <el-button type="warning"><i class="iconfont icon-cplay1"></i>视频教程</el-button>
+                    <el-button type="warning" class="video-button"><i class="iconfont icon-cplay1"></i>视频教程</el-button>
                   </a>
                 </span>
             </div>
@@ -100,7 +100,7 @@
           <div class="page-button">
             <el-button type="primary" @click="jumpRouter('/shop/addPage/0')">新增微页面</el-button>
             <a :href="tabelData.videourl" target="_blank" v-if="tabelData.videourl!=null"  style="float: right;">
-              <el-button type="warning"><i class="iconfont icon-cplay1"></i>视频教程</el-button>
+              <el-button type="warning" class="video-button"><i class="iconfont icon-cplay1"></i>视频教程</el-button>
             </a>
           </div>
         </div>
