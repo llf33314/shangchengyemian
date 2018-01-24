@@ -101,6 +101,8 @@ export default {
         shopId: _this.shopId,
         proName: _this.proName,
         curPage: val,
+        isCommission: _this.isCommission ? 1 : 0,
+        isIntegral: _this.isIntegral ? 1 : 0,
         success(data) {
           _this.gridData = data.data;
         }
@@ -113,6 +115,8 @@ export default {
         shopId: _this.shopId,
         proName: _this.proName,
         curPage: val,
+        isCommission: _this.isCommission ? 1 : 0,
+        isIntegral: _this.isIntegral ? 1 : 0,
         success(data) {
           _this.gridData = data.data;
         }
@@ -134,6 +138,8 @@ export default {
         shopId: _this.shopId,
         proName: _this.proName,
         curPage: _this.gridData.page.curPage,
+        isCommission: _this.isCommission ? 1 : 0,
+        isIntegral: _this.isIntegral ? 1 : 0,
         success(data) {
           _this.gridData = data.data;
         }

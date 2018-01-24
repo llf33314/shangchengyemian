@@ -206,7 +206,7 @@
                         <el-button type="primary" size="small" v-if="orderDetail.returnResult.isShowAgreeRetGoodsApplyButton == 1" @click="openDialog(6,orderDetail.returnResult,2,order)">同意退货退款</el-button>
                         <el-button type="primary" size="small" v-if="orderDetail.returnResult.isShowRefuseApplyButton == 1" @click="openDialog(6,orderDetail.returnResult,-1,order)">拒绝退款</el-button>
                         
-                        <el-button type="primary" size="small" v-if="orderDetail.returnResult.isShowConfirmTakeButton == 1" @click="openDialog(6,orderDetail.returnResult,3,order)">确认收货</el-button>
+                        <el-button type="primary" size="small" v-if="orderDetail.returnResult.isShowConfirmTakeButton == 1" @click="openDialog(6,orderDetail.returnResult,3,order)">确认收货并退款</el-button>
                         <el-button type="primary" size="small" v-if="orderDetail.returnResult.isShowRefuseConfirmTakeButton == 1" @click="openDialog(6,orderDetail.returnResult,4,order)">拒绝确认收货</el-button>
                         
                         <el-button type="primary" size="small" v-if="orderDetail.returnResult.isShowUpdateAddressButton == 1" @click="openDialog(6,orderDetail.returnResult,5,order)">修改退货地址</el-button>

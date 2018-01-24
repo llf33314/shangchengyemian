@@ -4,7 +4,8 @@
         <el-breadcrumb separator="/">
              <el-breadcrumb-item ><a @click="reFreshpage" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
             <el-breadcrumb-item :to="{ path: '/marketing/2' }">超级销售员</el-breadcrumb-item>
-            <el-breadcrumb-item >新建商品佣金</el-breadcrumb-item>
+            <el-breadcrumb-item v-if="ruleForm.id ==''">新建商品佣金</el-breadcrumb-item>
+            <el-breadcrumb-item v-else>修改商品佣金</el-breadcrumb-item>
         </el-breadcrumb>
     </div>
     <div class="addBond-main">
@@ -107,6 +108,7 @@ export default {
     };
     return {
       ruleForm: {
+        id:'',
         shop_id: "",
         commission_type: 1,
         commission_rate: "", //商品佣金

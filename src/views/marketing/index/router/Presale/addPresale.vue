@@ -4,7 +4,8 @@
         <el-breadcrumb separator="/">
              <el-breadcrumb-item ><a @click="reFreshpage" style="color: #20a0ff;">商城营销</a></el-breadcrumb-item>
             <el-breadcrumb-item :to="{ path: '/presale/1' }">预售管理</el-breadcrumb-item>
-            <el-breadcrumb-item >新建预售</el-breadcrumb-item>
+            <el-breadcrumb-item v-if="ruleForm.id ==''">新建预售</el-breadcrumb-item>
+            <el-breadcrumb-item v-else>修改预售</el-breadcrumb-item>
         </el-breadcrumb>
     </div>
     <div class="addBond-main">
@@ -196,6 +197,7 @@ export default {
         ]
       },
       ruleForm: {
+        id:'',
         shop_id: "",
         sale_start_time: "",
         deposit_percent: "",
