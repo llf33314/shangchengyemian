@@ -157,6 +157,7 @@ export default {
       } else {
         msg = "已启用";
       }
+      //console.log(_this.page.curPage,'_this.sellersList.page.curPage')
       _this.ajaxRequest({
         url: DFshop.activeAPI.mallSellerStartUseSeller_post,
         data: {
@@ -168,8 +169,7 @@ export default {
             message: msg,
             type: "success"
           });
-          _this.mallSellersList(_this.sellersList.page.curPage);
-          //console.log(_this.saleData,'saleData')
+          _this.mallSellersList(_this.page.curPage);
         }
       });
     },
