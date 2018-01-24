@@ -614,7 +614,14 @@ export default {
         data: {
           depositId: id
         },
-        success: function(data) {}
+        success: function(data) {
+          _this.dialogVisible=false;
+          _this.$message({
+            message: '退定金成功',
+            type: "success"
+          });
+          _this.mallPresaleDepositList(dingJinData.page.curPage);
+        }
       });
     },
     //使预售商品失效、删除方法
