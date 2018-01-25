@@ -492,22 +492,22 @@ export default {
         rules: {
             //分组
             name: [
-                { required: true, message: '请输入商品名称', trigger: 'blur' },
+                { required: true, message: '请输入商品名称', trigger: 'blur,change' },
                 { min: 1, max: 100, message: '长度在 100 个字符内', trigger: 'blur' }
             ],
             proPrice: [
-                { type: 'number',required: true, message: '请输入商品价格', trigger: 'blur' },
+                { type: 'number',required: true, message: '请输入商品价格', trigger: 'blur,change' },
                 { validator: formMoney, trigger: 'blur'}
             ],
             proStockTotal: [
-                { type: 'number' , required: true, message: '请输入总库存(整数)', trigger: 'blur' }
+                { type: 'number' , required: true, message: '请输入总库存(整数)', trigger: 'change,blur' }
             ],
             proFreightPrice: [
-                { validator: formFreight, trigger: 'blur'}
+                { validator: formFreight, trigger: 'blur,change'}
             ],
             proCostPrice:[
-                { type: 'number', message: '请输入商品原价', trigger: 'blur' },
-                { validator: formMoney1, trigger: 'blur'}
+                { type: 'number', message: '请输入商品原价', trigger: 'blur,change' },
+                { validator: formMoney1, trigger: 'blur,change'}
             ]
         },
         newSpecList:[],//暂存新列表
