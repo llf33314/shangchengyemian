@@ -79,7 +79,7 @@ export default {
             },
             rules: {
                 expressId: [
-                    { type: 'number', required: true, message: '请选择物流公司', trigger: 'blur' },
+                    { required: true, message: '请选择物流公司', trigger: 'blur' },
                 ], 
                 otherExpressName: [
                     { required: true, message: '请输入物流名称', trigger: 'blur' },
