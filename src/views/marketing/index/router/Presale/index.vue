@@ -141,7 +141,10 @@
                         </el-table-column>
                         <el-table-column
                         label="返还时间"
-                        prop="date">
+                        prop="returnTime">
+                        <template scope="scope">
+                              <div>{{scope.row.returnTime|format}}</div>
+                          </template>
                         </el-table-column>
                         <el-table-column label="操作" min-width="120">
                         <template scope="scope">
@@ -620,7 +623,7 @@ export default {
             message: '退定金成功',
             type: "success"
           });
-          _this.mallPresaleDepositList(dingJinData.page.curPage);
+          _this.mallPresaleDepositList(_this.dingJinData.page.curPage);
         }
       });
     },

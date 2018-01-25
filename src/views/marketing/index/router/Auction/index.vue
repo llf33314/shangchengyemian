@@ -138,12 +138,16 @@
                         label="支付时间">
                         </el-table-column> 
                         <el-table-column
-                        prop="href"
+                        prop="returnTime"
                         label="返还时间">
+                          <template scope="scope">
+                              <div>{{scope.row.returnTime|format}}</div>
+                          </template>
                         </el-table-column> 
                         <el-table-column label="操作">
                             <template scope="scope">
                                 <el-button size="small" class="buttonBlue" 
+                                v-if="(scope.row.auctionStatus == -1 || scope.row.auctionStatus == -2) && scope.row.marginStatus == 1 && scope.row.isReturn == 1" 
                                 @click="viewDetails(scope.row.id,scope.row.aucNo,scope.row.payWay,scope.row.marginMoney)"
                                 >退保证金</el-button>
                             </template>
@@ -350,7 +354,7 @@ export default {
             message: '退定金成功',
             type: "success"
           });
-          _this.mallAuctionMarginList(baozhengjinData.page.curPage);
+          _this.mallAuctionMarginList(_this.baozhengjinData.page.curPage);
         }
       });
     },
