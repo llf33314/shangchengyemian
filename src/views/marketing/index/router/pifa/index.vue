@@ -582,12 +582,17 @@ export default {
     checkStatus(status, obj) {
       let _this = this;
       let msg = status == 1 ? "通过" : "不通过";
+      parent.window.postMessage("openMask()", "*");    
+
       this.$confirm("确认要" + msg + "此批发商?", "审核批发商", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       }).then(() => {
         _this.mallWholesalersUpdateStatus(obj.id, "", status);
+        parent.window.postMessage("closeMask()", "*");
+      }).catch(() => {
+        parent.window.postMessage("closeMask()", "*");
       });
     },
     synData() {
