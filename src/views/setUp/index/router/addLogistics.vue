@@ -575,6 +575,7 @@ export default {
             _this.$set(_this.ruleForm,'tableData',list)
             //_this.ruleForm.tableData = list;
             _this.ruleForm.express = myData.expressId;
+            _this.ruleForm.expressId = myData.expressId.toString();
           }
           console.log(_this.ruleForm, "_this.ruleForm1111111111");
           console.log(detailList , "detailList")

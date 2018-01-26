@@ -223,9 +223,14 @@ export default {
       deleteArr.forEach((e,i)=>{
          for(let j = 0;j<selectList.length ;j++){
            let selectObj = selectList[j];
-          if(selectObj.provinceId == e.id){
+          if(selectObj.id == e.id){
             selectList.splice(j,1);
-            _this.showLeft(e);
+            // _this.showLeft(e);
+            this.$set(this.list, this.list.length, {
+              id : e.provinceId,
+              city_name : e.provinceName,
+              select:false
+            });
             break;
           }
         }
