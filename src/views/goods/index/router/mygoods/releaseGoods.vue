@@ -227,19 +227,21 @@
                 <div class="mygoods-item">
                     <div class="item-title">物流</div>
                     <div class="item-content">
-                        <el-form-item label="运费设置 :" prop="pro.proFreightPrice" :rules="rules.proFreightPrice" required>
-                            <div class="item-inline" style="width:auto">
-                                <el-radio-group v-model.number="form.pro.proFreightSet" @change="proFreightSet(form.pro.proFreightSet)">
-                                    <el-radio class="radio" :label="1"
-                                        >统一邮费
-                                    </el-radio>
-                                </el-radio-group>
-                            </div>
-                            <div class="item-inline">
-                                <el-input v-model.number="form.pro.proFreightPrice" placeholder="统一邮费">
-                                    <template slot="prepend">¥</template>
-                                </el-input>
-                            </div>
+                        <el-form-item label="运费设置 :" required>
+                            <el-form-item prop="pro.proFreightPrice" :rules="rules.proFreightPrice">
+                                <div class="item-inline" style="width:auto">
+                                    <el-radio-group v-model.number="form.pro.proFreightSet" @change="proFreightSet(form.pro.proFreightSet)">
+                                        <el-radio class="radio" :label="1"
+                                            >统一邮费
+                                        </el-radio>
+                                    </el-radio-group>
+                                </div>
+                                <div class="item-inline">
+                                    <el-input v-model.number="form.pro.proFreightPrice" placeholder="统一邮费">
+                                        <template slot="prepend">¥</template>
+                                    </el-input>
+                                </div>
+                            </el-form-item>
                         </el-form-item>
                         <el-form-item >
                             <div class="item-inline" style="width:auto">
@@ -503,7 +505,7 @@ export default {
                 { type: 'number' , required: true, message: '请输入总库存(整数)', trigger: 'change,blur' }
             ],
             proFreightPrice: [
-                { validator: formFreight, trigger: 'blur,change'}
+                { validator: formFreight, trigger: 'change,blur'}
             ],
             proCostPrice:[
                 { type: 'number', message: '请输入商品原价', trigger: 'blur,change' },
