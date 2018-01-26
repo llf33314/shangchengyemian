@@ -70,6 +70,7 @@ Vue.mixin({
          */
         pickUpGoods(id,type){
             let _this = this;
+            parent.window.postMessage("openMask()", "*");
             _this.$confirm('确认买家是否已提货并付款?', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
@@ -94,10 +95,11 @@ Vue.mixin({
                     }else{
                         _this.orderDtail(id);   
                     }
+                    parent.window.postMessage("closeMask()", "*");
                 }
             });
             }).catch(() => {
-                    
+                parent.window.postMessage("closeMask()", "*");
             });
         }
     }
