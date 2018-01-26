@@ -151,7 +151,7 @@ export default {
         shop_id: [{ validator: formShopId, trigger: "change" }],
         productId: [{ validator: formChoicePro, trigger: "change" }],
         pf_start_time: [{ validator: formPfStartTime, trigger: "change,blur" }],
-        pf_price: [{ validator: formPfPrice, trigger: "blur" }]
+        pf_price: [{ validator: formPfPrice, trigger: "blur,change" }]
       },
       shopList: [],
       specificesList: [],

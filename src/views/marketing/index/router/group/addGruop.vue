@@ -204,7 +204,7 @@ export default {
         shopId: [
           { validator: formShopId, trigger: "change", message: "请选择所属店铺" }
         ],
-        gName: [{ validator: formGname, trigger: "blur", message: "请输入活动名称" }],
+        gName: [{ validator: formGname, trigger: "blur,change", message: "请输入活动名称" }],
         gStartTime: [
           {
             validator: formStartTime,
@@ -215,16 +215,16 @@ export default {
         gPeopleNum: [
           {
             validator: formPeopleNum,
-            trigger: "blur",
+            trigger: "blur,change",
             message: "参团人数必须在1到8人之间"
           }
         ],
-        gPrice: [{ validator: formPrice, trigger: "blur", message: "请输入团购价" }],
+        gPrice: [{ validator: formPrice, trigger: "blur,change", message: "请输入团购价" }],
         productId: [
           { validator: formChoicePro, trigger: "change", message: "请选择活动商品" }
         ],
         gMaxBuyNum: [
-          { validator: formMaxBuyNum, trigger: "blur" }
+          { validator: formMaxBuyNum, trigger: "blur,change" }
         ]
       },
       shopList: [],

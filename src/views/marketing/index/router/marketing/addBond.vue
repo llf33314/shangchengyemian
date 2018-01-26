@@ -121,7 +121,7 @@ export default {
         commission_type: [{ validator: formCommissionType, trigger: "change" }],
         product_id: [{ validator: formRegion, trigger: "change" }],
         commission_rate: [
-          { validator: formCommissionRate, trigger: "blur", message: "" }
+          { validator: formCommissionRate, trigger: "blur,change", message: "" }
         ]
       },
       shopList: [],

@@ -280,17 +280,17 @@ export default {
       rules: {
         shopId: [{ validator: formShopId, trigger: "change" }],
         productId: [{ validator: formProductId, trigger: "change,blur" }],
-        aucStartPrice: [{ validator: formAucStartPrice, trigger: "blur" }],
+        aucStartPrice: [{ validator: formAucStartPrice, trigger: "blur,change" }],
         aucStartTime: [{ validator: formAucStartTime, trigger: "change,blur" }],
         aucTime: [{ validator: formAucStartTime, trigger: "change,blur" }],
-        aucAddPrice: [{ validator: formAucAddPrice, trigger: "blur" }],
-        aucLowestPrice: [{ validator: formLowestPrice, trigger: "blur" }],
+        aucAddPrice: [{ validator: formAucAddPrice, trigger: "blur,change" }],
+        aucLowestPrice: [{ validator: formLowestPrice, trigger: "blur,change" }],
         aucLowerPriceTime: [
-          { validator: formLowestPriceTime, trigger: "blur" }
+          { validator: formLowestPriceTime, trigger: "blur,change" }
         ],
-        aucLowerPrice: [{ validator: formAucLowerPrice, trigger: "blur" }],
-        aucRestrictionNum: [{ validator: formRestrictionNum, trigger: "blur" }],
-        aucMargin: [{ validator: formAucMargin, trigger: "blur" }]
+        aucLowerPrice: [{ validator: formAucLowerPrice, trigger: "blur,change" }],
+        aucRestrictionNum: [{ validator: formRestrictionNum, trigger: "blur,change" }],
+        aucMargin: [{ validator: formAucMargin, trigger: "blur,change" }]
       },
        off: false,
       shopList: [],

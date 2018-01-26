@@ -95,7 +95,7 @@ export default {
     };
 
     var formStartTime = (rule, value, callback) => {
-      if (value == "") {
+      if (value ==""||value[0] ==null||value[1] ==null) {
         return callback(new Error("请选择活动时间"));
       } else {
         callback();
@@ -195,7 +195,7 @@ export default {
         shopId: [
           { validator: formShopId, trigger: "change", message: "请选择所属店铺" }
         ],
-        sName: [{ validator: formSname, trigger: "blur", message: "请输入活动名称" }],
+        sName: [{ validator: formSname, trigger: "blur,change", message: "请输入活动名称" }],
         productId: [
           { validator: formChoicePro, trigger: "change", message: "请选择活动商品" }
         ],
@@ -206,8 +206,8 @@ export default {
             message: "请选择活动时间"
           }
         ],
-        sPrice: [{ validator: formPrice, trigger: "blur", message: "请输入秒杀价" }],
-        sMaxBuyNum: [{ validator: formMaxBuyNum, trigger: "blur" }]
+        sPrice: [{ validator: formPrice, trigger: "blur,change", message: "请输入秒杀价" }],
+        sMaxBuyNum: [{ validator: formMaxBuyNum, trigger: "blur,change" }]
       },
       shopList: [],
       boxData: null,

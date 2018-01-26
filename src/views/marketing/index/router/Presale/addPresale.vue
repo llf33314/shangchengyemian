@@ -216,7 +216,7 @@ export default {
         off: false
       },
       rules: {
-        deposit_percent: [{ validator: formDepositPercent, trigger: "blur" }],
+        deposit_percent: [{ validator: formDepositPercent, trigger: "blur,change" }],
         shop_id: [
           { validator: formShopId, trigger: "change", message: "请选择所属店铺" }
         ],
@@ -411,7 +411,7 @@ export default {
           let myData = data.data;
           _this.ruleForm = myData;
           _this.ruleForm.sale_start_time = [
-            myData.sale_end_time,
+            myData.sale_start_time,
             myData.sale_end_time
           ];
           for (var i = 0; i < myData.timeList.length; i++) {
