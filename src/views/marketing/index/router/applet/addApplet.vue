@@ -164,14 +164,19 @@ export default {
             if(data.code == 0){
               _this.ruleForm = data.data;
               _this.ruleForm.imageUrl=data.imgUrl+_this.ruleForm.imageUrl;
- 
-              _this.boxData = {
-                id: data.data.proId,  
-                pro_price: data.data.proPrice,
-                pro_name: data.data.proName,
-                image_url: data.imgUrl + data.data.proUrl,
-                stockTotal: data.data.proStockTotal
-              };
+              if(data.data.proId>0){
+                _this.boxData = {
+                  id: data.data.proId,  
+                  pro_price: data.data.proPrice,
+                  pro_name: data.data.proName,
+                  image_url: data.imgUrl + data.data.proUrl,
+                  stockTotal: data.data.proStockTotal
+                };
+                _this.isReplacePro = true;
+              }else{
+                _this.isChoicePro=true;
+                _this.isReplacePro = false;
+              }
             }
         }
         });
@@ -222,7 +227,6 @@ export default {
     // console.log(_this.$route.params.id );
     if(_this.$route.params.id != undefined){
       _this.mallAppletInfo(_this.$route.params.id);
-      _this.isReplacePro = true;
     }else{
        _this.isChoicePro = true;
     } 
