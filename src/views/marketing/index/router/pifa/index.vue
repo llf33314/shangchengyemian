@@ -567,7 +567,7 @@ export default {
           let selectionObj = _this.multipleSelection[i];
           for (let j = 0; j < pifaList.length; j++) {
             let pifa = pifaList[j];
-            if (pifa == 0) {
+            if (pifa.status == 0) {
               ids.push(selectionObj.id);
             }
           }
