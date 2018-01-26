@@ -57,13 +57,15 @@
             <div class="dialog-list clearfix" style="color:red;" v-if="isZhifubao">*建议您复制退款链接并用IE浏览器打开进行退款</div>
         </div>
         <div class="dialog-list shop-textr dialog-footer" style="margin-top:40px;">
-            <a v-if="isZhifubao" :href="returnInfo.refundUrl" target="_blank">复制链接</a>
+            <!-- <a v-if="isZhifubao" :href="returnInfo.refundUrl" target="_blank">复制链接</a> -->
+            <el-button type="primary" id="gtLongUrlCopy" @click="copyLink" :data-clipboard-text="returnInfo.refundUrl"  v-if="isZhifubao">复制链接</el-button>
             <el-button type="primary" @click="submitForm()">确定</el-button>
             <el-button @click="resetForm()">取消</el-button>
         </div>
     </div>
 </template>
 <script>
+import Lib from "assets/js/Lib";
 export default {
     props:{
         data:{
@@ -99,7 +101,19 @@ export default {
           this.returnInfo = a;
         }
     },
-    methods:{  
+    methods:{
+        //复制链接
+        copyLink() {
+            var self = this;
+            var clipboard = new Lib.Clipboard("#gtLongUrlCopy");
+            clipboard.on("success", function(e) {
+                self.$message({
+                message: "复制成功",
+                type: "success"
+                });
+                clipboard.destroy();
+            });
+        },  
         /**打开退款 弹出框 */
         dialogReturn(){
             let _this = this;
