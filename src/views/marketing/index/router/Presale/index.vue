@@ -513,19 +513,24 @@ export default {
     },
     //退定金弹出框
     comeDownShow(dingJin, id, payWay, depositNo) {
+      let _this = this;
       this.dialogVisible = true;
       this.dingJin = dingJin;
       this.dingJinId = id;
       this.payWay = payWay;
-      this.alipayUrl =
-        this.alipayUrl +
-        "?out_trade_no=" +
-        depositNo +
-        "&busId=" +
-        this.busId +
-        "&desc=退保证金";
-
-      console.log(this.alipayUrl, "this.alipayUrl");
+      _this.alipayUrl="";
+      if(payWay == 3){//支付宝
+        _this.ajaxRequest({
+          url: DFshop.activeAPI.mallPresaleDepositRefundUrl_post,
+          data: {
+            depositId: id
+          },
+          success: function(data) {
+            _this.alipayUrl=data.data;
+            console.log(_this.alipayUrl,"_this.alipayUrl");
+          }
+        });
+      }
     },
     //退定金事件
     comeDown() {
@@ -574,7 +579,6 @@ export default {
         },
         success: function(data) {
           _this.dingJinData = data.data;
-          _this.alipayUrl = data.data.alipayUrl;
           _this.busId = data.data.busId;
           _this.dingJinData.page.rowCount = data.data.page.rowCount;
           $.each(_this.dingJinData.page.subList, function(i) {

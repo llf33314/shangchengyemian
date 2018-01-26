@@ -240,6 +240,8 @@
     mallPresaleGiveDelete_post: '/mallPresale/E9lM9uM4ct/give/delete',
     /*保存预售送礼设置 */
     mallPresaleGiveSave_post: '/mallPresale/E9lM9uM4ct/give/save',
+    /*获取支付宝退款地址 */
+    mallPresaleDepositRefundUrl_post: '/mallPresale/E9lM9uM4ct/deposit/refundUrl',
 
     /*拍卖列表 */
     mallAuctionList_post: '/mallAuction/E9lM9uM4ct/list',
@@ -253,6 +255,8 @@
     mallAuctionMarginList_post: '/mallAuction/E9lM9uM4ct/margin/list',
     /*拍卖退保证金 */
     mallAuctionAgreedReturnMargin_post: '/mallAuction/E9lM9uM4ct/margin/agreedReturnMargin',
+    /*获取支付宝退款地址 */
+    mallAuctionMarginRefundUrl_post: '/mallAuction/E9lM9uM4ct/margin/refundUrl',
 
     /*批发列表 */
     mallWholesaleList_post: '/mallWholesale/E9lM9uM4ct/list',

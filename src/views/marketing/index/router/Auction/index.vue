@@ -327,18 +327,25 @@ export default {
  
     viewDetails(id, orderNo, payWay, money) {
       //退保证金弹出框
+      let _this = this;
       this.dialogViewDetails = true;
       this.auctionId = id;
       this.auctionOrderNo = orderNo;
       this.auctionPayWay = payWay;
       this.auctionMoney = money;
-      this.alipayUrl =
-        this.alipayUrl +
-        "?out_trade_no=" +
-        this.auctionOrderNo +
-        "&busId=" +
-        this.busId +
-        "&desc=退保证金";
+      _this.alipayUrl="";
+      if(payWay == 3){//支付宝
+        _this.ajaxRequest({
+          url: DFshop.activeAPI.mallAuctionMarginRefundUrl_post,
+          data: {
+            id: id
+          },
+          success: function(data) {
+            _this.alipayUrl=data.data;
+            console.log(_this.alipayUrl,"_this.alipayUrl");
+          }
+        });
+      }
     },
     comeDown() {
       //退保证金方法
