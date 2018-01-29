@@ -274,6 +274,7 @@ export default {
       this.ruleForm.timeList[index].price = "";
     },
     countPrice(index) {
+      let  _this = this;
       //计算上涨价格
       let tl = this.ruleForm.timeList[index];
       if (tl.saleType == 1) {
@@ -302,6 +303,7 @@ export default {
       } else {
         tl.raisePrice = tl.raisePrice.toFixed(2);
       }
+      _this.$set(this.ruleForm.timeList, index, tl);
     },
     selectDialogData(data) {
       if (data.id == this.ruleForm.product_id) {
