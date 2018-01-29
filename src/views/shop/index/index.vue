@@ -5,7 +5,7 @@
       <div class="index-shop" v-if=" activeName =='shop'">
         <div class="index-shopInfo clearfix">
           <div class="shopInfo-img">
-            <defaultImg :background="imgUrl+tabelData.userLogo"></defaultImg>
+            <defaultImg :background="tabelData.userLogo"></defaultImg>
           </div>
           <div class="shopInfo-content" style="width: 92%;">
             <p class="shopInfo-name" v-text="tabelData.userName">商家名称</p>
@@ -72,10 +72,11 @@
                             class="buttonBlue"
                             @click="shopLink(scope.row)">链接
                 </el-button>
-                <!-- <el-button  size="small"
+                <el-button  size="small"
                             class="buttonBlue"
                             @click="authentication(scope.row.certId,scope.row)"
-                >认证</el-button> -->
+                            v-if=" scope.row.certStoType == 1 "
+                >认证</el-button>
                 <el-button  size="small"
                 @click="handleDelete(scope.row.id,'shop')">删除</el-button>
               </template>

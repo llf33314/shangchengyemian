@@ -13,8 +13,8 @@
             <td>{{item.detProName}}</td>
             <td>{{item.detProPrice}}</td>
             <td>{{item.detProNum}}</td>
-            <td class="text-overflow" :rowspan="orderData.mallOrderDetail.length" v-if="index==0">{{orderData.orderNo}}</td>
-            <td class="text-overflow" :rowspan="orderData.mallOrderDetail.length" v-if="index==0">{{orderData.orderMoney}}</td>
+            <td class="text-overflow" :rowspan="orderData.mallOrderDetail.length" v-if="index==0" :class="{'order-left':orderData.mallOrderDetail.length > 1}">{{orderData.orderNo}}</td>
+            <td class="text-overflow" :rowspan="orderData.mallOrderDetail.length" v-if="index==0" :class="{'order-left':orderData.mallOrderDetail.length > 1}">{{orderData.orderMoney}}</td>
         </tr>
         </tbody>
     </table>
@@ -174,24 +174,27 @@ export default {
 
 <style lang="less" scoped>
 .order_tab{
+    width: 100%;
+    border-color: #dfe6ec;
+    border: 1px solid #dfe6ec;
+    .order_tab_header{
         width: 100%;
-        border-color: #dfe6ec;
-        border: 1px solid #dfe6ec;
-        .order_tab_header{
-            width: 100%;
-            background:#eef1f6;
-        }
-        td,th{
-            padding: 10px;
-        }
+        background:#eef1f6;
     }
+    td,th{
+        padding: 10px;
+    }
+}
 
-    .dialog-list{
-        width: 100%;
-        margin-top:25px; 
-        &>span{
-            margin-right: 28px;
-        }
-        
+.dialog-list{
+    width: 100%;
+    margin-top:25px; 
+    &>span{
+        margin-right: 28px;
     }
+    
+}
+.order-left{
+    border: 1px solid #eef1f6;
+}
 </style>

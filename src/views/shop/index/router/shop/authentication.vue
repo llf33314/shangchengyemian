@@ -6,24 +6,24 @@
       <el-breadcrumb-item>店铺认证</el-breadcrumb-item>
     </el-breadcrumb>
   </div>
-  <div class="shop-authentication-main">
-    <div class="shop-authentication-prompt">
+  <div class="shop-authentication-main" style="paddding: 0">
+    <!-- <div class="shop-authentication-prompt">
       <p>认证说明：</p>
       <p>个人认证：大陆身份证默认进行实时快速认证，其它证件类型可进行人工认证，审核周期为1个工作日；</p>
       <p>企业认证：适合公司经营者，增加可提现至公司银行账户，审核周期为1个工作日。</p>
-    </div>
+    </div> -->
     <div class="shop-authentication-content">
       <el-form ref="form" :model="form" label-width="175px" :rules="rules">
         <el-form-item label="店铺名称 :" >
           {{data.stoName}}
         </el-form-item>
-        <el-form-item label="主体信息 :">
+        <!-- <el-form-item label="主体信息 :">
           <el-radio-group v-model="stoType" @change="resetForm('form')">
               <el-radio :label="0" style="margin-right: 15px;">个人</el-radio>
               <el-radio :label="1" >企业</el-radio>
           </el-radio-group>
-        </el-form-item>
-        <div v-if="stoType == 0">
+        </el-form-item> -->
+        <!-- <div v-if="stoType == 0">
           <el-form-item label="姓名 :" prop="name">
             <el-input v-model="form.name" placeholder="请输入姓名"></el-input>
           </el-form-item>
@@ -71,8 +71,9 @@
             </div>
           </el-form-item>
         </div>
-        <div v-if="stoType == 1">
-          <el-form-item label="企业名称 :" prop="companyName">
+        <div v-if="stoType == 1"> -->
+        <div>
+          <!-- <el-form-item label="企业名称 :" prop="companyName">
             <el-input v-model="form.companyName" placeholder="请输入企业名称" ></el-input>
           </el-form-item>
           <el-form-item label="法人姓名 :" prop="name">
@@ -119,8 +120,8 @@
                 </div>
               </div>
             </div>
-          </el-form-item>
-          <el-form-item label=" 营业执照 :" prop="imgLicense1">
+          </el-form-item> -->
+          <!-- <el-form-item label=" 营业执照 :" prop="imgLicense1">
             <div class="shop-IDImg">
               <div class="shop-IDUpload">
                 <div class="material-square" @click="materiallayer(3)" :class="imgs.busLicenseImg == '' ? 'border':''">
@@ -142,7 +143,7 @@
           </el-form-item>
           <el-form-item label="营业执照号 :" prop="busLicenseNo">
             <el-input v-model="form.busLicenseNo" placeholder="请输入营业执照号"></el-input>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="请选择需要认证的店铺 :">
             <div class="shop-shoptype">
               <div class="shop-button "
@@ -164,9 +165,9 @@
                   :key="index"></div>
             </div>
           </el-form-item>
-          <div v-if="isShow">
+          <div v-if="isShow && isProve">
            <el-form-item label="商标使用许可合同 :" v-if="isMapTwo == 8"  prop="imgLicense3">
-            <div class="img-title" style="text-align:left">非原件照片需加盖公司红色公章并且需要注明商标许可性质为独占性许可 </div>
+            <div class="img-title" style="text-align:left">非原件照片需加盖公司红色公章并且需要注明商标许可性质为独占性许可 {{certImgUrl}}</div>
             <div class="shop-IDImg">
               <div class="shop-IDUpload">
                 <div class="material-square" @click="materiallayer(4)" :class="imgs.certImgUrl == '' ? 'border':''">
@@ -176,6 +177,7 @@
                     <i class="el-icon-view" @click.stop="showBigImg(imgs.certImgUrl)"></i>
                     <i class="el-icon-delete2" @click.stop="deleteImg(4)"></i>
                   </div>
+                  
                 </div>
               </div>
               <span>示例 :</span>
@@ -409,26 +411,26 @@ import imgLicense5_min from '../../../img/ID7.jpg'//微信渠道授权证书
 
 export default {
   data () {
-    var formName = (rule, value, callback) => {
-      if (!value) {
-        return callback(new Error('名字不能为空'));
-      }else {
-          callback();
-      }
+    // var formName = (rule, value, callback) => {
+    //   if (!value) {
+    //     return callback(new Error('名字不能为空'));
+    //   }else {
+    //       callback();
+    //   }
       
-    };
-    var formIdNumber = (rule, value, callback) => {
-      if (!value) {
-        return callback(new Error('身份证号不能为空'));
-      } else {
-        let id = Lib.M.validIDnumber(value);
-        if(!id){
-          return callback(new Error('请输入正确合法的身份证号'));
-        }else{
-          callback();
-        }
-      }
-    };
+    // };
+    // var formIdNumber = (rule, value, callback) => {
+    //   if (!value) {
+    //     return callback(new Error('身份证号不能为空'));
+    //   } else {
+    //     let id = Lib.M.validIDnumber(value);
+    //     if(!id){
+    //       return callback(new Error('请输入正确合法的身份证号'));
+    //     }else{
+    //       callback();
+    //     }
+    //   }
+    // };
     var formCode = (rule, value, callback) => {
       if (!value) {
         return callback(new Error('验证码为空'));
@@ -436,46 +438,47 @@ export default {
         callback();
       }
     };
-    var formCompanyName = (rule, value, callback) => {
-      if (!value) {
-        return callback(new Error('企业名称不为空'));
-      }else{
-        callback();
-      }
-    };
-    var formBusLicenseNo = (rule, value, callback) => {
-      if (!value) {
-        return callback(new Error('营业执照号不为空'));
-      }else{
-        callback();
-      }
-    };
-    var formIDImg1 = (rule, value, callback) => {
-      let img = this.imgs.idCardFront;
-      if (!img) {
-        return callback(new Error('请上传身份证正面图片'));
-      }else{
-        callback();
-      }
-    };
-    var formIDImg2 = (rule, value, callback) => {
-      let img = this.imgs.idCardBack;
-      if (!img) {
-        return callback(new Error('请上传身份证反面图片'));
-      }else{
-        callback();
-      }
-    };
-    var formbusLicenseImg = (rule, value, callback) => {
-      let img = this.imgs.busLicenseImg;
-      if (!img) {
-        return callback(new Error('请上传营业执照图片'));
-      }else{
-        callback();
-      }
-    };
+    // var formCompanyName = (rule, value, callback) => {
+    //   if (!value) {
+    //     return callback(new Error('企业名称不为空'));
+    //   }else{
+    //     callback();
+    //   }
+    // };
+    // var formBusLicenseNo = (rule, value, callback) => {
+    //   if (!value) {
+    //     return callback(new Error('营业执照号不为空'));
+    //   }else{
+    //     callback();
+    //   }
+    // };
+    // var formIDImg1 = (rule, value, callback) => {
+    //   let img = this.imgs.idCardFront;
+    //   if (!img) {
+    //     return callback(new Error('请上传身份证正面图片'));
+    //   }else{
+    //     callback();
+    //   }
+    // };
+    // var formIDImg2 = (rule, value, callback) => {
+    //   let img = this.imgs.idCardBack;
+    //   if (!img) {
+    //     return callback(new Error('请上传身份证反面图片'));
+    //   }else{
+    //     callback();
+    //   }
+    // };
+    // var formbusLicenseImg = (rule, value, callback) => {
+    //   let img = this.imgs.busLicenseImg;
+    //   if (!img) {
+    //     return callback(new Error('请上传营业执照图片'));
+    //   }else{
+    //     callback();
+    //   }
+    // };
     var formImgLicense2 = (rule, value, callback) => {
-      let img = this.imgs.busLicenseImg;
+      let img = this.imgs.certImgUrl;
+      console.log(value,img,'-----------')
       if (!img) {
         return callback(new Error('请上传商标注册通知书图片'));
       }else{
@@ -483,7 +486,7 @@ export default {
       }
     };
     var formImgLicense3 = (rule, value, callback) => {
-      let img = this.imgs.busLicenseImg;
+      let img = this.imgs.certImgUrl;
       if (!img) {
         return callback(new Error('请上传商标使用许可合同图片'));
       }else{
@@ -491,7 +494,7 @@ export default {
       }
     };
     var formImgLicense4 = (rule, value, callback) => {
-      let img = this.imgs.busLicenseImg;
+      let img = this.imgs.tradeMarkImg;
       if (!img) {
         return callback(new Error('请上传商标注册证图片'));
       }else{
@@ -499,7 +502,7 @@ export default {
       }
     };
     var formImgLicense5 = (rule, value, callback) => {
-      let img = this.imgs.busLicenseImg;
+      let img = this.imgs.certImgUrl;
       if (!img) {
         return callback(new Error('请上传微信渠道授权证书图片'));
       }else{
@@ -507,7 +510,7 @@ export default {
       }
     };
     var formImgLicense6 = (rule, value, callback) => {
-      let img = this.imgs.busLicenseImg;
+      let img = this.imgs.certImgUrl;
       if (!img) {
         return callback(new Error('请上传证件图片'));
       }else{
@@ -516,7 +519,7 @@ export default {
     };
     return {
       data:{},//店铺数据
-      stoType: 0,//主体类型, 0个人 1企业
+      stoType: 1,//主体类型, 0个人 1企业
       form: {},
       dialogimg:false,
       dialogImageUrl:'',
@@ -524,7 +527,7 @@ export default {
       shoptypes2:[],
       isShow: false,
       isProve: false, // 选择可提供认证消息
-      isMapOne:'',// 请选择需要认证的店铺
+      isMapOne: 1,// 请选择需要认证的店铺
       isMapTwo:'',// 请选择可提供的认证信息
       isContract: false,//商标使用许可合同
       isNotice: false, //商标注册通知书
@@ -534,17 +537,17 @@ export default {
       isChannel: false, //渠道授权
       isCompany:false,//公司总部证明函
       isRelationship:false,//关系证明函
-      imgID1:imgID1,
-      imgID2:imgID2,
-      imgLicense1:imgLicense1,
+      // imgID1:imgID1,
+      // imgID2:imgID2,
+      // imgLicense1:imgLicense1,
       imgLicense2:imgLicense2,
       imgLicense3:imgLicense3,
       imgLicense4:imgLicense4,
       imgLicense5:imgLicense5,
       imgLicense6:imgLicense6,
-      imgID1_min:imgID1_min,
-      imgID2_min:imgID2_min,
-      imgLicense1_min:imgLicense1_min,
+      // imgID1_min:imgID1_min,
+      // imgID2_min:imgID2_min,
+      // imgLicense1_min:imgLicense1_min,
       imgLicense2_min:imgLicense2_min,
       imgLicense3_min:imgLicense3_min,
       imgLicense4_min:imgLicense4_min,
@@ -552,53 +555,53 @@ export default {
       // imgLicense6_min:imgLicense6_min,
       // imgLicense7_min:imgLicense7_min,
       imgs:{//数据图片
-        idCardFront: '',//身份证正面--1
-        idCardBack: '',//身份证反面--2
-        busLicenseImg: '',//营业执照--3
+        // idCardFront: '',//身份证正面--1
+        // idCardBack: '',//身份证反面--2
+        // busLicenseImg: '',//营业执照--3
         certImgUrl: '',//商标注册通知书,商标注册证，商标使用许可合同，渠道授权书，证明函文件--4 资料一个使用
         tradeMarkImg:'',//商标注册证  资料二个使用
         isCertDoc: 0,//是否有补充资料  0无 1有
         imageList: [],//补充资料的图片地址--5
       },
       rules: {
-        name: [
-          { validator: formName, trigger: 'blur' }
-        ],
-        idNumber: [
-          { validator: formIdNumber, trigger: 'blur' }
-        ],
-        code: [
-          { validator: formCode, trigger: 'blur' }
-        ],
-        companyName:[
-          { validator: formCompanyName, trigger: 'blur' }
-        ],
-        busLicenseNo:[
-          { validator: formBusLicenseNo, trigger: 'blur' }
-        ],
-        IDImg1:[
-          { validator: formIDImg1, trigger: 'blur' }
-        ],
-        IDImg2:[
-          { validator: formIDImg2, trigger: 'blur' }
-        ],
-        imgLicense1:[
-          { validator: formbusLicenseImg, trigger: 'blur' }
-        ],
+        // name: [
+        //   { validator: formName, trigger: 'blur' }
+        // ],
+        // idNumber: [
+        //   { validator: formIdNumber, trigger: 'blur' }
+        // ],
+        // code: [
+        //   { validator: formCode, trigger: 'blur' }
+        // ],
+        // companyName:[
+        //   { validator: formCompanyName, trigger: 'blur' }
+        // ],
+        // busLicenseNo:[
+        //   { validator: formBusLicenseNo, trigger: 'blur' }
+        // ],
+        // IDImg1:[
+        //   { validator: formIDImg1, trigger: 'blur' }
+        // ],
+        // IDImg2:[
+        //   { validator: formIDImg2, trigger: 'blur' }
+        // ],
+        // imgLicense1:[
+        //   { validator: formbusLicenseImg, trigger: 'blur' }
+        // ],
         imgLicense2:[
-          { validator: formImgLicense2, trigger: 'blur' }
+          { validator: formImgLicense2, trigger: 'blur,change' }
         ],
         imgLicense3:[
-          { validator: formImgLicense3, trigger: 'blur' }
+          { validator: formImgLicense3, trigger: 'blur,change' }
         ],
         imgLicense4:[
-          { validator: formImgLicense4, trigger: 'blur' }
+          { validator: formImgLicense4, trigger: 'blur,change' }
         ],
         imgLicense5:[
-          { validator: formImgLicense5, trigger: 'blur' }
+          { validator: formImgLicense5, trigger: 'blur,change' }
         ],
         imgLicense6:[
-          { validator: formImgLicense6, trigger: 'blur' }
+          { validator: formImgLicense6, trigger: 'blur,change' }
         ],
       },
       button1: 0,
@@ -637,9 +640,9 @@ export default {
       //切换默认第一个
       this.button2 = 0;
       this.isMapOne = key;
-      if(shoptypes.length == 0){
+      if(!shoptypes || shoptypes.length == 0 ){
+        console.log(1)
         this.isProve = false;
-        
         return;
       }
       this.isShow = true;
@@ -721,20 +724,20 @@ export default {
       let _data ={
         stoType: _this.stoType,        //主体类型, 0个人 1企业
         stoId: _this.data.id,            //店铺ID
-        name: _this.form.name,        //姓名或法人
-        companyName: _this.form.companyName  || '', //,企业名称
-        idNumber: _this.form.idNumber || '', //身份证号码
-        idCardFront: '/image'+ _this.imgs.idCardFront.split("image")[1],//身份证正面
-        idCardBack: '/image'+_this.imgs.idCardBack.split("image")[1],  //身份证反面
-        busLicenseNo: _this.form.busLicenseNo || '',             //营业执照号
-        stoCategory: _this.isMapOne || '',  //店铺类型
-        certType:  _this.isMapTwo || '' ,    //认证类型
-        isCertDoc: 0||'',                //是否有补充资料  0无 1有
+        //name: _this.form.name,        //姓名或法人
+        //companyName: _this.form.companyName  || '', //,企业名称
+        //idNumber: _this.form.idNumber || '', //身份证号码
+        //idCardFront: '/image'+ _this.imgs.idCardFront.split("image")[1],//身份证正面
+        //idCardBack: '/image'+_this.imgs.idCardBack.split("image")[1],  //身份证反面
+        //busLicenseNo: _this.form.busLicenseNo || '',             //营业执照号
+        stoCategory: _this.isMapOne ,  //店铺类型
+        certType:  _this.isMapTwo ,    //认证类型
+        isCertDoc: 0,                //是否有补充资料  0无 1有
         code: _this.form.code                      //验证码
       }
-      if(_this.imgs.busLicenseImg){//营业执照
-        _data.busLicenseImg = '/image'+_this.imgs.busLicenseImg.split("image")[1];      
-      }
+      // if(_this.imgs.busLicenseImg){//营业执照
+      //   _data.busLicenseImg = '/image'+_this.imgs.busLicenseImg.split("image")[1];      
+      // }
       if(_this.imgs.certImgUrl){
         _data.certImgUrl = '/image'+_this.imgs.certImgUrl.split("image")[1];      
       }
@@ -753,7 +756,7 @@ export default {
         })
         _data.imageList =JSON.stringify(arr);
       }
-      // console.log(_data,'提交认证数据');
+      console.log(_data,'提交认证数据');
  
       //防止多次点击重复提交数据
       if(!Lib.C.ajax_manage) return false;
@@ -794,8 +797,8 @@ export default {
     },
     resetForm(formName) {
       this.form = {};
-      this.imgs.idCardFront = '';//身份证正面
-      this.imgs.idCardBack = '' ;//身份证反面
+      //this.imgs.idCardFront = '';//身份证正面
+      //this.imgs.idCardBack = '' ;//身份证反面
       this.$refs[formName].resetFields();
       if(this.stoType ==1 && this.isMapOne == ''){
         this.isMapOne = this.shoptypes1[0].item_key;
@@ -814,7 +817,6 @@ export default {
      */
     materiallayer(item,num){
       let _this = this;
-      console.log(item,'上传');
       parent.window.postMessage("openMask()", "*");
       _this.$material({
         imageboxUrl: DFshop.activeAPI.materialUrl,   //地址
@@ -827,6 +829,7 @@ export default {
         closeOnPressEscape: false
         }).then(function (val) {
             //确认
+            console.log(val,'val',item)
             if(item === 1){
               _this.imgs.idCardFront = val[0].url;
             }else if(item === 2){
@@ -834,7 +837,7 @@ export default {
             }else if(item === 3){
               _this.imgs.busLicenseImg = val[0].url;
             }else if(item === 4){
-              _this.imgs.certImgUrl = val[0].url;   
+              _this.imgs.certImgUrl = val[0].url;  
             }else if(item === 5){
               _this.imgs.tradeMarkImg = val[0].url;
             }else if(item === 6){//可多选
