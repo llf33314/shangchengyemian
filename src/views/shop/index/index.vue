@@ -259,6 +259,24 @@
       </el-pagination>
     </div>
   </el-tabs>
+  <el-dialog
+    title="提示"
+    :visible.sync="dialogVisible"
+    :size="dialogWidth">
+    <div class="dialog-list " style="height: 180px">
+        <span class="dialog-title">
+            <i class="el-icon-warning"></i>
+        </span>
+        <div class="dialog-text" >
+            <p style="margin-bottom:5px">您需要预先设置收款方式方可完成认证</p>
+            <span>收款方式可选择开通多粉钱包，您无需注册微信和支付宝。只需简单几步，即可完成收款方式配置 </span>
+        </div>
+    </div>
+    <div class="dialog-list shop-textr">
+        <span style="color:#20a0ff;margin-right: 10px;display:inline-block">已有商户收款方式</span>
+        <el-button type="primary" @click="duofengOpen()">开通多粉钱包</el-button>
+    </div>
+  </el-dialog>
 </div>
 </template>
  <script>
@@ -310,6 +328,9 @@ export default {
       bgimg3: bgimg3,
       webPath: "",
       lightColour:false,//是否是浅色
+      isWxPayUser:false,//商家是否有支付平台
+      dialogVisible:false,//认证弹框
+      dialogWidth:'tiny',
     };
   },
   watch: {
@@ -318,6 +339,13 @@ export default {
       this.activeName = to.path.split("/")[1];
       //console.log(this.activeName,'$$$$$$$')
       this.switchAjax(this.activeName);
+    },
+    'dialogVisible'(to){
+      if(a){
+        parent.window.postMessage("openMask()", "*");
+      }else{
+        parent.window.postMessage("closeMask()", "*");
+      }
     }
   },
   methods: {
@@ -377,13 +405,16 @@ export default {
      */
     authentication(certId, data) {
       let _this = this;
-         
+      
       if(data.certCheckStatus==null){
          _this.jumpRouter("shop/authentication/", data);
       }else{
+        console.log(certId, data,'certId, data');
         let msg1="";
+        let title = '';
         if(data.certCheckStatus==0){
-          msg1="您的店铺认证信息已提交，平台正在审核中,请稍候！";
+          title = '认证审核中'
+          msg1="请耐心等待1-2个工作日，工作人员会尽快审核";
         }else  if(data.certCheckStatus==1){
           msg1="您的店铺已经通过认证，如果重新发起认证，您提交的店铺认证信息将失效！";
         }else  if(data.certCheckStatus==-1){
@@ -391,15 +422,21 @@ export default {
           if(data.certRefuseReason!=null){
               refuseReason=data.certRefuseReason;
           }
-          msg1="您的店铺认证平台审核不通过，原因是："+refuseReason+",请重新发起认证！";
+          title = '审核不通过'
+          msg1="不通过理由："+refuseReason+"请重新发起认证！";
+        }else if(!_this.isWxPayUser){
+          if(width <= 1500) dialogWidth = 'small';
+          _this.dialogVisible = true;
+          return
         }
+        let _data = data;
         let msg = {
           dialogType: "warn",
-          dialogTitle: "",
+          dialogTitle: title,
           dialogMsg: msg1,
           callback: {
             btnOne: function() {
-              if(data.certCheckStatus != 0){
+              if(_data.certCheckStatus != 0){
                 //认证信息设置失效
                 _this.ajaxRequest({
                   url: DFshop.activeAPI.mallStoreCertSetInvalid_post,
@@ -407,7 +444,7 @@ export default {
                     id: certId
                   },
                   success: function(data) {
-                    _this.jumpRouter("shop/authentication/", data);
+                    _this.jumpRouter("shop/authentication/", _data);
                   }
                 }); 
               }          
@@ -416,6 +453,19 @@ export default {
         };
         _this.$root.$refs.dialogWarn.showDialog(msg);
       }
+    },
+    /**
+     *商家是否有支付平台
+     @param data 店铺id
+     */
+    mallIsWxPayUser(){
+      let _this = this;
+      _this.ajaxRequest({
+        'url': DFshop.activeAPI.mallIsWxPayUser_post,
+        'success':function (data){
+          _this.isWxPayUser=data.data;
+        }
+      });
     },
     /**
      *链接--二维码(店铺)
@@ -654,6 +704,13 @@ export default {
         _this.switchAjax(_this.activeName);
       }
     });
+    this.mallIsWxPayUser();
+  },
+  /** 
+   * 开通多粉
+   */
+  duofengOpen(){
+    window.href = this.tabelData.openDfPayUrl;
   }
 };
 </script>
@@ -662,5 +719,42 @@ export default {
 @import "../less/index.less";
 .shop-textr {
   padding: 0 4%;
+}
+.el-dialog{
+    .dialog-warn{
+        background: #eef1f6;
+        padding: 13px 30px;
+        text-align: justify;
+    }
+    .dialog-list{
+        width: 100%;
+        margin: 20px 0;
+        .dialog-title{
+            margin: 0 20px;
+            i{
+                font-size: 36px;
+            }
+            .el-icon-warning{
+                color: #f7ba2a;
+            }
+            .el-icon-circle-check{
+                color: #35d062;
+            }
+        }
+        .dialog-text{
+            width: 78%;
+            display: inline-block;
+            vertical-align: top;
+            color: #666;
+            font-size: 14px;
+            a{
+                font-size: 18px;
+                color: @blue;
+            }
+            p{
+                color:#333;
+            }
+        }
+    }
 }
 </style>
