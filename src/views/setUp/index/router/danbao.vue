@@ -14,6 +14,7 @@
         <div class="danbao-content">
           <p>多粉担保交易，是一项提供给买卖双方消费保障的服务，享受全方面的交易保障；</p>
           <p>加入担保交易后，每条订单均进入担保周期，售后时间完毕后，系统自动结算到商家可结算余额账户中。 </p>
+          <p v-if="!isWxPayUser">您还没有开通多粉钱包，<a :href="openDfPayUrl" target="_blank">点此开通多粉钱包</a></p>
         </div>
       </div>
       <div class="danbao-item">
@@ -100,6 +101,8 @@ export default {
         formLabelWidth: '120px',
         isSecuritytrade:'', //是否加入担保交易 true 已加入 false未加入
         securitytradeQuit:{}, //上次退出担保交易信息
+        isWxPayUser:false,
+        openDfPayUrl:'',//开通多粉钱包链接
         ruleForm:{
           quitReasonId:'',
           remark:'',
@@ -128,6 +131,7 @@ export default {
         'url': DFshop.activeAPI.mallIsSecuritytrade_post,
         'success':function (data){
           _this.isSecuritytrade=data.data.isSecuritytrade;
+          _this.openDfPayUrl=data.data.openDfPayUrl;
           if(data.data.isSecuritytrade){
             _this.isColor = '#34d063';//已加入状态--颜色
             _this.securitytradeQuit=data.data.securitytradeQuit;
@@ -159,20 +163,15 @@ export default {
     exitGuarantee(){
       let _this= this;
       /**判断商家是否有商户支付平台 */
-      _this.ajaxRequest({
-        'url': DFshop.activeAPI.mallIsWxPayUser_post,
-        'success':function (data){
-           if(data.data){
-            _this.dialogFormVisible = true;
-            _this.mallQuitDanbaoReasonList();
-          }else{
-            _this.$message({
-              message: '商家没有商户支付平台,无法退出担保交易!',
-              type: 'error'
-            });
-          }
-        }
-      });
+      if(_this.isWxPayUser){
+        _this.dialogFormVisible = true;
+        _this.mallQuitDanbaoReasonList();
+      }else{
+        _this.$message({
+          message: '商家没有商户支付平台,请先开通多粉钱包!',
+          type: 'error'
+        });
+      }
     },
     /**保存退出担保交易信息 */
     submitForm(formName) {
@@ -204,6 +203,16 @@ export default {
         }
       });
     },
+    //商家是否有支付平台
+    mallIsWxPayUser(){
+      let _this = this;
+      _this.ajaxRequest({
+        'url': DFshop.activeAPI.mallIsWxPayUser_post,
+        'success':function (data){
+          _this.isWxPayUser=data.data;
+        }
+      });
+    },
     /**获取退出理由列表 */
     mallQuitDanbaoReasonList(){
       let _this= this;
@@ -219,6 +228,7 @@ export default {
   },
   mounted(){
      this.mallIsSecuritytrade();
+     this.mallIsWxPayUser();
      //this.isColor = '#34d063';
      this.$parent.activeName = "danbao";
   }

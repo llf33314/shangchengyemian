@@ -148,9 +148,12 @@
                                 <el-switch v-model="scope.row.is_use" on-text="开启" off-text="禁用" :on-value=1 :off-value=-1 v-if="scope.row.status == 1"
                                   @change="openDisable(scope.row.id,scope.row.is_use)">
                                 </el-switch>
-                                <div v-if="scope.row.status < 1">
+                                <div v-if="scope.row.status ==0">
                                   <el-button type="primary" icon="check" size="mini" @click="checkStatus(1,scope.row)">通过</el-button>
                                   <el-button type="danger" icon="close" size="mini" @click="checkStatus(-1,scope.row)">不通过</el-button>
+                                </div>
+                                <div v-if="scope.row.status ==-1">
+                                  <span style="color:red">未通过</span>
                                 </div>
                             </template>
                         </el-table-column>
@@ -567,8 +570,9 @@ export default {
           let selectionObj = _this.multipleSelection[i];
           for (let j = 0; j < pifaList.length; j++) {
             let pifa = pifaList[j];
-            if (pifa.status == 0) {
+            if (pifa.status == "0" &&selectionObj.status == "0") {
               ids.push(selectionObj.id);
+              break;
             }
           }
         }
