@@ -62,7 +62,7 @@
                      <span v-if="scope.row.status == 1">
                        进行中
                      </span>
-                     <span v-if="scope.row.status == 2">
+                     <span v-if="scope.row.status == -1">
                        已结束
                      </span>
                      <span v-if="scope.row.status == 0">
