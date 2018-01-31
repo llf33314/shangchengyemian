@@ -291,9 +291,9 @@
     /**获取交易记录的营业额统计*/
     getTurnoverCount_post:'/mallCountIncome/E9lM9uM4ct/getTurnoverCount',
     /**交易记录列表*/
-    tradeList_post:'/mallOrder/E9lM9uM4ct/tradeList',
+    tradeList_post:'/mallIncomeList/E9lM9uM4ct/list',
     /**导出交易记录订单*/
-    exportTradeOrder_get: DFshop.api+'/mallOrder/E9lM9uM4ct/exportTradeOrder',
+    exportTradeOrder_get: DFshop.api+'/mallIncomeList/E9lM9uM4ct/exportOrder',
 
     /**
      * 评论管理相关接口
