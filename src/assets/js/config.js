@@ -287,9 +287,9 @@
     mallSeckillSave_post: '/mallSeckill/E9lM9uM4ct/save',
 
     /**获取收入金额列表*/
-    getCountListByDate_post:'/mallCountIncome/E9lM9uM4ct/getCountListByDate',
+    getCountListByDate_post:'/mallIncomeList/E9lM9uM4ct/getCountListByDate',
     /**获取交易记录的营业额统计*/
-    getTurnoverCount_post:'/mallCountIncome/E9lM9uM4ct/getTurnoverCount',
+    getTurnoverCount_post:'/mallIncomeList/E9lM9uM4ct/getTurnoverCount',
     /**交易记录列表*/
     tradeList_post:'/mallIncomeList/E9lM9uM4ct/list',
     /**导出交易记录订单*/

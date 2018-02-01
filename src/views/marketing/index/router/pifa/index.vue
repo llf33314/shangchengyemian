@@ -727,7 +727,7 @@ export default {
           obj.shopId +
           "/" +
           obj.userId +
-          "/1/" +
+          "/7/" +
           obj.productId +
           "/" +
           obj.id
