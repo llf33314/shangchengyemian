@@ -46,7 +46,7 @@
                         </el-table-column>
                         <el-table-column
                             label="付款类型">
-                            <template scope="scope">
+                            <template slot-scope="scope">
                                 <span v-if="scope.row.order_type == 0">
                                 全款
                                 </span>
@@ -66,7 +66,7 @@
                         <el-table-column
                             prop="order_status"
                             label="报价单状态">
-                             <template scope="scope">
+                             <template slot-scope="scope">
                                 <span v-if="scope.row.order_status == 0">
                                 已关闭
                                 </span>
@@ -87,14 +87,14 @@
                         <el-table-column
                             width="175"
                             label="创建时间">
-                             <template scope="scope">
+                             <template slot-scope="scope">
                                 <div>{{scope.row.create_date|format}}</div>
                             </template>
                         </el-table-column>
                         <el-table-column
                             label="操作"
                             min-width="200">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <el-button v-if="scope.row.order_status == 1" size="small" @click="jumpRouter('/order/update/'+scope.row.id)" class="buttonBlue">修改</el-button>
                             <el-button size="small" class="buttonBlue" @click="jumpRouter('/details/'+scope.row.id)">详情</el-button>
                             <el-button v-if="scope.row.member_id" size="small" class="buttonBlue" @click="jumpRouter('/receivablesDetails/'+scope.row.id+'/'+scope.row.member_id)">收款信息</el-button>
@@ -128,13 +128,13 @@
                         </el-table-column>
                         <el-table-column
                         label="创建时间">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                                 <div>{{scope.row.create_date|format}}</div>
                             </template>
                         </el-table-column> 
                         <el-table-column
                             label="操作">
-                            <template scope="scope">
+                            <template slot-scope="scope">
                                 <el-button  size="small" class="buttonBlue" @click="jumpRouter('/contract/update/'+scope.row.id)" >修改</el-button>
                                 <el-button size="small" @click="contractDelete(scope.row.id)" >删除</el-button>
                             </template>
@@ -175,7 +175,7 @@
                         </el-table-column> 
                         <el-table-column
                             label="操作">
-                            <template scope="scope">
+                            <template slot-scope="scope">
                                 <el-button size="small" class="buttonBlue" @click="jumpRouter('/company/update/'+scope.row.id)">修改</el-button>
                                 <el-button size="small" @click="companyDelete(scope.row.id)">删除</el-button>
                             </template>
@@ -185,7 +185,7 @@
             </el-tab-pane>
         </el-tabs>
         <div class="block shop-textr" v-if="page.pageCount > 1">
-            <el-pagination
+            <el-pagination  background
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
                 :current-page='page.curPage'

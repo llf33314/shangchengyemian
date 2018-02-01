@@ -40,7 +40,7 @@
                 <el-table-column
                 prop="discount"
                 label="折扣">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                         <div v-if=" scope.row.discount == null || scope.row.discount == 0">无</div>
                         <div v-else>{{scope.row.discount}}折</div>
                     </template>
@@ -48,7 +48,7 @@
                 <el-table-column
                 prop="buyMode"
                 label="付款方式">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                         <div v-if="scope.row.buyMode == 0">支付宝支付</div>
                         <div v-else-if="scope.row.buyMode == 1">微信支付</div>
                         <div v-else-if="scope.row.buyMode == 4">货到付款(线下)</div>
@@ -61,20 +61,20 @@
                 </el-table-column> 
                 <el-table-column
                 label="应付金额">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                         <div v-if="order.orderType == 0">{{order.allMoney}}</div>
                         <div v-else>{{scope.row.termMoney}}</div>
                     </template>
                 </el-table-column>
                  <el-table-column
                 label="付款时间">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                         <div>{{scope.row.buyTime|format}}</div>
                     </template>
                 </el-table-column>
             </el-table>
             <div class="block shop-textr" v-if="page.pageCount > 1" style="margin-top: 20px;">
-                <el-pagination
+                <el-pagination  background
                     @size-change="handleSizeChange"
                     @current-change="handleCurrentChange"
                     :current-page='page.curPage'

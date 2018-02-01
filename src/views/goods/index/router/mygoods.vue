@@ -13,7 +13,9 @@
             <el-option :key="0" label="全部店铺" :value="''"></el-option>
             <el-option v-for="item in shopList" :key="item.id" :label="item.sto_name" :value="item.id"></el-option>
           </el-select>
-          <el-input class="shopInfo-input" placeholder="请输入商品名称" icon="search" v-model.trim="screenData.proName" :on-icon-click="search_goods" @keyup.enter.native="search_goods"></el-input>
+          <el-input class="shopInfo-input" placeholder="请输入商品名称" v-model.trim="screenData.proName" :on-icon-click="search_goods" @keyup.enter.native="search_goods">
+            <i slot="suffix" class="el-input__icon el-icon-search" @click="search_goods"></i>
+          </el-input>
         </div>
         <div class="shopInfo-button">
           <el-button type="primary" @click="jumpRouter('releaseGoods/add')">发布商品</el-button>
@@ -40,7 +42,7 @@
         <el-table-column
           label="商品"
           width="250">
-          <template scope="scope">
+          <template slot-scope="scope">
             <div class="index-mygoods-list clearfix">
               <div class="index-mygoods-img">
                 <defaultImg :background="imgUrl+scope.row.imageUrl"></defaultImg>
@@ -78,7 +80,7 @@
         <el-table-column 
           label="商品状态"
           show-overflow-tooltip>
-          <template scope="scope">
+          <template slot-scope="scope">
             <div  v-if="scope.row.proTypeId == 3">
               已下架
             </div>
@@ -100,8 +102,8 @@
          </el-table-column>
         <el-table-column
           label="操作"
-          width="400">
-          <template scope="scope">
+          width="410">
+          <template slot-scope="scope">
             <el-button  size="small" 
                         class="buttonBlue" 
                         v-if=" scope.row.checkStatus == 1 && scope.row.isPublish != 1 && scope.row.isGroup == 0 && scope.row.isSeckill == 0 && scope.row.proTypeId != 3 "
@@ -157,7 +159,8 @@
         </el-col>
         <el-col :span="8">
           <div class="block shop-textr" v-if="page.pageCount>0" style="margin-top: 20px">
-            <el-pagination
+            <el-pagination  background
+              background
               @current-change="handleCurrentChange"
               :page-size="page.pageSize"
               :current-page='page.curPage'
@@ -563,7 +566,7 @@ export default {
       if(type==2){
         //单个商品
         let flag = true;
-        debugger
+         
         _this.shopList.forEach((item,i)=>{
             item.disabled = false;
             if(item.id == _this.cloneshopId && flag){
@@ -588,7 +591,7 @@ export default {
       
 
       let data={};
-      debugger
+       
       if(this.isCloneGoods==1){
         //店铺同步商品
         data= _this.allcloneForm;

@@ -23,7 +23,7 @@
                 </el-table-column>
                   <el-table-column
                 label="留言时间">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                         <div>{{scope.row.languageTime|format}}</div>
                     </template>
                 </el-table-column>
@@ -33,7 +33,7 @@
                 </el-table-column>
                  <el-table-column
                 label="操作">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                         <el-button v-if="scope.row.adminContent ==null || scope.row.adminContent == ''" 
                          size="small" class="buttonBlue" @click="openDialog(scope.row.id)">回复</el-button>
                     </template>
@@ -41,7 +41,7 @@
                
             </el-table>
             <div class="block shop-textr" v-if="page.pageCount > 1" style="margin-top: 20px;">
-                <el-pagination
+                <el-pagination  background
                     @size-change="handleSizeChange"
                     @current-change="handleCurrentChange"
                     :current-page='page.curPage'

@@ -1,6 +1,6 @@
 <template>
     <div class="order_tab_main">
-        <el-table :data="orderData.mallOrderDetail" style="width: 100%" border>
+        <el-table :data="orderData.mallOrderDetail" style="width: 100%,border-left: 1px solid #ebeef5;border-right: 1px solid #ebeef5;" >
             <el-table-column
                 prop="detProName"
                 label="商品名称"
@@ -21,7 +21,7 @@
             <el-table-column
                 width="240"
                 label="填写修改商品总价（单价*数量）">
-                <template scope="scope">
+                <template slot-scope="scope">
                 <el-input placeholder="请输入商品价格" v-model="scope.row.updateMoney" :value="scope.row.totalPrice" ></el-input>
                 </template>
             </el-table-column>

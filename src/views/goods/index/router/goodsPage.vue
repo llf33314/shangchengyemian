@@ -17,7 +17,7 @@
         </el-table-column>
         <el-table-column
           label="标题">
-          <template scope="scope">
+          <template slot-scope="scope">
             <div class="index-mygoods-list clearfix">
               <div class="index-mygoods-txt"
               v-text="scope.row.name">
@@ -29,7 +29,7 @@
           prop="date"
           label="创建时间"
           show-overflow-tooltip>
-          <template scope="scope">
+          <template slot-scope="scope">
             <div class="index-mygoods-list clearfix">
               <div class="index-mygoods-txt">
                 {{scope.row.createTime | format}}
@@ -39,7 +39,7 @@
         </el-table-column>
         <el-table-column
           label="操作">
-          <template scope="scope">
+          <template slot-scope="scope">
             <el-button  
               size="small"
               class="buttonBlue"
@@ -61,7 +61,7 @@
           <el-button @click="handleDelete()">批量删除</el-button>
         </div>
         <div class="block shop-textr" v-if="page.pageCount>1" >
-            <el-pagination
+            <el-pagination background
               @current-change="handleCurrentChange"
               @selection-change="toggleSelection"
               :page-size="page.pageSize"

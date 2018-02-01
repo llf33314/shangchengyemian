@@ -51,14 +51,14 @@
                 <el-table-column
                   width="200px"
                   label="有效时间">
-                  <template  scope="scope">
+                  <template slot-scope="scope">
                       {{scope.row.startTime}} 至 {{scope.row.endTime}} 
                   </template>
                 </el-table-column>
                 <el-table-column
                   width="150px"
                   label="活动状态">
-                   <template scope="scope">
+                   <template slot-scope="scope">
                      <span v-if="scope.row.status == 1">
                        进行中
                      </span>
@@ -75,14 +75,14 @@
                 </el-table-column>
                 <el-table-column
                   label="创建时间">
-                   <template  scope="scope">
+                   <template slot-scope="scope">
                       {{scope.row.createTime|format}} 
                   </template>
                 </el-table-column>
                 <el-table-column
                   label="操作"
                   min-width="120">
-                  <template scope="scope">
+                  <template slot-scope="scope">
                     <el-button size="small" class="buttonBlue" @click="jumpRouter('/mallIntegral/goods/'+scope.row.id)">编辑</el-button>
                     <el-button size="small"  v-if="scope.row.isUse == 1" class="buttonBlue" @click="invalidDelete(scope.row.id, -2)">失效</el-button>
                      <el-button size="small" v-if="scope.row.isUse == -1" class="buttonBlue" @click="invalidDelete(scope.row.id, 1)">启用</el-button>
@@ -119,12 +119,12 @@
                   <el-button   type="primary" >新建横幅图</el-button>
                 </router-link>
               </div>
-              <el-table v-if="isData" :data="imageData"
+              <el-table v-if="isData" :data="imageData" 
                 style="width: 100%">
                 <el-table-column
                   prop="name"
                   label="商品">
-                  <template scope="scope">
+                  <template slot-scope="scope">
                    <div class="shop-img">
                      <default-img :background="imagePath+scope.row.imageUrl"></default-img>
                    </div>
@@ -137,20 +137,20 @@
                 <el-table-column
                   prop="type"
                   label="跳转页面">
-                  <template scope="scope">
+                  <template slot-scope="scope">
                     <span v-if="scope.row.type == 0" >不跳转</span>
                     <span v-if="scope.row.type == 1">{{scope.row.returnUrl}}</span>
                   </template>
                 </el-table-column>
                 <el-table-column
                   label="创建时间">
-                   <template  scope="scope">
+                   <template slot-scope="scope">
                       {{scope.row.createTime|format}} 
                   </template>
                 </el-table-column>
                 <el-table-column
                   label="是否显示">
-                  <template scope="scope">
+                  <template slot-scope="scope">
                     <span v-if="scope.row.isShow == 1" >显示</span>
                     <span v-if="scope.row.isShow == 0" >不显示</span>
                   </template>
@@ -158,7 +158,7 @@
                 <el-table-column
                   label="操作"
                   min-width="120">
-                  <template scope="scope">
+                  <template slot-scope="scope">
                     <el-button size="small" class="buttonBlue" @click="jumpRouter('/mallIntegral/banner/'+scope.row.id)">编辑</el-button>
                     <el-button size="small" class="buttonBlue" v-if="scope.row.isShow == 0"  @click="imageInvalid(scope.row.id, 1)">显示</el-button>
                     <el-button size="small" class="buttonBlue" v-if="scope.row.isShow == 1"  @click="imageInvalid(scope.row.id, -2)">不显示</el-button>
@@ -171,7 +171,7 @@
           </el-tab-pane>
         </el-tabs>
         <div class="block shop-textr" v-if="page.pageCount > 1" style="margin-top:20px;">
-            <el-pagination
+            <el-pagination  background
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
                 :current-page='page.curPage'

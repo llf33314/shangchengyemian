@@ -62,12 +62,12 @@
                         label="结束价(元)">
                     </el-table-column>
                     <el-table-column label="有效时间">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             {{scope.row.aucStartTime}} - {{scope.row.aucEndTime}}
                         </template>
                     </el-table-column>
                      <el-table-column label="活动状态">
-                         <template scope="scope">
+                         <template slot-scope="scope">
                             <span v-if="scope.row.status === 1">进行中</span>
                             <span v-if="scope.row.status === -1">已结束</span>
                             <span v-if="scope.row.status === 0">未开始</span>
@@ -79,7 +79,7 @@
                         label="创建时间">
                     </el-table-column>
                     <el-table-column label="操作" min-width="120">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <el-button size="small" class="buttonBlue" v-if="scope.row.status == 0 || (scope.row.joinId == 0 && scope.row.status == 1)"
                              @click="jumpRouter('/auction/addauction/'+scope.row.id)">编辑</el-button>
                             <el-button size="small" class="buttonBlue" v-if="scope.row.status == 0 || (scope.row.joinId == 0 && scope.row.status == 1)"
@@ -92,7 +92,7 @@
                     </el-table-column>
                 </el-table>
                 <div class="shop-textr" v-if="goodsData.page.pageCount > 1">
-                    <el-pagination
+                    <el-pagination  background
                         @size-change="handleSizeChange"
                         @current-change="handleCurrentChange"
                         :current-page.sync="goodsData.page.curPage"
@@ -126,7 +126,7 @@
                         </el-table-column> 
                         <el-table-column
                         label="保证金状态">
-                            <template scope="scope">
+                            <template slot-scope="scope">
                                 <span v-if="scope.row.marginStatus == 0">未支付</span>
                                 <span v-if="scope.row.marginStatus == 1">已支付</span>
                                 <span v-if="scope.row.marginStatus == -1">已返还</span>
@@ -140,12 +140,12 @@
                         <el-table-column
                         prop="returnTime"
                         label="返还时间">
-                          <template scope="scope">
+                          <template slot-scope="scope">
                               <div>{{scope.row.returnTime|format}}</div>
                           </template>
                         </el-table-column> 
                         <el-table-column label="操作">
-                            <template scope="scope">
+                            <template slot-scope="scope">
                                 <el-button size="small" class="buttonBlue" 
                                 v-if="(scope.row.auctionStatus == -1 || scope.row.auctionStatus == -2) && scope.row.marginStatus == 1 && scope.row.isReturn == 1" 
                                 @click="viewDetails(scope.row.id,scope.row.aucNo,scope.row.payWay,scope.row.marginMoney)"
@@ -154,7 +154,7 @@
                         </el-table-column>
                     </el-table>
                     <div class="shop-textr" v-if="baozhengjinData.page.pageCount > 1"> 
-                        <el-pagination
+                        <el-pagination  background
                             @size-change="handleSizeChange1"
                             @current-change="handleCurrentChange1"
                             :current-page.sync="baozhengjinData.page.curPage"

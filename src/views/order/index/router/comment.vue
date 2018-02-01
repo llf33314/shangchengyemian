@@ -24,7 +24,17 @@
           </el-form-item>
           <el-form-item >
              <span class="demonstration"  style="font-size:13px;">评价时间 :</span>
-             <el-date-picker v-model="value7" type="daterange" align="right"  placeholder="选择日期范围" :picker-options="pickerOptions2" value-format="yyyy-MM-dd" @change="search_date" ></el-date-picker>
+             <el-date-picker 
+                v-model="value7" 
+                type="daterange" 
+                align="right"  
+                unlink-panels
+                range-separator="-"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                :picker-options="pickerOptions2" 
+                value-format="yyyy-MM-dd" 
+                @change="search_date" ></el-date-picker>
           </el-form-item >
         </el-form>
       </div>
@@ -91,7 +101,7 @@
              <content-no :show="contentNo" v-if="page.rowCount == 0 " ></content-no>
           </div>
           <div class="block shop-textr" v-if="page.pageCount > 1">
-            <el-pagination
+            <el-pagination  background
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange"
               :current-page='page.curPage'
@@ -200,9 +210,8 @@ export default {
       let _this = this;
       _this.searchData.curPage=1;
       if(value != ""){
-        let date=value.split(" - ");
-        _this.searchData.startTime=date[0]
-        _this.searchData.endTime=date[1];
+        _this.searchData.startTime= value[0]
+        _this.searchData.endTime= value[1];
         _this.mallCommentList(_this.searchData);
       }else{
         _this.searchData.startTime='';

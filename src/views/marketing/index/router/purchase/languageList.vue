@@ -20,7 +20,7 @@
                 <el-table-column
                 prop="fansCorrency"
                 label="头像">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <div class="goods-img" >
                         <default-img :background="scope.row.headimgurl"></default-img>
                     </div>        
@@ -32,14 +32,14 @@
                 </el-table-column>
                  <el-table-column
                 label="操作">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                         <el-button  size="small" class="buttonBlue" @click="jumpRouter('/languageDetails/'+scope.row.orderId+'/'+scope.row.memberId)">留言详情</el-button>
                     </template>
                 </el-table-column>
                
             </el-table>
             <div class="block shop-textr" v-if="page.pageCount > 1" style="margin-top: 20px;">
-                <el-pagination
+                <el-pagination  background
                     @size-change="handleSizeChange"
                     @current-change="handleCurrentChange"
                     :current-page='page.curPage'

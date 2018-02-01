@@ -45,14 +45,14 @@
             <el-table-column
               width="175"
               label="加入时间">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <div>{{scope.row.add_time|format}}</div>
                 </template>
             </el-table-column>
             <el-table-column
               label="操作"
               min-width="180">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <el-button size="small" v-if="scope.row.is_start_use == 1" 
                   @click="setSellerStatus(scope.row.id,scope.row.user_name,-1)">暂停</el-button>
                 <el-button size="small" v-if="scope.row.is_start_use == -1"
@@ -61,7 +61,7 @@
             </el-table-column>
           </el-table>
           <div class="shop-textr" v-if="page.pageCount > 1">
-              <el-pagination
+              <el-pagination  background
                   @size-change="handleSizeChange"
                   @current-change="handleCurrentChange"
                   :current-page.sync="page.curPage"

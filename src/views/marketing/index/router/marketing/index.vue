@@ -98,7 +98,7 @@
                 </el-table-column>
                 <el-table-column
                   label="活动状态">
-                   <template scope="scope">
+                   <template slot-scope="scope">
                      <span v-if="scope.row.is_use === 1">已启用</span>
                      <span v-if="scope.row.is_use === 0">已禁用</span>
                    </template>
@@ -109,7 +109,7 @@
                 </el-table-column>
                 <el-table-column
                   label="操作">
-                  <template scope="scope">
+                  <template slot-scope="scope">
                     <el-button size="small" class="buttonBlue" @click="jumpRouter('/addBond/'+scope.row.id)">编辑</el-button>
                     <el-button size="small" class="buttonBlue" @click="setCommissionStatus(scope.row.id,-2)" 
                         v-if="scope.row.is_use === 0">启用</el-button>
@@ -121,7 +121,7 @@
                 </el-table-column>
               </el-table>
               <div class="shop-textr" v-if="goodsData.page.pageCount > 1">
-                  <el-pagination
+                  <el-pagination  background
                       @size-change="handleSizeChange"
                       @current-change="handleCurrentChange"
                       :current-page.sync="goodsData.page.curPage"
@@ -160,7 +160,7 @@
               </el-table-column>
               <el-table-column
                 label="审核状态">
-                <template scope="scope">
+                <template slot-scope="scope">
                   <span v-if="scope.row.check_status == 0">未审核</span>
                   <span v-if="scope.row.check_status == 1">审核通过</span>
                   <span v-if="scope.row.check_status == -1">审核不通过</span>
@@ -169,14 +169,14 @@
               </el-table-column>
               <el-table-column
                 label="操作">
-                <template scope="scope">
+                <template slot-scope="scope">
                   <el-button size="small" class="buttonBlue" @click="passExamine(scope.row.id,1)">通过</el-button>
                   <el-button size="small" @click="refuseExamine(scope.row.id,-1)">拒绝</el-button>
                 </template>
               </el-table-column> 
             </el-table>
             <div class="shop-textr" v-if="examineData.page.pageCount > 1">
-                <el-pagination
+                <el-pagination  background
                     @size-change="handleSizeChange2"
                     @current-change="handleCurrentChange2"
                     :current-page.sync="examineData.page.curPage"
@@ -228,7 +228,7 @@
               <el-table-column
                 label="操作"
                 min-width="180">
-                <template scope="scope">
+                <template slot-scope="scope">
                   <el-button size="small" class="buttonBlue" @click="jumpRouter('/recommendList/'+scope.row.member_id)">推荐列表</el-button>
                   <el-button size="small" class="buttonBlue" @click="jumpRouter('/withDrawList/'+scope.row.member_id)">提现记录</el-button>
                   <el-button size="small" v-if="scope.row.is_start_use == 1" 
@@ -239,7 +239,7 @@
               </el-table-column>
             </el-table>
             <div class="shop-textr" v-if="sellersList.page.pageCount > 1"> 
-                <el-pagination
+                <el-pagination  background
                     @size-change="handleSizeChange3"
                     @current-change="handleCurrentChange3"
                     :current-page.sync="sellersList.page.curPage"
@@ -288,14 +288,14 @@
                 label="订单号">
               </el-table-column>
               <el-table-column label="状态">
-                <template scope="scope">
+                <template slot-scope="scope">
                   <span v-if="scope.row.withdraw_status == 1">待打款</span>
                   <span v-if="scope.row.withdraw_status == 2">已打款</span>
                 </template>
               </el-table-column>
             </el-table>
             <div class="shop-textr" v-if="saleData.page.pageCount >1">
-                <el-pagination
+                <el-pagination  background
                     @size-change="handleSizeChange4"
                     @current-change="handleCurrentChange4"
                     :current-page.sync="saleData.page.curPage"

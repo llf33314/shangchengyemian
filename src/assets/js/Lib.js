@@ -3,7 +3,7 @@ require('assets/css/common.less');
 require('assets/font/iconfont.css');
 //Element样式
 import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-default/index.css';
+import 'element-ui/lib/theme-chalk/index.css'
 
 
 //import notice from 'components/notice.vue';//提示

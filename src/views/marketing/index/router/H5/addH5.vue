@@ -20,7 +20,7 @@
           </div>
         </div>
         <div class="block shop-textr" v-if="page.pageCount > 1" style="margin-top:20px;">
-            <el-pagination
+            <el-pagination  background
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page='page.curPage'

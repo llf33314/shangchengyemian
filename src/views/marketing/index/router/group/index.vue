@@ -36,12 +36,12 @@
           <el-table-column prop="shopName"  label="所属店铺">
           </el-table-column>
           <el-table-column label="有效时间">
-            <template scope="scope">
+            <template slot-scope="scope">
               {{scope.row.gstartTime}}至{{scope.row.gendTime}}
             </template>
           </el-table-column>
           <el-table-column label="活动状态" width="190">
-            <template scope="scope">
+            <template slot-scope="scope">
               <p v-if="scope.row.status == 0">未开始</p>
               <p v-else-if="scope.row.status == 1">进行中</p>
               <p v-else-if="scope.row.status == -1">已结束</p>
@@ -53,7 +53,7 @@
             label="创建时间">
           </el-table-column>
           <el-table-column  label="操作">
-            <template scope="scope">
+            <template slot-scope="scope">
               <el-button size="small" class="buttonBlue" v-if="scope.row.status == 0 || (scope.row.status == 1 && scope.row.joinId == '')" 
                 @click="jumpRouter('/addgroup/'+scope.row.id)">编辑</el-button>
               <el-button size="small" class="buttonBlue" v-if="scope.row.status == 0 || (scope.row.status == 1 && scope.row.joinId == '')" 
@@ -66,7 +66,7 @@
           </el-table-column>
         </el-table>
         <div class="shop-textr" v-if="tableData.page.pageCount > 1">
-          <el-pagination
+          <el-pagination  background
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page.sync="pageNum"

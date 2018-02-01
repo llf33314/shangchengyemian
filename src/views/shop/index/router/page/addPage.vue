@@ -182,10 +182,14 @@ export default {
                 if(type==1){
                    if(_this.active == 1){
                     //iframe嵌入
+                    _this.$message({
+                      message: '新增微页成功',
+                      type: 'success'
+                    });
                     let pageId = '';
                       if(_this.$route.params.pageId ==='0'){
-                        pageId = data.data.id;
-                        _this.pageId = data.data.id
+                        pageId = data.id;
+                        _this.pageId = data.id
                       }else{
                         pageId = _this.$route.params.pageId
                       }

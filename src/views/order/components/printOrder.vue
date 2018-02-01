@@ -44,7 +44,7 @@
         </div>
         <div slot="footer" class="dialog-footer">
         <!-- <div class="shop-inblock" v-if="printData.totalPage>1">
-            <el-pagination
+            <el-pagination  background
             :page-size="5"
             @current-change="printChange"
             layout="prev, pager, next, jumper"

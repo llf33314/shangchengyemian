@@ -29,7 +29,7 @@
           <el-table :data="withDrawLilst" style="width: 100%" v-if="page.rowCount > 0">
               <el-table-column
                 label="提现时间">
-                 <template scope="scope">
+                 <template slot-scope="scope">
                     <div>{{scope.row.applay_time|format}}</div>
                 </template>
               </el-table-column>
@@ -50,14 +50,14 @@
                 label="订单号">
               </el-table-column>
               <el-table-column label="状态">
-                <template scope="scope">
+                <template slot-scope="scope">
                   <span v-if="scope.row.withdraw_status == 1">待打款</span>
                   <span v-if="scope.row.withdraw_status == 2">已打款</span>
                 </template>
               </el-table-column>
             </el-table>
           <div class="shop-textr" v-if="page.pageCount > 1">
-              <el-pagination
+              <el-pagination  background
                   @size-change="handleSizeChange"
                   @current-change="handleCurrentChange"
                   :current-page.sync="page.curPage"

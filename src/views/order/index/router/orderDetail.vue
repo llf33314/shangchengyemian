@@ -188,7 +188,7 @@
           </div>
         </el-col>
       </el-row>
-      <div class="order-item">
+      <div class="order-item" v-if="orderDetail.orderSellerRemark && orderDetail.orderSellerRemark != ''">
         <div class="order-title">
           卖家备注
         </div>
@@ -395,7 +395,7 @@ export default {
           };
           //如无维权信息，设置订单信息DIV大小
           if(JSON.stringify(_this.returnData) == '{}' ){
-            _this.colWidth='';
+            _this.colWidth= 24 ;
           }
           
           _this.twoDate= Lib.M.format(_this.orderDetail.payTime);
@@ -418,7 +418,7 @@ export default {
         }
       });
     },
-     /** 
+     /**                                                                                                                                                            
      * 倒计时
      */
     setTiming(time) {

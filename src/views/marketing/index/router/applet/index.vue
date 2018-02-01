@@ -15,33 +15,33 @@
           <el-table-column
             prop="name"
             label="商品">
-            <template scope="scope">
+            <template slot-scope="scope">
               <div class="shop-img">
                 <default-img :background="imagePath+scope.row.imageUrl"></default-img>
               </div>
             </template>
           </el-table-column>
           <el-table-column label="跳转页面">
-            <template scope="scope">
+            <template slot-scope="scope">
                 <span v-if="scope.row.type == 0" >不跳转</span>
                 <span v-if="scope.row.type == 1" >商品详情</span>
               </template>
           </el-table-column>
           <el-table-column
             label="创建时间">
-              <template  scope="scope">
+              <template slot-scope="scope">
                   {{scope.row.createTime|format}} 
               </template>
           </el-table-column>
            <el-table-column
               label="是否显示">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <span v-if="scope.row.isShow == 1" >显示</span>
                 <span v-if="scope.row.isShow == 0" >不显示</span>
               </template>
             </el-table-column>
           <el-table-column  label="操作">
-            <template scope="scope">
+            <template slot-scope="scope">
                 <el-button size="small" class="buttonBlue" @click="jumpRouter('/applet/update/'+scope.row.id)">编辑</el-button>
                 <el-button size="small" class="buttonBlue" v-if="scope.row.isShow == 0"  @click="invalidData(scope.row.id, 1)">显示</el-button>
                 <el-button size="small" class="buttonBlue" v-if="scope.row.isShow == 1"  @click="invalidData(scope.row.id, -2)">不显示</el-button>
@@ -50,7 +50,7 @@
           </el-table-column>
         </el-table>
         <div class="shop-textr" v-if="page.pageCount > 1">
-          <el-pagination
+          <el-pagination  background
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page.sync="page.curPage"

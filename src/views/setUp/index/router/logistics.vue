@@ -19,13 +19,13 @@
             </el-table-column>
             <el-table-column
               label="运费(元)">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <p v-if="scope.row.isNoMoney === 1 && scope.row.money!=null ">{{scope.row.money}}</p>
                 <p v-else>0.00</p> 
               </template>
             </el-table-column>
             <el-table-column label="免邮规则(指定省份除外)">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <p v-if="scope.row.isNoMoney === 2">卖家承担运费</p>
                 <p v-if="scope.row.isNoMoney === 1 && scope.row.noMoneyNum > 0">商品满{{scope.row.noMoneyNum}}件免邮</p>
                 <p v-if="scope.row.isNoMoney === 1 && scope.row.noMoney > 0">商品满{{scope.row.noMoney}}元免邮</p>
@@ -38,12 +38,12 @@
             </el-table-column>
             <el-table-column
               label="创建时间">
-              <template  scope="scope">
+              <template slot-scope="scope">
                   {{scope.row.createTime|format}}
               </template>
             </el-table-column>
             <el-table-column label="操作">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <el-button class="buttonBlue"
                   size="small"
                   @click="jumpRouter('/addlogistics/'+scope.row.id)">编辑</el-button>
@@ -56,7 +56,7 @@
         </div>
       </div>
       <div class="block shop-textr" v-if="logisticsData.page.pageCount > 1">
-        <el-pagination
+        <el-pagination  background
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page='logisticsData.page.curPage'
@@ -97,7 +97,7 @@
                 label="联系电话">
               </el-table-column>
               <el-table-column label="操作">
-                <template scope="scope">
+                <template slot-scope="scope">
                   <el-button class="buttonBlue"
                     size="small"
                     @click="jumpRouter('/addSince/'+scope.row.id)">编辑</el-button>
@@ -111,7 +111,7 @@
         </div>
       </div>
       <div class="block shop-textr" v-if="tableData.page.pageCount > 1">
-        <el-pagination
+        <el-pagination  background
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page='tableData.page.curPage'

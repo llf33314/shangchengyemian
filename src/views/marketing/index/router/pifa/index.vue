@@ -56,13 +56,13 @@
                     </el-table-column>
                     <el-table-column
                     label="有效时间">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             {{scope.row.pfStartTime}}至{{scope.row.pfEndTime}}
                         </template>
                     </el-table-column>
                     <el-table-column width="190"
                     label="活动状态">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                         <span v-if="scope.row.status === 1">进行中</span>
                         <span v-if="scope.row.status === -1">已结束</span>
                         <span v-if="scope.row.status === 0">未开始</span>
@@ -75,7 +75,7 @@
                     </el-table-column>
                     <el-table-column
                     label="操作">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                         <el-button size="small" class="buttonBlue" @click="jumpRouter('/addpifa/'+scope.row.id)"
                             v-if="scope.row.status == 0 || scope.row.status == 1">编辑</el-button>
                         <el-button size="small" class="buttonBlue" 
@@ -88,7 +88,7 @@
                     </el-table-column>
                 </el-table>
                 <div class="shop-textr" v-if="goodsData.page.pageCount > 1">
-                    <el-pagination
+                    <el-pagination  background
                         @size-change="handleSizeChange"
                         @current-change="handleCurrentChange"
                         :current-page.sync="goodsData.page.curPage"
@@ -144,7 +144,7 @@
                         </el-table-column>
                         <el-table-column
                             label="状态">
-                            <template scope="scope">
+                            <template slot-scope="scope">
                                 <el-switch v-model="scope.row.is_use" on-text="开启" off-text="禁用" :on-value=1 :off-value=-1 v-if="scope.row.status == 1"
                                   @change="openDisable(scope.row.id,scope.row.is_use)">
                                 </el-switch>
@@ -158,7 +158,7 @@
                             </template>
                         </el-table-column>
                         <el-table-column   width="120" type="expand" > 
-                          <template scope="props">
+                          <template slot-scope="props">
                               <div class="table-expand2">
                                 <p >
                                   <span class="labelss">公司名称：</span>
@@ -177,7 +177,7 @@
                         </el-table-column>
                         <!-- <el-table-column
                            >
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <el-button size="small" class="buttonBlue"
                             @click="viewDetails(scope.row.name,scope.row.company_name,scope.row.telephone,scope.row.remark)"
                             >查看详情</el-button>
@@ -191,7 +191,7 @@
                         <el-button @click="checkExamine(-1)">不通过</el-button>
                     </div>
                     <div class="shop-textr" v-if="pifaData.page.pageCount > 1">
-                        <el-pagination
+                        <el-pagination  background
                             @size-change="handleSizeChange1"
                             @current-change="handleCurrentChange1"
                             :current-page.sync="pifaData.page.curPage"

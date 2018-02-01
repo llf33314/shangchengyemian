@@ -26,7 +26,7 @@
         <div class="index-content">
           <el-table :data="tabelData.page.subList"  style="width: 100%" v-if="tabelData.page.pageCount>0">
             <el-table-column label="店铺名称" min-width="220">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <div class="index-list-shop">
                   <div class="list-shop-img">
                     <defaultImg :background="imgUrl+scope.row.stoPicture"></defaultImg>
@@ -63,7 +63,7 @@
             <el-table-column label="联系电话" prop="stoPhone">
             </el-table-column>
             <el-table-column label="操作" min-width="180">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <el-button  size="small" 
                             class="buttonBlue"
                             @click="jumpRouter('shop/edit/'+scope.row.id)">编辑
@@ -110,25 +110,25 @@
             <el-table-column label="标题"  prop="pag_name">
             </el-table-column>
             <el-table-column label="创建时间">
-               <template  scope="scope">
+               <template slot-scope="scope">
                   {{scope.row.pag_create_time|format}} 
               </template>
             </el-table-column>
             <el-table-column label="所属店铺" prop="business_name">
             </el-table-column>
             <!-- <el-table-column label="访客数/浏览量" prop="flow">
-              <template  scope="scope">
+              <template slot-scope="scope">
                   {{scope.row.visitor_num}}/{{scope.row.views_num}}
               </template>
             </el-table-column> -->
              <el-table-column label="是否主页" prop="pag_is_main">
-              <template  scope="scope">
+              <template slot-scope="scope">
                   <span v-if="scope.row.pag_is_main == 1">是</span>
                   <span v-else>否</span> 
               </template>
             </el-table-column>
             <el-table-column label="操作" min-width="150">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <el-button  size="small" 
                             class="buttonBlue"
                             @click="jumpRouter('/shop/addPage/'+scope.row.id)"
@@ -249,7 +249,8 @@
     </el-tab-pane>
     <content-no :show="contentNo" v-if="tabelData.page.rowCount == 0 "></content-no>
     <div class="shop-textr" v-if="tabelData.page.pageCount>1 && activeName != 'style'">
-      <el-pagination
+      <el-pagination  background
+        background
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page.sync="currentPage"

@@ -56,7 +56,7 @@
                             </el-radio-group>
                         </el-form-item>
                         <el-form-item 
-                            :label="form.pro.proTypeId==2?'会员卡':form.pro.proTypeId==3?'卡券包':'流量包'"
+                            :label="form.pro.proTypeId==2?'会员卡 :':form.pro.proTypeId==3?'卡券包 :':'流量包 :'"
                             v-if="form.pro.proTypeId != 0 && form.pro.proTypeId != 1">
                             <!--会员卡-->
                             <el-radio-group v-if="form.pro.proTypeId == 2" 
@@ -80,7 +80,7 @@
                                     >{{card.cardsName}}</el-radio>
                                 </el-radio-group>
                                  <el-table :data="cardReceiveItem.messageList"
-                                    style="width:500px"
+                                    style="width:550px"
                                     border>
                                     <el-table-column
                                         prop="cardName"
@@ -93,15 +93,16 @@
                                 </el-table>
                             </div>
                             <!--流量包-->
-                            <el-table v-if="form.pro.proTypeId == 4"
+                            
+                            <el-table
+                                v-if="form.pro.proTypeId == 4"
                                 :data="flowList"
-                                style="width:500px"
-                                border>
-                                 <el-table-column
+                                style="width:500px;border-left: 1px solid #ebeef5;border-right: 1px solid #ebeef5;">
+                                <el-table-column
                                     label="选择"
                                     prop="id"
-                                    width="80">
-                                        <template scope="scope">
+                                    width="70">
+                                        <template slot-scope="scope">
                                             <el-radio class="radio"
                                                 v-model.number="form.pro.flowId" 
                                                 :label="Number(scope.row.id)">
@@ -110,12 +111,13 @@
                                     </template>
                                 </el-table-column>
                                 <el-table-column
-                                prop="type"
-                                label="流量包名">
+                                    width="200"
+                                    prop="type"
+                                    label="流量包名">
                                 </el-table-column>
                                 <el-table-column
-                                prop="count"
-                                label="流量包数量">
+                                    prop="count"
+                                    label="流量包数量">
                                 </el-table-column>
                             </el-table>
                         </el-form-item>

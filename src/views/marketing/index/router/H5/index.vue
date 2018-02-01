@@ -28,14 +28,14 @@
               <el-table-column
               prop="date"
               label="创建时间">
-              <template scope="scope">
+              <template slot-scope="scope">
                 {{scope.row.creattime|format}}
               </template>
               </el-table-column>
               <el-table-column
               label="操作"
               min-width="100">
-              <template scope="scope">
+              <template slot-scope="scope">
                   <el-button size="small" class="buttonBlue" @click="modifyData(scope.$index, scope.row)"  >修改</el-button>
                   <el-button size="small" class="buttonBlue" @click="preview(scope.row)">链接</el-button>
                   <el-button size="small" class="buttonBlue" @click="jumpRouter('/h5/fromList/'+scope.row.id)">表单</el-button>
@@ -46,7 +46,7 @@
               </el-table-column>
           </el-table>
           <div class="block shop-textr" v-if="page.pageCount > 1" style="margin-top:20px;">
-            <el-pagination
+            <el-pagination  background
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page='page.curPage'

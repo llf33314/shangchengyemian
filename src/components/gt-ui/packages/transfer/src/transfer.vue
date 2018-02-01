@@ -54,11 +54,12 @@
 
             <div class="gt-transfer-footer" v-if="dialogVisible">
                 <div class="inb-block">
-                    <el-pagination
-                            :page-size="pageSize"
-                            layout="prev, pager, next, jumper"
-                            :total="total"
-                            @current-change="handleCurrentChange">
+                    <el-pagination  background 
+                        background
+                        :page-size="pageSize"
+                        layout="prev, pager, next, jumper"
+                        :total="total"
+                        @current-change="handleCurrentChange">
                     </el-pagination>
                 </div>
 

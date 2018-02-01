@@ -540,7 +540,7 @@ export default {
         left: -20%;
         top: 100%;
         z-index: 1;
-        width: 360px;
+        width: 390px;
         background: #fff;
         .box-shadow(0,0,20px,0,0.15);
         padding: 10px;

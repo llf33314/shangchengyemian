@@ -6,7 +6,7 @@
       </div>
       <el-table :data="gridData.page.subList">
         <el-table-column label="商品" width="250">
-          <template scope="scope">
+          <template slot-scope="scope">
             <div class="Data-goods">
               <div class="goods-img">
                 <default-img :background="imgPath+scope.row.image_url"></default-img>
@@ -19,7 +19,7 @@
         <el-table-column property="pro_price" label="单价（元）" width="120"></el-table-column>
         <el-table-column property="stockTotal" label="库存" width="120"></el-table-column>
         <el-table-column label="操作">
-          <template scope="scope">
+          <template slot-scope="scope">
             <span v-if="scope.row.pro_type_id > 0">该商品是虚拟商品，不能加入</span>
             <span v-else-if="scope.row.groupStatus == 1">该商品已加入团购，不可选</span>
             <span v-else-if="scope.row.presaleStatus == 1">该商品已加入预售，不可选</span>
@@ -33,7 +33,7 @@
         </el-table-column>
       </el-table>
       <div class="shop-textr">
-        <el-pagination
+        <el-pagination  background
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page.sync="gridData.page.curPage"

@@ -3,22 +3,25 @@
     <!-- <el-tabs v-model="activeName" > -->
       <!-- <el-tab-pane label="交易记录" name="index"> -->
         <div class="index-main" v-if="isShow">
-          <div class="index-msg">
-            <div class="index-item">
-              <div>
-                <p v-text="dataCount.yesterCount" class="index-item-money"
-                    style="color:#ff4949">￥1971.00
-                </p>
-                <p>昨日营业额（截止至今日0点）</p>
+          <div class="index-msg-box">
+            <div class="index-msg">
+              <div class="index-item">
+                <div>
+                  <p v-text="dataCount.yesterCount" class="index-item-money"
+                      style="color:#ff4949">￥1971.00
+                  </p>
+                  <p>昨日营业额（截止至今日0点）</p>
+                </div>
+              </div>
+              <div class="index-item">
+                <div>
+                  <p v-text="dataCount.sevenCount" class="index-item-money">￥8958.00
+                  </p>
+                  <p>7日营业额（截止至今日0点）</p>
+                </div>
               </div>
             </div>
-            <div class="index-item">
-              <div>
-                <p v-text="dataCount.sevenCount" class="index-item-money">￥8958.00
-                </p>
-                <p>7日营业额（截止至今日0点）</p>
-              </div>
-            </div>
+            <p class="p-warn">注意：营业额统计不计算来自积分商城和粉币商城的订单数据</p>
             <!-- <div class="index-item">
               <div>
                 <p v-text="dataCount.settlementCount" class="index-item-money">￥0.00
@@ -57,8 +60,10 @@
                     v-model="value7"
                     type="daterange"
                     align="right"
-                    placeholder="选择日期范围"
-                    value-format="yyyy-MM-dd"
+                    unlink-panels
+                    range-separator="-"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
                     @change="changePicker"
                     :picker-options="pickerOptions2">
                   </el-date-picker>
@@ -81,7 +86,7 @@
                 <el-table-column
                   prop="createTime"
                   label="时间">
-                  <template scope="scope">
+                  <template slot-scope="scope">
                     <div>{{scope.row.createTime|format}}</div>
                   </template>
                 </el-table-column>
@@ -104,7 +109,7 @@
                  <el-table-column 
                   label="状态"
                   show-overflow-tooltip>
-                  <template scope="scope">
+                  <template slot-scope="scope">
                     <span v-if="scope.row.status == 1">
                       成功
                     </span>
@@ -121,7 +126,7 @@
                 </el-table-column>
                 <el-table-column
                   label="操作">
-                  <template scope="scope">
+                  <template slot-scope="scope">
                     <a @click="link('?url=detail/'+scope.row.id,path+'views/order/index.html#/allOrder')">
                       查看
                     </a>
@@ -131,7 +136,7 @@
               </el-table>
             </div>
             <div class="block shop-textr" v-if="page.pageCount > 1">
-              <el-pagination
+              <el-pagination  background
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
                 :current-page='page.curPage'
@@ -241,9 +246,8 @@ export default {
      changePicker(value){
        let _this = this;
        if(value != "" ){
-          let date=value.split(" - ");
-        _this.searchData.startTime=date[0];
-        _this.searchData.endTime=date[1];
+        _this.searchData.startTime=value[0];
+        _this.searchData.endTime=value[1];
       }else{
         _this.searchData.startTime='';
         _this.searchData.endTime='';

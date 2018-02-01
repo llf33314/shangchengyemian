@@ -13,9 +13,12 @@
                 v-model="value7"
                 type="daterange"
                 align="right"
-                value-format="yyyy-MM-dd" 
+                unlink-panels
+                range-separator="-"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                value-format="yyyy-MM-dd"
                 @change="search_date"
-                placeholder="选择日期范围"
                 :picker-options="pickerOptions2">
               </el-date-picker>
             </el-form-item >
@@ -246,7 +249,7 @@
             <contentNo :show="contentNo" v-if="page.rowCount == 0 " ></contentNo>
         </div>
         <div class="block shop-textr" v-if="page.pageCount > 1">
-          <el-pagination
+          <el-pagination  background
             @current-change="handleCurrentChange"
             :current-page='page.curPage'
             :page-size="page.pageSize"
@@ -372,11 +375,11 @@ export default {
      /**时间筛选查询 */
     search_date(value){
       let _this = this;
+      console.log(value,'value')
       _this.searchData.curPage=1;
       if(value != ""){
-        let date=value.split(" - ");
-        _this.searchData.startTime=date[0]
-        _this.searchData.endTime=date[1];
+        _this.searchData.startTime= value[0]
+        _this.searchData.endTime= value[1];
       }else{
         _this.searchData.startTime='';
         _this.searchData.endTime='';

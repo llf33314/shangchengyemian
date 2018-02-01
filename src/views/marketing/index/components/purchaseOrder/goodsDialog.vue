@@ -6,7 +6,7 @@
       </div>
       <el-table :data="pooductData.page.subList">
         <el-table-column label="商品" width="250">
-          <template scope="scope">
+          <template slot-scope="scope">
             <div class="Data-goods">
               <div class="goods-img">
                 <default-img :background="imgPath+scope.row.image_url"></default-img>
@@ -18,13 +18,13 @@
         </el-table-column>
         <el-table-column property="pro_price" label="商品价格（元）"></el-table-column>
         <el-table-column label="操作">
-          <template scope="scope">
+          <template slot-scope="scope">
             <el-button type="primary" @click="selectedData(scope.row)" >选取</el-button>
           </template>
         </el-table-column>
       </el-table>
       <div class="shop-textr">
-        <el-pagination
+        <el-pagination  background
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page.sync="pooductData.page.curPage"

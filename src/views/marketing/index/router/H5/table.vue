@@ -23,14 +23,14 @@
             </el-table-column>
             <el-table-column
             label="操作">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-button size="small" class="buttonBlue" @click="showDialog(scope.row)">详情</el-button>
                 </template>
             </el-table-column>
         </el-table>
         <content-no v-if="page.pageCount == 0"></content-no>
         <div class="block shop-textr" v-if="page.pageCount > 1" style="margin-top:20px;">
-            <el-pagination
+            <el-pagination  background
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page='page.curPage'

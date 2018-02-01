@@ -31,7 +31,7 @@
                 <el-table ref="multipleTable" :data="specArrList" style="width: 100%">
                   <el-table-column v-for="item in table" :prop="item.prop" :label="item.label"
                      min-width="170" align="center" :key="item.prop">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                       <div v-for="data in scope.row.specList" :key="data.id">
                         <span v-if="item.label == data.specificaName">{{data.specificaValue}}</span>
                       </div>
