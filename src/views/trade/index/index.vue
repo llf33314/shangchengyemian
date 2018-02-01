@@ -96,6 +96,15 @@
                 <el-table-column
                   prop="incomeMoney"
                   label="支付金额(元)">
+                  <template scope="scope">
+                    {{scope.row.incomeMoney}}
+                    <span v-if="scope.row.incomeUnit == 2">
+                      粉币
+                    </span>
+                    <span v-else-if="scope.row.incomeUnit == 3">
+                      积分
+                    </span>
+                  </template>
                 </el-table-column>
                  <el-table-column 
                   label="状态"
