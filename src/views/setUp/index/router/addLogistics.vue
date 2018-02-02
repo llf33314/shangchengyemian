@@ -184,7 +184,7 @@
       <span class="addLogistics-warn">不填写代表没有包邮价格</span>
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
+      <el-button type="primary" @click="submitForm('ruleForm')" :loading="loading">保存</el-button>
       <el-button @click="resetForm()">取消</el-button>
     </el-form-item>
   </el-form>
@@ -338,7 +338,8 @@ export default {
         2: { first: "首重", jion: "续重", unit: "Kg" },
         3: { first: "首公里", jion: "续公里", unit: "km" }
       },
-      editIndex:-1
+      editIndex:-1,
+      loading:false,
     };
   },
   components: {
@@ -438,7 +439,7 @@ export default {
           console.log(freight,"freight");
           console.log(detail,"detail");
           // return;
-
+          _this.loading=true;
           //防止多次点击重复提交数据
           if(!Lib.C.ajax_manage) return false;
           Lib.C.ajax_manage = false;
@@ -455,6 +456,7 @@ export default {
                 type: "success"
               });
               _this.jumpRouter("/logistics/logistics");
+              _this.loading=false;
             }
           });
         } else {

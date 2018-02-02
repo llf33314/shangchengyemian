@@ -33,7 +33,7 @@
     <el-form-item label="联系电话 ：" prop="visitContactNumber">
         <el-input v-model.trim="ruleForm.visitContactNumber" placeholder="请输入联系电话"   class="add-input"></el-input>
     </el-form-item>
-    <el-form-item label="接待时间 :" prop="timeList">
+    <el-form-item label="接待时间 :" prop="timeList" required>
        <time-list :timeList.sync="ruleForm.timeList" ref="timeComp"></time-list>
     </el-form-item>
     <el-form-item label="自提点图片 :" prop="imageList">
@@ -45,8 +45,8 @@
           <div class="material-square">
             <img class="img" :src="img.imageUrl" />
             <div class="delete"  @click.stop="deleteImg(index)">
-              <i class="el-icon-view" @click.stop="showBigImg(img.imageUrl)"></i>
-              <i class="el-icon-delete2" @click.stop="deleteImg(index)"></i>
+              <i class="el-icon-search" @click.stop="showBigImg(img.imageUrl)"></i>
+              <i class="el-icon-delete" @click.stop="deleteImg(index)"></i>
             </div>
           </div>
         </div>
@@ -77,11 +77,11 @@
         <p class="addLogistics-warn">如关闭到店支付就只能微信支付，开启到店支付既能到店支付也能微信支付。</p>
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
+      <el-button type="primary" @click="submitForm('ruleForm')" :loading="loading">保存</el-button>
       <el-button @click="resetForm('ruleForm')">取消</el-button>
     </el-form-item>
   </el-form>
-    <el-dialog v-model="materialLargeSrcVisible" size="small">
+    <el-dialog :visible.sync="materialLargeSrcVisible" size="small">
         <img width="100%" :src="largeSrc" alt="" class="img">
     </el-dialog>
   </div>
@@ -141,16 +141,16 @@ export default {
       cities: cityOptions,
       rules: {
         visitName: [
-          { required: true, message: '自提名称不能为空', trigger: 'blur' }
+          { required: true, message: '自提名称不能为空', trigger: 'blur,change' }
         ],
         visit:[
           { validator: formVisit, trigger: 'blur,change'},
         ],
         visitContactNumber: [
-          { required: true, message: '联系电话不能为空', trigger: 'blur' }
+          { required: true, message: '联系电话不能为空', trigger: 'blur,change' }
         ],
         imageList: [
-          { type: 'array', required: true, message: '请上传自提点图片', trigger: 'change' }
+          { type: 'array', required: true, message: '请上传自提点图片', trigger: 'blur,change' }
         ],
         timeList: [
           { type: 'array', required: true, message: '请编辑接待时间', trigger: 'change,blur' }
@@ -164,7 +164,8 @@ export default {
       editAreaId:'',//修改时 存放选中区县ID
       editAreaName:'',
       materialLargeSrcVisible: false,//查看大图
-      largeSrc: '',//查看大图的图片     
+      largeSrc: '',//查看大图的图片   
+      loading:false,  
     }
   },
   watch: {
@@ -180,11 +181,12 @@ export default {
     },
     "citys"(a, b) {
       let  _this = this;
-      // console.log("citys加载");
+      console.log("citys加载");
       if(a.length>0){
         if(_this.editCityId != ""){
           _this.ruleForm.visitCityId = _this.editCityId;
           _this.editCityId="";
+           _this.getCityOrArea('area'); 
         }
         if(_this.editCityName !=""){
           for(let i = 0; i < _this.citys.length; i++){
@@ -192,6 +194,7 @@ export default {
             if(obj.city_name == _this.editCityName){ 
               _this.ruleForm.visitCityId=obj.id; 
               _this.editCityName="";
+               _this.getCityOrArea('area'); 
               break;
             }
           }
@@ -202,11 +205,12 @@ export default {
     },
     "areas"(a, b) {
       let  _this = this;
-      // console.log("areas加载");
+      console.log("areas加载");
       if(a.length>0){
         if(_this.editAreaId !=""&& _this.editAreaId !=null){
           _this.ruleForm.visitAreaId = _this.editAreaId;
           _this.editAreaId="";
+          _this.$refs.ruleForm.validate(valid => {});
         }
         if(_this.editAreaName !=""){
           for(let i = 0; i < _this.areas.length; i++){
@@ -220,34 +224,35 @@ export default {
         }
       }
     },
-    "editCityName"(a, b) {
-      let  _this = this;
-      // console.log("editCityName加载");
-      if(_this.editCityName !=""){
-        for(let i = 0; i < _this.citys.length; i++){
-          let obj = _this.citys[i];
-          if(obj.city_name == _this.editCityName){ 
-            _this.ruleForm.visitCityId=obj.id; 
-            _this.editCityName="";
-            break;
-          }
-        }
-      }
-    },
-    "editAreaName"(a, b) {
-      let  _this = this;
-      // console.log("editAreaName加载");
-      if(_this.editAreaName !=""){
-        for(let i = 0; i < _this.areas.length; i++){
-          let obj = _this.areas[i];
-          if(obj.city_name == _this.editAreaName){ 
-            _this.ruleForm.visitAreaId=obj.id; 
-            _this.editAreaName="";
-            break;
-          }
-        }
-      }
-    },
+    // "editCityName"(a, b) {
+    //   let  _this = this;
+    //   console.log("editCityName加载");
+    //   if(_this.editCityName !=""){
+    //     for(let i = 0; i < _this.citys.length; i++){
+    //       let obj = _this.citys[i];
+    //       if(obj.city_name == _this.editCityName){ 
+    //         _this.ruleForm.visitCityId=obj.id; 
+    //         _this.editCityName="";
+    //          _this.getCityOrArea('area'); 
+    //         break;
+    //       }
+    //     }
+    //   }
+    // },
+    // "editAreaName"(a, b) {
+    //   let  _this = this;
+    //   console.log("editAreaName加载");
+    //   if(_this.editAreaName !=""){
+    //     for(let i = 0; i < _this.areas.length; i++){
+    //       let obj = _this.areas[i];
+    //       if(obj.city_name == _this.editAreaName){ 
+    //         _this.ruleForm.visitAreaId=obj.id; 
+    //         _this.editAreaName="";
+    //         break;
+    //       }
+    //     }
+    //   }
+    // },
   },
   methods: {
      /**调用素材库 */
@@ -306,7 +311,7 @@ export default {
     * */
     deleteImg(num) {
       let  _this = this;
-      _this.ruleForm.imageList.pop([num]);
+      _this.ruleForm.imageList.splice(num, 1);
       _this.$refs['ruleForm'].validate();
     },
     /** 
@@ -349,6 +354,7 @@ export default {
           param.take=JSON.stringify(param.take);
         //  console.log(param)
           // return false
+          _this.loading=true;
           //防止多次点击重复提交数据
           if(!Lib.C.ajax_manage) return false;
           Lib.C.ajax_manage = false;
@@ -362,6 +368,7 @@ export default {
                 type: 'success'
               });
               _this.jumpRouter('/logistics/since');
+              _this.loading=false;
             }
           });
         } else {
@@ -397,6 +404,7 @@ export default {
               }else{
                 _this.loadAMap(_this.ruleForm.visitAddress);
               }
+              _this.getCityOrArea('city');
             });
           }
       });
@@ -414,6 +422,8 @@ export default {
             _this.ruleForm.visitLatitude=data.data.latitude;
             _this.editCityId= Number(data.data.city);
             _this.editAreaId= Number(data.data.district);
+           
+           
             //  console.log(_this.editAreaId,"1222");
              _this.$nextTick(function(){
                if(data.data.longitude!=null){
@@ -422,7 +432,10 @@ export default {
               }else{
                 _this.loadAMap(data.data.address);
               }
-              
+              _this.getCityOrArea('city');
+              _this.ruleForm.visitCityId = Number(data.data.city);
+              _this.getCityOrArea('area'); 
+              _this.ruleForm.visitAreaId = Number(data.data.district);
             });
           }
       });
@@ -439,10 +452,11 @@ export default {
         _this.areas=[];
       }else{
         id = _this.ruleForm.visitCityId;
+        console.log(this.ruleForm.visitCityId,"cityId");
         _this.ruleForm.visitAreaId='';
         _this.areas=[];
       }
-      this.$refs.ruleForm.validate(valid => {});
+     
       _this.getAreaList({
         'cityId':id,
         'success':function(data){
@@ -604,6 +618,18 @@ export default {
           break;
         }
       } 
+      _this.getCityOrArea('city');
+      //  for(let i = 0; i < _this.citys.length; i++){
+      //   let obj = _this.citys[i];
+      //   if(obj.city_name == _this.editCityName){ 
+      //     _this.ruleForm.visitCityId=obj.id; 
+      //     break;
+      //   }
+      // } 
+      // _this.ruleForm.visitCityId = Number(data.data.city);
+      //  _this.getCityOrArea('area'); 
+      // _this.ruleForm.visitAreaId = Number(data.data.district);
+
       _this.ruleForm.visitLongitude=lnglatXY[0];
       _this.ruleForm.visitLatitude=lnglatXY[1]; 
     }

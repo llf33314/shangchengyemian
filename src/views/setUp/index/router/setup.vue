@@ -42,7 +42,7 @@
               </tr>
             </tbody>
           </table>
-           <el-button type="primary" @click="onSaveGive" style="margin-top:10px;">保存</el-button>
+           <el-button type="primary" @click="onSaveGive" :loading="loading" style="margin-top:10px;">保存</el-button>
         </div>
       </el-form-item>
       <el-form-item label="待付款订单取消时间设置 :" prop="orderCancel">
@@ -141,7 +141,7 @@
         <!-- </el-checkbox-group> -->
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit">保存</el-button>
+        <el-button type="primary" @click="onSubmit" :loading="loading">保存</el-button>
         <!-- <el-button>取消</el-button> -->
       </el-form-item>
     </el-form>
@@ -223,6 +223,7 @@
         },
         areaPhones:[],
         areacode:'86',
+        loading:false,
       }
     },
     mounted(){
@@ -296,6 +297,10 @@
         }
         let give = {};
         give.giveList=JSON.stringify(_giveList);
+
+         _this.loading=true;
+         if(!Lib.C.ajax_manage) return false;
+        Lib.C.ajax_manage = false;
         _this.ajaxSave({
           'url': DFshop.activeAPI.mallCommentSaveGive_post,
           'data':give,
@@ -307,6 +312,7 @@
               });
             }
             _this.mallCommentGiveInfo();
+            _this.loading=false;
           }
         });
           
@@ -339,6 +345,7 @@
              if(_this.form.set.isComment == 1 && _this.form.set.isCommentGive == 1){
               _this.saveGive(2);
              }
+             _this.loading=true;
 
              //防止多次点击重复提交数据
             if(!Lib.C.ajax_manage) return false;
@@ -354,6 +361,7 @@
                   type: 'success'
                 });
                 _this.mallPaySetPaySetInfo();
+                _this.loading=false;
               }
             });
           }
