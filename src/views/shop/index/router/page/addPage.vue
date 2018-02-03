@@ -184,8 +184,8 @@ export default {
                     //iframe嵌入
                     let pageId = '';
                       if(_this.$route.params.pageId ==='0'){
-                        pageId = data.data.id;
-                        _this.pageId = data.data.id
+                        pageId = data.id;
+                        _this.pageId = data.id
                       }else{
                         pageId = _this.$route.params.pageId
                       }
