@@ -134,6 +134,7 @@ export default {
       });
     },
     setSellerStatus(id, name, type) {
+      if(name==null){name="";}
       //设置销售员暂停、启用事件
       let _this = this;
       msg = "确认将销售员" + name;
