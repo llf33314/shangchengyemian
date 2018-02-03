@@ -34,19 +34,19 @@
                       <i class="el-icon-plus"></i>
                       <img class="img"  v-if="ruleForm.imageUrl!= ''" :src="ruleForm.imageUrl" />
                       <div class="delete" v-if="ruleForm.imageUrl != '' " @click.stop="deleteImg">
-                          <i class="el-icon-view" @click.stop="showBigImg(ruleForm.imageUrl)"></i>
-                          <i class="el-icon-delete2" @click.stop="deleteImg"></i>
+                          <i class="el-icon-search" @click.stop="showBigImg(ruleForm.imageUrl)"></i>
+                          <i class="el-icon-delete" @click.stop="deleteImg"></i>
                       </div>  
                   </div>
               </div>
-              <span class="p-warn">建设图片尺寸：375*82px</span>
+              <span class="p-warn" style="margin: 5px">建设图片尺寸：375*82px</span>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
+                <el-button type="primary" @click="submitForm('ruleForm')" :loading="loading">保存</el-button>
                 <el-button @click="resetForm('ruleForm')">取消</el-button>
             </el-form-item>
         </el-form>
-        <el-dialog v-model="materialLargeSrcVisible" size="small">
+        <el-dialog :visible.sync="materialLargeSrcVisible" width="600px">
           <img width="100%" :src="largeSrc" alt="" class="img">
         </el-dialog>
     </div>
@@ -102,6 +102,7 @@ export default {
       materialLargeSrcVisible: false,//查看大图弹出框
       largeSrc: '',//查看大图 图片地址
       disabledShop : '',//编辑时,店铺不可改
+      loading:false,
     };
   },
   watch:{
@@ -129,11 +130,12 @@ export default {
           //防止多次点击重复提交数据
           if(!Lib.C.ajax_manage) return false;
           Lib.C.ajax_manage = false;
-
+          _this.loading = !Lib.C.ajax_manage;
           _this.ajaxSave({
             url: DFshop.activeAPI.mallIntegralImageSave_post,
             data: param,
             success: function(data) {
+              _this.loading = false;
               _this.$message({
                 message: "保存成功",
                 type: "success"
@@ -237,8 +239,8 @@ export default {
 .addbanner-wrapper{
     width: 100%;
     .addBanner-img{
-        width: 72px;
-        height: 72px;
+        width: 75px;
+        height: 75px;
         display: inline-block;
     }
 }
@@ -255,8 +257,8 @@ section{
     border: 0;
   }
   .border{
-    .border-radius(3px);
-    border: 2px dashed #c0ccda;
+    .border-radius(5px);
+    border: 1px dashed #c0ccda;
     
   }
   .material-square {

@@ -40,7 +40,7 @@
             </el-pagination>
         </div>
     </div>
-    <el-dialog  title="详情" :visible.sync="dialogVisible" size="tiny">
+    <el-dialog  title="详情" :visible.sync="dialogVisible" width="600px">
         <div class="pifa-dialog-ul">
             <p class="pifa-li">
                 <span>H5商城名称：</span>

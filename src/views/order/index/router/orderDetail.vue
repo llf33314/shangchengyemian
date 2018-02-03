@@ -227,7 +227,9 @@
                 </div>
                 <div class="col-1">
                    <div class="table-item" v-if="orderDetail.orderPayWay !=5"  v-for="detail in orderDetail.mallOrderDetail" :key="detail.id">
-                      &#65509;{{detail.detProPrice}} 
+                      <span v-if="orderDetail.orderPayWay!=4&&orderDetail.orderPayWay!=8">&#65509;</span>{{detail.detProPrice}} 
+                      <span v-if="orderDetail.orderPayWay==4">积分</span>
+                      <span v-if="orderDetail.orderPayWay==8">粉币</span>
                   </div> 
                   <div class="table-item" v-else >&#65509;{{orderDetail.orderMoney}}</div> 
                 </div>
@@ -250,7 +252,10 @@
                       </p>
                     </div> 
                 </div>
-                <div class="col-1 border-r table-td">{{orderDetail.orderMoney}}
+                <div class="col-1 border-r table-td">
+                      <span v-if="orderDetail.orderPayWay!=4&&orderDetail.orderPayWay!=8">&#65509;</span>{{orderDetail.orderMoney}}
+                      <span v-if="orderDetail.orderPayWay==4">积分</span>
+                      <span v-if="orderDetail.orderPayWay==8">粉币</span>
                 </div>
                  <div class="col-1 border-r table-td" v-if="orderDetail.orderPayWay !=5">
                   <p>{{orderDetail.orderStatusName}}</p>
@@ -268,7 +273,9 @@
                   <span v-else>免运费</span>
                 </div>
                 <div class="col-1 table-td">
-                  {{orderDetail.orderMoney}}
+                  <span v-if="orderDetail.orderPayWay!=4&&orderDetail.orderPayWay!=8">&#65509;</span> {{orderDetail.orderMoney}}
+                  <span v-if="orderDetail.orderPayWay==4">积分</span>
+                  <span v-if="orderDetail.orderPayWay==8">粉币</span>
                   <p v-if="orderDetail.orderPayWay !=5">
                     <el-button type="primary" size="small" v-if="orderDetail.isShowUpdatePriceButton == 1" @click="openDialog(2,orderDetail)">修改价格</el-button>
                   </p>
@@ -279,7 +286,7 @@
       </div>
     </div>
   </div>
-   <el-dialog :title="dialogTitle" :visible.sync="dialogVisible"  size="small" :class="dialogType == 1 ? 'minDialog':''">
+   <el-dialog :title="dialogTitle" :visible.sync="dialogVisible"  width="600px" :class="dialogType == 1 ? 'minDialog':''">
     <cancel-order :id="orderId" @code="dialogResultRet" v-if="dialogType ==1"> </cancel-order>
     <update-money :data= "orderData" @code="dialogResultRet" v-if="dialogType ==2"> </update-money>
     <deliver-goods :row= "orderData" @code="dialogResultRet" v-if="dialogType ==3"> </deliver-goods>

@@ -165,8 +165,8 @@
                         </el-pagination>
                     </div>
                     <content-no v-if="dingJinData.page.rowCount == 0"></content-no>
-                    <el-dialog title="退定金" :visible.sync="dialogVisible" size="tiny">
-                        <p>退款金额：<span>¥{{dingJin}}</span></p>
+                    <el-dialog title="退定金" :visible.sync="dialogVisible" width="600px">
+                        <p style="height: 120px;padding: 20px 30px;">退款金额：<span style="margin-left: 20px;">¥{{dingJin}}</span></p>
                         <p v-if="payWay === 3" style="margin-top:10px;color:red;">*建议您复制退款链接并用IE浏览器打开进行退款</p>
                         <span slot="footer" class="dialog-footer">
                             <!-- <el-button @click="dialogVisible = false">取 消</el-button> -->
@@ -205,7 +205,7 @@
                                                 { required: true, trigger: 'blur',  type: 'number',  message: '请输入送礼名次' }, 
                                                 { min: 1, max: 100, trigger: 'blur', type: 'number', message: '送礼名次最多只能输入5位数'}
                                             ]">
-                                            <el-input class="mix-input" v-model.number="row.giveRanking" style="width:160px;" 
+                                            <el-input class="mix-input" v-model.number="row.giveRanking" style="width:178px;" 
                                                  @blur="blurSaveGift(row,row.giveRanking,index)">
                                                 <template slot="prepend">前</template>
                                                 <template slot="append">名</template>
@@ -214,7 +214,7 @@
                                     </td>
                                     <td>
                                         <el-form-item>
-                                            <el-select v-model="row.giveType" placeholder="请选择"  style="width:100px;"
+                                            <el-select v-model="row.giveType" placeholder="请选择"  style="width:140px"
                                                 @change="blurSaveGift(row,row.giveType,index)">
                                                 <el-option v-for="item in giftDictList"
                                                     :key="item.item_key" :label="item.item_value" :value="item.item_key">
@@ -258,7 +258,7 @@
                             </el-pagination>
                         </div>
                         <content-no v-if="presaleGiftsData.page.rowCount == 0"></content-no>
-                        <el-dialog title="新建预售送礼" :visible.sync="dialogVisibleGift" size="tiny">
+                        <el-dialog title="新建预售送礼" :visible.sync="dialogVisibleGift" width="600px">
                             <el-form-item label="送礼名次" prop="giveRanking" >
                                 <el-input v-model.number="form.giveRanking" class="mix-input" style="width:200px;">
                                 <template slot="prepend">前</template>  
@@ -279,7 +279,7 @@
                                 <el-input v-model.number="form.giveNum" class="mix-input" style="width:200px;"></el-input>
                             </el-form-item>
                             <el-form-item min-width="120">
-                                <el-button type="primary" size="small" @click="saveAddPresale('form')">保存</el-button>
+                                <el-button type="primary"  @click="saveAddPresale('form')" :loading="loading">保存</el-button>
                             </el-form-item>
                         </el-dialog>
                     </el-form>
@@ -703,13 +703,14 @@ export default {
       //防止多次点击重复提交数据
       if(!Lib.C.ajax_manage) return false;
       Lib.C.ajax_manage = false;
-
+      _this.loading = !Lib.C.ajax_manage;
       _this.ajaxRequest({
         url: DFshop.activeAPI.mallPresaleGiveSave_post,
         data: {
           presaleSet: param
         },
         success: function(data) {
+          _this.loading = false;
           _this.$message({
             message: "保存成功",
             type: "success"

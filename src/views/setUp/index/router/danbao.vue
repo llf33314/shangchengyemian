@@ -50,7 +50,7 @@
         <el-button  v-else-if="isSecuritytrade && securitytradeQuit !=null &&securitytradeQuit.checkStatus==0" disabled>退出担保审核中</el-button>
         <el-button @click="exitGuarantee()"  v-else-if="isSecuritytrade">退出担保交易</el-button>
         <div class="tooltip-box" v-if="isSecuritytrade && securitytradeQuit !=null && securitytradeQuit.checkStatus==-1 &&securitytradeQuit.refuseReason!=''">
-          <i class="el-icon-information"></i>
+          <i class="el-icon-warning"></i>
           <div class="tooltip-content">审核不通过<p class="text-not-wrap">不通过理由：{{securitytradeQuit.refuseReason}}</p></div>
         </div>
       </div>
@@ -80,7 +80,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm('ruleForm')">确 定</el-button>
+        <el-button type="primary" @click="submitForm('ruleForm')" :loading="loading">确 定</el-button>
         <el-button  @click="dialogFormVisible = false">取 消</el-button>
       </div>
     </el-dialog>
@@ -112,6 +112,7 @@ export default {
             {required: true, message: '退出理由不能为空', trigger: 'blur,change' }
           ],
         },
+        loading:false
     }
   },
   watch:{
@@ -181,7 +182,8 @@ export default {
           //防止多次点击重复提交数据
           if(!Lib.C.ajax_manage) return false;
           Lib.C.ajax_manage = false;
-          
+          _this.loading = !Lib.C.ajax_manage;
+
          _this.ajaxSave({
             'url': DFshop.activeAPI.mallSecuritytradeSave_post,
             'data':{
@@ -189,6 +191,7 @@ export default {
               remark:_this.ruleForm.remark
             },
             'success':function (data){
+               _this.loading = false;
               _this.$message({
                 message: '退出成功',
                 type: 'success'
@@ -242,7 +245,7 @@ export default {
   position: relative;
   display: inline-block;
   width: 38px;
-  i.el-icon-information{
+  i.el-icon-warning{
     color:#F7BA2A;
     margin-left: 9px;
   }

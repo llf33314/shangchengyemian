@@ -141,7 +141,7 @@
         <!-- </el-checkbox-group> -->
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit">保存</el-button>
+        <el-button type="primary" @click="onSubmit" :loading="loading">保存</el-button>
         <!-- <el-button>取消</el-button> -->
       </el-form-item>
     </el-form>
@@ -223,6 +223,7 @@
         },
         areaPhones:[],
         areacode:'86',
+        loading:false
       }
     },
     mounted(){
@@ -345,10 +346,12 @@
             Lib.C.ajax_manage = false;
             // console.log(param,"3232423");
             // return false;
+             _this.loading = !Lib.C.ajax_manage 
             _this.ajaxSave({
               'url': DFshop.activeAPI.mallPaySetSave_post,
               'data':param,
               'success':function (data){
+                 _this.loading = false; 
                 _this.$message({
                   message: '设置成功',
                   type: 'success'

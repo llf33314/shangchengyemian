@@ -34,12 +34,12 @@
               </el-table-column>
               <el-table-column
               label="操作"
-              min-width="100">
+              width="480">
               <template slot-scope="scope">
                   <el-button size="small" class="buttonBlue" @click="modifyData(scope.$index, scope.row)"  >修改</el-button>
                   <el-button size="small" class="buttonBlue" @click="preview(scope.row)">链接</el-button>
                   <el-button size="small" class="buttonBlue" @click="jumpRouter('/h5/fromList/'+scope.row.id)">表单</el-button>
-                  <el-button size="small" class="buttonBlue" @click="materiallayer(scope.row)">背景图</el-button>
+                  <el-button size="small" class="buttonBlue" @click="materiallayer(scope.row)" >背景图</el-button>
                   <el-button size="small" class="buttonBlue" @click="updateHtml(scope.row)">设计页面</el-button>
                   <el-button size="small" @click="handleDelete(scope.row.id)">删除</el-button>
               </template>
@@ -58,7 +58,7 @@
         </div>
         <content-no :show="contentNo" v-if="page.pageCount == 0"></content-no>
     </div>
-    <el-dialog title="修改信息"  :visible.sync="modifyDialog" size="tiny">
+    <el-dialog title="修改信息"  :visible.sync="modifyDialog" width="600px">
       <el-form  :model="modifyForm"  :rules="rules" ref="modifyForm" label-width="90px">
         <el-form-item label="页面名称 :" prop="htmlname">
           <el-input v-model.trim="modifyForm.htmlname" placeholder="请输入页面名称，不能有超过20字" :maxlength="20"></el-input>
@@ -68,7 +68,7 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm('modifyForm')">保存</el-button>
+        <el-button type="primary" @click="submitForm('modifyForm')" :loading="loading">保存</el-button>
         <el-button @click="modifyDialog = false">取 消</el-button>
       </span>
     </el-dialog>
@@ -100,6 +100,7 @@ export default {
           { required: true, message: '页面名称不能为空', trigger: 'blur' }
         ],
       },
+      loading:false,
     }
   },
   watch:{
@@ -128,11 +129,12 @@ export default {
           //防止多次点击重复提交数据
           if(!Lib.C.ajax_manage) return false;
           Lib.C.ajax_manage = false;
-          
+          _this.loading = !Lib.C.ajax_manage
           _this.ajaxRequest({
             'url': DFshop.activeAPI.mallHtmlUpdate_post,
             'data':_this.modifyForm,
             'success':function (data){
+              _this.loading = false,
               _this.$message({
                 message: '修改成功',
                 type: 'success'
@@ -187,7 +189,6 @@ export default {
         //防止多次点击重复提交数据
           if(!Lib.C.ajax_manage) return false;
           Lib.C.ajax_manage = false;
-        
         _this.ajaxRequest({
           url: DFshop.activeAPI.mallHtmlUpdateImage_post,
           data: {

@@ -216,7 +216,7 @@ Vue.mixin({
                 if (opts.error) {
                     opts.error(error);
                 } else {
-                    console.log('catch');
+                    console.log('请求超时请联系客服');
                 }
             },
             complete: function () {

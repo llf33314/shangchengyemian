@@ -113,7 +113,7 @@
       </div>   
     </div> 
     <content-no :show="contentShow" v-if="isComment != 1" style="width:92%"></content-no>
-     <el-dialog v-model="materialLargeSrcVisible" size="small">
+     <el-dialog :visible.sync="materialLargeSrcVisible" width="800px">
         <img width="100%" :src="largeSrc" alt="" class="img">
     </el-dialog>
   </div>

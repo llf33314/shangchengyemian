@@ -165,7 +165,7 @@
                     </div>
                      <content-no v-if="baozhengjinData.page.rowCount == 0"></content-no>
                     <el-dialog title="退保证金" :visible.sync="dialogViewDetails"
-                        size="tiny">
+                        width="600px">
                         <div class="pifa-dialog-ul">
                             <p class="pifa-li">
                                 <span>退保证金:</span>

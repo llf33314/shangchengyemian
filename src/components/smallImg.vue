@@ -1,7 +1,7 @@
 <template>
     <div class="smallImg" :style="{backgroundImage: 'url(' + img + ')'}">
         <div class="smallImg-modal">
-            <i class="el-icon-view"></i>
+            <i class="el-icon-search"></i>
         </div>
     </div>
 </template>

@@ -36,7 +36,7 @@
           </i>
       </div>
     </div>
-    <el-dialog v-model="materialLargeSrcVisible" size="small">
+    <el-dialog :visible.sync="materialLargeSrcVisible"  width="800px">
         <div class="largeSrc-box">
           <img :src="largeSrc" alt="" class="img">
         </div>

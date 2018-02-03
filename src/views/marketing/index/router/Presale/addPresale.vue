@@ -51,21 +51,33 @@
                 <span class="p-warn" v-if="ruleForm.proPrice > 0">不能高于商品价格，商品的价格为￥{{ruleForm.proPrice}}</span>
             </el-form-item>
             <el-form-item label="预售时间 :" prop="sale_start_time" required class="time-right-item" >
-                <el-date-picker v-model="ruleForm.sale_start_time" type="datetimerange"
-                    placeholder="选择日期范围" :picker-options="pickerOptions">
+                <el-date-picker 
+                  v-model="ruleForm.sale_start_time" 
+                  type="datetimerange"
+                  range-separator="-"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期" 
+                  :picker-options="pickerOptions">
                 </el-date-picker>
                  <span class="p-warn">在预售开始时间前，为交纳定金的时间，在活动开始之后为支付尾款时间</span>
             </el-form-item>
             <el-form-item label="价格调整 :" class="price-el-item">
-                <div v-for="(item,index) in ruleForm.timeList" :key="item.id" :value="item.id">
+                <div v-for="(item,index) in ruleForm.timeList" :key="item.id" :value="item.id" style="margin-bottom: 20px;">
                   <el-form-item 
                       :prop="'timeList.'+index+'.startTime'" style="display:inline-block;"
                       class="price-item2"
                       :rules="[
                           { required: true, message: '请选择价格调整日期范围'}
                       ]">
-                  <el-date-picker v-model="item.startTime" type="datetimerange" placeholder="选择日期范围" :editable="false"
-                      :picker-options="pickerOptions" @change="checkTime(index)">
+                  <el-date-picker 
+                      v-model="item.startTime" 
+                      type="datetimerange" 
+                      range-separator="-"
+                      start-placeholder="开始日期"
+                      end-placeholder="结束日期" 
+                      :editable="false"
+                      :picker-options="pickerOptions" 
+                      @change="checkTime(index)">
                   </el-date-picker>
                    </el-form-item>
                   <el-radio-group v-model="item.saleType" @change="countPrice(index)">
@@ -99,7 +111,7 @@
                 <el-input  v-model.number="ruleForm.order_num" placeholder="请输入订货数量" class="max-input"></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
+                <el-button type="primary" @click="submitForm('ruleForm')" :loading="loading">保存</el-button>
                 <el-button @click="resetForm('ruleForm')">取消</el-button>
             </el-form-item>
         </el-form>
@@ -246,7 +258,8 @@ export default {
       unit: {
         1: "%",
         2: "￥"
-      } //单位
+      }, //单位
+      loading:false
     };
   },
   methods: {
@@ -369,7 +382,7 @@ export default {
           //防止多次点击重复提交数据
           if(!Lib.C.ajax_manage) return false;
           Lib.C.ajax_manage = false;
-          
+          _this.loading = !Lib.C.ajax_manage;
           _this.ajaxSave({
             url: DFshop.activeAPI.mallPresaleSave_post,
             data: {
@@ -377,6 +390,7 @@ export default {
               presaleTimes: JSON.stringify(presaleTimes)
             },
             success: function(data) {
+              _this.loading = true;
               _this.$message({
                 message: "保存成功",
                 type: "success"

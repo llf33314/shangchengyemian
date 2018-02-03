@@ -37,8 +37,14 @@
               </el-form-item>
             </div>
             <el-form-item label="活动时间 :" prop="sStartTime" required>
-                <el-date-picker v-model="ruleForm.sStartTime" type="datetimerange" :editable="false"
-                    placeholder="选择时间" :picker-options="pickerOptions1">
+                <el-date-picker 
+                  v-model="ruleForm.sStartTime" 
+                  type="datetimerange" 
+                  :editable="false"
+                  range-separator="-"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                   :picker-options="pickerOptions1">
                 </el-date-picker>
             </el-form-item>
              <el-form-item label="商品限购 :">
@@ -50,7 +56,7 @@
                 </el-form-item>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
+                <el-button type="primary" @click="submitForm('ruleForm')" :loading="loading">保存</el-button>
                 <el-button @click="returnPage()">取消</el-button>
             </el-form-item>
         </el-form>
@@ -215,7 +221,8 @@ export default {
       priceList: [],
       specArrList: [],
       disabledShop: "",
-      selectShopId: 0
+      selectShopId: 0,
+      loading: false,
     };
   },
   watch: {
@@ -339,11 +346,12 @@ export default {
           //防止多次点击重复提交数据
           if(!Lib.C.ajax_manage) return false;
           Lib.C.ajax_manage = false;
-
+          _this.loading = !Lib.C.ajax_manage;
           _this.ajaxSave({
             url: DFshop.activeAPI.mallSeckillSave_post,
             data: param,
             success: function(data) {
+              _this.loading = false;
               _this.$message({
                 message: "保存成功",
                 type: "success"

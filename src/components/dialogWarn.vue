@@ -16,7 +16,7 @@
 <el-dialog
     title="提示"
     :visible.sync="dialogWarn"
-    :size="dialog"
+    width="600px"
     :before-close="handleClose">
     <div class="dialog-list " style="height: 180px">
         <span class="dialog-title">
@@ -54,7 +54,6 @@ export default {
           btnOne: ''//确定按钮事件
         },
         time: '',//秒数（默认3）
-        dialog: 'tiny',
       }
     },
     methods: {
@@ -103,7 +102,7 @@ export default {
             vm.dialogWarn = true;
             vm.close = false;
             let width = document.body.clientWidth;
-            if(width <= 1500) vm.dialog = 'small';
+
             if(msg.dialogType == 'success'){
                  this.countDown();
             }

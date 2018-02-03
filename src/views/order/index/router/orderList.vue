@@ -192,7 +192,9 @@
                 </div>
                 <div class="col-1">
                    <div class="table-item" v-if="order.orderPayWay !=5"  v-for="orderDetail in order.mallOrderDetail" :key="orderDetail.id">
-                      &#65509;{{orderDetail.detProPrice}} 
+                      <span v-if="order.orderPayWay!=4&&order.orderPayWay!=8">&#65509;</span>{{orderDetail.detProPrice}} 
+                      <span v-if="order.orderPayWay==4">积分</span>
+                      <span v-if="order.orderPayWay==8">粉币</span>
                   </div> 
                   <div class="table-item" v-else >&#65509;{{order.orderMoney}}</div> 
                 </div>
@@ -231,7 +233,10 @@
                   <p v-else-if="order.orderStatus==2">已付款</p>
                   <p v-else-if="order.orderStatus==5">订单已关闭</p>
                 </div>
-                <div class="table-td border-r col-1">&#65509;{{order.orderMoney}}
+                <div class="table-td border-r col-1">
+                    <span v-if="order.orderPayWay!=4&& order.orderPayWay!=8">&#65509;</span>{{order.orderMoney}}
+                    <span v-if="order.orderPayWay==4">积分</span>
+                    <span v-if="order.orderPayWay==8">粉币</span>
                     <p v-if="order.orderFreightMoney >0" style="font-size:11px;color:#999">
                       (含运费<span v-if="order.orderMoney>order.orderFreightMoney">&#65509;{{order.orderFreightMoney}}</span>)
                     </p>
@@ -257,7 +262,7 @@
             :total="page.rowCount">
           </el-pagination>
         </div>
-        <el-dialog :title="dialogTitle" :visible.sync="dialogVisible"  size="small"  :class="dialogType == 1 ? 'minDialog':''">
+        <el-dialog :title="dialogTitle" :visible.sync="dialogVisible"  width="600px"  :class="dialogType == 1 ? 'minDialog':''">
           <cancel-order :id="orderId" @code="dialogResult" v-if="dialogType ==1"> </cancel-order>
           <update-money :data= "orderData" @code="dialogResult" v-if="dialogType ==2"> </update-money>
           <deliver-goods :row= "orderData" @code="dialogResult" v-if="dialogType ==3"> </deliver-goods>

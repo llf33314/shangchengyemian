@@ -40,7 +40,7 @@
                 <span v-if="scope.row.isShow == 0" >不显示</span>
               </template>
             </el-table-column>
-          <el-table-column  label="操作">
+          <el-table-column  label="操作" width="300">
             <template slot-scope="scope">
                 <el-button size="small" class="buttonBlue" @click="jumpRouter('/applet/update/'+scope.row.id)">编辑</el-button>
                 <el-button size="small" class="buttonBlue" v-if="scope.row.isShow == 0"  @click="invalidData(scope.row.id, 1)">显示</el-button>

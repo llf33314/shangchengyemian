@@ -56,7 +56,7 @@
              <el-input v-model="form.stoQqCustomer" placeholder="请输入客服QQ" ></el-input>
         </el-form-item>
         <el-form-item>
-            <el-button type="primary" @click="Submit()">保存</el-button>
+            <el-button type="primary" @click="Submit()" :loading="loading">保存</el-button>
             <el-button onclick="window.history.go(-1)">返回</el-button>
         </el-form-item>
         </el-form>
@@ -85,6 +85,7 @@ export default {
             }],
             imgUpload:'',
             areaPhones:[],
+            loading:false,
         }
     },
     methods: {
@@ -168,6 +169,7 @@ export default {
             //防止多次点击重复提交数据
             if(!Lib.C.ajax_manage) return false;
             Lib.C.ajax_manage = false;
+             _this.loading = !Lib.C.ajax_manage;
 
             _this.ajaxSave({
                 'url': DFshop.activeAPI.mallStoreSave_post,
@@ -175,6 +177,7 @@ export default {
                     obj: JSON.stringify(sto)
                 },
                 'success':function (data){
+                    _this.loading = false;
                     _this.$message({
                         message: '保存成功',
                         type: 'success'

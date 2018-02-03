@@ -163,8 +163,8 @@
               :rules="[
                 { type: 'number',min:0,max:99999.99, message: '最多只能输入大于0的5位小数'}
               ]">
-                满  <el-input  v-model.number="row.noMoney" style="width:88px">
-              <template slot="prepend">¥</template>
+                满  <el-input  v-model.number="row.noMoney" style="width:108px">
+                    <template slot="prepend">¥</template>
               </el-input>  包邮
               </el-form-item>
             </td>
@@ -184,7 +184,7 @@
       <span class="addLogistics-warn">不填写代表没有包邮价格</span>
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
+      <el-button type="primary" @click="submitForm('ruleForm')" :loading="loading">保存</el-button>
       <el-button @click="resetForm()">取消</el-button>
     </el-form-item>
   </el-form>
@@ -223,6 +223,8 @@
 <script>
 import Lib from "assets/js/Lib";
 import gtTransger from "./../components/gtTransfer";
+import { log } from 'util';
+import { loadavg } from 'os';
 export default {
   data() {
     //验证模板名称
@@ -338,7 +340,8 @@ export default {
         2: { first: "首重", jion: "续重", unit: "Kg" },
         3: { first: "首公里", jion: "续公里", unit: "km" }
       },
-      editIndex:-1
+      editIndex:-1,
+      loading:false
     };
   },
   components: {
@@ -442,6 +445,7 @@ export default {
           //防止多次点击重复提交数据
           if(!Lib.C.ajax_manage) return false;
           Lib.C.ajax_manage = false;
+          _this.loading = !Lib.C.ajax_manage;
           
           _this.ajaxSave({
             url: DFshop.activeAPI.mallFreightSave_post,
@@ -450,6 +454,7 @@ export default {
               detail: JSON.stringify(detail)
             },
             success: function(data) {
+              _this.loading = true;
               _this.$message({
                 message: "保存成功",
                 type: "success"

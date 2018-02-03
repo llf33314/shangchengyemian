@@ -30,7 +30,7 @@
             </el-form-item>
             <el-form-item label="商品佣金：" prop="commission_rate" required>
                 <span v-if="ruleForm.commission_type !== 2">
-                    <el-input v-model="ruleForm.commission_rate" class="addBond-input"></el-input>%
+                    <el-input v-model="ruleForm.commission_rate" class="addBond-input"></el-input> %
                 </span>
                  <el-input v-model.number="ruleForm.commission_rate" class="addBond-input" v-if="ruleForm.commission_type ==2">
                      <template slot="prepend">¥</template>
@@ -38,7 +38,7 @@
                  <span class="p-warn" v-if="disabledCommission">商品佣金按百分比的计算公式：商品价*（佣金商品佣金/100）</span>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
+                <el-button type="primary" @click="submitForm('ruleForm')" :loading="loading">保存</el-button>
                 <el-button @click="returnPage()">取消</el-button>
             </el-form-item>
         </el-form>
@@ -130,7 +130,8 @@ export default {
       isReplacePro: "",
       disabledShop: "",
       disabledCommission: true,
-      selectShopId:0
+      selectShopId:0,
+      loading:false
     };
   },
   methods: {
@@ -179,13 +180,14 @@ export default {
           //防止多次点击重复提交数据
           if(!Lib.C.ajax_manage) return false;
           Lib.C.ajax_manage = false;
-          
+          _this.loading = !Lib.C.ajax_manage;
           _this.ajaxSave({
             url: DFshop.activeAPI.mallSellerSaveJoinProduct_post,
             data: {
               joinProduct: JSON.stringify(joinProduct)
             },
             success: function(data) {
+              _this.loading = false;
               _this.$message({
                 message: "保存成功",
                 type: "success"

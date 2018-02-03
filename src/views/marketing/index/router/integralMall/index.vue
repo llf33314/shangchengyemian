@@ -62,7 +62,7 @@
                      <span v-if="scope.row.status == 1">
                        进行中
                      </span>
-                     <span v-if="scope.row.status == 2">
+                     <span v-if="scope.row.status == -1">
                        已结束
                      </span>
                      <span v-if="scope.row.status == 0">
@@ -81,7 +81,7 @@
                 </el-table-column>
                 <el-table-column
                   label="操作"
-                  min-width="120">
+                  width="300">
                   <template slot-scope="scope">
                     <el-button size="small" class="buttonBlue" @click="jumpRouter('/mallIntegral/goods/'+scope.row.id)">编辑</el-button>
                     <el-button size="small"  v-if="scope.row.isUse == 1" class="buttonBlue" @click="invalidDelete(scope.row.id, -2)">失效</el-button>

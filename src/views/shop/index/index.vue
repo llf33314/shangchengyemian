@@ -243,7 +243,7 @@
           </div>
         </div>
         <div>
-            <el-button type="primary" @click="saveStyle()" size="large">保存</el-button>
+            <el-button type="primary" @click="saveStyle()" size="large" :loading="loading">保存</el-button>
         </div>
       </div>
     </el-tab-pane>
@@ -263,7 +263,7 @@
   <el-dialog
     title="提示"
     :visible.sync="dialogVisible"
-    :size="dialogWidth">
+    width="680px">
     <div class="dialog-list " style="height: 180px">
         <span class="dialog-title">
             <i class="el-icon-warning"></i>
@@ -332,6 +332,7 @@ export default {
       isWxPayUser:false,//商家是否有支付平台
       dialogVisible:false,//认证弹框
       dialogWidth:'tiny',
+      loading:false
     };
   },
   watch: {
@@ -663,13 +664,15 @@ export default {
       if(_this.ajaxStyle_key != null && _this.ajaxStyle_key ==  _this.style_key) return false;
       if(!Lib.C.ajax_manage) return false;
       Lib.C.ajax_manage = false;
-      
+      _this.loading = !Lib.C.ajax_manage;
+
       _this.ajaxRequest({
         url: DFshop.activeAPI.mallStoreSaveStyle_post,
         data: {
           styleKey: _this.style_key
         },
         success: function(data) {
+           _this.loading = false;
           _this.$message({
             message: "保存成功",
             type: "success"

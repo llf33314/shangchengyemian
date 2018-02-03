@@ -30,7 +30,7 @@
             </el-pagination>
         </div>
     </div>
-    <el-dialog title="H5商城预览" :visible.sync="dialogVisible" >
+    <el-dialog title="H5商城预览" :visible.sync="dialogVisible" width="600px">
      <el-form label-width="120px">
         <el-form-item label="预览二维码:" style="text-align:center;">
           <img class="erwema" :src="selectedModel.codeUrl" />

@@ -14,8 +14,8 @@
             <h5><el-checkbox :label="'全选'" :indeterminate="isIndeterminate" inline @change="selectLeftAll" v-model="leftSelect"></el-checkbox></h5>
           </div>
           <div class="newLeft2">
-            <el-button type="primary" :plain="true" icon="arrow-right" @click="addSelect" :class="{'nav':leftSelectCount>0}"></el-button>
-            <el-button type="primary" :plain="true" icon="arrow-left" @click="removeSelect" :class="{'nav':rightSelectCount>0}"></el-button>
+            <el-button type="primary" round :plain="true" icon="el-icon-arrow-right" @click="addSelect" :class="{'nav':leftSelectCount>0}"></el-button>
+            <el-button type="primary" round :plain="true" icon="el-icon-arrow-left" @click="removeSelect" :class="{'nav':rightSelectCount>0}"></el-button>
           </div>
           <div class="newRight">
             <h5>已选择({{selectList.length}})</h5>

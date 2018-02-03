@@ -59,8 +59,8 @@
                         <i class="el-icon-plus"></i>
                         <img class="img"  v-if="ruleForm.orderQrcode!= ''" :src="ruleForm.orderQrcode" />
                         <div class="delete" v-if="ruleForm.orderQrcode != '' " @click.stop="deleteImg">
-                            <i class="el-icon-view" @click.stop="showBigImg(ruleForm.orderQrcode)"></i>
-                            <i class="el-icon-delete2" @click.stop="deleteImg"></i>
+                            <i class="el-icon-search" @click.stop="showBigImg(ruleForm.orderQrcode)"></i>
+                            <i class="el-icon-delete" @click.stop="deleteImg"></i>
                         </div>  
                     </div>
                 </div>
@@ -75,18 +75,18 @@
                 <details-list :rowList.sync="orderDetailsList" ref="detailsComp"></details-list>           
                 <div class="table-footer">
                     总运费
-                    <el-input  v-model="ruleForm.freight" style="width: 90px;">
+                    <el-input  v-model="ruleForm.freight" style="width: 135px;">
                         <template slot="prepend">&#65509;</template>
                     </el-input> 
                     <span>合计：&#65509;{{ruleForm.allMoney}}</span>
                 </div>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
+                <el-button type="primary" @click="submitForm('ruleForm')" :loading="loading">保存</el-button>
                 <el-button @click="resetForm('ruleForm')">取消</el-button>
             </el-form-item>
         </el-form>
-         <el-dialog v-model="materialLargeSrcVisible" size="small">
+         <el-dialog :visible.sync="materialLargeSrcVisible" width="600px">
           <img width="100%" :src="largeSrc" alt="" class="img">
         </el-dialog>
         <goods-dialog ref="goodsDialog" @dialogData="selectDialogData"></goods-dialog>
@@ -171,7 +171,8 @@ export default {
       carouselList:[],//轮播图列表
       orderDetailsList:[],//商品列表
       materialLargeSrcVisible: false,//查看大图弹出框
-      largeSrc: ''//查看大图 图片地址
+      largeSrc: '',//查看大图 图片地址
+      loading:false
     };
   },
   watch: {
@@ -334,11 +335,12 @@ export default {
                 //防止多次点击重复提交数据
                 if(!Lib.C.ajax_manage) return false;
                 Lib.C.ajax_manage = false;
-
+                _this.loading = !Lib.C.ajax_manage;
                 _this.ajaxSave({
                     url: DFshop.activeAPI.purchaseOrderSave_post,
                     data: param,
                     success: function(data) {
+                        _this.loading = false;
                         _this.$message({
                             message: "保存成功",
                             type: "success"
@@ -413,8 +415,8 @@ export default {
         width: 220px;
     }
     .addbj-img{
-        width: 70px;
-        height: 70px;
+        width: 75px;
+        height: 75px;
         display: inline-block;
     }
     .addbj-min-img{
@@ -444,8 +446,8 @@ section{
     border: 0;
   }
   .border{
-    .border-radius(3px);
-    border: 2px dashed #c0ccda;
+    .border-radius(5px);
+    border: 1px dashed #c0ccda;
     
   }
   .material-square {

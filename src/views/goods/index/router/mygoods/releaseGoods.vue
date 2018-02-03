@@ -387,8 +387,8 @@
             </div>
         </div>
         <el-button style="margin-top: 12px;" @click="next()" v-if="active == 1">下一步</el-button>
-        <el-button type="primary" v-if="active == 2" @click="next()">保存</el-button>
-        <el-button type="primary" v-if="active == 2" @click="changeData(2)">保存并预览</el-button>
+        <el-button type="primary" v-if="active == 2" @click="next()" :loading="loadingNext">保存</el-button>
+        <el-button type="primary" v-if="active == 2" @click="changeData(2)" :loading="loadingSee">保存并预览</el-button>
         <el-button style="margin-top: 12px;" v-if="active == 1 " @click="back_go()">返回</el-button>
         <el-button style="margin-top: 12px;" v-if="active == 2 " @click=" active=1">返回</el-button>
         <div class="shop-textc" v-if="active == 3" >
@@ -525,6 +525,8 @@ export default {
         webPath:'',//手机端域名
 
         editorOption:{},//编辑器参数
+        loadingNext:false,
+        loadingSee:false
     }
   },
   watch:{
@@ -760,22 +762,26 @@ export default {
         //防止多次点击重复提交数据
         if(!Lib.C.ajax_manage) return false;
         Lib.C.ajax_manage = false;
-
+        
         let url = '';//请求接口
         if(_this.$route.params.id === 'add' && _this.form.pro.userId == null && _this.form.pro.id == null){
             url = DFshop.activeAPI.mallProductAdd_post;
         }else{
             url = DFshop.activeAPI.mallProductUpdatet_post;
         }
+
+        type == 1? _this.loadingNext = !lib.C.ajax_manage : _this.loadingSee = !lib.C.ajax_manage;
+        
         _this.ajaxSave({
             'url':  url,
             'data':data,
             'success':function (data){
-
                 if(type==1){
+                    _this.loadingNext = false;
                     _this.active = 3;
                 }else{
                     //新增
+                     _this.loadingSee = false;
                     if(_this.$route.params.id === 'add' && _this.form.pro.userId == null && _this.form.pro.id == null){
                         _this.form.pro.userId = data.userId;
                         _this.form.pro.id = data.id;

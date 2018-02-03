@@ -16,13 +16,22 @@
           <div class="index-shopInfo">
              <div class="index-input-box">
                 <span>
-                  <el-input v-model="keyWord_tixian" placeholder="销售员名字/手机" icon="search" class="max-input" 
-                    @keyup.enter.native="searchSale" :on-icon-click="searchSale"></el-input>
+                    <el-input v-model.trim="keyWord_tixian" 
+                      placeholder="销售员名字/手机" 
+                      class="max-input" 
+                      @keyup.enter.native="searchSale">
+                      <i slot="suffix" class="el-input__icon el-icon-search" @click="searchSale"></i>
+                    </el-input>
                 </span>
                 <span>
                   提现时间 ：
-                  <el-date-picker v-model="cashDate" type="datetimerange" placeholder="选择时间范围"
-                     @change="cashSearch"></el-date-picker>
+                  <el-date-picker 
+                    v-model="cashDate" 
+                    type="datetimerange"
+                    range-separator="-"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    @change="cashSearch"></el-date-picker>
                 </span>
               </div>
           </div>

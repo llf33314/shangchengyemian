@@ -45,10 +45,11 @@
           <div class="material-square">
             <img class="img" :src="img.imageUrl" />
             <div class="delete"  @click.stop="deleteImg(index)">
-              <i class="el-icon-view" @click.stop="showBigImg(img.imageUrl)"></i>
-              <i class="el-icon-delete2" @click.stop="deleteImg(index)"></i>
+              <i class="el-icon-search" @click.stop="showBigImg(img.imageUrl)"></i>
+              <i class="el-icon-delete" @click.stop="deleteImg(index)"></i>
             </div>
           </div>
+          
         </div>
         <div class="shop-IDUpload" v-if="ruleForm.imageList.length < 5 ">
           <div class="material-square border" @click="materiallayer()" >
@@ -77,11 +78,11 @@
         <p class="addLogistics-warn">如关闭到店支付就只能微信支付，开启到店支付既能到店支付也能微信支付。</p>
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
+      <el-button type="primary" @click="submitForm('ruleForm')" :loading="loading">保存</el-button>
       <el-button @click="resetForm('ruleForm')">取消</el-button>
     </el-form-item>
   </el-form>
-    <el-dialog v-model="materialLargeSrcVisible" size="small">
+    <el-dialog :visible.sync="materialLargeSrcVisible" width="600px">
         <img width="100%" :src="largeSrc" alt="" class="img">
     </el-dialog>
   </div>
@@ -141,13 +142,13 @@ export default {
       cities: cityOptions,
       rules: {
         visitName: [
-          { required: true, message: '自提名称不能为空', trigger: 'blur' }
+          { required: true, message: '自提名称不能为空', trigger: 'change,blur' }
         ],
         visit:[
           { validator: formVisit, trigger: 'blur,change'},
         ],
         visitContactNumber: [
-          { required: true, message: '联系电话不能为空', trigger: 'blur' }
+          { required: true, message: '联系电话不能为空', trigger: 'blur,change' }
         ],
         imageList: [
           { type: 'array', required: true, message: '请上传自提点图片', trigger: 'change' }
@@ -164,7 +165,8 @@ export default {
       editAreaId:'',//修改时 存放选中区县ID
       editAreaName:'',
       materialLargeSrcVisible: false,//查看大图
-      largeSrc: '',//查看大图的图片     
+      largeSrc: '',//查看大图的图片   
+      loading:false  
     }
   },
   watch: {
@@ -352,11 +354,13 @@ export default {
           //防止多次点击重复提交数据
           if(!Lib.C.ajax_manage) return false;
           Lib.C.ajax_manage = false;
-          
+          _this.loading = !Lib.C.ajax_manage ;
+
           _this.ajaxSave({
             'url': DFshop.activeAPI.mallFreightTakeSave_post,
             'data':param,
             'success':function (data){
+               _this.loading = false;
               _this.$message({
                 message: '保存成功',
                 type: 'success'
@@ -498,7 +502,6 @@ export default {
         _this.ruleForm.visitAddress=e.poi.name;     
     });
      if(XY !=null ){  
-       console.log("111111111111");
         marker.setMap(null);
         marker = null;
         marker = new AMap.Marker({
@@ -609,7 +612,6 @@ export default {
     }
   },
   mounted(){
-    
     if(this.$route.params.id != 0 && this.$route.params.id !='undefined'){
       this.mallTakeInfo(this.$route.params.id);
     }else{
@@ -628,6 +630,7 @@ export default {
         _this.areas=[];
       }
     })
+    
   }, 
 }
 </script>
@@ -656,8 +659,8 @@ export default {
 }
  .shop-IDUpload,.shop-img {
     vertical-align: top;
-    width: 50px;
-    height: 50px;
+    width: 75px;
+    height: 75px;
     background: #fbfdff;
     display: inline-block;
     margin-right: 15px;
@@ -689,10 +692,10 @@ section{
   }
   .border{
     .border-radius(3px);
-    border: 2px dashed #c0ccda;
-    
+    border: 1px dashed #d9d9d9;
   }
   .material-square {
+    
     .ik-box;
     .ik-box-pack(center);
     .ik-box-align(center);
@@ -700,8 +703,8 @@ section{
     cursor: pointer;
     position: relative;
     overflow: hidden;
-    height: 50px;
-    width: 50px;
+    height: 75px;
+    width: 75px;
     .el-icon-plus {
       color: #c0ccda;
     }

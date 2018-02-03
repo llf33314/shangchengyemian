@@ -110,7 +110,7 @@ export default {
       iframeWidth:'',//iframe宽度
       isShade:false,
 
-      pageId:''//页面id
+      pageId:'',//页面id
     }
   },
   methods: {
@@ -172,7 +172,7 @@ export default {
         //防止多次点击重复提交数据
         if(!Lib.C.ajax_manage) return false;
         Lib.C.ajax_manage = false;
-
+        
         _this.ajaxSave({
             'url': DFshop.activeAPI.mallPageSave_post,
             'data': {

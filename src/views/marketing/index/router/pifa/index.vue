@@ -74,7 +74,7 @@
                     label="创建时间">
                     </el-table-column>
                     <el-table-column
-                    label="操作">
+                    label="操作" width="250">
                     <template slot-scope="scope">
                         <el-button size="small" class="buttonBlue" @click="jumpRouter('/addpifa/'+scope.row.id)"
                             v-if="scope.row.status == 0 || scope.row.status == 1">编辑</el-button>
@@ -105,8 +105,11 @@
                 <div class="common-content">
                      <div class="index-shopInfo" >
                         <div class="index-input-box">
-                            <el-input placeholder="搜索关键词" icon="search" class="max-input" @keyup.enter.native="handleIconClick"
-                                v-model.trim="keyword" :on-icon-click="handleIconClick" >
+                            <el-input v-model.trim="keyword" 
+                              placeholder="搜索关键词" 
+                              class="max-input" 
+                              @keyup.enter.native="handleIconClick">
+                              <i slot="suffix" class="el-input__icon el-icon-search" @click="handleIconClick"></i>
                             </el-input>
                         </div>
                         <el-button type="primary" @click="synData" v-if="pifaData.page.rowCount > 0">同步成交数/金额</el-button>
@@ -143,9 +146,13 @@
                             prop="create_time">
                         </el-table-column>
                         <el-table-column
-                            label="状态">
+                            label="状态" width="180">
                             <template slot-scope="scope">
-                                <el-switch v-model="scope.row.is_use" on-text="开启" off-text="禁用" :on-value=1 :off-value=-1 v-if="scope.row.status == 1"
+                                <el-switch v-model="scope.row.is_use" active-text="开启"
+                                          inactive-text="禁用" 
+                                          :active-value=1 
+                                          :inactive-value=-1 
+                                          v-if="scope.row.status == 1"
                                   @change="openDisable(scope.row.id,scope.row.is_use)">
                                 </el-switch>
                                 <div v-if="scope.row.status ==0">
@@ -234,7 +241,7 @@
                             <el-form-item prop="hpMoney" >
                               <el-checkbox name="type" v-model="form.pfSet.isHpMoney">
                                   一次性购买商品金额达
-                                  <el-input v-model.number="form.pfSet.hpMoney" class="mix-input"  >
+                                  <el-input v-model.number="form.pfSet.hpMoney" class="mix-input" style="width:135px" >
                                   <template slot="prepend">¥</template>
                                   </el-input>
                               </el-checkbox>
@@ -269,7 +276,7 @@
                                 placeholder="请输入内容" style="width:420px"></el-input>
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="primary" @click="onSubmit('form')">保存</el-button>
+                            <el-button type="primary" @click="onSubmit('form')" :loading="loading">保存</el-button>
                             <el-button @click="returnPage()">取消</el-button>
                         </el-form-item>
                     </el-form>
@@ -399,7 +406,8 @@ export default {
       path: "",
       multipleSelection: [],
       videourl: null,
-      webPath: null
+      webPath: null,
+      loading:false
     };
   },
   watch: {
@@ -525,7 +533,7 @@ export default {
           //防止多次点击重复提交数据
           if(!Lib.C.ajax_manage) return false;
           Lib.C.ajax_manage = false;
-          
+          _this.loading = !Lib.C.ajax_manage;
           _this.ajaxRequest({
             url: DFshop.activeAPI.mallWholesaleSaveSet_post,
             data: {
@@ -534,6 +542,7 @@ export default {
               pfApplyRemark: pfApplyRemark
             },
             success: function(data) {
+               _this.loading = false;
               _this.$message({
                 message: "保存设置成功",
                 type: "success"
@@ -727,7 +736,7 @@ export default {
           obj.shopId +
           "/" +
           obj.userId +
-          "/1/" +
+          "/7/" +
           obj.productId +
           "/" +
           obj.id

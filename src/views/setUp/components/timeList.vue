@@ -11,15 +11,14 @@
           <a @click="isTimeEdit=1">新增时间段</a>
         </p>
         <div v-if="isTimeEdit == 1" prop="startTime">
-          <el-form :model="ruleForm" :rules="rules"  ref="ruleForm" label-width="100px" class="demo-ruleForm" style="margin-top:10px;">
-            <el-form-item label-width="0" inline  class="newgroup" prop="visitDays" style="float: left;">
-                <el-checkbox-group v-model="ruleForm.visitDays" style="display: inline-block;">
-                  <el-checkbox-button v-for="city in cities" :label="city.id" :key="city.id" :disabled="!city.checked">{{city.name}}</el-checkbox-button>
-                </el-checkbox-group>
-            </el-form-item>
-
-              <el-form-item label-width="0" inline class="newgroup" prop="startTime" style="float: left;margin-left: 10px;">
-                <el-time-select style="width:110px" 
+            <el-form :model="ruleForm" :rules="rules"  ref="ruleForm" label-width="100px" class="demo-ruleForm" style="margin-top:10px;" :inline="true">
+              <el-form-item label-width="0" inline  class="newgroup" prop="visitDays">
+                  <el-checkbox-group v-model="ruleForm.visitDays" >
+                    <el-checkbox-button v-for="city in cities" :label="city.id" :key="city.id" :disabled="!city.checked">{{city.name}}</el-checkbox-button>
+                  </el-checkbox-group>
+              </el-form-item>
+              <el-form-item label-width="0" inline class="newgroup" prop="startTime">
+                <el-time-select style="width:160px" 
                     placeholder="起始时间"
                     v-model="ruleForm.startTime"
                     :picker-options="{
@@ -30,7 +29,7 @@
                     }">
                 </el-time-select>
                 -
-                <el-time-select  style="width:110px"
+                <el-time-select  style="width:160px"
                     placeholder="结束时间"
                     v-model="ruleForm.endTime"
                     :picker-options="{

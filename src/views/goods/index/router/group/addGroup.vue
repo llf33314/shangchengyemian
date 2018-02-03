@@ -55,8 +55,8 @@
                 <div class="material-square">
                   <img class="img" :src="img.imageUrl" />
                   <div class="delete"  @click.stop="deleteImg(index)">
-                    <i class="el-icon-view" @click.stop="showBigImg(img.imageUrl)"></i>
-                    <i class="el-icon-delete2" @click.stop="deleteImg(index)"></i>
+                    <i class="el-icon-search" @click.stop="showBigImg(img.imageUrl)"></i>
+                    <i class="el-icon-delete" @click.stop="deleteImg(index)"></i>
                   </div>
                 </div>
               </div>
@@ -71,11 +71,11 @@
             </span>
         </el-form-item>
          <el-form-item>
-          <el-button type="primary" @click="submitForm('form')">保存</el-button>
+          <el-button type="primary" @click="submitForm('form')" :loading="loading">保存</el-button>
           <el-button  @click="historyGo">取消</el-button>
         </el-form-item>
       </el-form>
-      <el-dialog v-model="materialLargeSrcVisible" size="small">
+      <el-dialog :visible.sync="materialLargeSrcVisible" size="small">
         <img width="100%" :src="largeSrc" alt="" class="img">
       </el-dialog>
     </div>
@@ -137,6 +137,7 @@ export default {
       imageList:[],
       materialLargeSrcVisible: false,//查看大图
       largeSrc: '',//查看大图的图片
+      loading:false
     }
   },
   watch:{
@@ -266,11 +267,12 @@ export default {
       
       if(!Lib.C.ajax_manage) return false;
       Lib.C.ajax_manage = false;  
-
+      _this.loading = !Lib.C.ajax_manage
       _this.ajaxSave({
           'url': DFshop.activeAPI.mallProductGroupSave_post,
           'data': _this.form,
           'success':function (data){
+            _this.loading = false;
             _this.$message({
               message: '保存成功',
               type: 'success'

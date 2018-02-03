@@ -48,11 +48,11 @@
               <p v-if="scope.row.status == -2">已失效</p>
             </template>
           </el-table-column>
-          <el-table-column width="190"
+          <el-table-column width="250"
             prop="createTime"
             label="创建时间">
           </el-table-column>
-          <el-table-column  label="操作">
+          <el-table-column  label="操作" width="300" >
             <template slot-scope="scope">
               <el-button size="small" class="buttonBlue" v-if="scope.row.status == 0 || (scope.row.status == 1 && scope.row.joinId == '')" 
                 @click="jumpRouter('/addgroup/'+scope.row.id)">编辑</el-button>

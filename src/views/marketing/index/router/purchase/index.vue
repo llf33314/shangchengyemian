@@ -27,8 +27,16 @@
                             </el-form-item>
                             <el-form-item>
                                 <span class="demonstration"  style="font-size:13px;">创建时间 :</span>
-                                <el-date-picker  v-model="value7"  type="daterange" @change="search_date"
-                                   :picker-options="pickerOptions" align="right" placeholder="选择日期范围" value-format="yyyy-MM-dd" >
+                                <el-date-picker  
+                                    v-model="value7"  
+                                    type="daterange" 
+                                    @change="search_date"
+                                   :picker-options="pickerOptions" 
+                                   align="right" 
+                                   range-separator="-"
+                                    start-placeholder="开始日期"
+                                    end-placeholder="结束日期"
+                                   value-format="yyyy-MM-dd" >
                                 </el-date-picker>
                             </el-form-item >
                             <div></div>
@@ -92,8 +100,7 @@
                             </template>
                         </el-table-column>
                         <el-table-column
-                            label="操作"
-                            min-width="200">
+                            label="操作" width="400">
                         <template slot-scope="scope">
                             <el-button v-if="scope.row.order_status == 1" size="small" @click="jumpRouter('/order/update/'+scope.row.id)" class="buttonBlue">修改</el-button>
                             <el-button size="small" class="buttonBlue" @click="jumpRouter('/details/'+scope.row.id)">详情</el-button>
@@ -110,7 +117,13 @@
                 <div class="common-content">
                     <div class="index-shopInfo">
                         <div class="index-input-box">
-                            <el-input v-model.trim="contractTitle" placeholder="请输入合同标题" icon="search" class="max-input" @blur="contractSearch()" @keyup.enter.native="contractSearch"></el-input>
+                            <el-input v-model.trim="contractTitle" 
+                              placeholder="请输入合同标题" 
+                              class="max-input" 
+                              @blur="contractSearch()"
+                              @keyup.enter.native="contractSearch()">
+                              <i slot="suffix" class="el-input__icon el-icon-search" @click="contractSearch()"></i>
+                            </el-input>
                         </div>
                         
                         <router-link to="/contract/add">
@@ -146,7 +159,13 @@
                 <div class="common-content">
                         <div class="index-shopInfo">
                         <div class="index-input-box">
-                            <el-input v-model.trim="keyWord" placeholder="请输入名称/电话/地址" icon="search" class="max-input"  @blur="companySearch()" @keyup.enter.native="companySearch"></el-input>
+                            <el-input v-model.trim="keyWord" 
+                              placeholder="请输入名称/电话/地址" 
+                              style="width:220px"
+                              @blur="companySearch()"
+                              @keyup.enter.native="companySearch()">
+                              <i slot="suffix" class="el-input__icon el-icon-search" @click="companySearch()"></i>
+                            </el-input>
                         </div>
                         <router-link to="/company/add">
                             <el-button  type="primary" >新增</el-button>
@@ -262,9 +281,8 @@ export default {
       let _this = this;
       _this.searchData.curPage=1;
       if(value != ""){
-        let date=value.split(" - ");
-        _this.searchData.startTime=date[0]
-        _this.searchData.endTime=date[1];
+        _this.searchData.startTime=value[0]
+        _this.searchData.endTime=value[1];
       }else{
         _this.searchData.startTime='';
         _this.searchData.endTime='';

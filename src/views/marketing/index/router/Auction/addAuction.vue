@@ -94,7 +94,7 @@
                 <span class="p-warn">不填写则代表该拍卖商品不限购</span>
             </el-form-item> -->
             <el-form-item>
-                <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
+                <el-button type="primary" @click="submitForm('ruleForm')" :loading="loading">保存</el-button>
                 <el-button @click="returnPage">取消</el-button>
             </el-form-item>
         </el-form>
@@ -301,7 +301,8 @@ export default {
       disabledTime: false,
       endTime: "", //降价拍结束时间
       durationTime: 0, //持续时间
-      selectShopId: 0
+      selectShopId: 0,
+      loading:false
     };
   },
   methods: {
@@ -371,13 +372,14 @@ export default {
           //防止多次点击重复提交数据
           if(!Lib.C.ajax_manage) return false;
           Lib.C.ajax_manage = false;
-          
+          _this.loading = !Lib.C.ajax_manage;
           _this.ajaxSave({
             url: DFshop.activeAPI.mallAuctionSave_post,
             data: {
               auction: JSON.stringify(auction)
             },
             success: function(data) {
+              _this.loading = false
               _this.$message({
                 message: "保存成功",
                 type: "success"
@@ -545,7 +547,7 @@ export default {
     border:1px solid #e1e1e1;
     padding:20px 10px;
     margin-top:10px;
-    width:22%;
+    width: 380px;
   }
 }
 </style>

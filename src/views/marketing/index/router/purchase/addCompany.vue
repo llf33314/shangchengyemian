@@ -27,7 +27,7 @@
                    <div id="container" style="height:300px; width:70%;border: 1px solid #bfcbd9;"></div>
               </el-form-item>
               <el-form-item>
-                  <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
+                  <el-button type="primary" @click="submitForm('ruleForm')" :loading="loading">保存</el-button>
                   <el-button @click="resetForm('ruleForm')">取消</el-button>
  
               </el-form-item>             
@@ -95,6 +95,7 @@ export default {
             { validator: companyAddress, trigger: 'blur,change' }, 
         ]
       },
+      loading:false
     }
   },
   watch: {
@@ -140,16 +141,17 @@ export default {
           //防止多次点击重复提交数据
           if(!Lib.C.ajax_manage) return false;
           Lib.C.ajax_manage = false;
-          
+          _this.loading = !Lib.C.ajax_manage;
           _this.ajaxSave({
               'url': DFshop.activeAPI.purchaseCompanySave_post,
               'data':_this.ruleForm,
               'success':function (data){
-                  _this.$message({
-                      message: '保存公司模拟成功',
-                      type: 'success'
-                  });
-                  _this.jumpRouter('/purchase/3');
+                _this.loading = false;
+                _this.$message({
+                    message: '保存公司模拟成功',
+                    type: 'success'
+                });
+                _this.jumpRouter('/purchase/3');
               }
           });
         } else {

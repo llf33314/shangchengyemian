@@ -38,13 +38,20 @@
             </div>
              <!-- range-separator="至"  start-placeholder="开始日期"  end-placeholder="结束日期" -->
             <el-form-item label="活动时间 :" prop="gStartTime" required>
-                <el-date-picker v-model="ruleForm.gStartTime" type="datetimerange" align="right" :editable="false"
-                  placeholder="请选择活动时间" :picker-options="pickerOptions1">
+                <el-date-picker 
+                  v-model="ruleForm.gStartTime" 
+                  type="datetimerange" 
+                  align="right" 
+                  :editable="false"
+                  range-separator="-"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  :picker-options="pickerOptions1">
                 </el-date-picker>
             </el-form-item>
             <el-form-item label="参团人数 :" prop="gPeopleNum" required>
                 <el-input  v-model="ruleForm.gPeopleNum" class="addGruop-input"></el-input>
-                <p class="p-warn">1/8</p>
+                <span class="p-warn">参团人数必须在1~8人之间</span>
             </el-form-item>
             <el-form-item label="商品限购 :">
                 <el-switch on-text="开启" off-text="关闭" v-model="off"></el-switch>
@@ -56,7 +63,7 @@
             </el-form-item>
           
             <el-form-item>
-                <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
+                <el-button type="primary" @click="submitForm('ruleForm')" :loading="loading">保存</el-button>
                 <el-button @click="returnPage()">取消</el-button>
             </el-form-item>
         </el-form>
@@ -111,6 +118,7 @@ export default {
     };
     var formPrice = (rule, value, callback) => {
       let reg = /^[0-9]{1,5}(\.\d{1,2})?$/;
+      console.log(value,'value')
       if (value === "") {
         return callback(new Error("团购价不能为空"));
       } else if (!reg.test(value) || value <= 0) {
@@ -202,9 +210,9 @@ export default {
       isReplacePro: "",
       rules: {
         shopId: [
-          { validator: formShopId, trigger: "change", message: "请选择所属店铺" }
+          { validator: formShopId, trigger: "change" }
         ],
-        gName: [{ validator: formGname, trigger: "blur,change", message: "请输入活动名称" }],
+        gName: [{ validator: formGname, trigger: "blur,change" }],
         gStartTime: [
           {
             validator: formStartTime,
@@ -219,7 +227,7 @@ export default {
             message: "参团人数必须在1到8人之间"
           }
         ],
-        gPrice: [{ validator: formPrice, trigger: "blur,change", message: "请输入团购价" }],
+        gPrice: [{ validator: formPrice, trigger: "blur,change" }],
         productId: [
           { validator: formChoicePro, trigger: "change", message: "请选择活动商品" }
         ],
@@ -233,7 +241,8 @@ export default {
       priceList: [],
       specArrList: [],
       disabledShop: "",
-      selectShopId: 0
+      selectShopId: 0,
+      loading:false,//保存loading
     };
   },
   watch: {
@@ -352,11 +361,13 @@ export default {
           //防止多次点击重复提交数据
           if(!Lib.C.ajax_manage) return false;
           Lib.C.ajax_manage = false;
+          _this.loading = !Lib.C.ajax_manage;
           
           _this.ajaxSave({
             url: DFshop.activeAPI.mallGroupBuySave_post,
             data: param,
             success: function(data) {
+              _this.loading = false;
               _this.$message({
                 message: "保存成功",
                 type: "success"
@@ -508,7 +519,7 @@ export default {
     border:1px solid #e1e1e1;
     padding:20px 10px;
     margin-top:10px;
-    width:22%
+    width:300px;
   }
 }
 </style>

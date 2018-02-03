@@ -285,8 +285,8 @@ export default {
         width: 220px;
     }
     .addbj-img{
-        width: 70px;
-        height: 70px;
+        width: 75px;
+        height: 75px;
         display: inline-block;
     }
     .addbj-min-img{

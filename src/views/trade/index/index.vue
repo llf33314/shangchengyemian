@@ -48,14 +48,12 @@
                 <!--todo 选中了状态 没有点击筛选 再点下一页 列表数据是筛选选的状态列表-->
                 <el-select v-model="searchData.status" placeholder="全部" >
                   <el-option label="全部" value="0"></el-option>
-                  <el-option label="成功" value="1"></el-option>
-                  <el-option label="进行中" value="2"></el-option>
-                  <el-option label="退款" value="3"></el-option>
-                  <el-option label="失败" value="4"></el-option>
+                  <el-option label="已支付" value="1"></el-option>
+                  <el-option label="已退款" value="2"></el-option> 
                 </el-select>
               </el-form-item>
               <el-form-item>
-                  <span class="demonstration"  style="font-size:13px;">下单时间 :</span>
+                  <span class="demonstration"  style="font-size:13px;">时间 :</span>
                   <el-date-picker
                     v-model="value7"
                     type="daterange"
@@ -76,10 +74,8 @@
           <div class="index-content" v-loading.body="loading" element-loading-text="拼命加载中">
             <el-tabs v-model="activeName2" type="card" @tab-click="handleClick(activeName2)">
               <el-tab-pane label="全部" name="0"></el-tab-pane>
-              <el-tab-pane label="成功" name="1"></el-tab-pane>
-              <el-tab-pane label="进行中" name="2"></el-tab-pane>
-              <el-tab-pane label="退款" name="3"></el-tab-pane>
-              <el-tab-pane label="失败" name="4"></el-tab-pane>
+              <el-tab-pane label="已支付" name="1"></el-tab-pane>
+              <el-tab-pane label="已退款" name="2"></el-tab-pane> 
             </el-tabs>
             <div class="index-from">
                <el-table :data="subList">
@@ -95,32 +91,35 @@
                   label="商品名称">
                 </el-table-column>
                 <el-table-column
-                  prop="orderNo"
+                  prop="proNo"
                   label="订单号">
                 </el-table-column>
                 <el-table-column
-                  prop="memberName"
+                  prop="buyerName"
                   label="买方">
                 </el-table-column>
                 <el-table-column
-                  prop="orderMoney"
+                  prop="incomeMoney"
                   label="支付金额(元)">
+                  <template slot-scope="scope">
+                    {{scope.row.incomeMoney}}
+                    <span v-if="scope.row.incomeUnit == 2">
+                      粉币
+                    </span>
+                    <span v-else-if="scope.row.incomeUnit == 3">
+                      积分
+                    </span>
+                  </template>
                 </el-table-column>
                  <el-table-column 
                   label="状态"
                   show-overflow-tooltip>
                   <template slot-scope="scope">
-                    <span v-if="scope.row.status == 1">
-                      成功
+                    <span v-if="scope.row.incomeType == 1">
+                      已支付
                     </span>
-                    <span  v-if="scope.row.status == 2">
-                      进行中
-                    </span>
-                    <span v-if="scope.row.status == 3">
-                      退款
-                    </span>
-                     <span v-if="scope.row.status == 4">
-                      失败
+                    <span  v-if="scope.row.incomeType == 2">
+                      已退款
                     </span>
                   </template>
                 </el-table-column>
@@ -130,7 +129,6 @@
                     <a @click="link('?url=detail/'+scope.row.id,path+'views/order/index.html#/allOrder')">
                       查看
                     </a>
-                    
                   </template>
                 </el-table-column>
               </el-table>
@@ -211,12 +209,19 @@ export default {
         value7: '',
         loading:true,
         path:'',
+        marketingUrl:''
     }
   },
   methods: {
     link(params,url){
       console.log(url,params,"changeMenus(url)");
       parent.window.postMessage("changeMenus('"+url+"','"+params+"')", "*");
+      // window.location.href=url;
+    },
+    //通知首页更改父类菜单（并且更新对应的菜单跳转）
+    changclick(params){
+      console.log(this.marketingUrl,params,"changclick(url)"); 
+      parent.window.postMessage("changclick('"+this.marketingUrl+"','"+params+"')", "*");
       // window.location.href=url;
     },
     /**获取统计数据 */
@@ -314,7 +319,19 @@ export default {
       this.searchData.curPage=val;
       this.tradeList(this.searchData);
     
-    }
+    },
+     /**
+     * 获取商城营销地址
+     */
+    getMarketingUrl(){
+        let _this=this;
+        this.ajaxRequest({
+            'url': DFshop.activeAPI.getMarketingUrl_post,
+            'success':function (data){
+                _this.marketingUrl=data.data;
+            }
+        });
+    }, 
   },
   mounted(){
     let _this = this;
@@ -327,6 +344,7 @@ export default {
         _this.getTurnoverCount();
         _this.searchData.curPage=1;
         _this.tradeList(_this.searchData);
+        _this.getMarketingUrl();
       }
     });
    

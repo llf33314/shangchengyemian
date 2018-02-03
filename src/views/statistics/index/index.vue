@@ -43,7 +43,16 @@
         </div>
         <div class="index-item line-main">
           <p class="item-title">选择时间 :
-            <el-date-picker v-model="value6" type="daterange"  :picker-options="pickerOptions" value-format="yyyy-MM-dd" placeholder="选择日期范围" @change="searchDate" ></el-date-picker>
+            <el-date-picker 
+              v-model="value6" 
+              type="daterange"  
+              :picker-options="pickerOptions" 
+              value-format="yyyy-MM-dd" 
+              unlink-panels
+              range-separator="-"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              @change="searchDate" ></el-date-picker>
           </p>
           <div class="line-content ">
             <span class="line-unit">
@@ -140,12 +149,11 @@ export default {
      let that=this;
       //  console.log(value);
       if(value != "" && value !=undefined ){
-          let date=value.split(" - ");
-          this.loopGenerateDate(new Date(date[0]), new Date(date[1]));
-          that.date1=new Date(date[0]);
-          that.date2=new Date(date[1]);
+          this.loopGenerateDate(new Date(value[0]), new Date(value[1]));
+          that.date1=new Date(value[0]);
+          that.date2=new Date(value[1]);
             // console.log( that.date1, that.date2,"date");
-          that.getCountList(this.shopSelect,date[0],date[1]);
+          that.getCountList(this.shopSelect,value[0],value[1]);
           
       }else{
        that.defaultDate();

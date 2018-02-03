@@ -19,7 +19,7 @@
               </el-form-item>
               <el-form-item label="成为销售员 :" prop="consumeMoney">
                  当消费金额满
-                <el-input v-model.number="setupForm.consumeMoney" class="mix-input" style="width:115px">
+                <el-input v-model.number="setupForm.consumeMoney" class="mix-input" style="width:135px">
                   <template slot="prepend">¥</template>
                 </el-input>
                 可申请成为超级销售员
@@ -30,7 +30,7 @@
                   <p style="margin-bottom: 20px;">
                     <el-form-item prop="withdrawalLowestMoney">
                       <el-radio :label="1">最低可提现
-                        <el-input v-model.number="setupForm.withdrawalLowestMoney" class="mix-input" style="width:88px">
+                        <el-input v-model.number="setupForm.withdrawalLowestMoney" class="mix-input" style="width:135px">
                           <template slot="prepend">¥</template>
                         </el-input>
                       </el-radio>
@@ -39,9 +39,10 @@
                   <p>
                   <el-form-item prop="withdrawalMultiple" class="multiple-div">
                     <el-radio :label="2">按
-                      <el-input v-model.number="setupForm.withdrawalMultiple" class="mix-input" style="width:88px">
+                      <el-input v-model.number="setupForm.withdrawalMultiple" class="mix-input" style="width:135px">
                         <template slot="prepend">¥</template>
-                      </el-input>倍数提现
+                      </el-input> 
+                      倍数提现
                     </el-radio>
                   </el-form-item>
                   </p>
@@ -53,7 +54,7 @@
                 </el-input>
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" @click="onSubmit('setupForm')">保存</el-button>
+                <el-button type="primary" @click="onSubmit('setupForm')" :loading="loading">保存</el-button>
                 <a :href="videourl" target="_blank" v-if="videourl!=null">
                   <el-button type="warning" class="video-button"><i class="iconfont icon-cplay1"></i>视频教程</el-button>
                 </a>
@@ -108,7 +109,7 @@
                   label="创建时间">
                 </el-table-column>
                 <el-table-column
-                  label="操作">
+                  label="操作" width="300">
                   <template slot-scope="scope">
                     <el-button size="small" class="buttonBlue" @click="jumpRouter('/addBond/'+scope.row.id)">编辑</el-button>
                     <el-button size="small" class="buttonBlue" @click="setCommissionStatus(scope.row.id,-2)" 
@@ -138,8 +139,12 @@
             <div class="index-shopInfo">
               <!-- <el-autocomplete v-model="state4" :fetch-suggestions="querySearchAsync"
                 placeholder="销售员名字/手机" @select="handleSelect" icon="search" ></el-autocomplete> -->
-                <el-input v-model.trim="keyWord" placeholder="销售员名字/手机" icon="search" class="max-input"
-                  @keyup.enter.native="searchExamine" :on-icon-click="searchExamine"></el-input>
+                <el-input v-model.trim="keyWord" 
+                  placeholder="销售员名字/手机" 
+                  class="max-input" 
+                  @keyup.enter.native="searchExamine">
+                  <i slot="suffix" class="el-input__icon el-icon-search" @click="searchExamine"></i>
+                </el-input>
             </div>
             <el-table :data="examineData.page.subList" style="width: 100%" v-if="examineData.page.rowCount > 0">
               <el-table-column
@@ -168,7 +173,7 @@
                 </template>
               </el-table-column>
               <el-table-column
-                label="操作">
+                label="操作" width="180">
                 <template slot-scope="scope">
                   <el-button size="small" class="buttonBlue" @click="passExamine(scope.row.id,1)">通过</el-button>
                   <el-button size="small" @click="refuseExamine(scope.row.id,-1)">拒绝</el-button>
@@ -192,8 +197,12 @@
         <el-tab-pane label="销售员管理" name="4">
           <div class="common-content">
             <div class="index-shopInfo">
-              <el-input v-model.trim="keyWord_sellers" placeholder="销售员名字/手机" icon="search" class="max-input" 
-                 @keyup.enter.native="searchSeller" :on-icon-click="searchSeller"></el-input>
+              <el-input v-model.trim="keyWord_sellers" 
+                  placeholder="销售员名字/手机" 
+                  class="max-input" 
+                  @keyup.enter.native="searchSeller">
+                  <i slot="suffix" class="el-input__icon el-icon-search" @click="searchSeller"></i>
+              </el-input>
             </div>
             <el-table :data="sellersList.page.subList" style="width: 100%" v-if="sellersList.page.rowCount > 0">
               <el-table-column
@@ -226,8 +235,7 @@
                 label="加入时间">
               </el-table-column>
               <el-table-column
-                label="操作"
-                min-width="180">
+                label="操作" width="300">
                 <template slot-scope="scope">
                   <el-button size="small" class="buttonBlue" @click="jumpRouter('/recommendList/'+scope.row.member_id)">推荐列表</el-button>
                   <el-button size="small" class="buttonBlue" @click="jumpRouter('/withDrawList/'+scope.row.member_id)">提现记录</el-button>
@@ -256,13 +264,22 @@
             <div class="index-shopInfo">
               <div class="index-input-box">
                 <span>
-                  <el-input v-model.trim="keyWord_tixian" placeholder="销售员名字/手机" icon="search" class="max-input" 
-                    @keyup.enter.native="searchSale" :on-icon-click="searchSale"></el-input>
+                  <el-input v-model.trim="keyWord_tixian" 
+                    placeholder="销售员名字/手机" 
+                    class="max-input" 
+                    @keyup.enter.native="searchSale">
+                    <i slot="suffix" class="el-input__icon el-icon-search" @click="searchSale"></i>
+                  </el-input>
                 </span>
                 <span>
                   提现时间 ：
-                  <el-date-picker v-model="cashDate" type="datetimerange" placeholder="选择时间范围"
-                     @change="cashSearch"></el-date-picker>
+                  <el-date-picker 
+                    v-model="cashDate" 
+                    type="datetimerange" 
+                    range-separator="-"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    @change="cashSearch"></el-date-picker>
                 </span>
               </div>
             </div>
@@ -423,7 +440,8 @@ export default {
       path: "",
       webPath: "",//
       loading: false,//是否开启loading
-      saleMemberId:0//销售员id
+      saleMemberId:0,//销售员id
+      loading:false,
     };
   },
   watch: {
@@ -487,10 +505,13 @@ export default {
           if(!Lib.C.ajax_manage) return false;
           Lib.C.ajax_manage = false;
           
+          _this.loading = !Lib.C.ajax_manage;
+
           _this.ajaxRequest({
             url: DFshop.activeAPI.mallSellersSaveSellerSet_post,
             data: { sellerSet: param },
             success: function(data) {
+              _this.loading = false;
               _this.$message({
                 message: "保存成功",
                 type: "success"

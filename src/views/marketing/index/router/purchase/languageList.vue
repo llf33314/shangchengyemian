@@ -12,7 +12,7 @@
             <div class="clearfix">
                 <span>留言管理</span>
             </div>
-            <el-table ref="multipleTable"   :data="subList"  tooltip-effect="dark" style="width: 100%;margin-top:20px;">
+            <el-table ref="multipleTable" :data="subList" tooltip-effect="dark" style="width: 100%;margin-top:20px;">
                  <el-table-column
                 prop="id"
                 label="编号">

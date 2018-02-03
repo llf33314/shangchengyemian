@@ -22,8 +22,8 @@
                         <i class="el-icon-plus"></i>
                         <img class="img"  v-if="ruleForm.imageUrl!= ''" :src="ruleForm.imageUrl" />
                         <div class="delete" v-if="ruleForm.imageUrl != '' " @click.stop="deleteImg">
-                            <i class="el-icon-view" @click.stop="showBigImg(ruleForm.imageUrl)"></i>
-                            <i class="el-icon-delete2" @click.stop="deleteImg"></i>
+                            <i class="el-icon-search" @click.stop="showBigImg(ruleForm.imageUrl)"></i>
+                            <i class="el-icon-delete" @click.stop="deleteImg"></i>
                         </div>  
                     </div>
                 </div>
@@ -34,11 +34,11 @@
                   <el-button type="primary" @click="showDialog" v-if="isReplacePro">替换商品</el-button>
               </el-form-item>
               <el-form-item>
-                  <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
+                  <el-button type="primary" @click="submitForm('ruleForm')" :loading="loading">保存</el-button>
                   <el-button @click="resetForm('ruleForm')">取消</el-button>
               </el-form-item>
           </el-form>
-          <el-dialog v-model="materialLargeSrcVisible" size="small">
+          <el-dialog :visible.sync="materialLargeSrcVisible" width="800px">
             <img width="100%" :src="largeSrc" alt="" class="img">
           </el-dialog>
           <goods-dialog ref="goodsDialog" @dialogData="selectDialogData"></goods-dialog>
@@ -83,6 +83,7 @@ export default {
       boxData : [],  //选中的商品信息
       isChoicePro : '',  //显示选择商品true 
       isReplacePro : '', //显示替换商品true
+      loading:false
     };
   },
   watch: {
@@ -131,11 +132,12 @@ export default {
           
           if(!Lib.C.ajax_manage) return false;
           Lib.C.ajax_manage = false;
-
+          _this.loading = !Lib.C.ajax_manage;
           _this.ajaxSave({
             url: DFshop.activeAPI.mallAppletSave_post,
             data: applet,
             success: function(data) {
+              _this.loading = false;
               _this.$message({
                 message: "保存成功",
                 type: "success"
@@ -239,8 +241,8 @@ export default {
 .addbanner-wrapper{
     width: 100%;
     .addBanner-img{
-        width: 72px;
-        height: 72px;
+        width: 75px;
+        height: 75px;
         display: inline-block;
     }
 }
@@ -257,8 +259,8 @@ section{
     border: 0;
   }
   .border{
-    .border-radius(3px);
-    border: 2px dashed #c0ccda;
+    .border-radius(5px);
+    border: 1px dashed #c0ccda;
     
   }
   .material-square {

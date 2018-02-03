@@ -14,8 +14,12 @@
               销售员{{sellerName}}的推荐
           </div> 
           <div class="index-shopInfo">
-            <el-input v-model="keyWord_sellers" placeholder="销售员名字/手机" icon="search" class="max-input" 
-                @keyup.enter.native="searchSeller" :on-icon-click="searchSeller"></el-input>
+            <el-input v-model.trim="keyWord_sellers" 
+              placeholder="销售员名字/手机" 
+              class="max-input" 
+              @keyup.enter.native="searchSeller">
+              <i slot="suffix" class="el-input__icon el-icon-search" @click="searchSeller"></i>
+            </el-input>
           </div>
           <el-table :data="sellersList" style="width: 100%" v-if="page.rowCount > 0">
             <el-table-column

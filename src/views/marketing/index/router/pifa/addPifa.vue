@@ -40,12 +40,17 @@
               </el-form-item>
             </div>
             <el-form-item label="活动时间 :" prop="pf_start_time" required>
-                <el-date-picker v-model="ruleForm.pf_start_time" type="datetimerange" :picker-options="pickerOptions1"
-                    placeholder="选择日期范围">
+                <el-date-picker 
+                  v-model="ruleForm.pf_start_time" 
+                  type="datetimerange" 
+                  :picker-options="pickerOptions1"
+                  range-separator="-"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期" >
                 </el-date-picker>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
+                <el-button type="primary" @click="submitForm('ruleForm')" :loading="loading">保存</el-button>
                 <el-button @click="returnPage">取消</el-button>
             </el-form-item>
         </el-form>
@@ -160,7 +165,8 @@ export default {
       isReplacePro: "",
       boxData: [],
       disabledShop: "",
-      selectShopId:0
+      selectShopId:0,
+      loading:false,
     };
   },
   methods: {
@@ -224,7 +230,7 @@ export default {
           //防止多次点击重复提交数据
           if(!Lib.C.ajax_manage) return false;
           Lib.C.ajax_manage = false;
-
+          _this.loading = !Lib.C.ajax_manage;
           _this.ajaxSave({
             url: DFshop.activeAPI.mallWholesaleSave_post,
             data: {
@@ -232,6 +238,7 @@ export default {
               specArr: JSON.stringify(specArr)
             },
             success: function(data) {
+              _this.loading = false;
               _this.$message({
                 message: "保存成功",
                 type: "success"

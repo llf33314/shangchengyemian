@@ -9,7 +9,7 @@
     <div class="addgroup-wrapper">
      <el-input v-model="form.name" placeholder="模板名称" style="width:200px"></el-input>
      <div>
-        <el-button type="primary" @click="onSubmit">保存</el-button>
+        <el-button type="primary" @click="onSubmit" :loading="loading">保存</el-button>
         <router-link to="/goodspage">
         <el-button >取消</el-button>
         </router-link>
@@ -30,7 +30,8 @@ export default {
         name:'',
         templateCss:{a:1,b:2},
         templateData:{a:1,b:2}
-      }
+      },
+      loading:false
     }
   },
   methods: {
@@ -42,13 +43,14 @@ export default {
       //防止多次点击重复提交数据
       if(!Lib.C.ajax_manage) return false;
       Lib.C.ajax_manage = false;
-
+      _this.loading = !Lib.C.ajax_manage;
       _this.ajaxRequest({
         'url':DFshop.activeAPI.mallProductTemplateSave_post,
         'data':{
           template:_this.form
         },
         'success':function (data){
+          _this.loading = false;
           _this.$message({
             message: '保存成功',
             type: 'success'

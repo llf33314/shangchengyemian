@@ -21,7 +21,7 @@
                 </div>
               </el-form-item>
               <el-form-item>
-                  <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
+                  <el-button type="primary" @click="submitForm('ruleForm')" :loading="loading">保存</el-button>
                   <el-button @click="resetForm('ruleForm')">取消</el-button>
               </el-form-item>
           </el-form>
@@ -61,6 +61,7 @@ export default {
            { validator: contractContent, trigger: 'blur' },
         ],
       },
+      loading:false,
     }
   },
  computed: {
@@ -76,11 +77,12 @@ export default {
 
           if(!Lib.C.ajax_manage) return false;
           Lib.C.ajax_manage = false;
-
+          _this.loading = !Lib.C.ajax_manage;
           _this.ajaxSave({
               'url': DFshop.activeAPI.purchaseContractSave_post,
               'data':_this.ruleForm,
               'success':function (data){
+                 _this.loading = false;
                   _this.$message({
                       message: '保存合同成功',
                       type: 'success'

@@ -37,15 +37,15 @@
                   <i class="el-icon-plus"></i>
                   <img class="img"  v-if="imgs.idCardFront != ''" :src="imgs.idCardFront" />
                   <div class="delete" v-if="imgs.idCardFront != '' " @click.stop="stopDelete">
-                    <i class="el-icon-view" @click.stop="showBigImg(imgs.idCardFront)"></i>
-                    <i class="el-icon-delete2" @click.stop="deleteImg(1)"></i>
+                    <i class="el-icon-search" @click.stop="showBigImg(imgs.idCardFront)"></i>
+                    <i class="el-icon-delete" @click.stop="deleteImg(1)"></i>
                   </div>
                 </div>
               </div>
               <span>示例 :</span>
               <div class="shop-img " :style="{backgroundImage: 'url(' + imgID1_min + ')'}">
                 <div class="shop-img2" @click="showBigImg(imgID1)">
-                  <i class="el-icon-view"></i>
+                  <i class="el-icon-search"></i>
                 </div>
               </div>
             </div>
@@ -57,15 +57,15 @@
                   <i class="el-icon-plus"></i>
                   <img class="img"  v-if="imgs.idCardBack != ''" :src="imgs.idCardBack" />
                   <div class="delete" v-if="imgs.idCardBack != '' " @click.stop="stopDelete">
-                    <i class="el-icon-view" @click.stop="showBigImg(imgs.idCardBack)"></i>
-                    <i class="el-icon-delete2" @click.stop="deleteImg(2)"></i>
+                    <i class="el-icon-search" @click.stop="showBigImg(imgs.idCardBack)"></i>
+                    <i class="el-icon-delete" @click.stop="deleteImg(2)"></i>
                   </div>
                 </div>
               </div>
               <span>示例 :</span>
               <div class="shop-img " :style="{backgroundImage: 'url(' + imgID2_min + ')'}">
                  <div class="shop-img2" @click="showBigImg(imgID2)">
-                  <i class="el-icon-view"></i>
+                  <i class="el-icon-search"></i>
                 </div>
               </div>
             </div>
@@ -87,15 +87,15 @@
                   <i class="el-icon-plus"></i>
                   <img class="img"  v-if="imgs.idCardFront != ''" :src="imgs.idCardFront" />
                   <div class="delete" v-if="imgs.idCardFront != '' " @click.stop="stopDelete">
-                    <i class="el-icon-view" @click.stop="showBigImg(imgs.idCardFront)"></i>
-                    <i class="el-icon-delete2" @click.stop="deleteImg(1)"></i>
+                    <i class="el-icon-search" @click.stop="showBigImg(imgs.idCardFront)"></i>
+                    <i class="el-icon-delete" @click.stop="deleteImg(1)"></i>
                   </div>
                 </div>
               </div>
               <span>示例 :</span>
               <div class="shop-img " :style="{backgroundImage: 'url(' + imgID1_min + ')'}">
                  <div class="shop-img2" @click="showBigImg(imgID1)">
-                  <i class="el-icon-view"></i>
+                  <i class="el-icon-search"></i>
                 </div>
               </div>
             </div>
@@ -108,15 +108,15 @@
                   <i class="el-icon-plus"></i>
                   <img class="img"  v-if="imgs.idCardBack != ''" :src="imgs.idCardBack" />
                   <div class="delete" v-if="imgs.idCardBack != '' " @click.stop="stopDelete">
-                    <i class="el-icon-view" @click.stop="showBigImg(imgs.idCardBack)"></i>
-                    <i class="el-icon-delete2" @click.stop="deleteImg(2)"></i>
+                    <i class="el-icon-search" @click.stop="showBigImg(imgs.idCardBack)"></i>
+                    <i class="el-icon-delete" @click.stop="deleteImg(2)"></i>
                   </div>
                 </div>
               </div>
               <span>示例 :</span>
               <div class="shop-img" :style="{backgroundImage: 'url(' + imgID2_min + ')'}">
                  <div class="shop-img2" @click="showBigImg(imgID2)">
-                  <i class="el-icon-view"></i>
+                  <i class="el-icon-search"></i>
                 </div>
               </div>
             </div>
@@ -128,15 +128,15 @@
                   <i class="el-icon-plus"></i>
                   <img class="img"  v-if="imgs.busLicenseImg != ''" :src="imgs.busLicenseImg" />
                   <div class="delete" v-if="imgs.busLicenseImg != '' " @click.stop="stopDelete">
-                    <i class="el-icon-view" @click.stop="showBigImg(imgs.idCardBack)"></i>
-                    <i class="el-icon-delete2" @click.stop="deleteImg(3)"></i>
+                    <i class="el-icon-search" @click.stop="showBigImg(imgs.idCardBack)"></i>
+                    <i class="el-icon-delete" @click.stop="deleteImg(3)"></i>
                   </div>
                 </div>
               </div>
               <span>示例 :</span>
               <div class="shop-img" :style="{backgroundImage: 'url(' + imgLicense1_min + ')'}">
                  <div class="shop-img2" @click="showBigImg(imgLicense1)">
-                  <i class="el-icon-view"></i>
+                  <i class="el-icon-search"></i>
                 </div>
               </div>
             </div>
@@ -174,8 +174,8 @@
                   <i class="el-icon-plus"></i>
                   <img class="img"  v-if="imgs.certImgUrl != ''" :src="imgs.certImgUrl" />
                   <div class="delete" v-if="imgs.certImgUrl != '' " @click.stop="stopDelete">
-                    <i class="el-icon-view" @click.stop="showBigImg(imgs.certImgUrl)"></i>
-                    <i class="el-icon-delete2" @click.stop="deleteImg(4)"></i>
+                    <i class="el-icon-search" @click.stop="showBigImg(imgs.certImgUrl)"></i>
+                    <i class="el-icon-delete" @click.stop="deleteImg(4)"></i>
                   </div>
                   
                 </div>
@@ -183,7 +183,7 @@
               <span>示例 :</span>
               <div class="shop-img " :style="{backgroundImage: 'url(' + imgLicense3_min + ')'}">
                  <div class="shop-img2" @click="showBigImg(imgLicense3)">
-                  <i class="el-icon-view"></i>
+                  <i class="el-icon-search"></i>
                 </div>
               </div>
               <a style="vertical-align: bottom;"
@@ -198,15 +198,15 @@
                   <i class="el-icon-plus"></i>
                   <img class="img"  v-if="imgs.certImgUrl != ''" :src="imgs.certImgUrl" />
                   <div class="delete" v-if="imgs.certImgUrl != '' " @click.stop="stopDelete">
-                    <i class="el-icon-view" @click.stop="showBigImg(imgs.certImgUrl)"></i>
-                    <i class="el-icon-delete2" @click.stop="deleteImg(4)"></i>
+                    <i class="el-icon-search" @click.stop="showBigImg(imgs.certImgUrl)"></i>
+                    <i class="el-icon-delete" @click.stop="deleteImg(4)"></i>
                   </div>
                 </div>
               </div>
               <span>示例 :</span>
               <div class="shop-img " :style="{backgroundImage: 'url(' + imgLicense2_min + ')'}">
                  <div class="shop-img2" @click="showBigImg(imgLicense2)">
-                  <i class="el-icon-view"></i>
+                  <i class="el-icon-search"></i>
                 </div>
               </div>
             </div>
@@ -219,15 +219,15 @@
                   <i class="el-icon-plus"></i>
                   <img class="img"  v-if="imgs.certImgUrl != ''" :src="imgs.certImgUrl" />
                   <div class="delete" v-if="imgs.certImgUrl != '' " @click.stop="stopDelete">
-                    <i class="el-icon-view" @click.stop="showBigImg(imgs.certImgUrl)"></i>
-                    <i class="el-icon-delete2" @click.stop="deleteImg(4)"></i>
+                    <i class="el-icon-search" @click.stop="showBigImg(imgs.certImgUrl)"></i>
+                    <i class="el-icon-delete" @click.stop="deleteImg(4)"></i>
                   </div>
                 </div>
               </div>
               <span>示例 :</span>
               <div class="shop-img " :style="{backgroundImage: 'url(' + imgLicense4_min + ')'}">
                  <div class="shop-img2" @click="showBigImg(imgLicense4)">
-                  <i class="el-icon-view"></i>
+                  <i class="el-icon-search"></i>
                 </div>
               </div>
             </div>
@@ -240,15 +240,15 @@
                   <i class="el-icon-plus"></i>
                   <img class="img"  v-if="imgs.tradeMarkImg != ''" :src="imgs.tradeMarkImg" />
                   <div class="delete" v-if="imgs.tradeMarkImg != '' " @click.stop="stopDelete">
-                    <i class="el-icon-view" @click.stop="showBigImg(imgs.tradeMarkImg)"></i>
-                    <i class="el-icon-delete2" @click.stop="deleteImg(5)"></i>
+                    <i class="el-icon-search" @click.stop="showBigImg(imgs.tradeMarkImg)"></i>
+                    <i class="el-icon-delete" @click.stop="deleteImg(5)"></i>
                   </div>
                 </div>
               </div>
               <span>示例 :</span>
               <div class="shop-img " :style="{backgroundImage: 'url(' + imgLicense4_min + ')'}">
                  <div class="shop-img2" @click="showBigImg(imgLicense4)">
-                  <i class="el-icon-view"></i>
+                  <i class="el-icon-search"></i>
                 </div>
               </div>
             </div>
@@ -273,8 +273,8 @@
                 <div class="material-square">
                   <img class="img" :src="img" />
                   <div class="delete"  @click.stop="stopDelete">
-                    <i class="el-icon-view" @click.stop="showBigImg(img)"></i>
-                    <i class="el-icon-delete2" @click.stop="deleteImg(6,index)"></i>
+                    <i class="el-icon-search" @click.stop="showBigImg(img)"></i>
+                    <i class="el-icon-delete" @click.stop="deleteImg(6,index)"></i>
                   </div>
                 </div>
               </div>
@@ -293,15 +293,15 @@
                   <i class="el-icon-plus"></i>
                   <img class="img"  v-if="imgs.certImgUrl != ''" :src="imgs.certImgUrl" />
                   <div class="delete" v-if="imgs.certImgUrl != '' " @click.stop="stopDelete">
-                    <i class="el-icon-view" @click.stop="showBigImg(imgs.certImgUrl)"></i>
-                    <i class="el-icon-delete2" @click.stop="deleteImg(4)"></i>
+                    <i class="el-icon-search" @click.stop="showBigImg(imgs.certImgUrl)"></i>
+                    <i class="el-icon-delete" @click.stop="deleteImg(4)"></i>
                   </div>
                 </div>
               </div>
               <span>示例 :</span>
               <div class="shop-img " :style="{backgroundImage: 'url(' + imgLicense5 + ')'}">
                  <div class="shop-img2" @click="showBigImg(imgLicense5)">
-                  <i class="el-icon-view"></i>
+                  <i class="el-icon-search"></i>
                 </div>
               </div>
               <a style="vertical-align: bottom;"
@@ -316,15 +316,15 @@
                   <i class="el-icon-plus"></i>
                   <img class="img"  v-if="imgs.certImgUrl != ''" :src="imgs.certImgUrl" />
                   <div class="delete" v-if="imgs.certImgUrl != '' " @click.stop="stopDelete">
-                    <i class="el-icon-view" @click.stop="showBigImg(imgs.certImgUrl)"></i>
-                    <i class="el-icon-delete2" @click.stop="deleteImg(4)"></i>
+                    <i class="el-icon-search" @click.stop="showBigImg(imgs.certImgUrl)"></i>
+                    <i class="el-icon-delete" @click.stop="deleteImg(4)"></i>
                   </div>
                 </div>
               </div>
               <span>示例 :</span>
               <div class="shop-img " :style="{backgroundImage: 'url(' + imgLicense6 + ')'}">
                  <div class="shop-img2" @click="showBigImg(imgLicense6)">
-                  <i class="el-icon-view"></i>
+                  <i class="el-icon-search"></i>
                 </div>
               </div>
               <a style="vertical-align: bottom;"
@@ -339,15 +339,15 @@
                   <i class="el-icon-plus"></i>
                   <img class="img"  v-if="imgs.certImgUrl != ''" :src="imgs.certImgUrl" />
                   <div class="delete" v-if="imgs.certImgUrl != '' " @click.stop="stopDelete">
-                    <i class="el-icon-view" @click.stop="showBigImg(imgs.certImgUrl)"></i>
-                    <i class="el-icon-delete2" @click.stop="deleteImg(4)"></i>
+                    <i class="el-icon-search" @click.stop="showBigImg(imgs.certImgUrl)"></i>
+                    <i class="el-icon-delete" @click.stop="deleteImg(4)"></i>
                   </div>
                 </div>
               </div>
               <span>示例 :</span>
               <div class="shop-img " :style="{backgroundImage: 'url(' + imgLicense6 + ')'}">
                  <div class="shop-img2" @click="showBigImg(imgLicense6)">
-                  <i class="el-icon-view"></i>
+                  <i class="el-icon-search"></i>
                 </div>
               </div>
               <a style="vertical-align: bottom;"
@@ -372,12 +372,12 @@
             <span class="shop-promptText" style="margin-bottom:67px;" v-if="data.stoSmsTelephone != '' ">验证短信将发送到该店铺绑定的推送手机：+86 {{data.stoSmsTelephone}} </span>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submitForm('form')">提交认证</el-button>
+          <el-button type="primary" @click="submitForm('form')" :loading="loading">提交认证</el-button>
         </el-form-item>
       </el-form>
     </div>
 
-    <el-dialog v-model="materialLargeSrcVisible" size="small">
+    <el-dialog :visible.sync="materialLargeSrcVisible" width="800px">
         <img width="100%" :src="largeSrc" alt="" class="img">
     </el-dialog>
 
@@ -616,6 +616,7 @@ export default {
       itemNum:'',
       telephone:'',//验证手机号
       code:'获取验证码',//验证码 倒计时
+      loading:false
     }
   },
   watch:{
@@ -761,13 +762,15 @@ export default {
       //防止多次点击重复提交数据
       if(!Lib.C.ajax_manage) return false;
       Lib.C.ajax_manage = false;
-      
+       _this.loading = !Lib.C.ajax_manage;
+
       _this.$refs[formName].validate((valid) => {
         if (valid) {
           _this.ajaxSave({
             'url': DFshop.activeAPI.mallStoreCertSave_post,
             'data': _data,
              'success':function (data){
+                _this.loading = false;
                 _this.$message({
                   message: '恭喜你，保存成功',
                   type: 'success'

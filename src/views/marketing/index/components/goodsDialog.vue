@@ -1,8 +1,9 @@
 <template>
-  <el-dialog title="选择活动商品" :visible.sync="isShow">
+  <el-dialog title="选择活动商品" :visible.sync="isShow" width="860px">
       <div class="addGruop-search">
         <el-input placeholder="请输入商品名称" icon="search" v-model="proName" class="max-input"
-            :on-icon-click="handleIconClick" @keyup.enter.native="handleIconClick"></el-input>
+            :on-icon-click="handleIconClick" @keyup.enter.native="handleIconClick" @blur="handleIconClick"></el-input>
+        <el-button  icon="el-icon-search" @click="handleIconClick" :loading="loading"  type="primary"> 筛选</el-button>
       </div>
       <el-table :data="gridData.page.subList">
         <el-table-column label="商品" width="250">
@@ -67,7 +68,8 @@ export default {
       proName: "",
       imgPath: "",
       isCommission: false, //是否是销售商品
-      isIntegral: false //是否是积分商品
+      isIntegral: false ,//是否是积分商品
+      loading:false,
     };
   },
   watch: {
@@ -133,6 +135,9 @@ export default {
     },
     handleIconClick() {
       let _this = this;
+      if(this.loading || _this.proName == '') return false;
+      this.loading = true;
+      
       this.mallGroupBuyGetProduct({
         defaultProId: _this.defaultProId,
         shopId: _this.shopId,
@@ -142,6 +147,7 @@ export default {
         isIntegral: _this.isIntegral ? 1 : 0,
         success(data) {
           _this.gridData = data.data;
+          _this.loading = false;
         }
       });
     }

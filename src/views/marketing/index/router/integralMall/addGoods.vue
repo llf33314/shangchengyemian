@@ -27,12 +27,19 @@
                 <!-- <p class="p-warn">0/8</p> -->
             </el-form-item>
             <el-form-item label="活动时间 :" prop="startTime" required>
-                 <el-date-picker v-model="ruleForm.startTime" type="datetimerange" :picker-options="pickerOptions" align="right" :editable="false"
-                  placeholder="请选择活动时间"  >
+                 <el-date-picker 
+                  v-model="ruleForm.startTime" 
+                  type="datetimerange" 
+                  :picker-options="pickerOptions" 
+                  align="right" 
+                  :editable="false"
+                  range-separator="-"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期">
                 </el-date-picker>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
+                <el-button type="primary" @click="submitForm('ruleForm')" :loading="loading">保存</el-button>
                 <el-button @click="resetForm('ruleForm')">取消</el-button>
             </el-form-item>
         </el-form>
@@ -114,7 +121,8 @@ export default {
       isReplacePro : '', //显示替换商品true
       disabledShop : '',//编辑时,店铺不可改
       shopList:[],//店铺列表
-      selectShopId: 0 //选中的店铺,用于改变店铺时进行判断
+      selectShopId: 0 ,//选中的店铺,用于改变店铺时进行判断
+      loading:false
     };
   },
   methods: {
@@ -167,11 +175,12 @@ export default {
           //防止多次点击重复提交数据
           if(!Lib.C.ajax_manage) return false;
           Lib.C.ajax_manage = false;
-          
+          _this.loading = !Lib.C.ajax_manage
           _this.ajaxSave({
             url: DFshop.activeAPI.mallIntegralSave_post,
             data: param,
             success: function(data) {
+              _this.loading = false;
               _this.$message({
                 message: "保存成功",
                 type: "success"

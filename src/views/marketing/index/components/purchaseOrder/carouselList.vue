@@ -26,8 +26,8 @@
                               <i class="el-icon-plus"></i>
                               <img class="img"  v-if="row.carouselImg != ''" :src="row.carouselImg" />
                               <div class="delete" v-if="row.carouselImg != '' " @click.stop="deleteImg(index)">
-                                <i class="el-icon-view" @click.stop="showBigImg(row.carouselImg)"></i>
-                                <i class="el-icon-delete2" @click.stop="deleteImg(index)"></i>
+                                <i class="el-icon-search" @click.stop="showBigImg(row.carouselImg)"></i>
+                                <i class="el-icon-delete" @click.stop="deleteImg(index)"></i>
                               </div>   
                           </div>
                       </div>
@@ -50,7 +50,7 @@
             </tbody>
         </table>
         </el-form>
-        <el-dialog v-model="materialLargeSrcVisible" size="small">
+        <el-dialog :visible.sync="materialLargeSrcVisible" width="800px">
           <img width="100%" :src="largeSrc" alt="" class="img">
         </el-dialog>
     </div>
@@ -268,26 +268,26 @@ tr:hover {
 <style lang="less" scoped>
  @import '../../../less/style.less';
  .addbj-img{
-        width: 70px;
-        height: 70px;
-        display: inline-block;
-    }
-  section{
+    width: 75px;
+    height: 75px;
     display: inline-block;
-    vertical-align: bottom;
-    width:70px;
-    height: 70px;
   }
+  // section{
+  //   display: inline-block;
+  //   vertical-align: bottom;
+  //   width:70px;
+  //   height: 70px;
+  // }
   .material {
-    width: 70px;
-    height: 70px;
+    width: 75px;
+    height: 75px;
     border: 0;
   }
   .border{
-    .border-radius(3px);
-    border: 2px dashed #c0ccda;
-    width:70px;
-    height: 70px;
+    .border-radius(5px);
+    border: 1px dashed #c0ccda;
+    width:75px;
+    height: 75px;
     
   }
   .material-square {
@@ -298,15 +298,15 @@ tr:hover {
     cursor: pointer;
     position: relative;
     overflow: hidden;
-    height: 66px;
+    height: 75px;
     margin:0 auto;
     .el-icon-plus {
       color: #c0ccda;
     }
     .img {
       position: absolute;
-      width:70px;
-      height: 70px;
+      width:75px;
+      height: 75px;
       top: 0;
       left:0;
     }
@@ -317,8 +317,8 @@ tr:hover {
     }
     .delete {
       position: absolute;
-      width: 70px;
-      height: 70px;
+      width: 75px;
+      height: 75px;
       top: 0;
       border: 2px solid rgba(0, 0, 0, 0);
       left: 0;

@@ -83,13 +83,13 @@
       </div>
     </div>
     <el-button style="margin-top: 12px;" @click="next" v-if=" active == 1">下一步</el-button>
-    <el-button type="primary" v-if="active == 2" @click="Submit()">保存</el-button>
+    <el-button type="primary" v-if="active == 2" @click="Submit()" :loading="loading">保存</el-button>
     <el-button style="margin-top: 12px;" v-if="active !== 3" @click="Back">返回</el-button>
     <div class="shop-textc" v-if="active == 3" >
       <el-button type="primary" v-if="data.data.length >1"  @click="next">继续添加</el-button>
       <el-button style="margin-top: 12px;" @click="jumpRouter('/shop')">返回</el-button>
     </div>
-     <el-dialog v-model="dialogimg" size="small">
+     <el-dialog :visible.sync="dialogimg" width="600px">
         <img width="100%" :src="dialogImageUrl" alt="" class="img">
     </el-dialog>
   </div>
@@ -121,6 +121,7 @@ export default {
         }],
       addshopImg:'',
       areaPhones:[],
+      loading:false
     }
   },
   watch:{
@@ -237,7 +238,7 @@ export default {
       //防止多次点击重复提交数据
       if(!Lib.C.ajax_manage) return false;
       Lib.C.ajax_manage = false;
-      
+       _this.loading = !Lib.C.ajax_manage 
       _this.ajaxSave({
           'url': DFshop.activeAPI.mallStoreSave_post,
           'data': {
@@ -245,6 +246,7 @@ export default {
           },
           'success':function (data){
               console.log('success');
+               _this.loading = false;
              _this.next()
           }
       });

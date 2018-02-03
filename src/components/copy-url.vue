@@ -10,7 +10,7 @@
   _this.$root.$refs.dialogQR.showDialog(msg);//调用方法
 -->
   <section>
-    <el-dialog :title="title" :visible.sync="copyUrlVisible" size="cope-link">
+    <el-dialog :title="title" :visible.sync="copyUrlVisible" size="cope-link" width="640px">
       <el-form label-width="120px">
         <el-form-item label="页面二维码:">
           <img class="erwema" :src="erweima" v-if="erweima !=''" />
@@ -20,9 +20,10 @@
         <el-form-item label="页面链接:" v-if="pageLink != ''">
           <el-input class="el-input" 
                     v-model="pageLink" 
-                    id="gtLongUrl"   
+                    id="gtLongUrl" 
                     :value="pageLink" 
-                    :disabled="true"></el-input>
+                    readonly
+                    style="width: 80%;"></el-input>
           <el-button type="primary" data-clipboard-target="#gtLongUrl" aria-label="复制成功！" @click="copy(0)" id="gtLongUrlCopy" 
           >复制</el-button>
         </el-form-item>
@@ -72,7 +73,8 @@
       copy(type){
         var self = this;
         if(type === 0){
-          var clipboard = new Lib.Clipboard("#gtLongUrlCopy");
+          var gtLongUrlCopy = document.getElementById('#gtLongUrlCopy');
+          var clipboard = new Lib.Clipboard('#gtLongUrlCopy')
           clipboard.on('success', function(e) {
             self.$message({
               message: e.trigger.getAttribute('aria-label'),

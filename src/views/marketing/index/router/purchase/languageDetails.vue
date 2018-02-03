@@ -50,7 +50,7 @@
                     :total="page.rowCount">
                 </el-pagination>
             </div>
-            <el-dialog title="回复" :visible.sync="dialogFormVisible">
+            <el-dialog title="回复" :visible.sync="dialogFormVisible" width="600px" >
                 <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
                     <el-form-item label="" prop="languageContent">
                     <el-input  v-model="ruleForm.languageContent" class="addbj-input" type="textarea" 
