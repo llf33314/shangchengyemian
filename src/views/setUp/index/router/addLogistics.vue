@@ -441,7 +441,7 @@ export default {
           console.log(freight,"freight");
           console.log(detail,"detail");
           // return;
-
+          _this.loading=true;
           //防止多次点击重复提交数据
           if(!Lib.C.ajax_manage) return false;
           Lib.C.ajax_manage = false;
@@ -460,6 +460,7 @@ export default {
                 type: "success"
               });
               _this.jumpRouter("/logistics/logistics");
+              _this.loading=false;
             }
           });
         } else {

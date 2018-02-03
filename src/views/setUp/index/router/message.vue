@@ -270,7 +270,7 @@ export default {
 <style lang="less">
 @import '../../less/message.less';
 .minDialog{
- .el-dialog--small{
+ .el-dialog{
    width:35%;
  }
  .el-dialog__header{
