@@ -182,7 +182,7 @@
                 <el-button type="primary" size="small" v-if="returnData.isShowRefuseConfirmTakeButton == 1" @click="openDialog(6,returnData,4)">拒绝确认收货</el-button>
                 
                 <el-button type="primary" size="small" v-if="returnData.isShowUpdateAddressButton == 1" @click="openDialog(6,returnData,5)">修改退货地址</el-button>
-                <el-button  size="small" v-if="returnData.isShowRefuseApplyButton == 1">申请多粉介入</el-button>
+                <!-- <el-button  size="small" v-if="returnData.isShowRefuseApplyButton == 1">申请多粉介入</el-button> -->
               </div>
             </div>
           </div>

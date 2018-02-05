@@ -4,15 +4,15 @@
       <p class="item-title">统计概况</p>
       <div class="item-content">
         <div class="col1" >
-          <p style="color:#fa4c54" v-text="dataCount.unfilled_orders_num"></p>
+          <p style="color:#fa4c54" v-text="dataCount.unfilled_orders_num|0"></p>
           <div>待发货订单</div>
         </div>
         <div class="col1">
-          <p v-text="dataCount.bad_orders_num"></p>
+          <p v-text="dataCount.bad_orders_num|0"></p>
           <div>维权订单</div>
         </div>
         <div class="col1">
-          <p v-text="dataCount.yesterday_orders_num"></p>
+          <p v-text="dataCount.yesterday_orders_num|0"></p>
           <div>昨日订单</div>
         </div>
         <!-- <div class="col1">

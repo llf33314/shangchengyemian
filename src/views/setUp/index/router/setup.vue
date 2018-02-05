@@ -185,7 +185,13 @@
                 {"giveType":1,"giveStatus":"-1","num":0,"isEnable":true}
         ],
         form:{
-          foorerObj:{},
+          foorerObj:{
+            home : false,
+            group:false,
+            cart:false,
+            my :false
+          },
+          paySuccessText:'',
           set:{
             isComment:1,
             isDeliveryPay:1,
@@ -376,7 +382,7 @@
           'url': DFshop.activeAPI.mallPaySetPaySetInfo_post,
           'success':function (data){
             if(data.data.set != null){
-              _this.form = data.data;
+              _this.form.set = data.data.set;
               if(_this.form.set.checkSellerPhone!=null){
                 let phone=_this.form.set.checkSellerPhone.split(",");
                 if(phone.length>1){
@@ -385,13 +391,13 @@
                 } 
               }
             }
- 
+             _this.form.paySuccessText = data.data.paySuccessText;
             if(data.data.foorerObj !=null){
               _this.form.foorerObj.home = !!data.data.foorerObj.home;
               _this.form.foorerObj.group = !!data.data.foorerObj.group;
               _this.form.foorerObj.cart = !!data.data.foorerObj.cart;
               _this.form.foorerObj.my = !!data.data.foorerObj.my;
-            }
+            } 
             // console.log(_this.form);
           }
         });
