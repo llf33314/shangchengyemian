@@ -70,8 +70,11 @@
     <el-tab-pane label="上门自提" name="since" >
       <div class="logistics-main">
         <div class="index-shopInfo">上门自提功能
-          <el-switch style="margin-left:30px;"  v-model="isTakeTheir"
-            on-text="开启" off-text="关闭" @change="switchChange">
+          <el-switch style="margin-left:30px;"  
+            v-model="isTakeTheir"
+            active-text="开启" 
+            inactive-text="关闭" 
+            @change="switchChange">
           </el-switch>
           <p>启用上门自提功能后，买家可以就近选择你预设的自提点，下单后你需要尽快将商品配送至指定自提点。</p>
         </div>

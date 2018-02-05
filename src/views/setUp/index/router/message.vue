@@ -83,9 +83,12 @@
           <div class="message-switch message-title">
             <p>{{temp.title}}</p>
             <el-switch
-            v-model="temp.selected"
-            on-text="开启" on-value="1"
-            off-text="关闭" off-value="0" @change="mallPaySetSmsTemplate(temp.id,temp.title,temp.selected,0)">
+              v-model="temp.selected"
+              active-text="开启" 
+              inactive-text="关闭"
+              active-value="1"
+              inactive-value="0" 
+              @change="mallPaySetSmsTemplate(temp.id,temp.title,temp.selected,0)">
             </el-switch>
           </div>
           <p class="p-warn" v-if="temp.title =='付款成功通知'">
@@ -137,8 +140,11 @@
             <p class="fs14">{{temp.title}}</p>
             <el-switch
             v-model="temp.selected"
-            on-text="开启" on-value="1"
-            off-text="关闭" off-value="0" @change="mallPaySetSmsTemplate(temp.id,temp.title,temp.selected,1)">
+              active-text="开启" 
+              inactive-text="关闭"
+              active-value="1"
+              inactive-value="0"
+              @change="mallPaySetSmsTemplate(temp.id,temp.title,temp.selected,1)">
             </el-switch>
           </div>
         </div>
