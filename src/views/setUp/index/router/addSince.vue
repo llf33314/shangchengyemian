@@ -182,7 +182,7 @@ export default {
     },
     "citys"(a, b) {
       let  _this = this;
-      console.log("citys加载");
+      // console.log("citys加载");
       if(a.length>0){
         if(_this.editCityId != ""){
           _this.ruleForm.visitCityId = _this.editCityId;
@@ -206,7 +206,7 @@ export default {
     },
     "areas"(a, b) {
       let  _this = this;
-      console.log("areas加载");
+      // console.log("areas加载");
       if(a.length>0){
         if(_this.editAreaId !=""&& _this.editAreaId !=null){
           _this.ruleForm.visitAreaId = _this.editAreaId;
@@ -436,9 +436,9 @@ export default {
                 _this.loadAMap(data.data.address);
               }
               _this.getCityOrArea('city');
-              _this.ruleForm.visitCityId = Number(data.data.city);
-              _this.getCityOrArea('area'); 
-              _this.ruleForm.visitAreaId = Number(data.data.district);
+              // _this.ruleForm.visitCityId = Number(data.data.city);
+              // _this.getCityOrArea('area'); 
+              // _this.ruleForm.visitAreaId = Number(data.data.district);
             });
           }
       });
@@ -455,7 +455,6 @@ export default {
         _this.areas=[];
       }else{
         id = _this.ruleForm.visitCityId;
-        console.log(this.ruleForm.visitCityId,"cityId");
         _this.ruleForm.visitAreaId='';
         _this.areas=[];
       }
@@ -468,7 +467,6 @@ export default {
             _this.citys = options;
           }else{
             _this.areas = options;
-
           }
         }
       })
