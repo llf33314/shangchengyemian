@@ -708,6 +708,7 @@ export default {
                     });
                 }
                 //物流
+                
                 //if(_this.form.pro.proFreightSet  == 2){
                     _this.freightAjax(_this.form.pro.shopId);
                     // _this.selectFreight(_this.form.pro.proFreightTempId);
