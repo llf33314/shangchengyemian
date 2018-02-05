@@ -1,6 +1,6 @@
 <template>
     <div class="addLogistic-main">
-        <div v-for="(time , index) in ruleForm.timeList" :key="index">
+        <div v-for="(time , index) in ruleForm.timeList" :key="index" >
           <el-input type="text" :value="time.startTime" style="width:60px" disabled></el-input>
           <el-input type="text" :value="time.endTime" style="width:60px" disabled></el-input>
           <span style="margin:0 10px;">{{time.dayName}}</span>
@@ -10,7 +10,7 @@
          <p v-if="isTimeEdit==2">
           <a @click="isTimeEdit=1">新增时间段</a>
         </p>
-        <div v-if="isTimeEdit == 1" prop="startTime">
+        <div v-if="isTimeEdit == 1" prop="startTime" style="margin-bottom: 5px;">
             <el-form :model="ruleForm" :rules="rules"  ref="ruleForm" label-width="100px" class="demo-ruleForm" style="margin-top:10px;" :inline="true">
               <el-form-item label-width="0" inline  class="newgroup" prop="visitDays">
                   <el-checkbox-group v-model="ruleForm.visitDays" >

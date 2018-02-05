@@ -76,7 +76,7 @@
       </table>
     </el-form-item>
     <el-form-item label="配送区域和运费 :" v-if="ruleForm.isNoMoney==1">
-      <el-switch on-text="开启" off-text="关闭" v-model="ruleForm.isResultMoney" class="add-input"></el-switch>
+      <el-switch active-text="开启" inactive-text="关闭" v-model="ruleForm.isResultMoney" class="add-input"></el-switch>
       <table border="1" cellspacing="0" cellpadding="0" width="100%" class="order_tab log_table" v-if="ruleForm.isResultMoney == 1">
           <tbody>
           <tr class="order_tab_header">

@@ -680,6 +680,7 @@ export default {
                     _this.ajaxRequest({
                         'url': DFshop.activeAPI.mallCardList_post,
                         'success':function (data){
+                            if(!data.data) return;
                             _this.cardList = data.data;
                         }
                     });
@@ -688,6 +689,7 @@ export default {
                     _this.ajaxRequest({
                         'url': DFshop.activeAPI.mallCardReceiveList_post,
                         'success':function (data){
+                            if(!data.data) return;
                             _this.cardReceiveList = data.data;
                         }
                     });
@@ -700,6 +702,7 @@ export default {
                             flowId: _this.form.pro.flowId
                         },
                         'success':function (data){
+                            if(!data.data) return;
                             _this.flowList = data.data;
                         }
                     });

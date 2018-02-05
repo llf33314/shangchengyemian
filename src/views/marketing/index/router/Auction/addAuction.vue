@@ -82,7 +82,7 @@
                 <p >预计 <span>{{endTime}}</span>结束</p>
             </el-form-item>
             <el-form-item label="商品限购 :" v-if="ruleForm.aucType == 1">
-                <el-switch on-text="开启" off-text="关闭" v-model="off"></el-switch>
+                <el-switch active-text="开启" inactive-text="关闭" v-model="off"></el-switch>
                   <p class="p-warn">开启后,该拍卖商品会限制出售数量</p>
                   <el-form-item label="限购数量 :" v-if="off" prop="aucRestrictionNum" class="addGroup-maxBuy" >
                     <el-input v-model.number="ruleForm.aucRestrictionNum" style="width: 120px;"></el-input>
