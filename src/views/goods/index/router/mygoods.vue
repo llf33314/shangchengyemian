@@ -547,7 +547,10 @@ export default {
       this.isCloneGoods = '';
       this.cloneForm = {};
       this.cloneshopId = '';
-      this.$refs.cascader.resetForm();
+      //this.$refs.cascader.resetForm();
+      if(this.$refs.cascader){
+        this.$refs.cascader.resetForm();
+      }
     },
     /** 
      * 同步商品
