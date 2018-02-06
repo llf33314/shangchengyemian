@@ -541,13 +541,12 @@ export default {
      */
     closeCloneGoods(){
       this.cloneGoodsdialog = false;
-      this.isCloneGoods = '';
       this.cloneForm = {};
       this.cloneshopId = '';
-
-      if(this.$refs.cascader && this.isCloneGoods == 1){
+      if(this.$refs.cascader && this.isCloneGoods == 2){
         this.$refs.cascader.resetForm();
       }
+      this.isCloneGoods = '';
     },
     /** 
      * 同步商品
