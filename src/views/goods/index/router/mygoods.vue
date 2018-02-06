@@ -544,8 +544,8 @@ export default {
       this.isCloneGoods = '';
       this.cloneForm = {};
       this.cloneshopId = '';
-      //this.$refs.cascader.resetForm();
-      if(this.$refs.cascader){
+
+      if(this.$refs.cascader && this.isCloneGoods == 1){
         this.$refs.cascader.resetForm();
       }
     },
@@ -566,7 +566,6 @@ export default {
       if(type==2){
         //单个商品
         let flag = true;
-        debugger
         _this.shopList.forEach((item,i)=>{
             item.disabled = false;
             if(item.id == _this.cloneshopId && flag){
@@ -588,10 +587,7 @@ export default {
      */
     cloneGoodsAjax(){
       let _this = this;
-      
-
       let data={};
-      debugger
       if(this.isCloneGoods==1){
         //店铺同步商品
         data= _this.allcloneForm;
