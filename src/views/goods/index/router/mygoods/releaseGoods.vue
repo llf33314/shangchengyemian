@@ -698,13 +698,12 @@ export default {
                             flowId: _this.form.pro.flowId
                         },
                         'success':function (data){
-                            if(!data.data) return;
-                            _this.flowList = data.data;
+                            if(!data.data) return; 
+                            _this.flowList = data.data; 
                         }
                     });
                 }
                 //物流
-
                 //if(_this.form.pro.proFreightSet  == 2){
                     _this.freightAjax(_this.form.pro.shopId);
                     // _this.selectFreight(_this.form.pro.proFreightTempId);
